@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "451886010654",
+    "project_id": "dehkade-bc0bc",
+    "storage_bucket": "dehkade-bc0bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451886010654:android:0bd0800583b1dc3279790f",
+        "android_client_info": {
+          "package_name": "com.example.koohestantest1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451886010654-f7d52jkk1bi8nj8bqmvv1ah4l91uug3c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCq7crvrcM6z8N-R1BS4fbdklKTcBlVcM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451886010654-f7d52jkk1bi8nj8bqmvv1ah4l91uug3c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,205 @@
+<merge xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.drawerlayout.widget.DrawerLayout
+    android:id="@+id/profileDrawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F1F2F2">
+
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/layoutTopProfile"
+                android:layout_width="match_parent"
+                android:layout_height="265dp"
+                android:background="#F1F2F2">
+
+                <ImageButton
+                    android:id="@+id/btnDrawerMenu"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@drawable/ic_drawer_menu_gray" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imageViewProfile"
+                    android:layout_width="82dp"
+                    android:layout_height="82dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="77dp"
+                    android:src="@drawable/ic_profile" />
+
+                <TextView
+                    android:id="@+id/txtUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/imageViewProfile"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    tools:text="User Name"
+                    android:fontFamily="@font/koodak"
+                    android:textColor="@color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtPhoneNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtUserName"
+                    android:layout_centerHorizontal="true"
+                    tools:text="09123456789"
+                    android:fontFamily="@font/koodak"
+                    android:textColor="#424242"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/NoFollower"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="60dp"
+                    android:layout_marginBottom="120dp"
+                    android:layout_toStartOf="@+id/imageViewProfile"
+                    android:fontFamily="@font/koodak"
+                    android:text="50"
+                    android:textColor="@color/black"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/Follower"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="60dp"
+                    android:layout_marginBottom="105dp"
+                    android:layout_toStartOf="@+id/imageViewProfile"
+                    android:fontFamily="@font/koodak"
+                    android:text="اعتبار"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/NoFollowing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginBottom="120dp"
+                    android:layout_toEndOf="@+id/imageViewProfile"
+                    android:fontFamily="@font/koodak"
+                    android:text="50"
+                    android:textColor="@color/black"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/Following"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="55dp"
+                    android:layout_marginBottom="105dp"
+                    android:layout_toEndOf="@+id/imageViewProfile"
+                    android:fontFamily="@font/koodak"
+                    android:text="امتیاز"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/profile_cadr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="138dp"
+                android:src="@drawable/profile_cadr" />
+
+            <TextView
+                android:id="@+id/txtReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_cadr"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:fontFamily="@font/koodak"
+                android:text="گزارش سفارشات" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:nestedScrollingEnabled="false"
+                android:id="@+id/profile_RecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/txtReport"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:nestedScrollingEnabled="false"
+                android:id="@+id/profile_Setting_RecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/profile_RecyclerView"/>
+        </RelativeLayout>
+
+    </ScrollView>
+    </RelativeLayout>
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/myStoreNavView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:menu="@menu/profle_nav_menu"
+            android:layout_gravity="end">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/txtAppVer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="App Ver. : "
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="16sp"
+                    android:textAlignment="center"
+                    android:fontFamily="@font/koodak"
+                    android:textColor="@color/purple1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/txtAppVer"
+                    android:text="@string/LastVer"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="14dp"
+                    android:textColor="@color/backGroundGray"
+                    android:textSize="16sp"/>
+            </RelativeLayout>
+        </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>
+</merge>

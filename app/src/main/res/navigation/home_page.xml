@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_page"
+    app:startDestination="@id/main2Fragment2">
+
+    <fragment
+        android:id="@+id/main2Fragment2"
+        android:name="com.example.koohestantest1.Main2Fragment"
+        android:label="Main2Fragment" >
+
+        <action
+            android:id="@+id/action_main2Fragment2_to_explorerFragment2"
+            app:destination="@id/explorerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/explorerFragment"
+        android:name="com.example.koohestantest1.ExplorerFragment"
+        android:label="ExplorerFragment" >
+
+        <action
+            android:id="@+id/action_explorerFragment_to_myStroreFragment2"
+            app:destination="@id/myStroreFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myStroreFragment"
+        android:name="com.example.koohestantest1.MyStoreFragment"
+        android:label="MyStroreFragment" >
+
+        <action
+            android:id="@+id/action_myStroreFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.koohestantest1.ProfileFragment"
+        android:label="ProfileFragment" />
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.koohestantest1.CartFragment"
+        android:label="CartFragment" >
+        <action
+            android:id="@+id/action_cartFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+</navigation>

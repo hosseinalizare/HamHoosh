@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.button.MaterialButton
+        android:onClick="btnCancel"
+        android:id="@+id/btn_cancel_financial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/koodak"
+        android:padding="8dp"
+        android:text="وضعیت مالی سفارش نا مشخص است" />
+
+    <com.google.android.material.button.MaterialButton
+        android:onClick="btnCancel"
+        android:id="@+id/btn_cancel_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/koodak"
+        android:padding="8dp"
+        android:text="برخی از محصولات در فروشگاه موجود نیست" />
+
+    <com.google.android.material.button.MaterialButton
+        android:onClick="btnCancel"
+        android:id="@+id/btn_cancel_cant_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/koodak"
+        android:padding="8dp"
+        android:text="امکان ارسال سفارش در حال حاضر وجود ندارد" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_cancel_customer_wont_there"
+        android:onClick="btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/koodak"
+        android:padding="8dp"
+        android:text="مشتری برای تحویل حضور نداشت" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_cancel_didnt_come"
+        android:onClick="btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/koodak"
+        android:padding="8dp"
+        android:text="مشتری برای دریافت حاضر نشد" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_cancel_other"
+        android:onClick="btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/koodak"
+        android:padding="8dp"
+        android:text="سایر" />
+</LinearLayout>

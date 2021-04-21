@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!-- top toolbar -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/relativelayout1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include layout="@layout/layout_top_tabs" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- body -->
+    <ViewFlipper
+        android:id="@+id/MyStoreVf"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/newStore"
+            layout="@layout/layout_new_store" />
+
+        <include
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/myStore"
+            layout="@layout/layout_my_store" />
+
+        <include
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/requestAccepted"
+            layout="@layout/layout_request_accepted" />
+
+    </ViewFlipper>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

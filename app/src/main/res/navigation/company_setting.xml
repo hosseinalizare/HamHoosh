@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/company_setting"
+    app:startDestination="@id/companySettingHeaderFragment">
+
+    <fragment
+        android:id="@+id/companySettingDetailsFragment"
+        android:name="com.example.koohestantest1.fragments.CompanySettingDetailsFragment"
+        android:label="fragment_company_setting_details"
+        tools:layout="@layout/fragment_company_setting_details" />
+
+    <fragment
+        android:id="@+id/companySettingHeaderFragment"
+        android:name="com.example.koohestantest1.fragments.CompanySettingHeaderFragment"
+        android:label="fragment_company_setting_header"
+        tools:layout="@layout/fragment_company_setting_header" >
+        <action
+            android:id="@+id/action_companySettingHeaderFragment_to_companySettingDetailsFragment"
+            app:destination="@id/companySettingDetailsFragment" />
+    </fragment>
+</navigation>

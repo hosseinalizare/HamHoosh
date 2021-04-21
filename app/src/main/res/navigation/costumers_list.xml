@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/costumers_list"
+    app:startDestination="@id/customers_list_fragment">
+
+    <fragment
+        android:id="@+id/customers_list_fragment"
+        android:name="com.example.koohestantest1.fragments.CostumerListFragment"
+        android:label="customers_list"
+        tools:layout="@layout/fragment_costumer_list" />
+</navigation>

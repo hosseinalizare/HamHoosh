@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_promote_to_admin"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:drawableLeft="@drawable/ic_baseline_admin_panel_settings_24"
+        android:fontFamily="@font/koodak"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="تغییر به ادمین " />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_promote_to_operator"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:drawableLeft="@drawable/ic_baseline_operator"
+        android:fontFamily="@font/koodak"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="تغییر به اپراتور" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_edit_permision"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:drawableLeft="@drawable/ic_baseline_edit_24"
+        android:fontFamily="@font/koodak"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="اصلاح دسترسی ها" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_delete"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:drawableLeft="@drawable/ic_del"
+        android:fontFamily="@font/koodak"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="حذف از لیست کارمندان" />
+
+</LinearLayout>

@@ -1,0 +1,253 @@
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+    <aapt:attr name="android:drawable">
+        <vector
+            android:name="vector"
+            android:width="725dp"
+            android:height="731dp"
+            android:viewportWidth="725"
+            android:viewportHeight="731">
+            <path
+                android:name="path_1"
+                android:pathData="M 351 51 L 361 51 L 361 52 L 365 53 L 365 54 L 371 55 L 372 57 L 376 57 L 376 58 L 380 59 L 380 60 L 383 60 L 383 61 L 387 62 L 387 63 L 393 64 L 394 66 L 400 67 L 400 68 L 404 69 L 404 70 L 407 70 L 408 72 L 413 73 L 413 74 L 415 74 L 416 76 L 420 76 L 420 77 L 424 78 L 424 79 L 427 79 L 427 80 L 431 81 L 431 82 L 435 82 L 435 83 L 441 85 L 441 86 L 444 86 L 444 87 L 448 88 L 448 89 L 451 89 L 451 90 L 455 91 L 455 92 L 458 92 L 458 93 L 460 93 L 460 94 L 463 94 L 463 95 L 466 95 L 467 97 L 471 97 L 471 98 L 475 99 C 473.861 100.139 475 99.4 473 100 C 473.073 99.969 465.03 103.372 459 106 C 451.548 109.248 443.112 113.149 435 117 C 426.478 121.045 415.711 126.264 406 131 C 396.22 135.769 383.8 141.863 377 145 C 366.155 150 355.425 154.716 345 159 C 341.269 160.533 331.707 164.313 325 167 C 319.97 169.015 312.788 171.915 310 173 C 299.8 176.971 289.755 180.483 289.872 180.838 C 289.979 181.161 298.472 178.705 298.437 178.563 C 298.414 178.475 296.744 178.814 292 180 L 292 181 L 290 181 L 290 182 L 287 182 L 287 183 L 283 184 L 283 185 L 280 185 L 280 186 L 276 187 L 276 188 L 273 188 L 273 189 L 269 190 L 269 191 L 263 192 L 262 194 L 256 195 L 256 196 L 252 197 L 252 198 L 250 198 L 250 199 L 247 199 L 247 200 L 245 200 L 245 201 L 242 201 L 242 202 L 238 203 L 238 204 L 235 204 L 235 205 L 231 206 L 231 207 L 228 207 L 228 208 L 224 209 L 224 210 L 218 211 L 217 213 L 214 213 L 214 214 L 210 215 L 210 216 L 204 217 L 204 218 L 200 219 L 200 220 L 197 220 L 197 221 L 193 222 L 193 223 L 190 223 L 190 224 L 186 225 L 186 226 L 183 226 L 183 227 L 179 228 L 179 229 L 176 229 L 176 230 L 172 231 L 172 232 L 168 232 L 168 233 L 162 235 L 162 236 L 159 236 L 158 238 L 154 238 L 153 240 L 148 241 L 148 242 L 144 243 L 144 244 L 142 244 L 142 245 L 139 245 L 139 246 L 135 247 L 135 248 L 132 248 L 132 249 L 128 250 L 128 251 L 124 251 L 124 252 L 120 253 L 120 254 L 117 254 L 117 255 L 113 256 L 113 257 L 110 257 L 110 258 L 106 259 L 106 260 L 104 260 L 104 261 L 101 261 L 101 262 L 99 262 L 99 263 L 96 263 L 96 264 L 92 265 L 92 266 L 89 266 L 89 267 L 85 268 L 85 269 L 82 269 L 82 270 L 79 270 L 78 272 L 72 273 L 72 274 L 68 275 L 68 276 L 63 277 L 63 278 L 59 279 L 59 280 L 56 280 L 56 281 L 54 281 L 54 282 L 51 282 L 51 283 L 49 283 L 49 284 L 46 285 L 46 284 C 44.989 282.778 46 263.445 46 258 L 46 206 C 46 197.315 45.017 186.88 46 181 L 54 176 L 58 176 L 58 175 L 60 175 L 60 174 L 62 174 L 62 173 L 68 171 L 68 170 L 77 168 L 77 167 L 79 167 L 79 166 L 85 164 L 85 163 L 91 162 L 91 161 L 97 159 L 97 158 L 99 158 L 99 157 L 104 156 L 104 155 L 106 155 L 106 154 L 115 152 L 115 151 L 117 151 L 117 150 L 120 150 L 121 148 L 124 148 L 124 147 L 126 147 L 126 146 L 131 145 L 131 144 L 134 144 L 135 142 L 141 141 L 141 140 L 145 139 L 145 138 L 148 138 L 149 136 L 154 135 L 154 134 L 156 134 L 156 133 L 162 132 L 163 130 L 172 128 L 173 126 L 176 126 L 176 125 L 178 125 L 178 124 L 182 123 L 182 122 L 185 122 L 185 121 L 187 121 L 187 120 L 192 119 L 192 118 L 198 117 L 198 116 L 202 115 L 202 114 L 205 114 L 205 113 L 207 113 L 207 112 L 211 111 L 211 110 L 214 110 L 214 109 L 218 108 L 218 107 L 221 107 L 221 106 L 225 105 L 225 104 L 228 104 L 228 103 L 230 103 L 230 102 L 236 101 L 236 100 L 240 99 L 240 98 L 242 98 L 242 97 L 244 97 L 244 96 L 247 96 L 247 95 L 250 95 L 250 94 L 254 93 L 254 92 L 257 92 L 257 91 L 259 91 L 259 90 L 262 90 L 263 88 L 281 82 L 282 80 L 288 79 L 288 78 L 290 78 L 291 76 L 295 76 L 296 74 L 301 73 L 301 72 L 305 71 L 305 70 L 308 70 L 308 69 L 313 68 L 313 67 L 315 67 L 315 66 L 318 66 L 319 64 L 325 63 L 326 61 L 332 60 L 332 59 L 337 58 L 337 57 L 339 57 L 339 56 L 342 56 L 343 54 L 346 54 L 346 53 L 351 52 L 351 51 Z"
+                android:fillColor="#00aeff"
+                android:strokeWidth="1"
+                android:fillType="evenOdd"/>
+            <path
+                android:name="path_2"
+                android:pathData="M 143 265 L 147 265 C 147.668 266.582 148.008 268.283 148 270 C 145.78 272.571 147 281.572 147 286 L 147 329 Q 147.5 413.991 148 499 L 148 551 C 148 556.4 148.366 563.129 147 567 L 148 567 L 148 568 L 144 568 L 144 567 L 139 566 L 139 565 L 137 565 L 137 564 L 135 564 L 135 563 L 133 563 L 133 562 L 130 562 L 130 561 L 126 560 L 126 559 L 123 559 L 123 558 L 119 557 L 119 556 L 114 555 L 114 554 L 111 554 L 111 553 L 109 553 L 109 552 L 106 552 L 105 550 L 96 548 L 96 547 L 90 545 L 90 544 L 88 544 L 88 543 L 85 543 L 85 542 L 81 541 L 81 540 L 78 540 L 78 539 L 74 538 L 74 537 L 65 535 L 65 534 L 63 534 L 62 532 L 60 532 L 60 531 C 55.627 529.1 57.322 532.559 54 528 L 53 528 L 53 308 C 54.361 306.835 54.528 306.175 55 304 L 58 303 L 59 301 L 62 301 L 62 300 L 64 300 L 64 299 L 67 299 L 67 298 L 72 297 L 72 296 L 76 295 L 76 294 L 81 293 L 81 292 L 83 292 L 83 291 L 89 290 L 89 289 L 91 289 L 92 287 L 96 287 L 97 285 L 100 285 L 100 284 L 102 284 L 102 283 L 105 283 L 105 282 L 107 282 L 107 281 L 113 279 L 113 278 L 118 277 L 118 276 L 120 276 L 120 275 L 124 275 L 124 274 L 128 273 L 128 272 L 131 272 L 131 271 L 135 270 L 135 269 L 138 269 L 138 268 L 140 268 L 141 266 L 143 266 L 143 265 Z"
+                android:fillColor="#00aeff"
+                android:strokeWidth="1"
+                android:fillType="evenOdd"/>
+            <path
+                android:name="path1"
+                android:pathData="M 468 100 L 468 102 L 470 102 L 470 100 L 476 102 L 476 103 L 479 103 L 479 104 L 483 105 L 483 106 L 486 106 L 486 107 L 488 107 L 488 108 L 490 108 L 490 109 L 496 111 L 496 112 L 499 112 L 499 113 L 502 113 L 502 114 L 505 114 L 505 115 L 508 115 L 508 116 L 510 116 L 510 117 L 512 117 L 512 118 L 514 118 L 514 119 L 517 119 L 517 120 L 521 121 L 521 122 L 523 122 L 523 123 L 526 123 L 527 125 L 531 125 L 532 127 L 535 127 L 535 128 L 540 129 L 540 130 L 542 130 L 542 131 L 545 131 L 546 133 L 555 135 L 556 137 L 559 137 L 560 139 L 569 141 L 570 143 L 572 143 L 572 144 L 578 145 L 578 146 L 580 146 L 580 147 L 583 147 L 584 149 L 587 149 L 587 150 L 589 150 L 589 151 L 594 152 L 594 153 L 600 154 L 601 156 L 604 156 L 604 157 L 608 158 L 608 159 L 611 159 L 611 160 L 613 160 L 613 161 L 619 162 L 619 163 L 623 164 L 623 165 L 626 165 L 626 166 L 630 167 L 630 168 L 633 168 L 633 169 L 637 170 L 637 171 L 640 171 L 640 172 L 646 174 L 646 175 L 650 175 L 651 177 L 653 177 L 653 178 C 656.367 179.647 654.071 176.62 657 180 L 658 180 C 660.56 183.809 659 202.529 659 209 L 659 284 C 654.85 283.243 652.134 280.637 649 279 L 647 279 L 647 278 L 641 277 L 641 276 L 639 276 L 639 275 L 636 275 L 636 274 L 632 273 L 632 272 L 629 272 L 629 271 L 625 270 L 625 269 L 622 269 L 622 268 L 618 267 L 618 266 L 612 265 L 611 263 L 608 263 L 608 262 L 604 261 L 604 260 L 598 259 L 598 258 L 594 257 L 594 256 L 591 256 L 591 255 L 587 254 L 587 253 L 584 253 L 584 252 L 580 251 L 580 250 L 577 250 L 577 249 L 573 248 L 573 247 L 570 247 L 570 246 L 566 245 L 566 244 L 560 243 L 560 242 L 558 242 L 558 241 L 555 241 L 554 239 L 551 239 L 551 238 L 549 238 L 549 237 L 546 237 L 546 236 L 544 236 L 544 235 L 540 234 L 540 233 L 537 233 L 537 232 L 535 232 L 535 231 L 532 231 L 532 230 L 528 229 L 528 228 L 526 228 L 526 227 L 523 227 L 523 226 L 521 226 L 521 225 L 517 224 L 517 223 L 508 221 L 507 219 L 503 219 L 502 217 L 497 216 L 497 215 L 494 215 L 494 214 L 490 213 L 490 212 L 488 212 L 488 211 L 485 211 L 485 210 L 483 210 L 483 209 L 480 209 L 480 208 L 476 207 L 476 206 L 470 205 L 470 204 L 468 204 L 468 203 L 462 201 L 462 200 L 459 200 L 459 199 L 456 199 L 456 198 L 454 198 L 454 197 L 452 197 L 452 196 L 448 195 L 448 194 L 442 193 L 442 192 L 437 191 L 437 190 L 433 189 L 433 188 L 427 187 L 427 186 L 423 185 L 423 184 L 420 184 L 420 183 L 416 182 L 416 181 L 413 181 L 412 179 L 403 177 C 402.278 178.916 401.939 180.954 402 183 L 403 183 L 403 190 C 401.412 195.828 402 205.546 402 213 L 402 297 Q 402.5 409.989 403 523 L 403 592 C 403 604.391 403.923 619.253 402 630 L 394 635 L 391 635 L 390 637 L 386 637 L 386 638 L 381 639 L 381 640 L 379 640 L 379 641 L 376 641 L 375 643 L 372 643 L 372 644 L 370 644 L 370 645 L 366 646 L 366 647 L 363 647 L 363 648 L 359 649 L 359 650 L 355 650 L 355 651 L 353 651 L 353 652 C 351.652 653.283 349.861 654 348 654 C 346.139 654 344.348 653.283 343 652 L 343 651 L 340 651 L 340 650 L 338 650 L 338 649 L 334 649 L 333 647 L 330 647 L 330 646 L 326 645 L 326 644 L 323 644 L 323 643 L 319 642 L 319 641 L 316 641 L 316 640 L 312 639 L 312 638 L 307 637 L 307 636 L 302 635 L 302 634 L 300 634 L 300 633 L 297 633 L 295 630 L 294 630 L 294 178 C 293.777 177.9 290.374 176.561 291 176 L 292 176 L 292 175 L 296 175 L 297 173 L 300 173 L 301 171 L 304 171 L 304 170 L 306 170 L 306 169 L 310 169 L 311 167 L 314 167 L 315 165 L 318 165 L 318 164 L 320 164 L 320 163 L 324 163 L 325 161 L 334 159 L 335 157 L 338 157 L 339 155 L 342 155 L 342 154 L 344 154 L 344 153 L 348 153 L 349 151 L 352 151 L 352 150 L 354 150 L 354 149 L 358 149 L 359 147 L 362 147 L 363 145 L 372 143 L 373 141 L 382 139 L 383 137 L 386 137 L 387 135 L 390 135 L 391 133 L 400 131 L 402 128 L 406 127 L 407 125 L 410 125 L 411 123 L 414 123 L 415 121 L 418 121 L 419 119 L 422 119 L 423 117 L 426 117 L 428 114 L 432 113 L 433 111 L 437 111 L 437 110 L 441 109 L 441 108 L 444 108 L 444 107 L 446 107 L 447 105 L 450 105 L 451 103 L 453 103 L 453 102 L 456 101 L 455 104 L 456 104 C 456.837 102.584 457.394 101.646 459 101 C 460.378 101.318 458.6 101.773 460 102 L 460 101 C 462.173 99.982 464.739 99.926 468 100 Z"
+                android:fillColor="#00aeff"
+                android:strokeWidth="1"
+                android:trimPathStart="1"
+                android:fillType="evenOdd"/>
+            <path
+                android:name="path_3"
+                android:pathData="M 282 624 C 280.728 623.872 279.467 623.651 278.227 623.34 C 277.812 623.235 277.409 623.124 277 623 L 271 621 L 271 620 L 269 620 L 269 619 L 266 619 L 266 618 L 263 618 L 263 617 L 259 616 L 259 615 L 256 615 L 256 614 L 252 613 L 252 612 L 249 611 L 247 610 L 244 610 L 244 609 L 238 607 L 238 606 L 234 606 L 234 605 L 232 605 L 231 603 L 228 603 L 228 602 L 225 602 L 225 601 L 223 601 L 223 600 L 220 600 L 220 599 L 218 599 L 218 598 L 215 598 L 215 597 L 211 596 L 211 595 L 209 595 L 209 594 L 206 594 L 206 593 L 204 593 L 204 592 L 202 592 L 202 591 L 200 591 L 200 590 L 182 584 L 182 583 L 180 583 L 179 581 L 175 581 L 175 580 L 171 579 L 171 578 L 167 578 L 167 577 L 165 577 L 164 575 L 161 575 L 161 574 L 157 573 L 157 572 C 152.214 571.182 147.728 569.111 144 566 C 144.37 551.311 144.7 536.69 145 522 C 145.4 502.293 145.731 482.709 146 463 L 152 465 L 159 468 L 162 469 L 163 470 L 169 472 L 167 471 L 171 473 L 172 474 L 173 474 L 178 476 C 179.093 477.066 180.491 477.766 182 478 C 182.663 478.096 183.337 478.096 184 478 C 184.462 477.406 184.802 476.726 185 476 C 185.265 475.018 185.265 473.982 185 473 L 185 402 L 193 397 L 202 395 L 202 394 L 204 394 L 204 393 L 207 393 L 208 391 L 211 391 L 211 390 L 213 390 L 213 389 L 218 388 L 218 387 L 221 387 L 222 385 L 225 385 L 225 384 L 227 384 L 227 383 L 231 382 L 231 381 L 234 381 L 234 380 L 238 379 L 238 378 L 241 378 L 241 377 L 245 376 L 245 375 L 251 374 L 251 373 L 257 371 L 257 370 L 266 368 L 266 367 C 267.8 366.126 280.418 360.434 282 361 L 282 362 L 283 362 C 281.412 370.927 282 383.476 282 394 L 282 624 Z"
+                android:fillColor="#00aeff"
+                android:strokeWidth="1"
+                android:fillType="evenOdd"/>
+            <path
+                android:name="path_5"
+                android:pathData="M 419 362 L 429 364 L 429 365 L 434 366 L 434 367 L 437 367 L 438 369 L 442 369 L 443 371 L 446 371 L 446 372 L 448 372 L 448 373 L 457 375 L 457 376 L 461 377 L 461 378 L 463 378 L 463 379 L 465 379 L 465 380 L 468 380 L 468 381 L 471 381 L 471 382 L 475 383 L 475 384 L 477 384 L 477 385 L 486 387 L 487 389 L 489 389 L 489 390 L 491 390 L 491 391 L 494 391 L 495 393 L 498 393 L 498 394 L 500 394 L 500 395 L 503 395 L 503 396 L 508 397 L 511 399 L 516 400 L 516 478 C 518.052 478.164 520.112 477.821 522 477 L 527 475 L 530 474 L 533 473 L 534 472 L 535 472 L 537 471 L 538 471 L 541 470 L 544 468 L 546 467 L 548 466 L 550 465 L 551 465 L 551 464 L 554 462 L 554 502 C 554.213 502.18 554.387 502.4 554.512 502.649 C 554.637 502.898 554.71 503.17 554.727 503.448 C 554.758 503.748 554.706 504.051 554.578 504.325 C 554.45 504.598 554.25 504.831 554 505 C 553.889 504.676 553.889 504.324 554 504 L 554 523 C 554.268 524.991 554.268 527.009 554 529 L 554 533 C 554.673 534.446 555.051 536.159 554.315 536.812 C 554.222 536.893 554.116 536.957 554 537 L 554 541 C 554 541 555.058 541.963 554.96 542.367 C 554.867 542.545 554.73 542.697 554.562 542.807 C 554.394 542.918 554.201 542.984 554 543 L 554 544 L 555 544 L 555 550 C 554.9 552.681 554.9 555.32 555 558 C 555.14 561.682 555.474 565.353 556 569 C 554.145 569.029 552.364 569.742 551 571 L 547 572 L 546 573 L 542 574 L 542 575 L 539 576 L 537 577 L 535 578 L 532 579 L 528 580 L 528 581 L 525 581 L 525 582 L 521 583 L 521 584 L 517 586 L 514 587 L 511 587 L 511 588 L 505 590 L 503 591 L 501 591 L 500 592 L 497 593 L 497 594 L 494 594 L 494 595 L 492 595 L 492 596 L 488 597 L 488 598 L 485 598 L 485 599 L 483 599 L 483 600 L 480 600 L 480 601 L 478 602 L 476 603 L 473 604 L 469 605 L 465 606 L 465 607 L 463 607 L 462 608 L 460 609 L 458 610 L 456 610 L 456 611 L 454 612 L 451 613 L 449 614 L 447 615 L 446 616 L 445 616 L 443 617 L 442 617 L 440 618 L 438 619 L 437 619 L 435 620 L 429 622 L 427 623 L 424 624 C 423.601 624.232 423.183 624.427 422.749 624.585 C 421.549 625.015 420.265 625.157 419 625 L 419 362 Z"
+                android:fillColor="#00aeff"
+                android:strokeWidth="1"
+                android:fillType="evenOdd"/>
+            <path
+                android:name="path_4"
+                android:pathData="M 554 266 C 556.963 266.432 559.901 267.025 562.8 267.777 C 565.238 268.41 567.627 269.148 570 270 L 573 271 L 575 271 L 577 272 L 579 273 L 581 274 L 582 275 L 584 276 L 585 276 L 587 277 L 588 278 L 589 278 L 591 279 L 593 280 L 595 281 L 596 281 L 597 282 L 598 282 L 600 283 L 602 284 L 605 285 L 607 286 L 609 287 L 610 287 L 612 288 L 614 289 L 615 289 L 616 290 L 617 290 L 619 291 L 621 292 L 623 293 L 626 294 L 629 295 L 632 297 L 635 298 L 636 298 L 637 299 L 638 299 L 640 300 L 641 300 L 643 301 L 644 302 L 646 303 L 649 305 L 649 527 C 648.483 527.517 648.353 527.565 648.31 527.651 C 648.302 527.736 648.287 527.821 648.266 527.904 C 648.233 527.941 648.191 527.969 648.145 527.986 C 648.099 528.004 648.049 528.01 648 528.004 L 644 530.004 L 643 530.004 L 641 531.004 C 640.919 531.235 640.787 531.445 640.614 531.618 C 640.441 531.791 640.231 531.923 640 532.004 C 639.675 532.111 639.325 532.111 639 532.004 L 637 533.004 L 636 534.004 L 635 534.004 L 633 535.004 L 631 536.004 L 630 536.004 L 628 537.004 L 626 538.004 L 624 539.004 L 622 540.004 L 619 541.004 L 617 542.004 L 614 543.004 L 612 544.004 L 610 545.004 L 608 546.004 L 606 547.004 L 603 548.004 L 600 549.004 L 597 550.004 L 595 551.004 L 593 552.004 L 591 553.004 L 588 554.004 L 586 555.004 L 582 557.004 L 579 558.004 L 577 559.004 L 575 560.004 L 573 561.004 L 571 562.004 L 568 563.004 L 566 564.004 L 552 569.004 L 552 466 L 554 465 L 554 266 Z"
+                android:fillColor="#00aeff"
+                android:strokeWidth="1"
+                android:fillType="evenOdd"/>
+            <path
+                android:name="path_7"
+                android:pathData="M 208 709 L 209 706 L 277 707 L 298 707 L 298 706 L 300 706 L 300 705 C 302.024 704.7 301.213 705.472 302 706 L 303 706 C 302.426 708.01 303.12 706.865 302 708 C 298.011 713.018 289.157 712.169 280 712 C 276.954 709.45 275.176 711.733 273 713 L 273 714 L 271 714 L 271 713 L 269 713 C 267.296 713.106 265.614 713.442 264 714 L 264 713 L 260 712 L 258 709 L 208 709 Z M 399 714 L 400 709 L 404 708 L 404 707 L 415 708 C 415 708 415.38 706.67 418 707 C 419.877 707.237 423.513 709.959 426 709 L 428 706 L 440 706 L 441 708 L 451 709 C 462.012 709.023 485.754 706.968 494 710 C 493.426 712.01 494.12 710.865 493 712 C 490.378 714.277 471.425 713 466 713 L 427 712 L 427 713 L 424 713 L 404 712 L 404 713 Z"
+                android:fillColor="#000000"
+                android:strokeWidth="1"
+                android:fillType="evenOdd"/>
+            <path
+                android:name="path_6"
+                android:pathData="M 325 700 C 324.4 705.463 325 717.443 325 726 C 323.852 726.412 322.822 727.099 322 728 C 319.99 727.426 321.135 728.12 320 727 C 316.629 724.658 317.869 707.245 318 701 L 317 701 L 317 700 L 310 700 L 310 699 L 309 699 L 309 695 C 311.316 694.125 313.407 693.983 317 694 C 318.73 695.574 327.631 694.134 332 694 C 332.668 695.582 333.008 697.283 333 699 C 330.684 699.875 328.593 700.017 325 700 Z M 352 722 L 342 720 C 339.654 722.815 338.029 722.283 337 727 L 333 728 L 333 727 C 332.111 726.601 331.399 725.889 331 725 L 332 725 L 332 722 L 334 721 L 336 712 L 337 712 L 337 706 L 338 706 L 339 702 L 340 702 L 340 697 C 340.01 696.971 340.609 697.054 341 695 C 343.626 694.396 346.306 694.061 349 694 C 349.558 694.767 350.233 695.442 351 696 L 352 701 L 353 701 L 354 709 L 355 709 L 355 711 L 356 711 L 356 714 L 357 714 L 357 718 L 358 718 C 359.267 720.48 359.951 723.216 360 726 C 357.922 727.094 358.229 727.611 355 728 C 353.808 725.787 352.67 725.012 352 722 Z M 366 694 L 371 694 C 372.163 697.1 372.046 702.434 372 707 L 376 707 L 377 704 L 378 704 L 378 701 L 382 698 L 382 696 L 383 696 L 384 694 L 388 694 C 388.844 695.135 387.873 694.145 389 695 C 386.457 700.551 383.126 701.032 383 709 C 384.8 710.565 383.885 710.933 385 713 L 386 713 L 386 715 L 387 715 L 387 718 C 388.736 721.78 390.644 720.537 391 727 C 389.745 727.592 388.386 727.932 387 728 C 385.861 726.861 387 727.6 385 727 C 383.955 724.525 381.862 722.863 381 721 C 378.959 716.587 381.59 714.464 376 713 L 376 714 L 375 714 L 374 718 L 373 718 L 373 720 L 372 720 C 370.425 724.07 373.877 724.331 370 727 C 369.408 727.408 369.871 728.61 368 728 L 368 727 L 366 727 C 365.023 721.715 364.528 714.25 366 709 L 366 699 L 365 699 L 366 694 Z M 344 703 C 342.618 705.612 342.231 704.693 342 709 L 341 709 L 341 715 C 343.316 715.875 345.407 716.017 349 716 C 349.668 714.418 350.008 712.717 350 711 C 348.34 709.317 347.894 705.341 347 703 L 344 703 Z"
+                android:fillColor="#00aeff"
+                android:strokeWidth="1"
+                android:fillType="evenOdd"/>
+        </vector>
+    </aapt:attr>
+    <target android:name="path1">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:startOffset="300"
+                    android:duration="2700"
+                    android:valueFrom="#ffffff"
+                    android:valueTo="#00aeff"
+                    android:valueType="colorType"
+                    android:interpolator="@android:anim/decelerate_interpolator"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:duration="2400"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="trimPathStart"
+                    android:startOffset="300"
+                    android:duration="955"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="trimPathEnd"
+                    android:duration="100"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_1">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:startOffset="300"
+                    android:duration="2400"
+                    android:valueFrom="#ffffff"
+                    android:valueTo="#00aeff"
+                    android:valueType="colorType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_2">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:startOffset="300"
+                    android:duration="2400"
+                    android:valueFrom="#ffffff"
+                    android:valueTo="#00aeff"
+                    android:valueType="colorType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_3">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:startOffset="300"
+                    android:duration="2400"
+                    android:valueFrom="#ffffff"
+                    android:valueTo="#00aeff"
+                    android:valueType="colorType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_4">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:startOffset="300"
+                    android:duration="2400"
+                    android:valueFrom="#ffffff"
+                    android:valueTo="#00aeff"
+                    android:valueType="colorType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_5">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:startOffset="300"
+                    android:duration="2400"
+                    android:valueFrom="#ffffff"
+                    android:valueTo="#00aeff"
+                    android:valueType="colorType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_6">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:startOffset="300"
+                    android:duration="2400"
+                    android:valueFrom="#ffffff"
+                    android:valueTo="#00aeff"
+                    android:valueType="colorType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="path_7">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:startOffset="300"
+                    android:duration="2400"
+                    android:valueFrom="#ffffff"
+                    android:valueTo="#000000"
+                    android:valueType="colorType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="300"
+                    android:duration="1000"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+</animated-vector>

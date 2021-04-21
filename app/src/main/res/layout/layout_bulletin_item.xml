@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="92dp"
+        android:layout_height="50dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="1dp"
+        app:cardMaxElevation="2dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/LightPurple">
+
+            <TextView
+                android:textSize="13sp"
+                android:fontFamily="@font/koodak"
+                android:paddingBottom="6dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:id="@+id/bulletin_PName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="شیر پر چرب"
+                android:textColor="@color/white" />
+
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="56dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="-13dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="1dp"
+        app:cardMaxElevation="2dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/DarkYellow">
+
+            <TextView
+                style="@style/BulletinStyle"
+                android:gravity="center_horizontal|center_vertical"
+                android:id="@+id/bulletin_PPrice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="47000"
+         />
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
+

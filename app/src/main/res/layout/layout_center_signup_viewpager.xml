@@ -1,0 +1,152 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutDirection="ltr">
+
+        <TextView
+            android:id="@+id/tvWelcomeSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="برای گشتن تو دهکده بهتره که حساب کاربری ایجاد کنی"
+            android:textColor="#212121"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_sign_up_fulname"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="64dp"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvWelcomeSignUp">
+
+            <EditText
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:id="@+id/edt_sign_up_family"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edittextlogin"
+                android:gravity="center"
+                android:hint="نام خانوادگی"
+                android:textAlignment="center"
+                android:textColor="#616161" />
+
+            <EditText
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:id="@+id/edt_sign_up_name"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edittextlogin"
+                android:gravity="center"
+                android:hint="نام"
+                android:textAlignment="center"
+                android:textColor="#616161" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/EdUserNameSignUp"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/edittextlogin"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="نام کاربری"
+            android:textAlignment="center"
+            android:textColor="#616161"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_sign_up_fulname" />
+
+        <EditText
+            android:id="@+id/EdPasswordSignUp"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:background="@drawable/edittextlogin"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="ایجاد کلمه عبور"
+            android:inputType="textPassword"
+            android:textAlignment="center"
+            android:textColor="#616161"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/EdUserNameSignUp"
+            app:layout_constraintVertical_bias="0.08" />
+
+        <EditText
+            android:id="@+id/EdRepeatPasswordSignUp"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:background="@drawable/edittextlogin"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="تکرار کلمه عبور"
+            android:inputType="textPassword"
+            android:textAlignment="center"
+            android:textColor="#616161"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/EdPasswordSignUp"
+            app:layout_constraintVertical_bias="0.08" />
+
+
+        <include
+            android:id="@+id/btnSignUp"
+            layout="@layout/progress_btn_layout"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:onClick="btnSignUpClick"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/EdRepeatPasswordSignUp"
+            app:layout_constraintVertical_bias="0.234" />
+
+        <TextView
+            android:id="@+id/tvRulsSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="NewAccountClick"
+            android:text="قوانین دهکده رو خوندم و باهاش موافقم"
+            android:textColor="#FF1744"
+            android:textSize="13dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.45"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSignUp"
+            app:layout_constraintVertical_bias="0.26" />
+
+        <CheckBox
+            android:id="@+id/CBRulsSignUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/tvRulsSignUp"
+            app:layout_constraintTop_toBottomOf="@+id/btnSignUp"
+            app:layout_constraintVertical_bias="0.24" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

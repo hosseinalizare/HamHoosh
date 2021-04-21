@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txtHelp">جهت دریافت کد فعالسازی، لطفاً شماره تلفن \nهمراه خود را وارد کنید!</string>
+    <string-array name="number">
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+        <item>four</item>
+        <item>five</item>
+        <item>six</item>
+    </string-array>
+    <string name="all">همه</string>
+    <string name="personal">پرداخت حضوری</string>
+    <string name="peik">پرداخت به پیک</string>
+    <string name="credit">کارت به کارت</string>
+    <string name="LastVer">1.0.9</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="adding_address_hint">\" + افزودن آدرس\"</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="terms">با قوانین و مقررات موافقم</string>
+    <string name="show_terms">مشاهده قوانین و مقررات</string>
+    <string name="ok">باشه</string>
+</resources>

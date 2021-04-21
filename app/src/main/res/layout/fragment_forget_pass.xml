@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ForgotPasswordActivity">
+
+    <TextView
+        android:id="@+id/tvWelcomeForgot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="24dp"
+        android:fontFamily="@font/koodak"
+        android:text="برای بازیابی رمز عبور شماره تلفن همراه خود را وارد کنید"
+        android:textAlignment="center"
+        android:textColor="#212121"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edt_user_phone"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/edittextlogin"
+        android:ems="10"
+        android:fontFamily="@font/koodak"
+        android:gravity="center"
+        android:hint="شماره موبایل"
+        android:inputType="phone"
+        android:textAlignment="center"
+        android:textColor="@color/lightGrayTextColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvWelcomeForgot" />
+
+    <TextView
+        android:id="@+id/tvEditPhoneNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="140dp"
+        android:text="ویرایش شماره تلفن همراه"
+        android:textColor="@color/okGreen"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EdUserNameSignUp"
+        app:layout_constraintVertical_bias="0.03" />
+
+    <EditText
+        android:id="@+id/EdRequestCode"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/edittextlogin"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="کد یکبار مصرف را وارد نمایید"
+        android:inputType="phone"
+        android:textAlignment="center"
+        android:textColor="@color/lightGrayTextColor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EdUserNameSignUp"
+        app:layout_constraintVertical_bias="0.129" />
+
+    <TextView
+        android:id="@+id/tvTimerComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="176dp"
+        android:text="تا دریافت مجدد کد"
+        android:textColor="#F73C7B"
+        android:textSize="15dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toEndOf="@+id/btnGenerateCode"
+        app:layout_constraintTop_toBottomOf="@+id/EdRequestCode"
+        app:layout_constraintVertical_bias="0.03" />
+
+    <TextView
+        android:id="@+id/tvTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textColor="#F73C7B"
+        android:textSize="15dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toEndOf="@+id/tvTimerComment"
+        app:layout_constraintTop_toBottomOf="@+id/EdRequestCode"
+        app:layout_constraintVertical_bias="0.03" />
+
+    <Button
+        android:id="@+id/btn_send_verification"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:background="@drawable/createaccount"
+        android:fontFamily="@font/koodak"
+        android:text="ارسال کد تایید"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_user_phone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

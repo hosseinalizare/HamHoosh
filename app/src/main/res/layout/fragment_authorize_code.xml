@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/generatecode"
+    android:fitsSystemWindows="true"
+    android:layoutDirection="ltr"
+    tools:context=".GenerantCodeActivity">
+
+    <TextView
+        android:id="@+id/tv_code_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/koodak"
+        android:text="کد هشت رقمی را که برای شما ارسال شده وارد کنید"
+        android:textColor="#3F51B5"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.11" />
+
+    <LinearLayout
+        android:id="@+id/ll_et_codes"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:weightSum="8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_code_title">
+
+        <EditText
+            android:id="@+id/edt_code1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/edt_code2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/edt_code3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/edt_code4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/edt_code5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/edt_code6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+
+        <EditText
+            android:id="@+id/edt_code7"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+
+        <EditText
+            android:id="@+id/edt_code8"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_edit_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/koodak"
+        android:text="ویرایش شماره تلفن همراه"
+        android:textColor="@color/okGreen"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/ll_et_codes"
+        app:layout_constraintTop_toBottomOf="@+id/ll_et_codes" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_done_auth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
+        android:background="@drawable/btngenerate"
+        android:fontFamily="@font/koodak"
+        android:onClick="btnGeneratCLick"
+        android:text="تایید"
+        android:textColor="#FFFF"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/tv_edit_phone"
+        app:layout_constraintTop_toBottomOf="@+id/tv_edit_phone" />
+
+    <TextView
+        android:id="@+id/tv_resend_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="تا دریافت مجدد کد"
+        android:textColor="#F73C7B"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_done_auth"
+        app:layout_constraintStart_toEndOf="@+id/btn_done_auth"
+        app:layout_constraintTop_toTopOf="@+id/btn_done_auth" />
+
+    <TextView
+        android:id="@+id/tv_resend_code_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text=" دریافت مجدد کد"
+        android:textColor="#F73C7B"
+        android:textSize="15sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_done_auth"
+        app:layout_constraintStart_toEndOf="@+id/btn_done_auth"
+        app:layout_constraintTop_toTopOf="@+id/btn_done_auth" />
+
+    <TextView
+        android:id="@+id/tv_timer_auth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textColor="#F73C7B"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_resend_code"
+        app:layout_constraintStart_toEndOf="@+id/tv_resend_code"
+        app:layout_constraintTop_toTopOf="@+id/tv_resend_code"
+        tools:text="00:00" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

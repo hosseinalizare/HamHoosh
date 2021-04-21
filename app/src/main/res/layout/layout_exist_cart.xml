@@ -1,0 +1,396 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- body -->
+                <LinearLayout
+                    android:id="@+id/relativelayout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/AddressCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="10dp"
+                        app:cardElevation="1dp"
+                        app:cardMaxElevation="2dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/SendAddress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="15dp"
+                                android:focusableInTouchMode="true"
+                                android:fontFamily="@font/koodak"
+                                android:text="ارسال به"
+                                android:textColor="@color/DarkGray"
+                                android:textSize="15sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/locationIcon"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_marginEnd="15dp"
+                                android:src="@drawable/ic_location"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/SendAddress" />
+
+                            <TextView
+                                app:layout_constraintStart_toStartOf="parent"
+                                android:id="@+id/AddressInCart"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/koodak"
+                                android:maxLines="1"
+                                android:textColor="@color/black"
+                                android:textSize="20sp"
+                                android:paddingStart="4dp"
+                                app:layout_constraintEnd_toStartOf="@+id/locationIcon"
+                                app:layout_constraintTop_toBottomOf="@+id/SendAddress" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+
+                        android:id="@+id/cartProductList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        app:cardElevation="1dp"
+                        app:cardMaxElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layoutDirection="rtl"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/cartSumPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginRight="15dp"
+                                android:fontFamily="@font/koodak"
+                                android:text="قیمت کالاها :"
+                                android:textColor="@color/DarkGray"
+                                android:textSize="18sp" />
+
+                            <TextView
+                                android:id="@+id/cartSumDiscount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="15dp"
+                                android:fontFamily="@font/koodak"
+                                android:text="جمع تخفیف ها :"
+                                android:textColor="@color/DarkGray"
+                                android:textSize="18sp" />
+                            <TextView
+                                android:id="@+id/deliveryPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginRight="15dp"
+                                android:fontFamily="@font/koodak"
+                                android:text="هزینه حمل و نقل :"
+                                android:textColor="@color/DarkGray"
+                                android:textSize="18sp"/>
+
+                            <TextView
+                                android:id="@+id/cartSumP"
+                                android:visibility="visible"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="15dp"
+                                android:fontFamily="@font/koodak"
+                                android:text="مبلغ قابل پرداخت :"
+                                android:textColor="@color/black"
+                                android:textSize="20sp" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        app:cardElevation="1dp"
+                        app:cardMaxElevation="2dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/txtSendTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="15dp"
+                                android:fontFamily="@font/koodak"
+                                android:text="نحوه دریافت سفارش :"
+                                android:textColor="@color/okGreen"
+                                android:textSize="20sp" />
+
+                            <!--                        <TextView-->
+                            <!--                            android:id="@+id/sendTime"-->
+                            <!--                            android:layout_width="wrap_content"-->
+                            <!--                            android:layout_height="wrap_content"-->
+                            <!--                            android:layout_below="@+id/txtSendTime"-->
+                            <!--                            android:layout_alignParentEnd="true"-->
+                            <!--                            android:layout_gravity="right"-->
+                            <!--                            android:layout_marginTop="8dp"-->
+                            <!--                            android:layout_marginEnd="25dp"-->
+                            <!--                            android:fontFamily="@font/wyekanbold"-->
+                            <!--                            android:text="دوشنبه 1399/09/09 ساعت 10-15"-->
+                            <!--                            android:textColor="@color/DarkGray"-->
+                            <!--                            android:textSize="15sp" />-->
+
+                            <!--                        <TextView-->
+                            <!--                            android:id="@+id/editSendTime"-->
+                            <!--                            android:layout_width="wrap_content"-->
+                            <!--                            android:layout_height="wrap_content"-->
+                            <!--                            android:layout_alignParentTop="true"-->
+                            <!--                            android:layout_marginStart="5dp"-->
+                            <!--                            android:layout_marginTop="49dp"-->
+                            <!--                            android:layout_toEndOf="@+id/editSendTimebtn"-->
+                            <!--                            android:fontFamily="@font/wyekanbold"-->
+                            <!--                            android:text="ویرایش زمان ارسال"-->
+                            <!--                            android:textColor="@color/LightBlue"-->
+                            <!--                            android:textSize="18sp" />-->
+
+                            <!--                        <ImageView-->
+                            <!--                            android:id="@+id/editSendTimebtn"-->
+                            <!--                            android:layout_width="30dp"-->
+                            <!--                            android:layout_height="30dp"-->
+                            <!--                            android:layout_alignParentStart="true"-->
+                            <!--                            android:layout_alignParentTop="true"-->
+                            <!--                            android:layout_marginStart="12dp"-->
+                            <!--                            android:layout_marginTop="52dp"-->
+                            <!--                            android:src="@drawable/ic_blue_arrow" />-->
+
+                            <RadioGroup
+                                android:id="@+id/radioGroup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/txtSendTime"
+                                android:layout_marginTop="7dp"
+                                android:foregroundGravity="right"
+                                android:gravity="right"
+                                android:orientation="vertical">
+
+                                <RadioButton
+                                    android:id="@+id/personalReceive"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginRight="30dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:fontFamily="@font/koodak"
+                                    android:gravity="center_vertical"
+                                    android:visibility="gone"
+                                    android:textSize="16sp" />
+
+                                <RadioButton
+                                    android:id="@+id/sheepReceive"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginRight="35dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:fontFamily="@font/koodak"
+                                    android:gravity="center_vertical"
+                                    android:visibility="gone"
+                                    android:textSize="16sp" />
+                                <RadioButton
+                                    android:id="@+id/fromAloPeykReceive"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginRight="35dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:gravity="center_vertical"
+                                    android:fontFamily="@font/koodak"
+                                    android:textSize="16sp"
+                                    android:visibility="gone"/>
+                                <RadioButton
+                                    android:id="@+id/other"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginRight="35dp"
+                                    android:layout_marginBottom="5dp"
+                                    android:gravity="center_vertical"
+                                    android:fontFamily="@font/koodak"
+                                    android:textSize="16sp"
+                                    android:visibility="gone"/>
+                            </RadioGroup>
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/txtDeliveryTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="15dp"
+                        android:fontFamily="@font/koodak"
+                        android:text="زمان تحویل کالا : حداکثر تا 3 ساعت"
+                        android:textColor="@color/okGreen"
+                        android:textSize="20sp" />
+
+
+
+                    <TextView
+                        android:id="@+id/txtNotes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="15dp"
+                        android:fontFamily="@font/koodak"
+                        android:text="توضیحات برای مامور ارسال :"
+                        android:textColor="@color/okGreen"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/EdNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="15dp"
+                        android:focusedByDefault="false"
+                        android:fontFamily="@font/koodak"
+                        android:padding="5dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/txtPaymentType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="15dp"
+                        android:fontFamily="@font/koodak"
+                        android:text="نحوه پرداخت :"
+                        android:textColor="@color/okGreen"
+                        android:textSize="20sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/paymentTypeRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@color/backgroundGray"
+                        android:orientation="horizontal" />
+
+                    <RelativeLayout
+                        android:id="@+id/cashLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/bankAccount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginTop="10dp"
+                            android:text="5022-2910-3181-9202"
+                            android:textColor="@color/dipRed"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/btnCopy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="25dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="30dp"
+                            android:background="@drawable/radius_green_button"
+                            android:drawableRight="@drawable/ic_copy"
+                            android:text="کپی کردن"
+                            android:textColor="@color/white" />
+
+                        <EditText
+                            android:id="@+id/paygir"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/bankAccount"
+                            android:layout_margin="10dp"
+
+                            android:hint="کد پیگیری پرداخت"
+                            android:inputType="number" />
+                    </RelativeLayout>
+
+                    <Button
+                        android:id="@+id/btnAddCart"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/radius_purple_button"
+                        android:fontFamily="@font/koodak"
+                        android:text="ثبت نهایی سفارش"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+
+                </LinearLayout>
+
+                <!-- bottom navigation
+                -->
+                <!--        <include layout="@layout/layout_bottom_navigation_view"/>-->
+            </RelativeLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

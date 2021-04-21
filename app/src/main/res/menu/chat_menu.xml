@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:visible="false"
+        android:id="@+id/seeOrder"
+        android:title="مشاهده سفارشات">
+    </item>
+
+    <item
+        android:id="@+id/menu_chat_call_info"
+        android:icon="@drawable/ic_call"
+        android:title="اطلاعات تماس">
+    </item>
+
+    <item
+        android:id="@+id/menu_chat_add_employee"
+        android:title="افزودن به لیست کارمندان">
+    </item>
+
+    <item
+        android:visible="false"
+        android:id="@+id/search"
+        android:title="جستجو">
+    </item>
+
+    <item
+        android:visible="false"
+        android:id="@+id/mute"
+        android:title="حالت بی صدا">
+    </item>
+
+    <item
+        android:visible="false"
+        android:id="@+id/delete"
+        android:title="حذف گفتگو">
+    </item>
+</menu>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="3dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:cardMaxElevation="2dp"
+        app:cardElevation="1dp"
+        tools:ignore="MissingConstraints">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txtAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:fontFamily="@font/koodak"
+                android:paddingEnd="5dp"
+                android:text=" تهران نو خیابان بصیر خیابان شواخ خیابان 13/34 پلاک 6 واحد 7"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/cityIcon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/txtAddress"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_city" />
+
+            <TextView
+                android:id="@+id/txtCity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtAddress"
+                android:layout_gravity="right"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@+id/cityIcon"
+                android:fontFamily="@font/koodak"
+                android:text="تهران ، تهران ، نیروی هوایی"
+                android:textColor="@color/DarkGray"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/phoneIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_below="@+id/cityIcon"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_call" />
+
+            <TextView
+                android:id="@+id/txtphone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtCity"
+                android:layout_gravity="right"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:layout_toStartOf="@+id/phoneIcon"
+                android:fontFamily="@font/koodak"
+                android:text="09123456789"
+                android:textColor="@color/DarkGray"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/editSendAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="49dp"
+                android:layout_marginBottom="12dp"
+                android:layout_toEndOf="@+id/editSendAddressBtn"
+                android:fontFamily="@font/koodak"
+                android:text="ویرایش آدرس"
+                android:textColor="@color/LightBlue"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:clickable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:id="@+id/editSendAddressBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/ic_blue_arrow" />
+
+            <TextView
+                android:id="@+id/delAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="49dp"
+                android:layout_marginBottom="11dp"
+                android:layout_toEndOf="@+id/delAddressbtn"
+                android:fontFamily="@font/koodak"
+                android:text="حذف آدرس"
+                android:textColor="@color/red"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/delAddressbtn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="34dp"
+                android:layout_marginBottom="12dp"
+                android:layout_toEndOf="@+id/editSendAddress"
+                android:src="@drawable/ic_del" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

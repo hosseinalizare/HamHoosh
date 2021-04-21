@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.button.MaterialButton
+
+        android:id="@+id/btn_filter_related"
+        android:layout_margin="4dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:fontFamily="@font/koodak"
+        android:text="مرتبط ترین"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_filter_view"
+        android:layout_margin="4dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:fontFamily="@font/koodak"
+        android:text="پربازدید ترین"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_filter_sell"
+        android:layout_margin="4dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:fontFamily="@font/koodak"
+        android:text="پرفروش ترین"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_filter_expensive"
+        android:layout_margin="4dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:fontFamily="@font/koodak"
+        android:text="گران ترین"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_filter_cheap"
+        android:layout_margin="4dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:fontFamily="@font/koodak"
+        android:text="ارزان ترین"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_filter_new"
+        android:layout_margin="4dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:fontFamily="@font/koodak"
+        android:text="جدید ترین"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

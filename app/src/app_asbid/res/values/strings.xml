@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Asbid</string>
+    <string name="greeting">به اسبید خوش آمدید !</string>
+    <string name="splash_title">اسبید</string>
+</resources>

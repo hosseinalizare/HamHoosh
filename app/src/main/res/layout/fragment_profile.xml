@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/relativelayout1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"/>
+
+    <!-- body -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relativelayout2"
+        android:layout_below="@id/relativelayout1">
+
+        <ViewFlipper
+            android:id="@+id/vf"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+            <include android:id="@+id/singUpLayout" layout="@layout/layout_center_signup_viewpager" />
+            <include android:id="@+id/profileLayout" layout="@layout/profile_signed_up" />
+
+        </ViewFlipper>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- bottom navigation -->
+<!--        <include layout="@layout/layout_bottom_navigation_view"/>-->
+
+    </RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

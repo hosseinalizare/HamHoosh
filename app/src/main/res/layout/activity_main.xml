@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/signupscreen"
+    android:layoutDirection="ltr"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/greeting"
+        android:textColor="#fff"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/koodak"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.096" />
+
+    <TextView
+        android:id="@+id/tvHelp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txtHelp"
+        android:textAlignment="center"
+        android:fontFamily="@font/koodak"
+        android:textColor="#B9BEC1"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvWelcome"
+        app:layout_constraintVertical_bias="0.107" />
+
+    <TextView
+        android:id="@+id/tvMobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="شماره تلفن همراه :"
+        android:textColor="#fff"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/EdPhoneNo"
+        app:layout_constraintEnd_toEndOf="@+id/EdPhoneNo"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/EdPhoneNo"
+        app:layout_constraintTop_toBottomOf="@+id/tvHelp"
+        app:layout_constraintVertical_bias="0.650" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnGetCode"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:onClick="btnGetCodeClick"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btngetcode"
+        android:text="دریافت کد"
+        android:fontFamily="@font/koodak"
+        android:textColor="#FFF"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/EdPhoneNo"
+        app:layout_constraintTop_toTopOf="@id/EdPhoneNo"
+        android:layout_marginTop="64dp"
+        app:layout_constraintVertical_bias="0.264" />
+
+    <EditText
+        android:id="@+id/EdPhoneNo"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/tbphoneno"
+        android:ems="10"
+        android:hint="مثلا 09123456789"
+        android:textSize="18sp"
+        android:inputType="phone"
+        android:gravity="center"
+        android:fontFamily="@font/koodak"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.389" />
+    <CheckBox
+        android:id="@+id/chkTerms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/EdPhoneNo"
+        app:layout_constraintEnd_toEndOf="@id/EdPhoneNo"
+        android:layout_marginTop="32dp"/>
+    <TextView
+        android:id="@+id/tvTerms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/chkTerms"
+        app:layout_constraintTop_toTopOf="@id/chkTerms"
+        app:layout_constraintEnd_toEndOf="@id/chkTerms"
+        app:layout_constraintBottom_toBottomOf="@id/chkTerms"
+        android:layout_marginEnd="8dp"
+        android:text="@string/terms"
+        android:textColor="@color/white"
+        android:textSize="18sp"/>
+    <TextView
+        android:id="@+id/tvShowTerms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tvTerms"
+        app:layout_constraintEnd_toEndOf="@id/tvTerms"
+        android:text="@string/show_terms"
+        android:textSize="18sp"
+        android:onClick="txtShowTermsClick"
+        android:textColor="@color/blue500"/>
+    <TextView
+        android:id="@+id/tvAsk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="قبلا ثبت نام کرده اید؟!"
+        android:textColor="#37474F"
+        android:textSize="15dp"
+        android:fontFamily="@font/koodak"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tvSignUp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.960" />
+
+    <TextView
+        android:id="@+id/tvSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="tvSignUpClick"
+        android:text="وارد شوید!"
+        android:textColor="#A01C32"
+        android:textSize="15dp"
+        android:fontFamily="@font/koodak"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.960" />
+
+    <TextView
+        android:id="@+id/tvMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#C42847"
+        android:textSize="14sp"
+        android:fontFamily="@font/koodak"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EdPhoneNo"
+        app:layout_constraintVertical_bias="0.037" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

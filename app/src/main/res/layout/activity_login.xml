@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="ltr"
+    tools:context=".activity.LoginActivity">
+
+
+    <TextView
+        android:id="@+id/tvWelcomeSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/koodak"
+        tools:text="@string/greeting"
+        android:textColor="#212121"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.092" />
+
+    <EditText
+        android:id="@+id/EdUserNameSignUp"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/edittextlogin"
+        android:ems="10"
+        android:fontFamily="@font/koodak"
+        android:gravity="center"
+        android:hint="نام کاربری"
+        android:textAlignment="center"
+        android:textColor="@color/lightGrayTextColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvWelcomeSignUp"
+        app:layout_constraintVertical_bias="0.164" />
+
+    <EditText
+        android:id="@+id/EdPasswordSignUp"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/edittextlogin"
+        android:ems="10"
+        android:fontFamily="@font/koodak"
+        android:gravity="center"
+        android:hint="کلمه عبور خود را وارد کنید"
+        android:inputType="textPassword"
+        android:textAlignment="center"
+        android:textColor="@color/lightGrayTextColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EdUserNameSignUp"
+        app:layout_constraintVertical_bias="0.102" />
+
+    <TextView
+        android:id="@+id/tvForgot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/koodak"
+        android:text="رمز عبور خود را فراموش کرده اید؟"
+        android:textColor="@color/LightBlue"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.713"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EdPasswordSignUp"
+        app:layout_constraintVertical_bias="0.069" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btngetcode"
+        android:fontFamily="@font/koodak"
+        android:onClick="btnLoginCLick"
+        android:text="ورود"
+        android:textColor="#fff"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.826"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvForgot"
+        app:layout_constraintVertical_bias="0.15"
+        tools:ignore="OnClick" />
+
+    <TextView
+        android:id="@+id/tvCommentLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/koodak"
+        android:text="شما عضو نیستید؟"
+        android:textColor="#212121"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.798"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSignUp"
+        app:layout_constraintVertical_bias="0.708" />
+
+    <TextView
+        android:id="@+id/tvRulsSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/koodak"
+        android:onClick="NewAccountClick"
+        android:text="ساخت حساب کاربری جدید"
+        android:textColor="#FF1744"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvCommentLogin"
+        app:layout_constraintHorizontal_bias="0.948"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSignUp"
+        app:layout_constraintVertical_bias="0.709" />
+
+    <ImageButton
+        android:id="@+id/btnVisiblePass"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/visiblepass"
+        android:onClick="btnVisiblePassClick"
+        app:layout_constraintBottom_toBottomOf="@+id/EdPasswordSignUp"
+        app:layout_constraintEnd_toEndOf="@+id/EdPasswordSignUp"
+        app:layout_constraintHorizontal_bias="0.032"
+        app:layout_constraintStart_toStartOf="@+id/EdPasswordSignUp"
+        app:layout_constraintTop_toTopOf="@+id/EdPasswordSignUp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

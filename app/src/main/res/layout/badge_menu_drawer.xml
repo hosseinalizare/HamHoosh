@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_margin="8dp"
+    android:layoutDirection="ltr"
+    app:barrierDirection="left"
+    android:textDirection="ltr"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:fontFamily="@font/koodak"
+        android:textColor="@color/white"
+        tools:text="44"
+        android:textSize="14sp"
+        android:id="@+id/tv_menu_badge"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_shape" />
+</LinearLayout>

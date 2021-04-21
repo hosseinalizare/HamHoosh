@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="فروشگاه من">
+        <menu>
+            <item
+                android:id="@+id/SettingStore"
+                android:icon="@drawable/ic_setting"
+                android:title="تنظیمات فروشگاه" />
+            <item
+                android:id="@+id/editStore"
+                android:icon="@drawable/ic_edit_information"
+                android:title="ویرایش اطلاعات فروشگاه"
+                android:visible="false" />
+            <item
+                android:id="@+id/editmonyStore"
+                android:icon="@drawable/ic_edit_information"
+                android:title="ویرایش اطلاعات مالی"
+                android:visible="false" />
+            <item
+                android:id="@+id/editAddresStore"
+                android:icon="@drawable/ic_edit_information"
+                android:title="ویرایش آدرس"
+                android:visible="false" />
+            <item
+                android:id="@+id/editCallStore"
+                android:icon="@drawable/ic_edit_information"
+                android:title="ویرایش اطلاعات تماس"
+                android:visible="false" />
+            <item
+                android:id="@+id/employeeStore"
+                android:icon="@drawable/employee"
+                android:title="مدیریت کارمندان فروشگاه" />
+            <item
+                android:id="@+id/menu_nav_customers_list"
+                android:icon="@drawable/ic_profile"
+                android:title="لیست مشتریان" />
+            <item
+                android:id="@+id/menu_nav_Archived_Product"
+                android:icon="@drawable/invisiblepass"
+                android:title=" محصولات منتشر نشده"
+                app:actionLayout="@layout/badge_menu_drawer" />
+
+           <!-- <item
+                android:id="@+id/menu_nav_Archived_comments"
+                android:icon="@drawable/invisiblepass"
+                android:title=" نظرات منتشر نشده"
+                app:actionLayout="@layout/badge_menu_drawer" />-->
+            <item
+                android:id="@+id/menu_nav_nonExist_Product"
+                android:icon="@drawable/ic_del"
+                android:title="لیست محصولات ناموجود"
+                app:actionLayout="@layout/badge_menu_drawer" />
+        </menu>
+    </item>
+
+    <item android:title="سفارشات">
+        <menu>
+            <item
+                android:id="@+id/newOrder"
+                android:icon="@drawable/neworder"
+                android:title="سفارشات بررسی نشده" />
+        </menu>
+    </item>
+
+    <item android:title="گزارشات سفارشات">
+        <menu>
+            <item
+                android:id="@+id/checking"
+                android:icon="@drawable/time"
+                android:title="در حال بررسی"
+                app:actionLayout="@layout/badge_menu_drawer" />
+            <item
+                android:id="@+id/preparing"
+                android:icon="@drawable/box"
+                android:title="در حال آماده سازی"
+                app:actionLayout="@layout/badge_menu_drawer" />
+            <item
+                android:id="@+id/sending"
+                android:icon="@drawable/delivery"
+                android:title="در حال ارسال"
+                app:actionLayout="@layout/badge_menu_drawer" />
+            <item
+                android:id="@+id/ready"
+                android:icon="@drawable/pproduct"
+                android:title="آماده تحویل"
+                app:actionLayout="@layout/badge_menu_drawer" />
+            <item
+                android:id="@+id/delivered"
+                android:icon="@drawable/ic_doller"
+                android:title="تحویل شده"
+                app:actionLayout="@layout/badge_menu_drawer" />
+            <item
+                android:id="@+id/canceled"
+                android:icon="@drawable/ic_del"
+                android:title="لغو شده"
+                app:actionLayout="@layout/badge_menu_drawer" />
+        </menu>
+    </item>
+
+</menu>

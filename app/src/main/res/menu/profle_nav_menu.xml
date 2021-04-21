@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="پروفایل من">
+        <menu>
+            <item android:title="تنظیمات"
+                android:id="@+id/setting"
+                android:icon="@drawable/ic_setting"/>
+            <item android:title="لیست مورده علاقه ها"
+                android:id="@+id/menu_fav"
+                android:icon="@drawable/ic_liked"/>
+            <item android:title="لیست ذخیره شده ها"
+                android:id="@+id/menu_book"
+                android:icon="@drawable/ic_bookmarked"/>
+            <item android:title="قوانین و مقررات"
+                android:id="@+id/menu_rules"
+                android:icon="@drawable/ic_baseline_rules_long_24"/>
+
+
+            <item android:title="خروج از حساب کاربری"
+                android:id="@+id/logout"
+                android:icon="@drawable/ic_logout">#B71C1C</item>
+        </menu>
+    </item>
+</menu>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/tv_termsDialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="8dp"
+        tools:text="قوانین و مقررات اپلیکیشن"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:fontFamily="@font/koodak"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/tv_termsDialog_terms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_termsDialog_title"
+        android:layout_margin="8dp"
+        android:fontFamily="@font/koodak"
+        tools:text="قوانین و مقررات اپلیکشن تاک"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:justificationMode="inter_word"
+        android:gravity="center_vertical"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/tv_termsDialog_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_termsDialog_terms"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/ok"
+        android:textSize="22sp"
+        android:textColor="@color/blue500"
+        android:visibility="gone"/>
+    <ProgressBar
+        android:id="@+id/pb_termsDialog_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

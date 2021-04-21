@@ -1,0 +1,269 @@
+apply plugin: 'com.android.application'
+
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "29.0.3"
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+    defaultConfig {
+        applicationId "com.example.koohestantest1"
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 4
+        versionName "1.4"
+        multiDexEnabled true
+
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        app_tak {
+            dimension "version"
+            applicationIdSuffix '.tak'
+            versionNameSuffix "-tak"
+        }
+        app_khanat {
+            dimension "version"
+            applicationIdSuffix '.khanat'
+            versionNameSuffix "-khanat"
+        }
+
+        app_dehkadeh {
+            dimension "version"
+            applicationIdSuffix '.dehkadeh'
+            versionNameSuffix "-dehkadeh"
+        }
+        app_mehrshiran {
+            dimension "version"
+            applicationIdSuffix '.mehrshiran'
+            versionNameSuffix "-mehrshiran"
+        }
+        app_pegasus {
+            dimension "version"
+            applicationIdSuffix '.pegasus'
+            versionNameSuffix "-pegasus"
+        }
+        app_papuli {
+            dimension "version"
+            applicationIdSuffix '.papuli'
+            versionNameSuffix "-papuli"
+        }
+
+        app_mahdyar{
+            dimension "version"
+            applicationIdSuffix '.mahdyar'
+            versionNameSuffix "-mahdyar"
+        }
+
+        app_saadat{
+            dimension "version"
+            applicationIdSuffix '.saadat'
+            versionNameSuffix '-saadat'
+        }
+
+        app_almase_abi{
+            dimension "version"
+            applicationIdSuffix '.aslmaseabi'
+            versionNameSuffix '-almaseabi'
+        }
+
+        app_fadak{
+            dimension "version"
+            applicationIdSuffix '.fadak'
+            versionNameSuffix '-fadak'
+        }
+
+        app_asbid{
+            dimension "version"
+            applicationIdSuffix '.asbid'
+            versionNameSuffix '-asbid'
+        }
+    }
+
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.firebase:firebase-messaging:21.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.2'
+    implementation 'androidx.navigation:navigation-ui:2.3.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation "androidx.exifinterface:exifinterface:1.3.2"
+
+    // matrial design library
+    //noinspection GradleCompatible
+    implementation 'com.android.support:design:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
+    // bottom navigation view ex
+    implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
+
+    //This is Tap target library
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2'
+    //
+
+    //extra
+    //noinspection GradleCompatible
+    implementation 'com.android.support:design:28.0.0'
+
+    //Gif Library
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.22'
+
+    //Retrofit Library
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+
+    //extra
+    // OkhttpClient
+    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+    //recycler View
+    //noinspection GradleCompatible
+    implementation "androidx.recyclerview:recyclerview:1.2.0-beta02"
+
+    //extra
+    //cardView
+    //noinspection GradleCompatible
+    implementation 'com.android.support:cardview-v7:28.0.0'
+
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    //migrate - shape view
+    //circle ImageView
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    //Crop Image
+//    implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.0'
+    implementation 'com.github.CanHub:Android-Image-Cropper:2.1.1'
+
+    //Sliding Image View
+    implementation 'com.github.denzcoskun:ImageSlideShow:0.0.7'
+    implementation files('libs/android-sqlite-asset-helper.jar')
+
+
+    //extra
+    // universalImageLoader for GridImageView
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+    //extra
+    //volley
+    implementation 'com.android.volley:volley:1.1.1'
+
+    //extra
+    //swipe refresh layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
+    //android animation
+    //noinspection GradleCompatible
+    implementation 'com.android.support:support-compat:25.1.1'
+    implementation 'com.daimajia.easing:library:2.0@aar'
+    implementation 'com.daimajia.androidanimations:library:2.3@aar'
+
+    //extra - test
+    //see more for TextView
+    implementation 'com.borjabravo:readmoretextview:2.1.0'
+
+    //extra
+    //hidden bottom navigation
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC2'
+
+    //extra
+    //noinspection GradleCompatible
+    implementation 'com.android.support:support-v4:19.0.1'
+
+    //glide lib
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    //Activity Launcher result
+    implementation "androidx.activity:activity:1.2.0-alpha04"
+    implementation "androidx.fragment:fragment:1.3.0-alpha04"
+
+    // Lifecycle components
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.2.0"
+
+
+    //Compressor
+    implementation 'id.zelory:compressor:2.1.0'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:26.2.0')
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation 'com.google.firebase:firebase-analytics'
+
+    //room
+    def room_version = "2.2.6"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    // optional - RxJava support for Room
+    implementation "androidx.room:room-rxjava2:$room_version"
+
+    //Rx
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+
+    //date picker
+    implementation 'com.github.aliab:Persian-Date-Picker-Dialog:1.5.2'
+
+
+    //extra
+    //persian calendar
+    implementation 'com.github.samanzamani.persiandate:PersianDate:0.8'
+
+    //persian range date picker
+    implementation 'com.aminography:primedatepicker:3.3.2'
+    implementation 'com.aminography:primecalendar:1.3.2'
+
+    //migrate
+    //google map
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
+
+    implementation "com.squareup.okhttp3:okhttp-urlconnection:3.0.0-RC1"
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
+
+}
