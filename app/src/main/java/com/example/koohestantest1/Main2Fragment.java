@@ -22,6 +22,7 @@ import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDat
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.productRecyclerViewAdapter;
 import static com.example.koohestantest1.Utils.TimeUtils.convertStrToDate;
 
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -48,6 +50,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.koohestantest1.constants.CurrentCartId;
 import com.example.koohestantest1.constants.FilterOption;
+import com.example.koohestantest1.fragments.bottomsheet.EditBottomSheet;
 import com.example.koohestantest1.fragments.transinterface.CartTransitionInterface;
 import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.local_db.entity.Product;
@@ -151,7 +154,9 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
     //filter Value
     public static List<String> filterName = new ArrayList<>();
+    public static List<String> filterBrandName = new ArrayList<>();
     public static ArrayList<Integer> filterImage = new ArrayList<>();
+    public static ArrayList<Integer> filterBrandImage = new ArrayList<>();
 
     private Button btnFilter;
 
@@ -163,6 +168,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private RecyclerView recyclerView_;
 
     FilterDialogFragment dialogFragment;
+    BrandFilterDialogFragment brandFilterDialogFragment;
 
     private Button btnSort;
     private FrameLayout frameUserChat;
@@ -309,7 +315,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     public void recyclerViewListClicked(View v, String value, boolean notify) {
         try {
             keyFilter = value;
-            productRecyclerViewAdapter.getFilter().filter(value);
+            productRecyclerViewAdapter.getFilter().filter("F"+value);
             filterValue = value;
             if (notify) {
                 initFilterRecyclerView();
@@ -321,9 +327,24 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
     @Override
+    public void brandRecyclerViewListClicked(View v, String value, boolean notify) {
+
+        keyFilter = value;
+        productRecyclerViewAdapter.getFilter().filter("B"+value);
+        filterValue = value;
+        if (notify) {
+            initFilterRecyclerView();
+        }
+    }
+
+    @Override
     public void recyclerViewCanUpdating() {
         Log.d(TAG, "recyclerViewCanUpdating: ");
         mCategory.clear();
+        filterBrandName.clear();
+        filterBrandName.add("همه");
+
+
         for (AllProductData allProductData :
                 productDataList) {
             if (isProductAdded(allProductData.getProductClass().getProductID())) {
@@ -346,6 +367,23 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 }
             } catch (Exception ex) {
                 Log.d("Error", ex.toString());
+            }
+            try {
+                String brand = null;
+                for (ProductPropertisClass productPropertisClass :allProductData.getProductClass().getProductPropertis()) {
+                    if (productPropertisClass.getPropertisName().equals("برند")){
+                        brand = productPropertisClass.getPropertisValue();
+                        break;
+                    }
+                }
+                if (brand != null ){
+                    if (!filterBrandName.contains(brand)){
+                       filterBrandName.add(brand);
+                       filterBrandImage.add(GetImag(brand));
+                    }
+                }
+            }catch (Exception e){
+
             }
 
         }
@@ -519,13 +557,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         }
 
         dialogFragment = new FilterDialogFragment(this);
+        brandFilterDialogFragment = new BrandFilterDialogFragment(this);
 
         btnFilter.setOnClickListener(v -> {
-            try {
-                dialogFragment.show(getChildFragmentManager(), "dialogAlert");
-            } catch (Exception e) {
-                toastMessage("btnFilterClick >> " + e.getMessage(), 9);
-            }
+            showPopup(v);
         });
 
         btnSort.setOnClickListener(v -> {
@@ -1362,6 +1397,39 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
         });
     }
+
+    private void showPopup(View v) {
+        PopupMenu popupMenu = new PopupMenu(mContext,v);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.filtering_menu,popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.categoriFiltering_menu:
+                        try {
+                            dialogFragment.show(getChildFragmentManager(), "dialogAlert");
+                        } catch (Exception e) {
+                            toastMessage("btnFilterClick >> " + e.getMessage(), 9);
+                        }
+
+                        break;
+                    case R.id.brandFiltering_menu:
+                        try {
+                            brandFilterDialogFragment.show(getChildFragmentManager(), "dialogAlert");
+                        } catch (Exception e) {
+                            toastMessage("btnFilterClick >> " + e.getMessage(), 9);
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+
+        popupMenu.show();
+
+    }
+
 
 
     public void toastMessage(String message, int id) {

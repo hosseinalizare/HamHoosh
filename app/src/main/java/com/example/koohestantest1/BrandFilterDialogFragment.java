@@ -12,20 +12,22 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.koohestantest1.model.DeleteProduct;
-import com.example.koohestantest1.model.UpdatedProductBody;
-
-import java.util.List;
-
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
 import com.example.koohestantest1.ViewModels.BookMarkViewModel;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
 import com.example.koohestantest1.ViewModels.PostViewViewModel;
+import com.example.koohestantest1.activity.Main2Activity;
+import com.example.koohestantest1.adapter.BrandFilterRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.FilterRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.GetPropertisOfCompanyProducts;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
 import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.model.DeleteProduct;
+import com.example.koohestantest1.model.UpdatedProductBody;
+
+import java.util.List;
+
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -33,35 +35,29 @@ import retrofit2.Call;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.filterValue;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 
-public class FilterDialogFragment extends DialogFragment implements LoadProductApi {
-
-
+public class BrandFilterDialogFragment extends DialogFragment implements LoadProductApi {
     private LoadProductApi listener;
 
-    public FilterDialogFragment(LoadProductApi listener) {
+    public BrandFilterDialogFragment(LoadProductApi listener) {
         this.listener = listener;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.dialog_fragment_filter, container);
+        View view = inflater.inflate(R.layout.dialog_fragment_brand_filter, container);
         try {
 
-
-            Button clearFilter = view.findViewById(R.id.btnClearFilter);
+            Button clearFilter = view.findViewById(R.id.btnClearBrandFilter);
             clearFilter.setOnClickListener(v -> {
                 filterValue = "همه";
                 listener.recyclerViewListClicked(v, filterValue, true);
                 dismiss();
             });
 
-
-            RecyclerView list = view.findViewById(R.id.recView);
+            RecyclerView list = view.findViewById(R.id.rclBrandFilter);
             list.setLayoutManager(new GridLayoutManager(this.getActivity(), 2, GridLayoutManager.VERTICAL, false));
-
-            FilterRecyclerViewAdapter adapter = new FilterRecyclerViewAdapter(this.getActivity(), Main2Fragment.filterName, Main2Fragment.filterImage, filterValue, this);
+            BrandFilterRecyclerViewAdapter adapter = new BrandFilterRecyclerViewAdapter(this.getActivity(), Main2Fragment.filterBrandName, Main2Fragment.filterBrandImage, filterValue, this);
 
             list.setAdapter(adapter);
 
@@ -72,6 +68,7 @@ public class FilterDialogFragment extends DialogFragment implements LoadProductA
 
         return view;
     }
+
 
     @Override
     public Call<GetResualt> sendProductDetail(SendProductClass sendProductClass) {
@@ -180,8 +177,10 @@ public class FilterDialogFragment extends DialogFragment implements LoadProductA
 
     @Override
     public void recyclerViewListClicked(View v, String value, boolean notify) {
-        listener.recyclerViewListClicked(v, value, true);
+
+        listener.brandRecyclerViewListClicked(v, value, true);
         dismiss();
+
     }
 
     @Override
@@ -203,5 +202,4 @@ public class FilterDialogFragment extends DialogFragment implements LoadProductA
     public Call<GetResualt> deleteProduct(DeleteProduct deleteProduct) {
         return null;
     }
-
 }

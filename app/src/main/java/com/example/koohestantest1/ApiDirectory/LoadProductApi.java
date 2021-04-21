@@ -78,6 +78,7 @@ public interface LoadProductApi {
     Call<List<SendProductClass>> getUpdatedData(@Body UpdatedProductBody updatedProductBody);
 
      void recyclerViewListClicked(View v, String value, boolean notify);
+     void brandRecyclerViewListClicked(View v, String value, boolean notify);
      void recyclerViewCanUpdating();
      void imageAdapterCanUpdating(String imagePID);
 

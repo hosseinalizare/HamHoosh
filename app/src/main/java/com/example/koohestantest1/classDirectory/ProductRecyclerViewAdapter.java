@@ -260,6 +260,11 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
+    public void brandRecyclerViewListClicked(View v, String value, boolean notify) {
+
+    }
+
+    @Override
     public void recyclerViewCanUpdating() {
 
     }
@@ -367,9 +372,38 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
-
                     FilterResults results = new FilterResults();
                     ArrayList<AllProductData> FilteredArrayNames = new ArrayList<>();
+
+                    String value = constraint.toString();
+                    char mode = value.charAt(0);
+                    value = value.substring(1);
+                    constraint=value;
+                    if (mode=='B')
+                    {
+                        for (int i = 0; i < productData.size(); i++) {
+                            String dataNames =null;
+                            for (ProductPropertisClass productPropertisClass : productData.get(i).getProductClass().getProductPropertis()) {
+                                if (productPropertisClass.getPropertisName().equals("برند")){
+                                    dataNames = productPropertisClass.getPropertisValue();
+                                    break;
+                                }
+                            }
+                           if (dataNames ==null){
+                               continue;
+                           }
+
+                            if (dataNames.equals(constraint.toString()) ||
+                                    constraint.toString().equals(mContext.getResources().getString(R.string.all))) {
+                                FilteredArrayNames.add(productData.get(i));
+                            }
+                        }
+
+                        results.count = FilteredArrayNames.size();
+                        results.values = FilteredArrayNames;
+
+                        return results;
+                    }
 
                     // perform your search here using the searchConstraint String.
 

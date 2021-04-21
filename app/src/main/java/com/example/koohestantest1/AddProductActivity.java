@@ -391,6 +391,11 @@ public class AddProductActivity extends AppCompatActivity {
                 }
 
                 @Override
+                public void brandRecyclerViewListClicked(View v, String value, boolean notify) {
+
+                }
+
+                @Override
                 public void recyclerViewCanUpdating() {
 
                 }
