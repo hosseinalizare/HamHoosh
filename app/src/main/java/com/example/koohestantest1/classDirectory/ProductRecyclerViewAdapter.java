@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
 import com.example.koohestantest1.DB.MyDataBase;
@@ -50,6 +52,7 @@ import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 
+import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.manageOrderClass;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
@@ -60,9 +63,9 @@ import static com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirec
 class itemViewHolder extends RecyclerView.ViewHolder {
 
     public ImageView pImageView;
-    public TextView txtPName, txtDetail, txtPrice, cartQTY;
+    public TextView txtPName, txtDetail, txtPrice, cartQTY,txtPrice2;
     public CardView cardView, addToCart, increaseCart;
-    public ImageView btnAddToCart, cartAdd, cartRemove, RaidIcon,imgEdit;
+    public ImageView btnAddToCart, cartAdd, cartRemove, RaidIcon,imgEdit,imgTakhfif;
     public ConstraintLayout layout;
     private boolean changePricePermission;
     public itemViewHolder(@NonNull View itemView) {
@@ -79,9 +82,11 @@ class itemViewHolder extends RecyclerView.ViewHolder {
         cartAdd = itemView.findViewById(R.id.cartAdd);
         cartRemove = itemView.findViewById(R.id.cartRemove);
         cartQTY = itemView.findViewById(R.id.cartQuantity);
+        txtPrice2=itemView.findViewById(R.id.txtProductFinalPrice);
         layout = itemView.findViewById(R.id.addToCartBack);
         RaidIcon = itemView.findViewById(R.id.rialIcon);
         imgEdit = itemView.findViewById(R.id.img_productItem_edit);
+        imgTakhfif=itemView.findViewById(R.id.img_takhfif);
     }
 
 }
@@ -453,9 +458,35 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 return;
             }
 
+
             holder.imgEdit.setOnClickListener(v -> {
                 showPopup(v,position);
             });
+
+            if (!showProductData.get(position).getProductClass().getListPrice().equals("0")){
+
+
+                final int sdk = android.os.Build.VERSION.SDK_INT;
+                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.txtPrice.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.red_line) );
+                } else {
+                    holder.txtPrice.setBackground(ContextCompat.getDrawable(context, R.drawable.red_line));
+                }
+                holder.imgTakhfif.setVisibility(View.VISIBLE);
+                int p1=Integer.parseInt(showProductData.get(position).getProductClass().getStandardCost());
+                int p2=Integer.parseInt(showProductData.get(position).getProductClass().getListPrice());
+                int finalPrice = p1-p2;
+
+                holder.txtPrice2.setText(StringUtils.getNumberWithoutDot(finalPrice));
+                holder.txtPrice2.setVisibility(View.VISIBLE);
+
+                BaseCodeClass.setMargins(holder.txtPrice,8,0,0,0);
+                holder.txtPrice.setPadding(0,0,0,0);
+
+            }else {
+                holder.imgTakhfif.setVisibility(View.GONE);
+
+            }
 
             holder.txtPName.setText(showProductData.get(position).getProductClass().getProductName());
 

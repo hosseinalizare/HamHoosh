@@ -17,16 +17,18 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ImageView
             android:id="@+id/img_productItem_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:src="@drawable/ic_baseline_more_vert"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
-            android:padding="10dp"/>
+            android:layout_marginTop="8dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_baseline_more_vert"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/ProductImage"
             android:layout_width="110dp"
@@ -62,18 +64,18 @@
             app:layout_constraintTop_toBottomOf="@+id/productName" />
 
         <TextView
-            android:ellipsize="end"
-            android:maxLines="1"
-            app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/txtProductDetail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="توضیحات محصول"
             android:textColor="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="@+id/detailIcon"
             app:layout_constraintEnd_toStartOf="@+id/detailIcon"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/productName" />
 
         <androidx.cardview.widget.CardView
@@ -162,16 +164,28 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!--            <ImageView-->
-        <!--                android:id="@+id/productSpecificIcon"-->
-        <!--                android:layout_width="50dp"-->
-        <!--                android:layout_height="50dp"-->
-        <!--                app:layout_constraintStart_toStartOf="true"-->
-        <!--                app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--                android:layout_marginStart="10dp"-->
-        <!--                android:layout_marginTop="0dp"-->
-        <!--                android:src="@drawable/sale"-->
-        <!--                android:visibility="invisible"/>-->
+        <ImageView
+            android:id="@+id/img_takhfif"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+
+            android:layout_marginTop="0dp"
+            android:src="@drawable/sale"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/ProductImage"
+            app:layout_constraintTop_toTopOf="@+id/ProductImage" />
+
+        <!--       <ImageView
+               android:id="@+id/productSpecificIcon"&ndash;&gt;
+               android:layout_width="50dp"&ndash;&gt;
+               android:layout_height="50dp"&ndash;&gt;
+               app:layout_constraintStart_toStartOf="true"&ndash;&gt;
+               app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;
+               android:layout_marginStart="10dp"&ndash;&gt;
+               android:layout_marginTop="0dp"&ndash;&gt;
+               android:src="@drawable/sale"&ndash;&gt;
+               android:visibility="invisible"/>-->
 
         <TextView
             android:id="@+id/txtProductPrice"
@@ -179,7 +193,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
             android:fontFamily="@font/koodak"
@@ -190,6 +203,22 @@
             app:layout_constraintStart_toEndOf="@+id/rialIcon"
             app:layout_constraintTop_toBottomOf="@+id/txtProductDetail"
             tools:text="11,500" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/txtProductFinalPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/koodak"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cardViewAddToCart"
+            app:layout_constraintStart_toEndOf="@+id/rialIcon"
+            app:layout_constraintTop_toBottomOf="@+id/txtProductPrice" />
+
 
         <ImageView
             android:id="@+id/rialIcon"
