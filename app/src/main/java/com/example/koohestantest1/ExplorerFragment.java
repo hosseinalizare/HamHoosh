@@ -144,6 +144,9 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length()==0){
+                    BaseCodeClass.hashtagsValue=null;
+                }
 //                textChange(edSearch.getText().toString());
                 Log.d(TAG, "onTextChanged: " + s);
             }

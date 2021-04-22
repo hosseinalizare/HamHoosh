@@ -37,7 +37,7 @@ public class CompanyOrderRecyclerViewAdapter extends RecyclerView.Adapter<Compan
 
     private String TAG = CompanyOrderRecyclerViewAdapter.class.getSimpleName();
     private Context mContext;
-    private List<SendOrderClass> sendOrderClasses;
+    public List<SendOrderClass> sendOrderClasses;
     boolean Usermod = false;
     private TimeViewModel timeViewModel;
     BaseCodeClass baseCodeClass = new BaseCodeClass();

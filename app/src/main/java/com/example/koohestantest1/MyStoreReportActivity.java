@@ -15,15 +15,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.downloadmanager.DownloadReceiver;
 import com.example.koohestantest1.downloadmanager.IDownloadManager;
 import com.example.koohestantest1.model.MyTime;
 import com.example.koohestantest1.viewModel.TimeViewModel;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.CartApi;
@@ -46,7 +51,10 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     RecyclerView reportRecyclerView;
     BaseCodeClass baseCodeClass;
     GetOnlineInformationClass getOnlineInformationClass;
-    RelativeLayout preparingBack, sendingBack, readyBack, deliveredBack, canceledBack, checkBack;
+    RelativeLayout preparingBack, sendingBack, readyBack, deliveredBack, canceledBack, checkBack,allOrderBack;
+    RelativeLayout relToday,rel3Day,rel1Month,relByDate;
+    LinearLayout linearShowFilterDate;
+
 
     boolean receiveData = false;
     String statusID = "1";
@@ -77,6 +85,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_store_report);
+
 
         registerReceiver(downloadReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -114,6 +123,13 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
         deliveredBack = findViewById(R.id.deliveredBack);
         canceledBack = findViewById(R.id.canceledBack);
         checkBack = findViewById(R.id.checkBack);
+        allOrderBack=findViewById(R.id.allOrderBack);
+
+        relToday =  findViewById(R.id.relative_filter_today);
+        rel3Day =  findViewById(R.id.relative_filter_3day);
+        rel1Month =  findViewById(R.id.relative_filter_1month);
+        relByDate =  findViewById(R.id.relative_filter_byDate);
+        linearShowFilterDate=findViewById(R.id.linearShowFilteringByDate);
 
 
         //setup Rv
@@ -122,6 +138,55 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
          adapter = new CompanyOrderRecyclerViewAdapter(this, null, timeViewModel, checker, this::onDownloadCalled, resultLauncherPermission);
 //         adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT);
         reportRecyclerView.setAdapter(adapter);
+
+
+
+        setDefaultRelBackgroundColor(relToday);
+        
+        relToday.setOnClickListener(v -> {
+            setDefaultRelBackgroundColor(relToday);
+            MyTime currentTime = timeViewModel.getCurrentTimeLiveData().getValue();
+            try {
+
+                Date nowDate = TimeUtils.getDateFromString(currentTime.getCurrentDate() + " " + currentTime.getCurrentTime(), 0);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(nowDate);
+                cal.add(Calendar.HOUR, -24);
+
+                filterByDateOrder(cal.getTime(),nowDate);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        if (linearShowFilterDate.getVisibility()==View.VISIBLE){
+            linearShowFilterDate.setVisibility(View.GONE);
+        }
+
+
+        });
+
+        rel3Day.setOnClickListener(v -> {setDefaultRelBackgroundColor(rel3Day);
+            if (linearShowFilterDate.getVisibility()==View.VISIBLE){
+                linearShowFilterDate.setVisibility(View.GONE);
+
+            }
+        });
+
+        rel1Month.setOnClickListener(v -> {setDefaultRelBackgroundColor(rel1Month);
+            if (linearShowFilterDate.getVisibility()==View.VISIBLE){
+                linearShowFilterDate.setVisibility(View.GONE);
+
+            }
+        });
+        relByDate.setOnClickListener(v -> {
+            setDefaultRelBackgroundColor(relByDate);
+                    linearShowFilterDate.setVisibility(View.VISIBLE);
+        });
+
+
+
+        
     }
 
     @Override
@@ -132,8 +197,10 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     }
 
     public void initOrderRecyclerView(List<SendOrderClass> sendOrderClass) {
-        if (sendOrderClass.size() == 0) {
+        if (sendOrderClass.size() ==0) {
             Toast.makeText(this, "سفارشی برای نمایش وجود ندارد", Toast.LENGTH_SHORT).show();
+            adapter.updateData(sendOrderClass);
+
         }else {
             adapter.updateData(sendOrderClass);
         }
@@ -224,8 +291,17 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
         deliveredBack.setBackgroundResource(R.color.white);
         canceledBack.setBackgroundResource(R.color.white);
         checkBack.setBackgroundResource(R.color.white);
+        allOrderBack.setBackgroundResource(R.color.white);
 
         layout.setBackgroundResource(R.color.LighterBlue);
+    }
+
+    public void setDefaultRelBackgroundColor(RelativeLayout relativeLayout){
+        relToday.setBackgroundResource(R.color.white);
+        rel3Day.setBackgroundResource(R.color.white);
+        rel1Month.setBackgroundResource(R.color.white);
+        relByDate.setBackgroundResource(R.color.white);
+        relativeLayout.setBackgroundResource(R.color.LighterBlue);
     }
 
     public RelativeLayout selectedLayout(String id) {
@@ -278,6 +354,16 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
         setDefaultColor(checkBack);
     }
 
+    public void allOrderCard(View view) {
+        initOrderRecyclerView(orderList);
+
+
+        /*onFilterClicked("0");*/
+        setDefaultColor(allOrderBack);
+
+
+    }
+
     public void filterOrder(String status) {
         try {
             if (!receiveData) {
@@ -298,6 +384,28 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
             logMessage("MyStoreReport 400 >> " + e.getMessage(), mContext);
         }
     }
+    public void filterByDateOrder(Date from,Date to) {
+        try {
+            if (!receiveData) {
+                return;
+            }
+            List<SendOrderClass> list = new ArrayList<>();
+
+            for (SendOrderClass sendOrderClass:adapter.sendOrderClasses){
+
+                Date orderDate =TimeUtils.convertStrToDate(sendOrderClass.getOrderDate());
+                if ( orderDate.after(from)&& orderDate.before(to)){
+                    list.add(sendOrderClass);
+                }
+
+            }
+
+            initOrderRecyclerView(list);
+        } catch (Exception e) {
+            logMessage("MyStoreReport 400 >> " + e.getMessage(), mContext);
+        }
+    }
+
 
     public void onFilterClicked(String id) {
         filterOrder(id);
@@ -369,4 +477,6 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
         super.onDestroy();
         unregisterReceiver(downloadReceiver);
     }
+
+
 }

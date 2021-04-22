@@ -4,48 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyStoreReportActivity"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".MyStoreReportActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/relativelayout1"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/relativelayout1"
         tools:ignore="MissingConstraints">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/storeOrderToolbar"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            app:cardMaxElevation="2dp"
-            app:cardElevation="1dp">
+            app:cardElevation="1dp"
+            app:cardMaxElevation="2dp">
 
             <RelativeLayout
-                android:background="@color/colorPrimary"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary">
 
                 <ImageView
-                    android:layout_centerVertical="true"
                     android:id="@+id/btnCancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_arrow_back_white_24"
-                    android:onClick="btnBakClick"/>
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:onClick="btnBakClick"
+                    android:src="@drawable/ic_baseline_arrow_back_white_24" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="20dp"
-                    android:textSize="18sp"
-                    android:text="گزارش سفارشات"
                     android:layout_centerVertical="true"
                     android:fontFamily="@font/koodak"
-                    android:textColor="@color/white"/>
+                    android:layout_marginEnd="20dp"
+                    android:text="گزارش سفارشات"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+            <!--    <ImageView
+                    android:layout_marginEnd="10dp"
+                    android:id="@+id/btnReport_activityMyStoreReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_report" />-->
+
 
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
@@ -336,29 +347,320 @@
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewAll"
+                android:layout_width="120dp"
+                android:layout_height="125dp"
+                android:layout_centerInParent="true"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:onClick="allOrderCard"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="1dp"
+                app:cardMaxElevation="2dp">
+
+                <RelativeLayout
+                    android:id="@+id/allOrderBack"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/allOrederImage"
+                        android:layout_width="60dp"
+                        android:layout_height="90dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="3dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_all" />
+
+                    <TextView
+                        android:id="@+id/cardAllOrderName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_below="@id/allOrederImage"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:autoSizeMaxTextSize="25sp"
+                        android:autoSizeMinTextSize="10sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/koodak"
+                        android:gravity="center"
+                        android:text="همه"
+                        android:textColor="@color/backGroundGray" />
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+
         </LinearLayout>
 
     </HorizontalScrollView>
 
+    <LinearLayout
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:background="@color/backgroundGray"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:id="@+id/linearFilteringByDate"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScroll"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardDateFilter"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:layout_weight="0.25"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1dp"
+            app:cardMaxElevation="2dp">
+
+            <RelativeLayout
+                android:id="@+id/relative_filter_byDate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:autoSizeMaxTextSize="25sp"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/koodak"
+                    android:gravity="center"
+                    android:text="بر اساس تاریخ"
+                    android:textColor="@color/backGroundGray" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card1monthFilter"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:layout_weight="0.25"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1dp"
+            app:cardMaxElevation="2dp">
+
+            <RelativeLayout
+                android:id="@+id/relative_filter_1month"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:autoSizeMaxTextSize="25sp"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/koodak"
+                    android:gravity="center"
+                    android:text="یک ماه پیش"
+                    android:textColor="@color/backGroundGray" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card3dayFilter"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:layout_weight="0.25"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1dp"
+            app:cardMaxElevation="2dp">
+
+            <RelativeLayout
+                android:id="@+id/relative_filter_3day"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:autoSizeMaxTextSize="25sp"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/koodak"
+                    android:gravity="center"
+                    android:text="سه روز پیش"
+                    android:textColor="@color/backGroundGray" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardTodayFilter"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:layout_weight="0.25"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1dp"
+            app:cardMaxElevation="2dp">
+
+            <RelativeLayout
+                android:id="@+id/relative_filter_today"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:autoSizeMaxTextSize="25sp"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/koodak"
+                    android:gravity="center"
+                    android:text="امروز"
+                    android:textColor="@color/backGroundGray" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:background="@color/backgroundGray"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:id="@+id/linearShowFilteringByDate"
+        app:layout_constraintTop_toBottomOf="@id/linearFilteringByDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardEndDateFilter"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:layout_weight="0.25"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1dp"
+            app:cardMaxElevation="2dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:autoSizeMaxTextSize="25sp"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/koodak"
+                    android:gravity="center"
+                    android:text="پایان تاریخ"
+                    android:textColor="@color/backGroundGray" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardStartDateFilter"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:layout_weight="0.25"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="1dp"
+            app:cardMaxElevation="2dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:autoSizeMaxTextSize="25sp"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/koodak"
+                    android:gravity="center"
+                    android:text="شروع تاریخ"
+                    android:textColor="@color/backGroundGray" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginTop="10dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/backgroundGray"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScroll">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearShowFilteringByDate">
 
         <androidx.recyclerview.widget.RecyclerView
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent
- "
             android:id="@+id/reportRecycler"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent
+ "
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
