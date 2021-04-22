@@ -145,6 +145,7 @@ public class Main2Activity extends BaseActivity implements CartTransitionInterfa
                     fm.beginTransaction().show(main2Fragment).commit();
                     selectedFragment = main2Fragment;
                     PageShow = ShoppCenter;
+                    BaseCodeClass.hashtagsValue=null;
                     break;
                 case R.id.ic_search:
                     if (explorerFragment == null) {

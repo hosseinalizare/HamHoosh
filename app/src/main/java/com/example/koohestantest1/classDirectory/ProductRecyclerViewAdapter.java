@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
 import com.example.koohestantest1.DB.MyDataBase;
@@ -65,7 +64,7 @@ class itemViewHolder extends RecyclerView.ViewHolder {
     public ImageView pImageView;
     public TextView txtPName, txtDetail, txtPrice, cartQTY,txtPrice2;
     public CardView cardView, addToCart, increaseCart;
-    public ImageView btnAddToCart, cartAdd, cartRemove, RaidIcon,imgEdit,imgTakhfif;
+    public ImageView btnAddToCart, cartAdd, cartRemove, RaidIcon,imgEdit, imgDiscount;
     public ConstraintLayout layout;
     private boolean changePricePermission;
     public itemViewHolder(@NonNull View itemView) {
@@ -86,7 +85,7 @@ class itemViewHolder extends RecyclerView.ViewHolder {
         layout = itemView.findViewById(R.id.addToCartBack);
         RaidIcon = itemView.findViewById(R.id.rialIcon);
         imgEdit = itemView.findViewById(R.id.img_productItem_edit);
-        imgTakhfif=itemView.findViewById(R.id.img_takhfif);
+        imgDiscount =itemView.findViewById(R.id.img_priceDiscount);
     }
 
 }
@@ -472,19 +471,18 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 } else {
                     holder.txtPrice.setBackground(ContextCompat.getDrawable(context, R.drawable.red_line));
                 }
-                holder.imgTakhfif.setVisibility(View.VISIBLE);
-                int p1=Integer.parseInt(showProductData.get(position).getProductClass().getStandardCost());
-                int p2=Integer.parseInt(showProductData.get(position).getProductClass().getListPrice());
-                int finalPrice = p1-p2;
+                holder.imgDiscount.setVisibility(View.VISIBLE);
+                int firstPrice=Integer.parseInt(showProductData.get(position).getProductClass().getStandardCost());
+                int discountPrice=Integer.parseInt(showProductData.get(position).getProductClass().getListPrice());
+                int finalPrice = firstPrice-discountPrice;
 
                 holder.txtPrice2.setText(StringUtils.getNumberWithoutDot(finalPrice));
                 holder.txtPrice2.setVisibility(View.VISIBLE);
-
                 BaseCodeClass.setMargins(holder.txtPrice,8,0,0,0);
                 holder.txtPrice.setPadding(0,0,0,0);
 
             }else {
-                holder.imgTakhfif.setVisibility(View.GONE);
+                holder.imgDiscount.setVisibility(View.GONE);
 
             }
 

@@ -165,9 +165,9 @@
         </androidx.cardview.widget.CardView>
 
         <ImageView
-            android:id="@+id/img_takhfif"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:id="@+id/img_priceDiscount"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginStart="10dp"
 
             android:layout_marginTop="0dp"
