@@ -25,6 +25,7 @@ import com.example.koohestantest1.classDirectory.BaseCodeClass;
 
 import java.util.List;
 
+import io.reactivex.Single;
 import retrofit2.Call;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
@@ -88,6 +89,11 @@ public class ReportActivity extends AppCompatActivity implements MessageApi {
     @Override
     public void onResponseSendMessage(GetResualt getResualt) {
 
+    }
+
+    @Override
+    public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
+        return null;
     }
 
     @Override

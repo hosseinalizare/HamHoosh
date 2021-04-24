@@ -1,26 +1,36 @@
 package com.example.koohestantest1;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -28,14 +38,18 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.canhub.cropper.CropImage;
+import com.canhub.cropper.CropImageView;
 import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.constants.EmployeeStatus;
 import com.example.koohestantest1.model.EmployeeAdding;
 import com.example.koohestantest1.model.IranProvince;
 import com.example.koohestantest1.viewModel.CompanyViewModel;
+import com.example.koohestantest1.viewModel.SendMessageVM;
 import com.example.koohestantest1.viewModel.UserProfileViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,16 +65,22 @@ import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.MessageRecyclerViewAdapter;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Single;
 import retrofit2.Call;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 
 public class MessageActivity extends AppCompatActivity implements MessageApi {
+    public static final int PICK_IMAGE = 123;
+    public static final int CAMERA_REQUEST_CODE = 5;
+    public static final int CAMERA_PERMISSION_CODE = 101;
+    ImageView imgMessage;
 
     AutoCompleteTextView auEdtPosition;
     TextView txtConfirmPosition;
     RadioGroup radioGroup;
     private List<String> positionsTitle;
+    ImageView imgSendFile;
 
     FloatingActionButton btnSend;
     EditText edMessage;
@@ -120,6 +140,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
             tvLastSeen = findViewById(R.id.someDetailTxt);
             tvName = findViewById(R.id.profileNameTxt);
             circleImageView = findViewById(R.id.profilePhoto);
+            imgSendFile=findViewById(R.id.imgSendFile);
             setSupportActionBar(toolbar);
 //
 //            menuButton.setOnClickListener(v -> {
@@ -135,7 +156,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
 
             mContext = MessageActivity.this;
             baseCodeClass = new BaseCodeClass();
-
             //current user (me)
             senderUser = getIntent().getStringExtra("sender");
             //another user Id(Friend)
@@ -166,7 +186,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
 
                 }
             });
+            imgSendFile.setOnClickListener(v -> {
+                CropImage.startPickImageActivity(MessageActivity.this);
 
+
+            });
             new MessageManagerClass(mContext, this).getMessage(senderUser, getterUser);
 
             userProfileViewModel.getUserProfileLiveData().observe(this, userProfile -> {
@@ -232,6 +256,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
     @Override
     public void onResponseSendMessage(GetResualt getResualt) {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
+        return null;
     }
 
     @Override
@@ -432,4 +461,88 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
         handler.removeCallbacksAndMessages(null);
 
     }
+
+    public void cropRequest(Uri uri) {
+        try {
+            CropImage.activity(uri)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setMultiTouchEnabled(true)
+                    .start(this);
+        } catch (Exception e) {
+            logMessage("AddProduct 399 >> " + e.getMessage(), this);
+        }
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            if (requestCode == CAMERA_REQUEST_CODE) {
+                Bitmap image = (Bitmap) data.getExtras().get("data");
+                imgMessage.setImageBitmap(image);
+            }
+
+            if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+                Uri imageUri = CropImage.getPickImageResultUri(this, data);
+                cropRequest(imageUri);
+            }
+        } catch (Exception e) {
+            logMessage("AddProduct 603 >> " + e.getMessage(), this);
+        }
+
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                try {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setView(R.layout.layout_dialog_send_message_image);
+                    Dialog dialog = builder.create();
+                    dialog.show();
+                    ImageView imgPic=dialog.findViewById(R.id.imgSendImageMessage_dialog);
+                    ImageView imgCancel = dialog.findViewById(R.id.img_cancelMessage_dialog);
+                    ImageView imgSend = dialog.findViewById(R.id.img_confirmAndSendMessage_dialog);
+                    EditText edtMessage = dialog.findViewById(R.id.edtCaption_dialog);
+
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
+                    Glide.with(this).load(bitmap)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(imgPic);
+                   /* mainBitmap = bitmap;*/
+
+                    imgCancel.setOnClickListener(v -> {
+                        dialog.dismiss();
+                    });
+                    imgSend.setOnClickListener(v -> {
+                        if (!edtMessage.getText().toString().isEmpty()){
+                            SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
+                                    edtMessage.getText().toString(), "", "", "", BaseCodeClass.variableType.string_.getValue(), "", 1, 100);
+                            LiveData<GetResualt> resualtLiveData = new ViewModelProvider(MessageActivity.this).get(SendMessageVM.class).sendMessage(sendMessageViewModel);
+                            resualtLiveData.observe(MessageActivity.this, new Observer<GetResualt>() {
+                                @Override
+                                public void onChanged(GetResualt getResualt) {
+                                    if (getResualt.getResualt().equals("100")){
+                                        Toast.makeText(mContext, getResualt.getResualt()+"", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }
+                            });
+
+                        }
+
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+
+
 }

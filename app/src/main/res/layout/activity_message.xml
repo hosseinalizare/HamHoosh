@@ -117,16 +117,26 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <EditText
                 android:id="@+id/EdMessage"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/koodak"
                 android:hint="اینجا تایپ کنید..."
                 android:textAlignment="textStart" />
+            <ImageView
+                android:id="@+id/imgSendFile"
+                android:layout_gravity="center"
+                android:layout_weight="0.2"
+                android:src="@drawable/ic_file"
+                android:layout_width="0dp"
+                android:layout_height="30dp"/>
+
         </LinearLayout>
 
 

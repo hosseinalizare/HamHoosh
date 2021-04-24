@@ -6,6 +6,8 @@ import com.example.koohestantest1.ViewModels.ContactListViewModel;
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
+
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -16,6 +18,13 @@ public interface MessageApi {
     @POST("User/SendMessage")
     Call<GetResualt> sendMessage(@Body SendMessageViewModel sendMessage);
     void onResponseSendMessage(GetResualt getResualt);
+
+
+    @POST("User/SendMessage")
+    Single<GetResualt> sendAMessage(@Body SendMessageViewModel sendMessage);
+/*
+    void onResponseSendMessage(GetResualt getResualt);
+*/
 
     @POST("User/ReportMessage")
     Call<GetResualt> sendReport(@Body SendReportViewModel sendReportViewModel);

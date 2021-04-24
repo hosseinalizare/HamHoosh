@@ -25,6 +25,8 @@ import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.ListMessageRecyclerViewAdapter;
+
+import io.reactivex.Single;
 import retrofit2.Call;
 
 public class ListMessageActivity extends AppCompatActivity implements MessageApi {
@@ -158,6 +160,11 @@ public class ListMessageActivity extends AppCompatActivity implements MessageApi
     @Override
     public void onResponseSendMessage(GetResualt getResualt) {
 
+    }
+
+    @Override
+    public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
+        return null;
     }
 
     @Override
