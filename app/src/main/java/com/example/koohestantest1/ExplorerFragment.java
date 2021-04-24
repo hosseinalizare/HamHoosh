@@ -44,6 +44,8 @@ import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
 import com.example.koohestantest1.classDirectory.SendHashtagClass;
 import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.model.network.RetrofitInstance;
+
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -112,16 +114,17 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
         dataBase = new DataBase(mContext);
         baseCodeClass = new BaseCodeClass();
         baseCodeClass.LoadBaseData(mContext);
-        String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
+        String url = baseCodeClass.pBASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
         Glide.with(this).load(url)
                 .placeholder(R.drawable.emptycart)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(ivLogo);
-        final Retrofit retrofit = new Retrofit.Builder()
+        final Retrofit retrofit = RetrofitInstance.getRetrofit();
+               /* new Retrofit.Builder()
                 .baseUrl(baseCodeClass.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
+                .build();*/
 
         explorerApi = retrofit.create(ExplorerApi.class);
         loadProductApi = retrofit.create(LoadProductApi.class);

@@ -520,7 +520,7 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
     }
 
     private void loadCompanyImage() {
-        String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
+        String url = baseCodeClass.pBASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
         Glide.with(this).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)

@@ -565,7 +565,7 @@ public class AddProductActivity extends AppCompatActivity {
     }//end OnCreate
 
     public void newDownloadImage(String pid, ImageView _imageView) {
-        String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+        String url = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
         Glide.with(mContext).load(url).into(_imageView);
     }
 

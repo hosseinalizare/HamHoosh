@@ -469,7 +469,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         scrollView.setSmoothScrollingEnabled(false);
 
         //companyLogo.setImageResource(CompanyId.COMPANY_IMAGE);
-        String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
+        String url = baseCodeClass.pBASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
         Glide.with(this).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)

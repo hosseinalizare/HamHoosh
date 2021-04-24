@@ -110,7 +110,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
             }
             mholder.txtPName.setText(showProductData.get(position).getProductName());
             String pid = showProductData.get(position).getProductID();
-            String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+            String url = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
             Glide.with(mContext).load(url).into(mholder.pImageView);
 
             String detail = showProductData.get(position).getDescription().replace("\n", " ");

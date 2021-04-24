@@ -24,6 +24,8 @@ import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetVerifySmsClass;
 import com.example.koohestantest1.classDirectory.HardwareIdsMobile;
 import com.example.koohestantest1.classDirectory.SendMobileNumberForSmsClass;
+import com.example.koohestantest1.model.network.RetrofitInstance;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,11 +71,11 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
 
-        final Retrofit retrofit = new Retrofit.Builder()
+        final Retrofit retrofit = RetrofitInstance.getRetrofit(); /*new Retrofit.Builder()
                 .baseUrl(baseCodeClass.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
-                .build();
+                .build();*/
 
         jsonApi = retrofit.create(JsonApi.class);
     }

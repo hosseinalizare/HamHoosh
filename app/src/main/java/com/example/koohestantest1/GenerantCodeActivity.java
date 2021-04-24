@@ -39,6 +39,7 @@ import com.example.koohestantest1.classDirectory.SendMobileNumberForSmsClass;
 import com.example.koohestantest1.classDirectory.SendVerifyCode;
 import com.example.koohestantest1.classDirectory.TermsAndConditions;
 import com.example.koohestantest1.model.VersioCheck;
+import com.example.koohestantest1.model.network.RetrofitInstance;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -193,10 +194,10 @@ public class GenerantCodeActivity extends AppCompatActivity {
             }
         });
 
-        final Retrofit retrofit = new Retrofit.Builder()
+        final Retrofit retrofit = RetrofitInstance.getRetrofit(); /*new Retrofit.Builder()
                 .baseUrl(baseCodeClass.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
+                .build();*/
 
         jsonApi = retrofit.create(JsonApi.class);
     }// end OnCreate

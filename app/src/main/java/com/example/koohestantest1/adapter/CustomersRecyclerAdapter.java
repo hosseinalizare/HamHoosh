@@ -69,7 +69,7 @@ public class CustomersRecyclerAdapter extends RecyclerView.Adapter<CustomersRecy
     public void onBindViewHolder(@NonNull CustomersViewHolder holder, int position) {
         holder.bindData(list.get(position));
 
-        String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" +list.get(position).getUserID()+ "&fileNumber=" + 1;
+        String url = baseCodeClass.pBASE_URL + "User/DownloadFile?UserID=" +list.get(position).getUserID()+ "&fileNumber=" + 1;
         Glide.with(context).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)

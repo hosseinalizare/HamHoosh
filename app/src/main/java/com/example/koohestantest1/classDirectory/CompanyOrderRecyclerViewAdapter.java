@@ -103,12 +103,12 @@ public class CompanyOrderRecyclerViewAdapter extends RecyclerView.Adapter<Compan
 
         String urlProductImage = null;
         if (sendOrderClasses.get(position).Order_Details.size() > 0) {
-            urlProductImage = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + sendOrderClasses.get(position).Order_Details.get(0).getProductID() + "&fileNumber=1";
+            urlProductImage = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + sendOrderClasses.get(position).Order_Details.get(0).getProductID() + "&fileNumber=1";
         }
-        String urlCustomerImage = baseCodeClass.BASE_URL + "User/DownloadCustomerFile?CustomerID=" + sendOrderClasses.get(position).getCustomerID() + "&fileNumber=" + 1;
+        String urlCustomerImage = baseCodeClass.pBASE_URL + "User/DownloadCustomerFile?CustomerID=" + sendOrderClasses.get(position).getCustomerID() + "&fileNumber=" + 1;
 
         holder.productImage.setOnLongClickListener(view -> {
-            String urlReceipt = baseCodeClass.BASE_URL + "Order/DownloadFile?OrderId=" + sendOrderClasses.get(position).Order_Details.get(0).getOrderID() + "&fileNumber=1";
+            String urlReceipt = baseCodeClass.pBASE_URL + "Order/DownloadFile?OrderId=" + sendOrderClasses.get(position).Order_Details.get(0).getOrderID() + "&fileNumber=1";
             String name = "dehkade_receipt";
 
             if (isPermissionGranted(view.getContext())) {

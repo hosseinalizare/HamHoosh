@@ -10,6 +10,8 @@ import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
+import com.example.koohestantest1.model.network.RetrofitInstance;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,10 +29,11 @@ public class MessageManagerClass {
     public MessageManagerClass(Context context, MessageApi callBack){
         mContext = context;
 
-        retrofit = new Retrofit.Builder()
+        retrofit = RetrofitInstance.getRetrofit();
+                /*new Retrofit.Builder()
                 .baseUrl(baseCodeClass.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
+                .build();*/
 
         callBackMessage = callBack;
     }

@@ -26,6 +26,8 @@ import com.example.koohestantest1.DB.MyDataBase;
 import com.example.koohestantest1.ViewModels.BookMarkViewModel;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
 import com.example.koohestantest1.ViewModels.PostViewViewModel;
+import com.example.koohestantest1.model.network.RetrofitInstance;
+
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.annotations.NonNull;
@@ -89,10 +91,11 @@ public class DownloadPrudoctThread extends Thread {
 
             mydb = new MyDataBase(context);
 
-            final Retrofit retrofit = new Retrofit.Builder()
+            final Retrofit retrofit = RetrofitInstance.getRetrofit();
+                    /* new Retrofit.Builder()
                     .baseUrl(baseCodeClass.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+                    .build();*/
 
             loadProductApi = retrofit.create(LoadProductApi.class);
 

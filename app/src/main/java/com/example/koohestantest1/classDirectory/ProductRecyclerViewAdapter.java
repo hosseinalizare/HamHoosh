@@ -289,7 +289,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
      * this was updateImage
      **/
     public void newDownloadImage(String pid) {
-        String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+        String url = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
         Glide.with(mContext).load(url).into(holder.pImageView);
     }
 

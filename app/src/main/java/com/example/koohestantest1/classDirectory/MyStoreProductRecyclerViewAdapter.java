@@ -88,7 +88,7 @@ public class MyStoreProductRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     }
 
     public void newDownloadImage(String pid, MainViewHolder holder) {
-        String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+        String url = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
         Glide.with(context).load(url).into(holder.imageView);
     }
 

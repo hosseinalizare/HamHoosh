@@ -161,7 +161,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
             //another user Id(Friend)
             getterUser = getIntent().getStringExtra("getter");
 
-            String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + getterUser + "&fileNumber=" + 1;
+            String url = baseCodeClass.pBASE_URL + "User/DownloadFile?UserID=" + getterUser + "&fileNumber=" + 1;
             Glide.with(this).load(url)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)

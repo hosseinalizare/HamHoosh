@@ -13,6 +13,7 @@ import com.example.koohestantest1.ApiDirectory.UserProfileApi;
 import com.example.koohestantest1.ViewModels.CompanyProfileFieldViewModel;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
+import com.example.koohestantest1.model.network.RetrofitInstance;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,10 +44,10 @@ public class EditFieldActivity extends AppCompatActivity {
 
         baseCodeClass = new BaseCodeClass();
 
-        retrofit = new Retrofit.Builder()
+        retrofit = RetrofitInstance.getRetrofit();/*new Retrofit.Builder()
                 .baseUrl(baseCodeClass.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
+                .build();*/
         companyApi = retrofit.create(CompanyApi.class);
         userProfileApi = retrofit.create(UserProfileApi.class);
 
