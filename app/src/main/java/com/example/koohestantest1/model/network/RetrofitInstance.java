@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitInstance {
     private static Retrofit retrofit;
-    private static final String BASE_URL = "https://dehkade.nokhbgan.ir/api/";
+    private static final String BASE_URL = "https://serverv2.nokhbgan.ir/api/";
 
     public static Retrofit getRetrofit() {
         if (retrofit == null) {

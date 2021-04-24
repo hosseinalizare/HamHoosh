@@ -731,7 +731,7 @@ public class BaseCodeClass extends Application {
     }//end public void checkAccess(final CheckAccessApi callBack)
 
 
-    public String BASE_URL = "https://dehkade.nokhbgan.ir/api/";
+    public String BASE_URL = "https://serverv2.nokhbgan.ir/api/";
     DataBase dataBase;
     Cursor data;
 

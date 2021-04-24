@@ -20,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     private static Retrofit retrofit =null;
-    private static final String BASE_URL = "https://dehkade.nokhbgan.ir/api/";
+    private static final String BASE_URL = "https://serverv2.nokhbgan.ir/api/";
 
     public static Retrofit getClient(){
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor()
