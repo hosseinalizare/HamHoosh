@@ -504,7 +504,7 @@
                     android:autoSizeTextType="uniform"
                     android:fontFamily="@font/koodak"
                     android:gravity="center"
-                    android:text="سه روز پیش"
+                    android:text="یک هفته پیش"
                     android:textColor="@color/backGroundGray" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
@@ -537,7 +537,7 @@
                     android:autoSizeTextType="uniform"
                     android:fontFamily="@font/koodak"
                     android:gravity="center"
-                    android:text="امروز"
+                    android:text="24 ساعت گذشته"
                     android:textColor="@color/backGroundGray" />
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
@@ -582,6 +582,7 @@
 
 
                 <TextView
+                    android:id="@+id/txtEndTimeFilter"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
@@ -614,6 +615,7 @@
 
 
                 <TextView
+                    android:id="@+id/txtStartTimeFilter"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"

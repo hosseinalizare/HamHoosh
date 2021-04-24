@@ -3,6 +3,7 @@ package com.example.koohestantest1;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,12 +12,14 @@ import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.koohestantest1.Utils.TimeUtils;
@@ -26,6 +29,7 @@ import com.example.koohestantest1.model.MyTime;
 import com.example.koohestantest1.viewModel.TimeViewModel;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,6 +44,9 @@ import com.example.koohestantest1.classDirectory.CompanyOrderRecyclerViewAdapter
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 
+import ir.hamsaa.persiandatepicker.Listener;
+import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
+import ir.hamsaa.persiandatepicker.util.PersianCalendar;
 import retrofit2.Call;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
@@ -51,9 +58,12 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     RecyclerView reportRecyclerView;
     BaseCodeClass baseCodeClass;
     GetOnlineInformationClass getOnlineInformationClass;
-    RelativeLayout preparingBack, sendingBack, readyBack, deliveredBack, canceledBack, checkBack,allOrderBack;
-    RelativeLayout relToday,rel3Day,rel1Month,relByDate;
+    RelativeLayout preparingBack, sendingBack, readyBack, deliveredBack, canceledBack, checkBack, allOrderBack;
+    RelativeLayout relToday, rel3Day, rel1Month, relByDate;
     LinearLayout linearShowFilterDate;
+    MyTime currentTime;
+    CardView cardStartTimeFilter, cardEndTimeFilter;
+    TextView txtStartTimeFilter, txtEndTimeFilter;
 
 
     boolean receiveData = false;
@@ -68,6 +78,8 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     private static MyTime sharedTime;
 
     private boolean checker;
+    private Date start,end;
+
 
     private CompanyOrderRecyclerViewAdapter adapter;
     private DownloadReceiver downloadReceiver = new DownloadReceiver(null);
@@ -123,71 +135,120 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
         deliveredBack = findViewById(R.id.deliveredBack);
         canceledBack = findViewById(R.id.canceledBack);
         checkBack = findViewById(R.id.checkBack);
-        allOrderBack=findViewById(R.id.allOrderBack);
+        allOrderBack = findViewById(R.id.allOrderBack);
 
-        relToday =  findViewById(R.id.relative_filter_today);
-        rel3Day =  findViewById(R.id.relative_filter_3day);
-        rel1Month =  findViewById(R.id.relative_filter_1month);
-        relByDate =  findViewById(R.id.relative_filter_byDate);
-        linearShowFilterDate=findViewById(R.id.linearShowFilteringByDate);
+        relToday = findViewById(R.id.relative_filter_today);
+        rel3Day = findViewById(R.id.relative_filter_3day);
+        rel1Month = findViewById(R.id.relative_filter_1month);
+        relByDate = findViewById(R.id.relative_filter_byDate);
+        linearShowFilterDate = findViewById(R.id.linearShowFilteringByDate);
+        cardStartTimeFilter = findViewById(R.id.cardStartDateFilter);
+        cardEndTimeFilter = findViewById(R.id.cardEndDateFilter);
+        txtStartTimeFilter = findViewById(R.id.txtStartTimeFilter);
+        txtEndTimeFilter = findViewById(R.id.txtEndTimeFilter);
 
 
         //setup Rv
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         reportRecyclerView.setLayoutManager(layoutManager);
-         adapter = new CompanyOrderRecyclerViewAdapter(this, null, timeViewModel, checker, this::onDownloadCalled, resultLauncherPermission);
+        adapter = new CompanyOrderRecyclerViewAdapter(this, null, timeViewModel, checker, this::onDownloadCalled, resultLauncherPermission);
 //         adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT);
         reportRecyclerView.setAdapter(adapter);
 
 
 
-        setDefaultRelBackgroundColor(relToday);
-        
+        /*setDefaultRelBackgroundColor(relToday);*/
+
+
         relToday.setOnClickListener(v -> {
-            setDefaultRelBackgroundColor(relToday);
-            MyTime currentTime = timeViewModel.getCurrentTimeLiveData().getValue();
+
+            currentTime = timeViewModel.getCurrentTimeLiveData().getValue();
             try {
 
                 Date nowDate = TimeUtils.getDateFromString(currentTime.getCurrentDate() + " " + currentTime.getCurrentTime(), 0);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(nowDate);
                 cal.add(Calendar.HOUR, -24);
-
-                filterByDateOrder(cal.getTime(),nowDate);
+                filterByDateOrder(cal.getTime(), nowDate);
 
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-        if (linearShowFilterDate.getVisibility()==View.VISIBLE){
-            linearShowFilterDate.setVisibility(View.GONE);
-        }
-
-
+            setDefaultRelBackgroundColor(relToday);
+            if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
+                linearShowFilterDate.setVisibility(View.GONE);
+                setDefaultText();
+            }
         });
 
-        rel3Day.setOnClickListener(v -> {setDefaultRelBackgroundColor(rel3Day);
-            if (linearShowFilterDate.getVisibility()==View.VISIBLE){
+        rel3Day.setOnClickListener(v -> {
+
+            currentTime = timeViewModel.getCurrentTimeLiveData().getValue();
+            try {
+
+                Date nowDate = TimeUtils.getDateFromString(currentTime.getCurrentDate() + " " + currentTime.getCurrentTime(), 0);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(nowDate);
+                cal.add(Calendar.HOUR, -168);
+                filterByDateOrder(cal.getTime(), nowDate);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+            setDefaultRelBackgroundColor(rel3Day);
+            if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
                 linearShowFilterDate.setVisibility(View.GONE);
+                setDefaultText();
 
             }
         });
 
-        rel1Month.setOnClickListener(v -> {setDefaultRelBackgroundColor(rel1Month);
-            if (linearShowFilterDate.getVisibility()==View.VISIBLE){
+        rel1Month.setOnClickListener(v -> {
+
+            currentTime = timeViewModel.getCurrentTimeLiveData().getValue();
+            try {
+
+                Date nowDate = TimeUtils.getDateFromString(currentTime.getCurrentDate() + " " + currentTime.getCurrentTime(), 0);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(nowDate);
+                cal.add(Calendar.HOUR, -744);
+                filterByDateOrder(cal.getTime(), nowDate);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            setDefaultRelBackgroundColor(rel1Month);
+            if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
                 linearShowFilterDate.setVisibility(View.GONE);
+                setDefaultText();
+
 
             }
         });
         relByDate.setOnClickListener(v -> {
             setDefaultRelBackgroundColor(relByDate);
-                    linearShowFilterDate.setVisibility(View.VISIBLE);
+            linearShowFilterDate.setVisibility(View.VISIBLE);
+        });
+        cardStartTimeFilter.setOnClickListener(v -> {
+            chooseStartDate(txtStartTimeFilter);
+
+
+
+        });
+
+        cardEndTimeFilter.setOnClickListener(v -> {
+         chooseEndDate(txtEndTimeFilter);
+
+
         });
 
 
-
-        
     }
+
 
     @Override
     protected void onResume() {
@@ -197,11 +258,11 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     }
 
     public void initOrderRecyclerView(List<SendOrderClass> sendOrderClass) {
-        if (sendOrderClass.size() ==0) {
+        if (sendOrderClass.size() == 0) {
             Toast.makeText(this, "سفارشی برای نمایش وجود ندارد", Toast.LENGTH_SHORT).show();
             adapter.updateData(sendOrderClass);
 
-        }else {
+        } else {
             adapter.updateData(sendOrderClass);
         }
     }
@@ -296,7 +357,20 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
         layout.setBackgroundResource(R.color.LighterBlue);
     }
 
-    public void setDefaultRelBackgroundColor(RelativeLayout relativeLayout){
+    public void setUnSelectedFilterByTimeCard() {
+        relToday.setBackgroundResource(R.color.white);
+        rel3Day.setBackgroundResource(R.color.white);
+        rel1Month.setBackgroundResource(R.color.white);
+        relByDate.setBackgroundResource(R.color.white);
+    }
+    public void setDefaultText(){
+        txtStartTimeFilter.setText("شروع تاریخ");
+        txtEndTimeFilter.setText("پایان تاریخ");
+        start=null;
+        end=null;
+    }
+
+    public void setDefaultRelBackgroundColor(RelativeLayout relativeLayout) {
         relToday.setBackgroundResource(R.color.white);
         rel3Day.setBackgroundResource(R.color.white);
         rel1Month.setBackgroundResource(R.color.white);
@@ -327,39 +401,84 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     public void cancelCard(View view) {
         filterCancelOrder();
         setDefaultColor(canceledBack);
+        setUnSelectedFilterByTimeCard();
+        if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
+            linearShowFilterDate.setVisibility(View.GONE);
+            setDefaultText();
+
+        }
+
     }
 
     public void deliveredCard(View view) {
         onFilterClicked("5");
         setDefaultColor(deliveredBack);
+        setUnSelectedFilterByTimeCard();
+        if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
+            linearShowFilterDate.setVisibility(View.GONE);
+            setDefaultText();
+
+        }
+
     }
 
     public void readyCard(View view) {
         onFilterClicked("3");
         setDefaultColor(readyBack);
+        setUnSelectedFilterByTimeCard();
+        if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
+            linearShowFilterDate.setVisibility(View.GONE);
+            setDefaultText();
+
+        }
+
     }
 
     public void sendingCard(View view) {
         onFilterClicked("4");
         setDefaultColor(sendingBack);
+        setUnSelectedFilterByTimeCard();
+        if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
+            linearShowFilterDate.setVisibility(View.GONE);
+            setDefaultText();
+
+        }
+
     }
 
     public void preparationCard(View view) {
         onFilterClicked("2");
         setDefaultColor(preparingBack);
+        setUnSelectedFilterByTimeCard();
+        if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
+            linearShowFilterDate.setVisibility(View.GONE);
+            setDefaultText();
+
+        }
+
     }
 
     public void checkCard(View view) {
         onFilterClicked("1");
         setDefaultColor(checkBack);
+        setUnSelectedFilterByTimeCard();
+        if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
+            linearShowFilterDate.setVisibility(View.GONE);
+            setDefaultText();
+
+        }
+
     }
 
     public void allOrderCard(View view) {
         initOrderRecyclerView(orderList);
-
-
-        /*onFilterClicked("0");*/
         setDefaultColor(allOrderBack);
+        setUnSelectedFilterByTimeCard();
+        if (linearShowFilterDate.getVisibility() == View.VISIBLE) {
+            linearShowFilterDate.setVisibility(View.GONE);
+            setDefaultText();
+
+        }
 
 
     }
@@ -384,17 +503,18 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
             logMessage("MyStoreReport 400 >> " + e.getMessage(), mContext);
         }
     }
-    public void filterByDateOrder(Date from,Date to) {
+
+    public void filterByDateOrder(Date from, Date to) {
         try {
             if (!receiveData) {
                 return;
             }
             List<SendOrderClass> list = new ArrayList<>();
 
-            for (SendOrderClass sendOrderClass:adapter.sendOrderClasses){
+            for (SendOrderClass sendOrderClass : adapter.sendOrderClasses) {
 
-                Date orderDate =TimeUtils.convertStrToDate(sendOrderClass.getOrderDate());
-                if ( orderDate.after(from)&& orderDate.before(to)){
+                Date orderDate = TimeUtils.convertStrToDate(sendOrderClass.getOrderDate());
+                if (orderDate.after(from) && orderDate.before(to)) {
                     list.add(sendOrderClass);
                 }
 
@@ -405,6 +525,8 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
             logMessage("MyStoreReport 400 >> " + e.getMessage(), mContext);
         }
     }
+
+
 
 
     public void onFilterClicked(String id) {
@@ -477,6 +599,98 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
         super.onDestroy();
         unregisterReceiver(downloadReceiver);
     }
+
+    private void chooseStartDate(TextView textView) {
+        PersianDatePickerDialog picker = new PersianDatePickerDialog(mContext)
+                .setPositiveButtonString("باشه")
+                .setNegativeButton("بیخیال")
+                .setTodayButton("امروز")
+                .setTodayButtonVisible(true)
+                .setMinYear(1300)
+                .setMaxYear(PersianDatePickerDialog.THIS_YEAR)
+                .setActionTextColor(Color.GRAY)
+                .setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR)
+                .setShowInBottomSheet(true)
+                .setListener(new Listener() {
+                    @Override
+                    public void onDateSelected(PersianCalendar persianCalendar) {
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getGregorianChange());//Fri Oct 15 03:25:44 GMT+04:30 1582
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getTimeInMillis());//1583253636577
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getTime());//Tue Mar 03 20:10:36 GMT+03:30 2020
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getDelimiter());//  /
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getPersianLongDate());// سه‌شنبه  13  اسفند  1398
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getPersianLongDateAndTime()); //سه‌شنبه  13  اسفند  1398 ساعت 20:10:36
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getPersianMonthName()); //اسفند
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.isPersianLeapYear());//false
+//                                bornDate = persianCalendar.getPersianYear(+"/" + persianCalendar.getPersianMonth() + "/" + persianCalendar.getPersianDay();
+                        Date date = new Date(persianCalendar.getTimeInMillis());
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                        /*bornDate = sdf.format(date);*/
+
+                        textView.setText(persianCalendar.getPersianLongDate());
+                        start =date;
+                        if (end!=null){
+                            filterByDateOrder(start,end);
+                        }
+
+
+
+                    }
+
+                    @Override
+                    public void onDismissed() {
+
+                    }
+                });
+
+        picker.show();
+    }
+    private void chooseEndDate(TextView textView) {
+        PersianDatePickerDialog picker = new PersianDatePickerDialog(mContext)
+                .setPositiveButtonString("باشه")
+                .setNegativeButton("بیخیال")
+                .setTodayButton("امروز")
+                .setTodayButtonVisible(true)
+                .setMinYear(1300)
+                .setMaxYear(PersianDatePickerDialog.THIS_YEAR)
+                .setActionTextColor(Color.GRAY)
+                .setTitleType(PersianDatePickerDialog.WEEKDAY_DAY_MONTH_YEAR)
+                .setShowInBottomSheet(true)
+                .setListener(new Listener() {
+                    @Override
+                    public void onDateSelected(PersianCalendar persianCalendar) {
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getGregorianChange());//Fri Oct 15 03:25:44 GMT+04:30 1582
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getTimeInMillis());//1583253636577
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getTime());//Tue Mar 03 20:10:36 GMT+03:30 2020
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getDelimiter());//  /
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getPersianLongDate());// سه‌شنبه  13  اسفند  1398
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getPersianLongDateAndTime()); //سه‌شنبه  13  اسفند  1398 ساعت 20:10:36
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.getPersianMonthName()); //اسفند
+                        Log.d(TAG, "onDateSelected: " + persianCalendar.isPersianLeapYear());//false
+//                                bornDate = persianCalendar.getPersianYear(+"/" + persianCalendar.getPersianMonth() + "/" + persianCalendar.getPersianDay();
+                        Date date = new Date(persianCalendar.getTimeInMillis());
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                        /*bornDate = sdf.format(date);*/
+
+                        textView.setText(persianCalendar.getPersianLongDate());
+                        end =date;
+                        if (start!=null){
+                            filterByDateOrder(start,end);
+                        }
+
+
+
+                    }
+
+                    @Override
+                    public void onDismissed() {
+
+                    }
+                });
+
+        picker.show();
+    }
+
 
 
 }
