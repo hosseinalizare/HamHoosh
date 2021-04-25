@@ -40,6 +40,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.canhub.cropper.CropImage;
 import com.canhub.cropper.CropImageView;
+import com.example.koohestantest1.Utils.Cache;
 import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.constants.EmployeeStatus;
 import com.example.koohestantest1.model.EmployeeAdding;
@@ -49,6 +50,7 @@ import com.example.koohestantest1.viewModel.SendMessageVM;
 import com.example.koohestantest1.viewModel.UserProfileViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,8 +67,14 @@ import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.MessageRecyclerViewAdapter;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 import io.reactivex.Single;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 
@@ -75,6 +83,8 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
     public static final int CAMERA_REQUEST_CODE = 5;
     public static final int CAMERA_PERMISSION_CODE = 101;
     ImageView imgMessage;
+    private Bitmap mainBitmap = null;
+
 
     AutoCompleteTextView auEdtPosition;
     TextView txtConfirmPosition;
@@ -114,6 +124,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
 
     private int CURRENT_USER_ROLE = -1;
     private CircleImageView circleImageView;
+    private SendMessageVM sendMessageVM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +134,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
 
         userProfileViewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
         companyViewModel = new ViewModelProvider(this).get(CompanyViewModel.class);
+        sendMessageVM = new ViewModelProvider(this).get(SendMessageVM.class);
 
         positionsTitle = new ArrayList<>();
         positionsTitle.add("مدیر مالی");
@@ -262,6 +274,12 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
     public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
         return null;
     }
+
+    @Override
+    public Single<GetResualt> uploadMessageImage(int MsgId, MultipartBody.Part file) {
+        return null;
+    }
+
 
     @Override
     public Call<GetResualt> sendReport(SendReportViewModel sendReportViewModel) {
@@ -498,43 +516,12 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 try {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setView(R.layout.layout_dialog_send_message_image);
-                    Dialog dialog = builder.create();
-                    dialog.show();
-                    ImageView imgPic=dialog.findViewById(R.id.imgSendImageMessage_dialog);
-                    ImageView imgCancel = dialog.findViewById(R.id.img_cancelMessage_dialog);
-                    ImageView imgSend = dialog.findViewById(R.id.img_confirmAndSendMessage_dialog);
-                    EditText edtMessage = dialog.findViewById(R.id.edtCaption_dialog);
 
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
-                    Glide.with(this).load(bitmap)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(imgPic);
-                   /* mainBitmap = bitmap;*/
+                    mainBitmap = bitmap;
 
-                    imgCancel.setOnClickListener(v -> {
-                        dialog.dismiss();
-                    });
-                    imgSend.setOnClickListener(v -> {
-                        if (!edtMessage.getText().toString().isEmpty()){
-                            SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
-                                    edtMessage.getText().toString(), "", "", "", BaseCodeClass.variableType.string_.getValue(), "", 1, 100);
-                            LiveData<GetResualt> resualtLiveData = new ViewModelProvider(MessageActivity.this).get(SendMessageVM.class).sendMessage(sendMessageViewModel);
-                            resualtLiveData.observe(MessageActivity.this, new Observer<GetResualt>() {
-                                @Override
-                                public void onChanged(GetResualt getResualt) {
-                                    if (getResualt.getResualt().equals("100")){
-                                        Toast.makeText(mContext, getResualt.getResualt()+"", Toast.LENGTH_SHORT).show();
-
-                                    }
-                                }
-                            });
-
-                        }
-
-                    });
+                    SendImageMessageBottomSheetDialog sheetDialog =new SendImageMessageBottomSheetDialog(bitmap,mainBitmap,senderUser,getterUser);
+                    sheetDialog.show(getSupportFragmentManager(),null);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

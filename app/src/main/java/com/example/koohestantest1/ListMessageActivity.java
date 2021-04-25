@@ -27,6 +27,7 @@ import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.ListMessageRecyclerViewAdapter;
 
 import io.reactivex.Single;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 
 public class ListMessageActivity extends AppCompatActivity implements MessageApi {
@@ -166,6 +167,13 @@ public class ListMessageActivity extends AppCompatActivity implements MessageApi
     public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
         return null;
     }
+
+    @Override
+    public Single<GetResualt> uploadMessageImage(int MsgId, MultipartBody.Part file) {
+        return null;
+    }
+
+
 
     @Override
     public Call<GetResualt> sendReport(SendReportViewModel sendReportViewModel) {

@@ -26,6 +26,7 @@ import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import java.util.List;
 
 import io.reactivex.Single;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
@@ -95,6 +96,13 @@ public class ReportActivity extends AppCompatActivity implements MessageApi {
     public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
         return null;
     }
+
+    @Override
+    public Single<GetResualt> uploadMessageImage(int MsgId, MultipartBody.Part file) {
+        return null;
+    }
+
+
 
     @Override
     public Call<GetResualt> sendReport(SendReportViewModel sendReportViewModel) {

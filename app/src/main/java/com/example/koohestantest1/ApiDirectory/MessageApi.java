@@ -8,9 +8,12 @@ import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
 
 import io.reactivex.Single;
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface MessageApi {
@@ -22,9 +25,12 @@ public interface MessageApi {
 
     @POST("User/SendMessage")
     Single<GetResualt> sendAMessage(@Body SendMessageViewModel sendMessage);
-/*
-    void onResponseSendMessage(GetResualt getResualt);
-*/
+
+    @Multipart
+    @POST("User/ChatFilesPost")
+    Single<GetResualt> uploadMessageImage(@Query("MsgId") int MsgId, @Part MultipartBody.Part file);
+
+
 
     @POST("User/ReportMessage")
     Call<GetResualt> sendReport(@Body SendReportViewModel sendReportViewModel);
