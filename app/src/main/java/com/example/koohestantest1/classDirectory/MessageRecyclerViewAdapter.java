@@ -70,7 +70,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             SendMessageViewModel sendMessageViewModel = messageViewModels.get(position);
             int msgType = sendMessageViewModel.getMsgType();
             String userSender = sendMessageViewModel.getUserSender();
-            if (msgType == BaseCodeClass.variableType.string_.getValue()) {
+            if (msgType == BaseCodeClass.variableType.string_.getValue() || msgType == BaseCodeClass.variableType.int_.getValue()) {
                 if (userSender.equals(MessageActivity.senderId)) {
                     GetterViewHolder getterViewHolder = (GetterViewHolder) holder;
                     getterViewHolder.holder(sendMessageViewModel);
@@ -120,7 +120,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         int msgType = sendMessageViewModel.getMsgType();
         String userSender = sendMessageViewModel.getUserSender();
 
-        if (msgType == BaseCodeClass.variableType.string_.getValue()) {
+        if (msgType == BaseCodeClass.variableType.string_.getValue() || msgType == BaseCodeClass.variableType.int_.getValue()) {
             if (userSender.equals(MessageActivity.senderId)) {
                 return GETTER;
             } else {

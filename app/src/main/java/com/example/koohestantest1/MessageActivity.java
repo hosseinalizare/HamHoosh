@@ -193,7 +193,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
 
                 if (!edMessage.getText().toString().isEmpty()) {
                     new MessageManagerClass(mContext, messageActivity).sendMessage(new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
-                            edMessage.getText().toString(), "", "", "", 1, "", 1, 100));
+                            edMessage.getText().toString(), "", "", "", BaseCodeClass.variableType.string_.getValue(), "", 1, 100));
                     edMessage.setText("");
 
                 }

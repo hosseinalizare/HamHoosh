@@ -28,7 +28,7 @@ public class SendMessageVM extends ViewModel {
 
     public LiveData<GetResualt> sendMessage(SendMessageViewModel sendMessageViewModel){
         messageLiveData = new MutableLiveData<>();
-       Single<GetResualt> resualtSingle = RetrofitInstance.getRetrofit().create(MessageApi.class).sendAMessage(sendMessageViewModel);
+       Single<GetResualt> resualtSingle = MyApiClient.getRetrofitTest().create(MessageApi.class).sendAMessage(sendMessageViewModel);
        compositeDisposable.add(resualtSingle.subscribeOn(Schedulers.newThread())
                .observeOn(AndroidSchedulers.mainThread())
                .subscribeWith(new DisposableSingleObserver<GetResualt>() {
