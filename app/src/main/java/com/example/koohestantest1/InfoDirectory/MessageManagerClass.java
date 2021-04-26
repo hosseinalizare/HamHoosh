@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.MessageApi;
+import com.example.koohestantest1.MyApiClient;
 import com.example.koohestantest1.ViewModels.ContactListViewModel;
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.ViewModels.SendReportViewModel;
@@ -29,7 +30,9 @@ public class MessageManagerClass {
     public MessageManagerClass(Context context, MessageApi callBack){
         mContext = context;
 
-        retrofit = RetrofitInstance.getRetrofit();
+        retrofit = MyApiClient.getRetrofitTest();
+
+        /*retrofit = RetrofitInstance.getRetrofit();*/
                 /*new Retrofit.Builder()
                 .baseUrl(baseCodeClass.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

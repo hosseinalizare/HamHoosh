@@ -148,7 +148,6 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
                 public void onChanged(GetResualt getResualt) {
                     if (getResualt.getResualt().equals("100")){
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(),  "ارسال پیام موفقیت آمیز بود", Toast.LENGTH_SHORT).show();
                         dismiss();
                     }else {
                         Toast.makeText(getContext(),  "خطای نا شناخته", Toast.LENGTH_SHORT).show();
