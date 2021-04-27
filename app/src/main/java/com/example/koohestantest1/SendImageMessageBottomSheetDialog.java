@@ -126,6 +126,9 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
 
     private void sendImageMessage(final int msgId) {
         try {
+/*
+            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+*/
 
             Cache cache = new Cache(getContext());
             File file = cache.saveToCacheAndGetFile(mainBitmap,msgId+"" );
@@ -134,7 +137,6 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
                     .setMaxWidth(1080)
                     .setMaxHeight(1080)
                     .setQuality(50)
-                    .setCompressFormat(Bitmap.CompressFormat.JPEG)
                     .compressToBitmap(file);
 
             Cache cacheCompressed = new Cache(getContext());

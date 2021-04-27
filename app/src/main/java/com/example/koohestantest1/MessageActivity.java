@@ -420,15 +420,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
                     }
                 });
 
-
-
-
-
-
-
-
-
-
                 break;
         }
         return true;
