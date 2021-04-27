@@ -1,17 +1,22 @@
 package com.example.koohestantest1.classDirectory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.koohestantest1.ActivityShowFullScreenImage;
 import com.example.koohestantest1.MessageActivity;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.Utils.TimeUtils;
@@ -163,12 +168,14 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public class ImageGetterViewHolder extends RecyclerView.ViewHolder {
         ImageView imgMessageRecived;
         TextView txtImageMessageRecived, txtImageMessageTimeRecived;
+        ConstraintLayout imgMsgRecParent;
 
         public ImageGetterViewHolder(@NonNull View itemView) {
             super(itemView);
             imgMessageRecived = itemView.findViewById(R.id.img_layout_imageMessageRecived);
             txtImageMessageRecived = itemView.findViewById(R.id.txt_layout_imageMessageRecived);
             txtImageMessageTimeRecived = itemView.findViewById(R.id.txtTime_layout_imageMessageRecived);
+            imgMsgRecParent = itemView.findViewById(R.id.constraint_layout_imgMsgRecive_parent);
 
         }
 
@@ -177,6 +184,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtImageMessageRecived.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtImageMessageTimeRecived.setText(time);
+
+            imgMessageRecived.setOnClickListener(v -> showFullScreenImage(messageData.getId()));
         }
     }
 
@@ -215,6 +224,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public class ImageSenderViewHolder extends RecyclerView.ViewHolder {
         ImageView imgMessageSend, imgMessageTick;
         TextView txtImageMessageSend, txtImageMessageTimeSend;
+        ConstraintLayout imgMsgSendParent;
 
         public ImageSenderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -222,7 +232,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             imgMessageTick = itemView.findViewById(R.id.iv_imageMessage_sent_tick);
             txtImageMessageSend = itemView.findViewById(R.id.txt_layout_imageMessageSent);
             txtImageMessageTimeSend = itemView.findViewById(R.id.txtTime_layout_imageMessageSent);
-
+            imgMsgSendParent = itemView.findViewById(R.id.constraint_layout_imgMsgSend_parent);
         }
 
         void holder(SendMessageViewModel messageData) {
@@ -230,6 +240,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtImageMessageSend.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtImageMessageTimeSend.setText(time);
+            imgMsgSendParent.setOnClickListener(v -> showFullScreenImage(messageData.getId()));
 
 
             switch (messageData.getStatus()) {
@@ -259,4 +270,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     }
+
+    private void showFullScreenImage(String chatId){
+        Intent intent= new Intent(mContext,ActivityShowFullScreenImage.class);
+        intent.putExtra("image_url",generateUrl(Integer.parseInt(chatId)));
+        mContext.startActivity(intent);
+    }
+
 }

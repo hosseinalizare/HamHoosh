@@ -19,6 +19,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -108,6 +110,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
     List<SendMessageViewModel> sendMessageViewModels = new ArrayList<>();
 
     Handler handler = new Handler();
+    LinearLayoutManager layoutManager;
 
 
     private CompanyViewModel companyViewModel;
@@ -249,7 +252,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
 
     public void initMessageRecyclerView() {
         try {
-            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+            layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
             layoutManager.setStackFromEnd(true);
             messageRecycler.setLayoutManager(layoutManager);
             latestMsgSize = sendMessageViewModels.size();
@@ -529,7 +532,4 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
             }
         }
     }
-
-
-
 }

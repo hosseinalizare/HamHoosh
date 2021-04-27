@@ -7,28 +7,27 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the "MyLocation" functionality.
     -->
-<!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
+    <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-    <uses-permission android:name="android.permission.REQUEST_WRITE_PERMISSION"/>
-
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.REQUEST_WRITE_PERMISSION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-<!--    <uses-permission android:name="android.permission.CAMERA" />-->
+        tools:ignore="ScopedStorage" /> <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name="com.example.koohestantest1.classDirectory.BaseCodeClass"
+        android:name=".classDirectory.BaseCodeClass"
         android:allowBackup="true"
-        android:requestLegacyExternalStorage="true"
         android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute">
+        <activity android:name=".ActivityShowFullScreenImage"></activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -38,9 +37,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <activity android:name=".activity.InvisibleCommentsActivity"></activity>
 
-        <service android:name="com.example.koohestantest1.classDirectory.AppService" />
+        <activity android:name=".activity.InvisibleCommentsActivity" />
+
+        <service android:name=".classDirectory.AppService" />
 
         <activity android:name=".activity.ReportActivity" />
         <!--
@@ -53,9 +53,8 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-<!--@string/google_maps_key-->
-<!--        android:value="AIzaSyBEkLffHiuhw0eOFOXq8YR_xUBG1vbJYDE"-->
+            android:value="@string/google_maps_key" /> <!-- @string/google_maps_key -->
+        <!-- android:value="AIzaSyBEkLffHiuhw0eOFOXq8YR_xUBG1vbJYDE" -->
         <activity
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps" />

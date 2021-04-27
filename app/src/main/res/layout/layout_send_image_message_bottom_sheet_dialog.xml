@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:background="#D5DCDB"
     android:layoutDirection="rtl">
 
     <ImageView
@@ -11,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="90dp"
         android:scaleType="centerCrop" />
 
     <EditText
@@ -23,8 +26,7 @@
         android:fontFamily="@font/koodak"
         android:hint="اینجا تایپ کنید..."
         android:textAlignment="textStart"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black" />
+        android:textColor="@color/black" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
