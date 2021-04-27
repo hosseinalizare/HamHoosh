@@ -78,10 +78,32 @@ public class TimeUtils {
         return sdf.parse(date);
     }
 
+
+
     //gets yyyy-MM-dd'T'HH:mm:ss.SSS and converts it to
     public static Date convertStrToDate(String dateTime) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+            return sdf.parse(dateTime);
+        } catch (Exception e) {
+
+            try {
+                return convertStrToDate2(dateTime);
+            }
+            catch (Exception e1){
+                Log.d(TAG, "convertStrToDate: " + e.getMessage());
+                return null;
+            }
+
+        }
+    }
+
+
+    //gets yyyy-MM-dd'T'HH:mm:ss and converts it to
+
+    public static Date convertStrToDate2(String dateTime) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             return sdf.parse(dateTime);
         } catch (Exception e) {
             Log.d(TAG, "convertStrToDate: " + e.getMessage());

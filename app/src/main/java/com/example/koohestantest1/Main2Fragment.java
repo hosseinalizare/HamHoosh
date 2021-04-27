@@ -820,10 +820,17 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 bulletinProduct.add((allProductData));
             }
             productDataList.add(allProductData);
-            Date temp = convertStrToDate(product.UpdateDate);
-            if (temp.after(lastUpdateTime)) {
-                lastUpdateTime = temp;
-                updateTime = product.UpdateDate;
+            try {
+                Date temp = convertStrToDate(product.UpdateDate);
+                if (temp != null) {
+                    if (temp.after(lastUpdateTime)) {
+                        lastUpdateTime = temp;
+                        updateTime = product.UpdateDate;
+                    }
+                }
+
+            } catch (Exception e) {
+
             }
             //  String[] like = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare2)).split("&");
             // String[] bookmark = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare3)).split("&");
