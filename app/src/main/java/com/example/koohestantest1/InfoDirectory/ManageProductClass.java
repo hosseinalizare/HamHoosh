@@ -225,8 +225,8 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                     particularProduct.clear();
                     bulletinProduct.clear();
                     for (Product product : products) {
-                        if (Boolean.parseBoolean(product.Deleted) ||
-                                (!Boolean.parseBoolean(product.Show)) ||
+                        if (product.Deleted ||
+                                (!product.Show) ||
                                 (!product.CompanyID.equals(companyID))
                         ) {
                             continue;
@@ -259,19 +259,19 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                             LPrice = (aPrice[0]);
 
                         }
-                        AllProductData allProductData = new AllProductData(mContext, null, false, Boolean.parseBoolean(product.Likeit),
-                                null, Boolean.parseBoolean(product.Saveit), Integer.getInteger(product.LikeCount), Integer.getInteger(product.ViewedCount), category, spc);
-                        if (ISParticular(product.ReorderLevel)) {
+                        AllProductData allProductData = new AllProductData(mContext, null, false, product.Likeit,
+                                null, product.Saveit, product.LikeCount, product.ViewedCount, category, spc);
+                        if (ISParticular(String.valueOf(product.ReorderLevel))) {
                             particularProduct.add(allProductData);
                         }
-                        if (ISBulletin(product.ReorderLevel)) {
+                        if (ISBulletin(String.valueOf(product.ReorderLevel))) {
                             bulletinProduct.add((allProductData));
                         }
                         productDataList.add(allProductData);
-                        temp = convertStrToDate(product.UpdateDate);
+                        temp = convertStrToDate(String.valueOf(product.UpdateDate));
                         if (temp.after(lastUpdateTime)) {
                             lastUpdateTime = temp;
-                            updateTime = product.UpdateDate;
+                            updateTime = String.valueOf(product.UpdateDate);
                         }
                         //  String[] like = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare2)).split("&");
                         // String[] bookmark = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare3)).split("&");
@@ -335,21 +335,21 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                     String[] bookmark = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare3)).split("&");
 
                     String pid = cursor.getString(cursor.getColumnIndex(MyDataBase.ProductID));
-                    SendProductClass spc = new SendProductClass(null, null, cursor.getString(cursor.getColumnIndex(MyDataBase.SupplierID)),
+                    /*SendProductClass spc = new SendProductClass(baseCodeClass.getToken(), baseCodeClass.getUserID(), cursor.getString(cursor.getColumnIndex(MyDataBase.SupplierID)),
                             cursor.getString(cursor.getColumnIndex(MyDataBase.SupplierID)), pid,
                             cursor.getString(cursor.getColumnIndex(MyDataBase.ProductName)), cursor.getString(cursor.getColumnIndex(MyDataBase.Description)),
                             nPrice, cursor.getString(cursor.getColumnIndex(MyDataBase.ListPrice)),
-                            cursor.getString(cursor.getColumnIndex(MyDataBase.ReorderLevel)), cursor.getString(cursor.getColumnIndex(MyDataBase.TargetLevel)),
+                            cursor.getInt(cursor.getColumnIndex(MyDataBase.ReorderLevel)), cursor.getInt(cursor.getColumnIndex(MyDataBase.TargetLevel)),
                             cursor.getString(cursor.getColumnIndex(MyDataBase.Unit)), cursor.getString(cursor.getColumnIndex(MyDataBase.QuantityPerUnit)),
-                            cursor.getInt(cursor.getColumnIndex(MyDataBase.Discontinued)), cursor.getString(cursor.getColumnIndex(MyDataBase.MinimumReorderQuantity)),
-                            cursor.getString(cursor.getColumnIndex(MyDataBase.Category)), cursor.getString(cursor.getColumnIndex(MyDataBase.Show)),
-                            cursor.getString(cursor.getColumnIndex(MyDataBase.UpdateDate)), cursor.getString(cursor.getColumnIndex(MyDataBase.Deleted)),
+                            cursor.getInt(cursor.getColumnIndex(MyDataBase.Discontinued)), cursor.getInt(cursor.getColumnIndex(MyDataBase.MinimumReorderQuantity)),
+                            cursor.getString(cursor.getColumnIndex(MyDataBase.Category)), Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(MyDataBase.Show))),
+                            cursor.getInt(cursor.getColumnIndex(MyDataBase.UpdateDate)), Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(MyDataBase.Deleted))),
                             cursor.getString(cursor.getColumnIndex(MyDataBase.Spare1)), like[0], bookmark[0],
-                            like[1], bookmark[1], loadProperty(pid));
+                            like[1], bookmark[1], loadProperty(pid));*/
                     //TODO After save Sellcount to db can use line below to get sell count
-                    spc.setSellCount(cursor.getInt(cursor.getColumnIndex(MyDataBase.SellCount)));
+                    //spc.setSellCount(cursor.getInt(cursor.getColumnIndex(MyDataBase.SellCount)));
                     AllProductData allProductData = new AllProductData(mContext, null, false, Boolean.parseBoolean(like[1]),
-                            null, Boolean.parseBoolean(bookmark[1]), 0, 0, category, spc);
+                            null, Boolean.parseBoolean(bookmark[1]), 0, 0, category,null /*spc*/);
                     if (ISParticular(cursor.getString(cursor.getColumnIndex(MyDataBase.ReorderLevel)))) {
                         particularProduct.add(allProductData);
                     }
@@ -446,7 +446,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         product.ProductID = NetProduct.getProductID();
         product.MinimumReorderQuantity = NetProduct.getMinimumReorderQuantity();
         product.ListPrice = NetProduct.getListPrice();
-        product.Likeit = NetProduct.getLikeit();
+        product.Likeit = NetProduct.isLikeit();
         product.LikeCount = NetProduct.getLikeCount();
         product.Discontinued = NetProduct.getDiscontinued();
         product.Description = NetProduct.getDescription();
@@ -475,7 +475,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         product.Description = productClass.getDescription();
         product.Discontinued = productClass.getDiscontinued();
         product.LikeCount = productClass.getLikeCount();
-        product.Likeit = productClass.getLikeit();
+        product.Likeit = productClass.isLikeit();
         product.ListPrice = productClass.getListPrice();
         product.MinimumReorderQuantity = productClass.getMinimumReorderQuantity();
         product.ProductID = productClass.getProductID();
@@ -524,7 +524,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         return Single.create((SingleOnSubscribe<Boolean>) emitter -> {
             for (SendProductClass productClass : netProduct
             ) {
-                if (mydb.insertProduct(mContext, productClass.getCategory(),
+                /*if (mydb.insertProduct(mContext, productClass.getCategory(),
                         productClass.getDeleted(), "false",
                         productClass.getDescription(), String.valueOf(productClass.getDiscontinued()),
                         "", productClass.getListPrice(), productClass.getMinimumReorderQuantity(),
@@ -533,7 +533,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                         productClass.getReorderLevel(), productClass.getShow(), productClass.getLikeCount(),
                         productClass.getViewedCount(), productClass.getSaveCount(), productClass.getStandardCost(),
                         productClass.getSupplierID(), productClass.getTargetLevel(), productClass.getUnit(),
-                        productClass.getUpdateDate(), productClass.getLikeit(), productClass.getSaveit(), productClass.getSellCount()) != -2) {
+                        productClass.getUpdateDate(), productClass.isLikeit(), productClass.getSaveit(), productClass.getSellCount()) != -2) {
                     ProductIDList.add(productClass.getProductID());
                 } else {
                     String fname = myDir + "/" + productClass.getProductID() + ".jpg";
@@ -541,7 +541,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                     if (!file.exists()) {
                         ProductIDList.add(productClass.getProductID());
                     }
-                }
+                }*/
 
                 for (ProductPropertisClass propertisClass : productClass.getProductPropertis()
                 ) {

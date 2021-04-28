@@ -158,7 +158,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
 
         tvLikeCount.setText(String.valueOf(selectedProduct.getProductClass().getLikeCount()));
-        txtViewCount.setText(StringUtils.showProductViewCount(Integer.parseInt(selectedProduct.getProductClass().getViewedCount())));
+        txtViewCount.setText(StringUtils.showProductViewCount(selectedProduct.getProductClass().getViewedCount()));
 
 
         loadingProduct();
@@ -171,7 +171,7 @@ public class ViewProductActivity extends AppCompatActivity {
         initBookmarkView();
 
         Log.d(TAG, "onCreate: isliked " + selectedProduct.isLike());
-        Log.d(TAG, "onCreate: " + selectedProduct.getProductClass().getLikeit());
+        Log.d(TAG, "onCreate: " + selectedProduct.getProductClass().isLikeit());
 
         if (selectedProduct.isSelectedToCart()) {
             showController();
@@ -264,18 +264,18 @@ public class ViewProductActivity extends AppCompatActivity {
     public void setUpLike() {
 
         try {
-            int likeCount = Integer.parseInt(selectedProduct.getProductClass().getLikeCount());
+            int likeCount = selectedProduct.getProductClass().getLikeCount();
             Log.d(TAG, "setUpLike: bool " + selectedProduct.isLike());
 
             if (selectedProduct.isLike()) {
                 likePost(selectedPid, userID, false);
                 like.setImageResource(R.drawable.ic_like);
                 if (likeCount > 0)
-                    selectedProduct.getProductClass().setLikeCount(String.valueOf(--likeCount));
+                    selectedProduct.getProductClass().setLikeCount(--likeCount);
             } else {
                 likePost(selectedPid, userID, true);
                 like.setImageResource(R.drawable.ic_liked);
-                selectedProduct.getProductClass().setLikeCount(String.valueOf(++likeCount));
+                selectedProduct.getProductClass().setLikeCount(++likeCount);
             }
 
             tvLikeCount.setText(String.valueOf(selectedProduct.getProductClass().getLikeCount()));

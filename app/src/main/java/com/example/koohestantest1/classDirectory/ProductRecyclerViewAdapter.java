@@ -600,7 +600,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private void showPopup(View v,int position) {
-        boolean showProduct = Boolean.parseBoolean(showProductData.get(position).getProductClass().getShow());
+        boolean showProduct = showProductData.get(position).getProductClass().getShow();
         PopupMenu popupMenu = new PopupMenu(mContext,v);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.edit_product_menu,popupMenu.getMenu());
@@ -608,7 +608,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 boolean changePricePermission = baseCodeClass.getPermissions().get(BaseCodeClass.EmploeeAccessLevel.EditeProductPrice.getValue()).isState();
-                boolean showProduct = Boolean.parseBoolean(showProductData.get(position).getProductClass().getShow());
+                boolean showProduct = showProductData.get(position).getProductClass().getShow();
 
                 switch (item.getItemId()){
                     case R.id.editProductName_menu:
@@ -637,7 +637,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     case R.id.manageShowProduct:
                         productId = showProductData.get(position).getProductClass().getProductID();
                         editBottomSheet = EditBottomSheet
-                                .onNewInstance(0,showProductData.get(position).getProductClass().getShow(),productId,BaseCodeClass.productFieldEnum.Show,null);
+                                .onNewInstance(0,String.valueOf(showProductData.get(position).getProductClass().getShow()),productId,BaseCodeClass.productFieldEnum.Show,null);
                         editBottomSheet.show(fragmentManager,"EDIT_SHOW_PRODUCT");
                         break;
                     case R.id.deleteProduct_menu:
@@ -720,8 +720,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public void sortByNewProduct(){
         Collections.sort(filteredProduct, (o1, o2) -> {
-           Date date1 = TimeUtils.convertStrToDate(o1.getProductClass().getUpdateDate());
-           Date date2 = TimeUtils.convertStrToDate(o2.getProductClass().getUpdateDate());
+           Date date1 = TimeUtils.convertStrToDate(String.valueOf(o1.getProductClass().getUpdateDate()));
+           Date date2 = TimeUtils.convertStrToDate(String.valueOf(o2.getProductClass().getUpdateDate()));
            long d1 = date1.getTime();
            long d2 = date2.getTime();
 
@@ -749,8 +749,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     public void sortMostView() {
-        Collections.sort(filteredProduct, (o1, o2) -> Integer.compare(Integer.parseInt(o2.getProductClass().getViewedCount()),
-                Integer.parseInt(o1.getProductClass().getViewedCount())));
+        Collections.sort(filteredProduct, (o1, o2) -> Integer.compare(o2.getProductClass().getViewedCount(),
+                o1.getProductClass().getViewedCount()));
         load10Data();
         notifyDataSetChanged();
     }
