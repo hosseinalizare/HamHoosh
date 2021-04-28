@@ -20,6 +20,7 @@ public class Cache {
     private static final String CHILD_DIR = "images";
     private static final String TEMP_FILE_NAME = "img";
     private static final String FILE_EXTENSION = ".jpg";
+    private static final String FILE_EXTENSION2 = ".png";
 
     private static final int COMPRESS_QUALITY = 100;
 
@@ -56,6 +57,28 @@ public class Cache {
         return cachePath;
     }
 
+
+    public File saveImgToCache2(Bitmap bitmap, @Nullable String name) {
+        File cachePath = null;
+        String fileName = TEMP_FILE_NAME;
+        if (!TextUtils.isEmpty(name)) {
+            fileName = name;
+        }
+        try {
+            cachePath = new File(context.getCacheDir(), CHILD_DIR);
+            cachePath.mkdirs();
+
+            FileOutputStream stream = new FileOutputStream(cachePath + "/" + fileName+ FILE_EXTENSION2);
+            bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESS_QUALITY, stream);
+            stream.close();
+
+        } catch (IOException e) {
+            Log.e(TAG, "saveImgToCache error: " + bitmap, e);
+        }
+        return cachePath;
+    }
+
+
     /**
      * Save an image to the App cache dir and return it {@link Uri}
      * @param bitmap to save to the cache
@@ -75,10 +98,21 @@ public class Cache {
         return getImageUri(file, name);
     }
 
+    public Uri saveToCacheAndGetUri2(Bitmap bitmap, @Nullable String name) {
+        File file = saveImgToCache2(bitmap, name);
+        return getImageUri(file, name);
+    }
+
     public File saveToCacheAndGetFile(Bitmap bitmap, @Nullable String name){
         File file = saveImgToCache(bitmap, name);
         return getImageFile(file, name);
     }
+
+    public File saveToCacheAndGetFile2(Bitmap bitmap, @Nullable String name){
+        File file = saveImgToCache2(bitmap, name);
+        return getImageFile2(file, name);
+    }
+
 
     /**
      * Get a file {@link Uri}
@@ -116,6 +150,16 @@ public class Cache {
         File newFile = new File(fileDir, fileName + FILE_EXTENSION);
         return newFile;
     }
+
+    private File getImageFile2(File fileDir, @Nullable String name) {
+        String fileName = TEMP_FILE_NAME;
+        if (!TextUtils.isEmpty(name)) {
+            fileName = name;
+        }
+        File newFile = new File(fileDir, fileName + FILE_EXTENSION2);
+        return newFile;
+    }
+
 
     /**
      * Get Uri type by {@link Uri}

@@ -7,11 +7,12 @@
     android:layout_height="wrap_content"
     android:layout_margin="1dp">
     <ImageView
+        android:background="#EA3333"
         android:id="@+id/imageProduct"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/ic_launcher_background"
+        tools:srcCompat="@drawable/ic_launcher_background"
         tools:ignore="MissingConstraints,VectorDrawableCompat" />
     <RelativeLayout
         android:layout_width="match_parent"

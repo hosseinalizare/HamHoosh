@@ -984,27 +984,37 @@ public class AddProductActivity extends AppCompatActivity {
         }
     }
 
-    private void sendImageProduct(final String productID) {
+    private void sendImageProductSabeq(final String productID) {
         try {
 
             Cache cache = new Cache(this);
             File file = cache.saveToCacheAndGetFile(mainBitmap, productID);
+/*
             Bitmap imageBitmap;
-            if (file.getName().endsWith("PNG")) {
-                imageBitmap = new Compressor(this)
-                        .setMaxWidth(1080)
-                        .setMaxHeight(1080)
-                        .setQuality(50)
-                        .compressToBitmap(file);
-            } else {
+*/
+            Bitmap imageBitmap = new Compressor(this)
+                    .setMaxWidth(1080)
+                    .setMaxHeight(1080)
+                    .setQuality(50)
+                    .setCompressFormat(Bitmap.CompressFormat.PNG)
+                    .compressToBitmap(file);
+
+
+     /*       if (!file.getName().endsWith("PNG")) {
                 imageBitmap = new Compressor(this)
                         .setMaxWidth(1080)
                         .setMaxHeight(1080)
                         .setQuality(50)
                         .setCompressFormat(Bitmap.CompressFormat.JPEG)
                         .compressToBitmap(file);
+            } else {
+                imageBitmap = new Compressor(this)
+                        .setMaxWidth(1080)
+                        .setMaxHeight(1080)
+                        .setQuality(50)
+                        .compressToBitmap(file);
             }
-
+*/
 
             Cache cacheCompressed = new Cache(this);
             File compressedFile = cacheCompressed.saveToCacheAndGetFile(imageBitmap, productID);
@@ -1048,6 +1058,83 @@ public class AddProductActivity extends AppCompatActivity {
             Log.d(TAG, "sendImageProduct: Error " + e.getMessage());
         }
     }
+
+
+
+    private void sendImageProduct(final String productID) {
+        try {
+
+            Cache cache = new Cache(this);
+            File file = cache.saveToCacheAndGetFile2(mainBitmap, productID);
+/*
+            Bitmap imageBitmap;
+*/
+            Bitmap imageBitmap = new Compressor(this)
+                    .setMaxWidth(1080)
+                    .setMaxHeight(1080)
+                    .setQuality(50)
+                    .compressToBitmap(file);
+
+
+     /*       if (!file.getName().endsWith("PNG")) {
+                imageBitmap = new Compressor(this)
+                        .setMaxWidth(1080)
+                        .setMaxHeight(1080)
+                        .setQuality(50)
+                        .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                        .compressToBitmap(file);
+            } else {
+                imageBitmap = new Compressor(this)
+                        .setMaxWidth(1080)
+                        .setMaxHeight(1080)
+                        .setQuality(50)
+                        .compressToBitmap(file);
+            }
+*/
+
+            Cache cacheCompressed = new Cache(this);
+            File compressedFile = cacheCompressed.saveToCacheAndGetFile2(imageBitmap, productID);
+
+//            String root = getCacheDirectory(this).getPath();
+//            File myDir = new File(root + "/Dehkade/Upload");
+//            File f = new File(myDir, "1.jpg");
+//            myDir.mkdirs();
+
+//
+//            FileOutputStream out = new FileOutputStream(f);
+//            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
+//
+//            SaveProductImage(imageBitmap, "YasinCheck");
+//
+//            out.flush();
+//            out.close();
+
+
+            RequestBody requestBody = RequestBody.create(compressedFile, MediaType.parse("multipart/form-data"));
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", compressedFile.getName(), requestBody);
+
+            Call<GetResualt> call = loadProductApi2.uploadProductImage(productID, baseCodeClass.getCompanyID(), baseCodeClass.getUserID(), baseCodeClass.getToken(), body);
+            call.enqueue(new Callback<GetResualt>() {
+                @Override
+                public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
+
+                    Toast.makeText(AddProductActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismissDialog();
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Call<GetResualt> call, Throwable t) {
+                    Toast.makeText(AddProductActivity.this, "ثبت نا موفق بود" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    DeletProduct(productID);
+                    loadingDialog.dismissDialog();
+                }
+            });
+        } catch (Exception e) {
+            Log.d(TAG, "sendImageProduct: Error " + e.getMessage());
+        }
+    }
+
 
     private void askCameraPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
