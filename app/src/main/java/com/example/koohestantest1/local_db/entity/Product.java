@@ -63,7 +63,7 @@ public class Product {
     public boolean Show;
 
     @ColumnInfo(name = "update_date")
-    public int UpdateDate;
+    public long UpdateDate;
 
     @ColumnInfo(name = "deleted")
     public boolean Deleted;

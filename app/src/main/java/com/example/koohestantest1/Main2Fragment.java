@@ -863,7 +863,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
             @Override
             public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
-
+                Log.d("Error",t.getMessage());
             }
         });
     }

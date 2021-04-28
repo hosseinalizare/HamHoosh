@@ -24,7 +24,7 @@ public class SendProductClass {
     private int MinimumReorderQuantity; //?
     private String Category; // no
     private boolean Show; //
-    private int UpdateDate; //?
+    private long UpdateDate; //?
     private boolean Deleted; //?
     private boolean Deleted1;
     private int ViewedCount;
@@ -93,7 +93,7 @@ public class SendProductClass {
     public SendProductClass(String token, String userID, String companyID, String supplierID, String productID,
                             String productName, String description, String standardCost, String listPrice, int reorderLevel,
                             int targetLevel, String unit, String quantityPerUnit, int discontinued, int minimumReorderQuantity,
-                            String category, boolean show, int updateDate, boolean deleted,boolean deleted1, int viewedCount, int likeCount,
+                            String category, boolean show, long updateDate, boolean deleted,boolean deleted1, int viewedCount, int likeCount,
                             int saveCount, boolean likeit, boolean saveit,String spare1,String spare2,String spare3,int id,
                             int productType,boolean activeLike,boolean activeComment,boolean activeSave,
                             String creatorUserID,String linkOut,String linkToInstagram,boolean chatWhitCreator,List<ProductPropertisClass> productPropertis) {
@@ -313,7 +313,7 @@ public class SendProductClass {
         return Show;
     }
 
-    public int getUpdateDate() {
+    public long getUpdateDate() {
         return UpdateDate;
     }
 
