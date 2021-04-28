@@ -2,20 +2,21 @@ package com.example.koohestantest1.classDirectory;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.koohestantest1.ActivityShowFullScreenImage;
 import com.example.koohestantest1.MessageActivity;
 import com.example.koohestantest1.R;
@@ -24,19 +25,25 @@ import com.example.koohestantest1.Utils.TimeUtils;
 import java.util.List;
 
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
+import com.example.koohestantest1.viewModel.SendMessageVM;
 
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<SendMessageViewModel> messageViewModels;
+    public List<SendMessageViewModel> messageViewModels;
     private String TAG = MessageRecyclerViewAdapter.class.getSimpleName();
     BaseCodeClass baseCodeClass = new BaseCodeClass();
+    public  static boolean WAIT_FOR_UPLOAD_IMAGE  = false;
+    private Bitmap bitmap;
+    private String caption;
+    private SendMessageVM sendMessageVM;
 
 
     private final int SENDER = 0;
     private final int GETTER = 1;
     private final int IMAGE_SENDER = 2;
     private final int IMAGE_GETTER = 3;
+    private final int WAIT_FOR_UPLOAD = 100;
 
     public MessageRecyclerViewAdapter(Context mContext, List<SendMessageViewModel> messageViewModels) {
         this.mContext = mContext;
@@ -63,9 +70,12 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         } else if (viewType == IMAGE_GETTER) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_image_message_recived, parent, false);
             return new ImageGetterViewHolder(view);
-        } else {
+        } else if (viewType == IMAGE_SENDER){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_image_message_sent, parent, false);
             return new ImageSenderViewHolder(view);
+        }else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_wait_for_send_image_message_sent, parent, false);
+            return new WaitForUploadImageHolder(view);
         }
     }
 
@@ -88,10 +98,15 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 if (userSender.equals(MessageActivity.senderId)) {
                     ImageGetterViewHolder imageGetterViewHolder = (ImageGetterViewHolder) holder;
                     imageGetterViewHolder.holder(sendMessageViewModel);
+
                 } else {
                     ImageSenderViewHolder imageSenderViewHolder = (ImageSenderViewHolder) holder;
                     imageSenderViewHolder.holder(sendMessageViewModel);
                 }
+            }else if (msgType ==222){
+                WaitForUploadImageHolder waitForUploadImageHolder = (WaitForUploadImageHolder) holder;
+                waitForUploadImageHolder.holder(bitmap,caption,position);
+
             }
 
 
@@ -138,7 +153,9 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             } else {
                 return IMAGE_SENDER;
             }
-        }else return 5;
+        }else if (msgType ==222){
+            return WAIT_FOR_UPLOAD;
+        }else return 20;
 
 
       /*  if (messageViewModels.get(position).getUserSender().equals(MessageActivity.senderId)) {
@@ -258,6 +275,56 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     }
 
+    public class WaitForUploadImageHolder extends RecyclerView.ViewHolder {
+        ImageView imgMessageSend;
+        TextView txtImageMessageSend;
+        RelativeLayout relProgressBar;
+
+        public WaitForUploadImageHolder(@NonNull View itemView) {
+            super(itemView);
+            imgMessageSend = itemView.findViewById(R.id.img_layout_imageMessageSentWait);
+            txtImageMessageSend = itemView.findViewById(R.id.txt_layout_imageMessageSentWait);
+            relProgressBar = itemView.findViewById(R.id.relativeLayout_progressbar_sendImageMessageWait);
+        }
+
+        void holder(Bitmap bitmap,String caption,int position) {
+            Glide.with(mContext).load(bitmap)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(imgMessageSend);
+
+
+            txtImageMessageSend.setText(caption);
+            relProgressBar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendMessageVM.compositeDisposable.dispose();
+                    messageViewModels.remove(position);
+                    notifyItemRemoved(position);
+                }
+            });
+           /* String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
+            txtImageMessageTimeSend.setText(time);
+*/
+
+/*
+            switch (messageData.getStatus()) {
+                case "1":
+                    imgMessageTick.setImageResource(R.drawable.ic_tick);
+                    break;
+                case "2":
+                    imgMessageTick.setImageResource(R.drawable.ic_tick_done);
+                    break;
+                case "3":
+                    imgMessageTick.setImageResource(R.drawable.ic_tick_seen);
+                    break;
+            }
+*/
+        }
+
+    }
+
+
 
     public void updateMessage(List<SendMessageViewModel> _messageViewModels) {
         messageViewModels = _messageViewModels;
@@ -276,5 +343,19 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         intent.putExtra("image_url",generateUrl(Integer.parseInt(chatId)));
         mContext.startActivity(intent);
     }
+
+    public void addNewRow(SendMessageViewModel sendMessageViewModel){
+        messageViewModels.add(sendMessageViewModel);
+        MessageRecyclerViewAdapter.this.notifyItemInserted(messageViewModels.size() - 1);
+        MessageRecyclerViewAdapter.this.notifyDataSetChanged();
+
+    }
+
+    public void initWaitValue(Bitmap bitmap ,String caption,SendMessageVM sendMessageVM){
+        this.bitmap = bitmap;
+        this.caption = caption;
+        this.sendMessageVM = sendMessageVM;
+    }
+
 
 }

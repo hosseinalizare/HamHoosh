@@ -18,6 +18,11 @@ public class SendMessageViewModel {
     private int Page ;
     private int Len ;
 
+    public SendMessageViewModel(String userSender, int msgType) {
+        UserSender = userSender;
+        MsgType = msgType;
+    }
+
     public int getMsgType() {
         return MsgType;
     }

@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -28,6 +29,7 @@ import com.example.koohestantest1.Utils.Cache;
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
+import com.example.koohestantest1.classDirectory.MessageRecyclerViewAdapter;
 import com.example.koohestantest1.viewModel.SendMessageVM;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -35,6 +37,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
@@ -54,6 +58,22 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
     private SendMessageVM sendMessageVM;
     private RelativeLayout progressBar;
 
+    MessageRecyclerViewAdapter adapter;
+    List<SendMessageViewModel> list;
+    RecyclerView recyclerView;
+    OnclickOnFloatingButtonMessageBsheet onclick;
+
+    public SendImageMessageBottomSheetDialog(Bitmap bitmap, OnclickOnFloatingButtonMessageBsheet onclick) {
+        this.bitmap = bitmap;
+        this.onclick = onclick;
+    }
+
+   /*  public SendImageMessageBottomSheetDialog(String senderUser, MessageRecyclerViewAdapter adapter, List<SendMessageViewModel> list, RecyclerView recyclerView) {
+        this.senderUser = senderUser;
+        this.adapter = adapter;
+        this.list = list;
+        this.recyclerView = recyclerView;
+    }*/
 
     @Nullable
     @Override
@@ -85,6 +105,8 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
 
     }
 
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -97,21 +119,7 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
         imgCancel.setOnClickListener(v -> dismiss());
 
         fbSend.setOnClickListener(v -> {
-            progressBar.setVisibility(View.VISIBLE);
-            SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
-                    editText.getText().toString(), "", "", "", BaseCodeClass.variableType.Image_.getValue(), "", 1, 100);
-            LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
-            resualtLiveData.observe(requireActivity(), new Observer<GetResualt>() {
-                @Override
-                public void onChanged(GetResualt getResualt) {
-                    if (getResualt.getResualt().equals("100")){
-                        sendImageMessage(Integer.parseInt(getResualt.getMsg()));
-
-                    }
-                }
-            });
-
-
+            onclick.onClickFloating(editText.getText().toString());
 
         });
         progressBar.setOnClickListener(v -> {
@@ -197,5 +205,10 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
+    }
+
+
+    public interface OnclickOnFloatingButtonMessageBsheet{
+        void onClickFloating(String imgCaption);
     }
 }

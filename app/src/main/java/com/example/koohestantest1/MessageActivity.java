@@ -78,14 +78,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 
-public class MessageActivity extends AppCompatActivity implements MessageApi {
+public class MessageActivity extends AppCompatActivity implements MessageApi, SendImageMessageBottomSheetDialog.OnclickOnFloatingButtonMessageBsheet {
     public static final int PICK_IMAGE = 123;
     public static final int CAMERA_REQUEST_CODE = 5;
     public static final int CAMERA_PERMISSION_CODE = 101;
     ImageView imgMessage;
     private Bitmap mainBitmap = null;
+    SendImageMessageBottomSheetDialog sheetDialog;
+    private boolean isLoading =true;
 
 
     AutoCompleteTextView auEdtPosition;
@@ -102,7 +105,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
     Context mContext;
     BaseCodeClass baseCodeClass;
     MessageRecyclerViewAdapter adapter;
-    int pEmployee=EmployeeStatus.OPERATOR;
+    int pEmployee = EmployeeStatus.OPERATOR;
 
     MessageActivity messageActivity;
 
@@ -155,7 +158,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
             tvLastSeen = findViewById(R.id.someDetailTxt);
             tvName = findViewById(R.id.profileNameTxt);
             circleImageView = findViewById(R.id.profilePhoto);
-            imgSendFile=findViewById(R.id.imgSendFile);
+            imgSendFile = findViewById(R.id.imgSendFile);
             setSupportActionBar(toolbar);
 //
 //            menuButton.setOnClickListener(v -> {
@@ -311,8 +314,8 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
                 sendMessageViewModels = sendMessageViewModelss;
                 adapter.updateMessage(sendMessageViewModelss);
 
-                for (SendMessageViewModel model:
-                     sendMessageViewModelss) {
+                for (SendMessageViewModel model :
+                        sendMessageViewModelss) {
                     Log.d(TAG, "onResponseGetMessage: msg == " + model.getMessage1());
                     Log.d(TAG, "onResponseGetMessage: time == " + model.getDateSend());
                 }
@@ -325,7 +328,28 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
                     latestMsgSize = nowItem;
                 }
             }
-            handler.postDelayed(() -> new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser), 700);
+
+            if (isLoading){
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+                        new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
+
+
+
+                    }
+                },700);
+
+            }
+
+
+/*
+                handler.postDelayed(() -> new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser), 700);
+*/
+
+
         } catch (Exception e) {
             logMessage("Message 100 >> " + e.getMessage(), mContext);
         }
@@ -371,14 +395,14 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
 
                 Dialog dialog = builder.create();
                 dialog.show();
-                auEdtPosition =dialog.findViewById(R.id.atSetPosition);
+                auEdtPosition = dialog.findViewById(R.id.atSetPosition);
                 txtConfirmPosition = dialog.findViewById(R.id.txtConfirmPosition);
                 radioGroup = dialog.findViewById(R.id.radios);
 
                 auEdtPosition.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
-                        if (hasFocus){
+                        if (hasFocus) {
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, positionsTitle);
                             auEdtPosition.setAdapter(adapter);
                             auEdtPosition.showDropDown();
@@ -388,19 +412,19 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
                 radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                      switch (checkedId){
-                          case R.id.fullAccess:
-                              pEmployee =EmployeeStatus.FULL_PERMISSION;
-                              break;
+                        switch (checkedId) {
+                            case R.id.fullAccess:
+                                pEmployee = EmployeeStatus.FULL_PERMISSION;
+                                break;
 
-                          case R.id.admin:
-                              pEmployee =EmployeeStatus.ADMIN;
-                              break;
+                            case R.id.admin:
+                                pEmployee = EmployeeStatus.ADMIN;
+                                break;
 
-                          case R.id.operator:
-                              pEmployee =EmployeeStatus.OPERATOR;
-                              break;
-                      }
+                            case R.id.operator:
+                                pEmployee = EmployeeStatus.OPERATOR;
+                                break;
+                        }
                     }
                 });
 
@@ -408,9 +432,9 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
                     @Override
                     public void onClick(View v) {
                         String positionTitle = auEdtPosition.getText().toString();
-                        if (positionTitle.isEmpty()){
+                        if (positionTitle.isEmpty()) {
                             Toast.makeText(mContext, "سمت کارمند را مشخص کنید!", Toast.LENGTH_SHORT).show();
-                        }else {
+                        } else {
                             dialog.dismiss();
                             EmployeeAdding employeeAdding = new EmployeeAdding(baseCodeClass.getToken(), senderId, baseCodeClass.getCompanyID(),
                                     baseCodeClass.getMobileNumber(), "Note", "", "", positionTitle, pEmployee);
@@ -514,8 +538,10 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
                     mainBitmap = bitmap;
 
-                    SendImageMessageBottomSheetDialog sheetDialog =new SendImageMessageBottomSheetDialog(bitmap,mainBitmap,senderUser,getterUser);
-                    sheetDialog.show(getSupportFragmentManager(),null);
+                    sheetDialog = new SendImageMessageBottomSheetDialog(mainBitmap,this::onClickFloating);
+                    sheetDialog.show(getSupportFragmentManager(), null);
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -523,4 +549,69 @@ public class MessageActivity extends AppCompatActivity implements MessageApi {
             }
         }
     }
+
+
+    private void sendImageMessage(final int msgId) {
+        try {
+/*
+            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+*/
+
+            Cache cache = new Cache(mContext);
+            File file = cache.saveToCacheAndGetFile(mainBitmap, msgId + "");
+
+            Bitmap imageBitmap = new Compressor(mContext)
+                    .setMaxWidth(1080)
+                    .setMaxHeight(1080)
+                    .setQuality(50)
+                    .compressToBitmap(file);
+
+            Cache cacheCompressed = new Cache(mContext);
+            File compressedFile = cacheCompressed.saveToCacheAndGetFile(imageBitmap, msgId + "");
+
+            RequestBody requestBody = RequestBody.create(compressedFile, MediaType.parse("multipart/form-data"));
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", compressedFile.getName(), requestBody);
+
+            sendMessageVM.sendImageMessage(msgId, body).observe(this, new Observer<GetResualt>() {
+                @Override
+                public void onChanged(GetResualt getResualt) {
+                    if (getResualt.getResualt().equals("100")) {
+                        isLoading=true;
+                        new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
+
+                    } else {
+                        Toast.makeText(mContext, "خطای نا شناخته", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            Log.d("LOG", e.getMessage().toString());
+        }
+
+    }
+
+
+    @Override
+    public void onClickFloating(String imgCaption) {
+        isLoading = false;
+        sheetDialog.dismiss();
+        SendMessageViewModel sendMessageViewModel2 = new SendMessageViewModel(senderUser, 222);
+        adapter.messageViewModels.add(sendMessageViewModel2);
+        adapter.initWaitValue(mainBitmap, imgCaption,sendMessageVM);
+        messageRecycler.setAdapter(adapter);
+
+        SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
+                imgCaption, "", "", "", BaseCodeClass.variableType.Image_.getValue(), "", 1, 100);
+        LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
+        resualtLiveData.observe(this, getResualt -> {
+            if (getResualt.getResualt().equals("100")){
+                sendImageMessage(Integer.parseInt(getResualt.getMsg()));
+
+            }
+        });
+    }
+
+
 }
