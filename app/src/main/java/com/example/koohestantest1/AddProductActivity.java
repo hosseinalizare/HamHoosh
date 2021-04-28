@@ -110,6 +110,7 @@ public class AddProductActivity extends AppCompatActivity {
     Button btnAdd;
     Button btnDelete;
     LoadProductApi loadProductApi;
+    LoadProductApi loadProductApi2;
     LoadProductApi callBack;
     BaseCodeClass baseCodeClass;
     DataBase dataBase;
@@ -155,9 +156,11 @@ public class AddProductActivity extends AppCompatActivity {
 //            myDir.mkdirs();
 
             final Retrofit retrofit = RetrofitInstance.getRetrofit();
+            final Retrofit retrofit2 = MyApiClient.getRetrofitTest();
 
 
             loadProductApi = retrofit.create(LoadProductApi.class);
+            loadProductApi2 = retrofit2.create(LoadProductApi.class);
 
             EdProductName = (EditText) findViewById(R.id.AddProductName);
             EdProductPrice = (EditText) findViewById(R.id.AddProductPrice);
@@ -1024,7 +1027,7 @@ public class AddProductActivity extends AppCompatActivity {
             RequestBody requestBody = RequestBody.create(compressedFile, MediaType.parse("multipart/form-data"));
             MultipartBody.Part body = MultipartBody.Part.createFormData("file", compressedFile.getName(), requestBody);
 
-            Call<GetResualt> call = loadProductApi.uploadProductImage(productID, baseCodeClass.getCompanyID(), baseCodeClass.getUserID(), baseCodeClass.getToken(), body);
+            Call<GetResualt> call = loadProductApi2.uploadProductImage(productID, baseCodeClass.getCompanyID(), baseCodeClass.getUserID(), baseCodeClass.getToken(), body);
             call.enqueue(new Callback<GetResualt>() {
                 @Override
                 public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
