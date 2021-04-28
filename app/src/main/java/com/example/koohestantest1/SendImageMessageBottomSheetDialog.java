@@ -68,12 +68,6 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
         this.onclick = onclick;
     }
 
-   /*  public SendImageMessageBottomSheetDialog(String senderUser, MessageRecyclerViewAdapter adapter, List<SendMessageViewModel> list, RecyclerView recyclerView) {
-        this.senderUser = senderUser;
-        this.adapter = adapter;
-        this.list = list;
-        this.recyclerView = recyclerView;
-    }*/
 
     @Nullable
     @Override
@@ -96,17 +90,6 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
 
     }
 
-    public SendImageMessageBottomSheetDialog(Bitmap bitmap, Bitmap mainBitmap, String senderUser, String getterUser) {
-        this.bitmap = bitmap;
-        this.mainBitmap = mainBitmap;
-        this.senderUser = senderUser;
-        this.getterUser = getterUser;
-        baseCodeClass = new BaseCodeClass();
-
-    }
-
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -122,16 +105,45 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
             onclick.onClickFloating(editText.getText().toString());
 
         });
-        progressBar.setOnClickListener(v -> {
+    }
 
-            sendMessageVM.compositeDisposable.dispose();
-            progressBar.setVisibility(View.GONE);
-
-
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override public void onShow(DialogInterface dialogInterface) {
+                BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialogInterface;
+                setupFullHeight(bottomSheetDialog);
+            }
         });
+        return  dialog;
+    }
+
+    private void setupFullHeight(BottomSheetDialog bottomSheetDialog) {
+        FrameLayout bottomSheet = (FrameLayout) bottomSheetDialog.findViewById(R.id.design_bottom_sheet);
+        BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+        ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
+
+        int windowHeight = getWindowHeight();
+        if (layoutParams != null) {
+            layoutParams.height = windowHeight;
+        }
+        bottomSheet.setLayoutParams(layoutParams);
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    private int getWindowHeight() {
+        // Calculate window height for fullscreen use
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
     }
 
 
+    public interface OnclickOnFloatingButtonMessageBsheet{
+        void onClickFloating(String imgCaption);
+    }
     private void sendImageMessage(final int msgId) {
         try {
 /*
@@ -172,43 +184,4 @@ public class SendImageMessageBottomSheetDialog extends BottomSheetDialogFragment
 
     }
 
-
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override public void onShow(DialogInterface dialogInterface) {
-                BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) dialogInterface;
-                setupFullHeight(bottomSheetDialog);
-            }
-        });
-        return  dialog;
-    }
-
-    private void setupFullHeight(BottomSheetDialog bottomSheetDialog) {
-        FrameLayout bottomSheet = (FrameLayout) bottomSheetDialog.findViewById(R.id.design_bottom_sheet);
-        BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-        ViewGroup.LayoutParams layoutParams = bottomSheet.getLayoutParams();
-
-        int windowHeight = getWindowHeight();
-        if (layoutParams != null) {
-            layoutParams.height = windowHeight;
-        }
-        bottomSheet.setLayoutParams(layoutParams);
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
-
-    private int getWindowHeight() {
-        // Calculate window height for fullscreen use
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        return displayMetrics.heightPixels;
-    }
-
-
-    public interface OnclickOnFloatingButtonMessageBsheet{
-        void onClickFloating(String imgCaption);
-    }
 }

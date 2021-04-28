@@ -70,6 +70,7 @@ import com.example.koohestantest1.classDirectory.ProductPropertiesRecyclerViewAd
 import com.example.koohestantest1.classDirectory.ProductPropertisClass;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
 import com.example.koohestantest1.classDirectory.SendProductClass;
+
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -180,11 +181,11 @@ public class AddProductActivity extends AppCompatActivity {
             txtShowToUser = findViewById(R.id.txtShowToUser);
 
             boolean publishProductPermission = baseCodeClass.getPermissions().get(BaseCodeClass.EmploeeAccessLevel.EditProductDiscont.getValue()).isState();
-            if (!publishProductPermission){
+            if (!publishProductPermission) {
                 cbShowToUser.setChecked(false);
                 cbShowToUser.setVisibility(View.GONE);
                 txtShowToUser.setVisibility(View.GONE);
-            }else {
+            } else {
                 cbShowToUser.setVisibility(View.VISIBLE);
                 txtShowToUser.setVisibility(View.VISIBLE);
             }
@@ -244,7 +245,7 @@ public class AddProductActivity extends AppCompatActivity {
                             loadingDialog.dismissDialog();
                         }
                     } catch (Exception e) {
-                        Log.d("1500",e.getMessage());
+                        Log.d("1500", e.getMessage());
                     }
                 }
 
@@ -507,7 +508,6 @@ public class AddProductActivity extends AppCompatActivity {
             });
 
 
-
             Cat2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -560,7 +560,7 @@ public class AddProductActivity extends AppCompatActivity {
                 }
             }
         } catch (Exception e) {
-            Log.d("addProduct OnCreate >> " , e.getMessage());
+            Log.d("addProduct OnCreate >> ", e.getMessage());
         }
     }//end OnCreate
 
@@ -853,7 +853,7 @@ public class AddProductActivity extends AppCompatActivity {
         mainSendProductClass = new SendProductClass
                 (baseCodeClass.getToken(), baseCodeClass.getUserID(),
                         baseCodeClass.getCompanyID(), baseCodeClass.getCompanyID(), productID, productName, description
-                        , standardCost, (listPrice!=null||listPrice.equals(""))?listPrice:"0",
+                        , standardCost, (listPrice != null || listPrice.equals("")) ? listPrice : "0",
                         reOrder, "10", UnitValue, "1", Count, "1",
                         MainCategory + "." + SubCat1 + "." + SubCat2, String.valueOf(showToUser), null, "False", "1",
                         "1", "1", "false", "false", productPropertisClasses);
@@ -885,7 +885,7 @@ public class AddProductActivity extends AppCompatActivity {
             } else
                 Toast.makeText(this, "خطای مقدار دهی محصول", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Log.d("Catch add product >> " , e.getMessage());
+            Log.d("Catch add product >> ", e.getMessage());
         }
     }
 
@@ -909,10 +909,10 @@ public class AddProductActivity extends AppCompatActivity {
             call.enqueue(new Callback<List<String>>() {
                 @Override
                 public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-                    if (response.body().size() == 0){
+                    if (response.body().size() == 0) {
                         swCategory.setChecked(true);
 
-                    }else {
+                    } else {
                         callBack.onResponseGetCategory(response.body());
 
                     }
@@ -954,14 +954,14 @@ public class AddProductActivity extends AppCompatActivity {
     public void addProduct() {
         try {
             if (mainSendProductClass != null) {
-                if(mainSendProductClass.getListPrice().equals("")| mainSendProductClass.getListPrice()=="")
+                if (mainSendProductClass.getListPrice().equals("") | mainSendProductClass.getListPrice() == "")
                     mainSendProductClass.setListPrice("0");
                 Call<GetResualt> call = loadProductApi.sendProductDetail(mainSendProductClass);
                 Log.d(TAG, "editProduct: " + mainSendProductClass.getCompanyID() + " user: " + mainSendProductClass.getUserID());
                 call.enqueue(new Callback<GetResualt>() {
                     @Override
                     public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
-                    Toast.makeText(AddProductActivity.this, "ذخیره با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddProductActivity.this, "ذخیره با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
                         GetResualt getResualt = new GetResualt(response.body().getResualt(), response.body().getMsg());
                         callBack.onResponseSendProduct(getResualt);
                         loadingDialog.dismissDialog();
@@ -976,8 +976,8 @@ public class AddProductActivity extends AppCompatActivity {
                 });
             } else
                 Toast.makeText(this, "خطای مقدار دهی محصول", Toast.LENGTH_SHORT).show();
-        }catch (Exception e) {
-            Log.d("Catch add product >> " , e.getMessage());
+        } catch (Exception e) {
+            Log.d("Catch add product >> ", e.getMessage());
         }
     }
 
@@ -986,13 +986,22 @@ public class AddProductActivity extends AppCompatActivity {
 
             Cache cache = new Cache(this);
             File file = cache.saveToCacheAndGetFile(mainBitmap, productID);
+            Bitmap imageBitmap;
+            if (file.getName().endsWith("PNG")) {
+                imageBitmap = new Compressor(this)
+                        .setMaxWidth(1080)
+                        .setMaxHeight(1080)
+                        .setQuality(50)
+                        .compressToBitmap(file);
+            } else {
+                imageBitmap = new Compressor(this)
+                        .setMaxWidth(1080)
+                        .setMaxHeight(1080)
+                        .setQuality(50)
+                        .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                        .compressToBitmap(file);
+            }
 
-            Bitmap imageBitmap = new Compressor(this)
-                    .setMaxWidth(1080)
-                    .setMaxHeight(1080)
-                    .setQuality(50)
-                    .setCompressFormat(Bitmap.CompressFormat.JPEG)
-                    .compressToBitmap(file);
 
             Cache cacheCompressed = new Cache(this);
             File compressedFile = cacheCompressed.saveToCacheAndGetFile(imageBitmap, productID);
@@ -1020,7 +1029,7 @@ public class AddProductActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
 
-                    Toast.makeText(AddProductActivity.this,  response.body().getMsg(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddProductActivity.this, response.body().getMsg(), Toast.LENGTH_SHORT).show();
                     loadingDialog.dismissDialog();
                     finish();
                 }

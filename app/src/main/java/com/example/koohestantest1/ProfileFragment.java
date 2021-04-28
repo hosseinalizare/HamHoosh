@@ -113,11 +113,8 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_profile, container, false);
-
         mContext = getActivity();
-
         navigationView = view.findViewById(R.id.myStoreNavView);
-
         tvWelcomeSignUp = view.findViewById(R.id.tvWelcomeSignUp);
         edUserName = view.findViewById(R.id.EdUserNameSignUp);
         edPassword = view.findViewById(R.id.EdPasswordSignUp);
