@@ -16,24 +16,37 @@ public class SendProductClass {
     private String Description;
     private String StandardCost;
     private String ListPrice; //Kharid Kolli
-    private String ReorderLevel; //Star of product number 0 - 255
-    private String TargetLevel; // 0 - ~
+    private int ReorderLevel; //Star of product number 0 - 255
+    private int TargetLevel; // 0 - ~
     private String Unit; //kg || m || ...
     private String QuantityPerUnit; //
     private int Discontinued; //No. of Mojodi
-    private String MinimumReorderQuantity; //?
+    private int MinimumReorderQuantity; //?
     private String Category; // no
-    private String Show; //
-    private String UpdateDate; //?
-    private String Deleted; //?
-    private String ViewedCount;
-    private String LikeCount;
-    private String SaveCount;
-    private String Saveit;
+    private boolean Show; //
+    private int UpdateDate; //?
+    private boolean Deleted; //?
+    private boolean Deleted1;
+    private int ViewedCount;
+    private int LikeCount;
+    private int SaveCount;
+    private boolean Saveit;
     private int SellCount;
+    private String Spare1;
+    private String Spare2;
+    private String Spare3;
+    private int id;
+    private int ProductType;
+    private boolean ActiveLike;
+    private boolean ActiveComment;
+    private boolean ActiveSave;
+    private String CreatorUserID;
+    private String LinkOut;
+    private String LinkToInstagram;
+    private boolean ChatWhitCreator;
     private List<ProductPropertisClass> productPropertis;
 
-    private String Likeit;
+    private boolean Likeit;
     public SendProductClass(Product product, List<Properties> properties){
         CompanyID = product.CompanyID;
         SupplierID = product.SupplierID;
@@ -52,11 +65,24 @@ public class SendProductClass {
         Show = product.Show;
         UpdateDate = product.UpdateDate;
         Deleted = product.Deleted;
+        Deleted1 = product.Deleted1;
         ViewedCount = product.ViewedCount;
         LikeCount = product.LikeCount;
         SaveCount = product.SaveCount;
         Likeit = product.Likeit;
         Saveit = product.Saveit;
+        Spare1 = product.Spare1;
+        Spare2 = product.Spare2;
+        Spare3 = product.Spare3;
+        id = product.id;
+        ActiveLike = product.ActiveLike;
+        ProductType = product.ProductType;
+        ActiveComment = product.ActiveComment;
+        ActiveSave = product.ActiveSave;
+        CreatorUserID = product.CreatorUserID;
+        LinkOut = product.LinkOut;
+        LinkToInstagram = product.LinkToInstagram;
+        ChatWhitCreator = product.ChatWhitCreator;
         productPropertis = new ArrayList<>();
         for(Properties p:properties){
             ProductPropertisClass productPropertis = new ProductPropertisClass(p.ProductID,p.PropertiesGroup,p.PropertiesName,p.PropertiesValue,p.UpdateTime);
@@ -65,10 +91,12 @@ public class SendProductClass {
     }
 
     public SendProductClass(String token, String userID, String companyID, String supplierID, String productID,
-                            String productName, String description, String standardCost, String listPrice, String reorderLevel,
-                            String targetLevel, String unit, String quantityPerUnit, int discontinued, String minimumReorderQuantity,
-                            String category, String show, String updateDate, String deleted, String viewedCount, String likeCount,
-                            String saveCount, String likeit, String saveit, List<ProductPropertisClass> productPropertis) {
+                            String productName, String description, String standardCost, String listPrice, int reorderLevel,
+                            int targetLevel, String unit, String quantityPerUnit, int discontinued, int minimumReorderQuantity,
+                            String category, boolean show, int updateDate, boolean deleted,boolean deleted1, int viewedCount, int likeCount,
+                            int saveCount, boolean likeit, boolean saveit,String spare1,String spare2,String spare3,int id,
+                            int productType,boolean activeLike,boolean activeComment,boolean activeSave,
+                            String creatorUserID,String linkOut,String linkToInstagram,boolean chatWhitCreator,List<ProductPropertisClass> productPropertis) {
         Token = token;
         UserID = userID;
         CompanyID = companyID;
@@ -88,15 +116,132 @@ public class SendProductClass {
         Show = show;
         UpdateDate = updateDate;
         Deleted = deleted;
+        Deleted1 = deleted1;
         ViewedCount = viewedCount;
         LikeCount = likeCount;
         SaveCount = saveCount;
         Likeit = likeit;
         Saveit = saveit;
+        Spare1 = spare1;
+        Spare2 = spare2;
+        Spare3 = spare3;
+        LinkOut = linkOut;
+        LinkToInstagram = linkToInstagram;
+        this.id = id;
+        ProductType = productType;
+        ActiveLike = activeLike;
+        ActiveComment = activeComment;
+        ActiveSave = activeSave;
+        CreatorUserID = creatorUserID;
+        ChatWhitCreator = chatWhitCreator;
         this.productPropertis = productPropertis;
     }
 
-    public void setDeleted(String deleted) {
+    public boolean isChatWhitCreator() {
+        return ChatWhitCreator;
+    }
+
+    public void setChatWhitCreator(boolean chatWhitCreator) {
+        ChatWhitCreator = chatWhitCreator;
+    }
+
+    public String getLinkToInstagram() {
+        return LinkToInstagram;
+    }
+
+    public void setLinkToInstagram(String linkToInstagram) {
+        LinkToInstagram = linkToInstagram;
+    }
+
+    public String getLinkOut() {
+        return LinkOut;
+    }
+
+    public void setLinkOut(String linkOut) {
+        LinkOut = linkOut;
+    }
+
+    public String getCreatorUserID() {
+        return CreatorUserID;
+    }
+
+    public void setCreatorUserID(String creatorUserID) {
+        CreatorUserID = creatorUserID;
+    }
+
+    public boolean isActiveSave() {
+        return ActiveSave;
+    }
+
+    public void setActiveSave(boolean activeSave) {
+        ActiveSave = activeSave;
+    }
+
+    public boolean isActiveComment() {
+        return ActiveComment;
+    }
+
+    public void setActiveComment(boolean activeComment) {
+        ActiveComment = activeComment;
+    }
+
+    public boolean isActiveLike() {
+        return ActiveLike;
+    }
+
+    public void setActiveLike(boolean activeLike) {
+        ActiveLike = activeLike;
+    }
+
+    public int getProductType() {
+        return ProductType;
+    }
+
+    public void setProductType(int productType) {
+        ProductType = productType;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getSpare3() {
+        return Spare3;
+    }
+
+    public void setSpare3(String spare3) {
+        Spare3 = spare3;
+    }
+
+    public String getSpare2() {
+        return Spare2;
+    }
+
+    public void setSpare2(String spare2) {
+        Spare2 = spare2;
+    }
+
+    public String getSpare1() {
+        return Spare1;
+    }
+
+    public void setSpare1(String spare1) {
+        Spare1 = spare1;
+    }
+
+    public boolean isDeleted1() {
+        return Deleted1;
+    }
+
+    public void setDeleted1(boolean deleted1) {
+        Deleted1 = deleted1;
+    }
+
+    public void setDeleted(boolean deleted) {
         Deleted = deleted;
     }
 
@@ -136,11 +281,11 @@ public class SendProductClass {
         return ListPrice;
     }
 
-    public String getReorderLevel() {
+    public int getReorderLevel() {
         return ReorderLevel;
     }
 
-    public String getTargetLevel() {
+    public int getTargetLevel() {
         return TargetLevel;
     }
 
@@ -156,7 +301,7 @@ public class SendProductClass {
         return Discontinued;
     }
 
-    public String getMinimumReorderQuantity() {
+    public int getMinimumReorderQuantity() {
         return MinimumReorderQuantity;
     }
 
@@ -164,39 +309,39 @@ public class SendProductClass {
         return Category;
     }
 
-    public String getShow() {
+    public boolean getShow() {
         return Show;
     }
 
-    public String getUpdateDate() {
+    public int getUpdateDate() {
         return UpdateDate;
     }
 
-    public String getDeleted() {
+    public boolean getDeleted() {
         return Deleted;
     }
 
-    public String getViewedCount() {
+    public int getViewedCount() {
         return ViewedCount;
     }
 
-    public String getLikeCount() {
+    public int getLikeCount() {
         return LikeCount;
     }
 
-    public String getSaveCount() {
+    public int getSaveCount() {
         return SaveCount;
     }
 
-    public String getLikeit() {
+    public boolean isLikeit() {
         return Likeit;
     }
 
-    public void setLikeit(String likeit) {
+    public void setLikeit(boolean likeit) {
         Likeit = likeit;
     }
 
-    public void setLikeCount(String likeCount) {
+    public void setLikeCount(int likeCount) {
         LikeCount = likeCount;
     }
 
@@ -208,11 +353,11 @@ public class SendProductClass {
         ListPrice = listPrice;
     }
 
-    public String getSaveit() {
+    public boolean getSaveit() {
         return Saveit;
     }
 
-    public void setSaveit(String saveit) {
+    public void setSaveit(boolean saveit) {
         Saveit = saveit;
     }
 

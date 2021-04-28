@@ -506,10 +506,10 @@ public class DownloadPrudoctThread extends Thread {
                         "", productClass.getListPrice(), productClass.getMinimumReorderQuantity(),
                         productClass.getProductID(),
                         productClass.getProductName(), productClass.getQuantityPerUnit(),
-                        productClass.getReorderLevel(), productClass.getShow(), productClass.getLikeCount(),
-                        productClass.getViewedCount(), productClass.getSaveCount(), productClass.getStandardCost(),
+                        productClass.getReorderLevel(), productClass.getShow(), productClass.getSpare1(),
+                        productClass.getSpare2(), productClass.getSpare3(), productClass.getStandardCost(),
                         productClass.getSupplierID(), productClass.getTargetLevel(), productClass.getUnit(),
-                        productClass.getUpdateDate(), productClass.getLikeit(), productClass.getSaveit(), productClass.getSellCount()) != -2) {
+                        productClass.getUpdateDate(), productClass.isLikeit(), productClass.getSaveit(), productClass.getSellCount()) != -2) {
                     ProductIDList.add(productClass.getProductID());
                 } else {
                     String fname = myDir + "/" + productClass.getProductID() + ".jpg";

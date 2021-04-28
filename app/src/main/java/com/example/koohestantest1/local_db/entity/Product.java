@@ -26,7 +26,6 @@ public class Product {
     public String SupplierID;
 
 
-
     @ColumnInfo(name = "product_name")
     public String ProductName;
 
@@ -40,10 +39,10 @@ public class Product {
     public String ListPrice;
 
     @ColumnInfo(name = "reorder_level")
-    public String ReorderLevel;
+    public int ReorderLevel;
 
     @ColumnInfo(name = "target_level")
-    public String TargetLevel;
+    public int TargetLevel;
 
     @ColumnInfo(name = "unit")
     public String Unit;
@@ -55,36 +54,90 @@ public class Product {
     public int Discontinued;
 
     @ColumnInfo(name = "minimum_reorder_quantity")
-    public String MinimumReorderQuantity;
+    public int MinimumReorderQuantity;
 
     @ColumnInfo(name = "category")
     public String Category;
 
     @ColumnInfo(name = "show")
-    public String Show;
+    public boolean Show;
 
     @ColumnInfo(name = "update_date")
-    public String UpdateDate;
+    public int UpdateDate;
 
     @ColumnInfo(name = "deleted")
-    public String Deleted;
+    public boolean Deleted;
+
+    @ColumnInfo(name = "deleted1")
+    public boolean Deleted1;
 
     @ColumnInfo(name = "viewed_count")
-    public String ViewedCount;
+    public int ViewedCount;
 
     @ColumnInfo(name = "like_count")
-    public String LikeCount;
+    public int LikeCount;
 
     @ColumnInfo(name = "save_count")
-    public String SaveCount;
+    public int SaveCount;
 
     @ColumnInfo(name = "like_it")
-    public String Likeit;
+    public boolean Likeit;
 
     @ColumnInfo(name = "save_it")
-    public String Saveit;
+    public boolean Saveit;
 
     @ColumnInfo(name = "sell_count")
     public int SellCount;
+
+    @ColumnInfo(name = "spare1")
+    public String Spare1;
+
+    @ColumnInfo(name = "spare2")
+    public String Spare2;
+
+    @ColumnInfo(name = "spare3")
+    public String Spare3;
+
+    @ColumnInfo(name = "id")
+    public int id;
+
+    @ColumnInfo(name = "product_type")
+    public int ProductType;
+
+    @ColumnInfo(name = "active_like")
+    public boolean ActiveLike;
+
+    @ColumnInfo(name = "active_comment")
+    public boolean ActiveComment;
+
+    @ColumnInfo(name = "active_save")
+    public boolean ActiveSave;
+
+    @ColumnInfo(name = "creator_user_id")
+    public String CreatorUserID;
+
+    @ColumnInfo(name = "link_out")
+    public String LinkOut;
+
+    @ColumnInfo(name = "link_to_iInstagram")
+    public String LinkToInstagram;
+
+    @ColumnInfo(name = "chat_whit_creator")
+    public boolean ChatWhitCreator;
+
+    @ColumnInfo(name = "off_price")
+    public int offPrice;
+
+    @ColumnInfo(name = "price")
+    public int Price;
+
+    @ColumnInfo(name = "show_standard_cost")
+    public String ShowStandardCost;
+
+    @ColumnInfo(name = "show_off_price")
+    public String ShowoffPrice;
+
+    @ColumnInfo(name = "show_price")
+    public String ShowPrice;
 
 }

@@ -220,7 +220,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
     }
 
     private void showPopup(View v,int position) {
-        boolean showProduct = Boolean.parseBoolean(showProductData.get(position).getShow());
+        boolean showProduct = showProductData.get(position).getShow();
         PopupMenu popupMenu = new PopupMenu(mContext,v);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.edit_product_menu,popupMenu.getMenu());
@@ -228,7 +228,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 boolean changePricePermission = baseCodeClass.getPermissions().get(BaseCodeClass.EmploeeAccessLevel.EditeProductPrice.getValue()).isState();
-                boolean showProduct = Boolean.parseBoolean(showProductData.get(position).getShow());
+                boolean showProduct = showProductData.get(position).getShow();
 
                 switch (item.getItemId()){
                     case R.id.editProductName_menu:
@@ -257,7 +257,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
                     case R.id.manageShowProduct:
                         productId = showProductData.get(position).getProductID();
                         editBottomSheet = EditBottomSheet
-                                .onNewInstance(0,showProductData.get(position).getShow(),productId,BaseCodeClass.productFieldEnum.Show,null);
+                                .onNewInstance(0,String.valueOf(showProductData.get(position).getShow()),productId,BaseCodeClass.productFieldEnum.Show,null);
                         editBottomSheet.show(fragmentManager,"EDIT_SHOW_PRODUCT");
                         break;
                     case R.id.deleteProduct_menu:

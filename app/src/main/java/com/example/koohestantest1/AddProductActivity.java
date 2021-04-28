@@ -533,7 +533,7 @@ public class AddProductActivity extends AppCompatActivity {
                     EdDiscount.setText(selectedProduct.getProductClass().getListPrice());
                     EdInventory.setText(String.valueOf(selectedProduct.getProductClass().getDiscontinued()));
 
-                    String showTik = selectedProduct.getProductClass().getShow();
+                    String showTik = String.valueOf(selectedProduct.getProductClass().getShow());
                     if (showTik != null && showTik.equals("false"))
                         cbShowToUser.setChecked(false);
 
@@ -552,8 +552,8 @@ public class AddProductActivity extends AppCompatActivity {
                     }
                     initRecyclerView();
 
-                    cbStory.setChecked(ISParticular(selectedProduct.getProductClass().getReorderLevel()));
-                    cbBulletin.setChecked(ISBulletin(selectedProduct.getProductClass().getReorderLevel()));
+                    cbStory.setChecked(ISParticular(String.valueOf(selectedProduct.getProductClass().getReorderLevel())));
+                    cbBulletin.setChecked(ISBulletin(String.valueOf(selectedProduct.getProductClass().getReorderLevel())));
 
                     newDownloadImage(selectedProduct.getProductClass().getProductID(), imageView);
 
@@ -857,9 +857,10 @@ public class AddProductActivity extends AppCompatActivity {
                 (baseCodeClass.getToken(), baseCodeClass.getUserID(),
                         baseCodeClass.getCompanyID(), baseCodeClass.getCompanyID(), productID, productName, description
                         , standardCost, (listPrice != null || listPrice.equals("")) ? listPrice : "0",
-                        reOrder, "10", UnitValue, "1", Count, "1",
-                        MainCategory + "." + SubCat1 + "." + SubCat2, String.valueOf(showToUser), null, "False", "1",
-                        "1", "1", "false", "false", productPropertisClasses);
+                        Integer.parseInt(reOrder), 10, UnitValue, "1", Count, 1,
+                        MainCategory + "." + SubCat1 + "." + SubCat2, showToUser, 0, false, false,
+                        0, 0, 0, false, false,null,null,null,0,0,false,false,false,baseCodeClass.getUserID(),null,
+                        null,false,productPropertisClasses);
 
         return true;
     }

@@ -768,8 +768,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
             allProductsPId.add(product.ProductID);
 
-            if (Boolean.parseBoolean(product.Deleted) ||
-                    (!Boolean.parseBoolean(product.Show)) ||
+            if (product.Deleted ||
+                    (!product.Show) ||
                     (!product.CompanyID.equals(CompanyID))
             ) {
                 continue;
@@ -811,21 +811,21 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 LPrice = (aPrice[0]);
 
             }
-            AllProductData allProductData = new AllProductData(mContext, null, false, Boolean.parseBoolean(product.Likeit),
-                    null, Boolean.parseBoolean(product.Saveit), /*Integer.getInteger(product.LikeCount)*/0, /*Integer.getInteger(product.ViewedCount)*/0, category, spc);
-            if (ISParticular(product.ReorderLevel)) {
+            AllProductData allProductData = new AllProductData(mContext, null, false, product.Likeit,
+                    null, product.Saveit, /*Integer.getInteger(product.LikeCount)*/0, /*Integer.getInteger(product.ViewedCount)*/0, category, spc);
+            if (ISParticular(String.valueOf(product.ReorderLevel))) {
                 particularProduct.add(allProductData);
             }
-            if (ISBulletin(product.ReorderLevel)) {
+            if (ISBulletin(String.valueOf(product.ReorderLevel))) {
                 bulletinProduct.add((allProductData));
             }
             productDataList.add(allProductData);
             try {
-                Date temp = convertStrToDate(product.UpdateDate);
+                Date temp = convertStrToDate(String.valueOf(product.UpdateDate));
                 if (temp != null) {
                     if (temp.after(lastUpdateTime)) {
                         lastUpdateTime = temp;
-                        updateTime = product.UpdateDate;
+                        updateTime = String.valueOf(product.UpdateDate);
                     }
                 }
 
@@ -970,7 +970,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.ProductID = NetProduct.getProductID();
         product.MinimumReorderQuantity = NetProduct.getMinimumReorderQuantity();
         product.ListPrice = NetProduct.getListPrice();
-        product.Likeit = NetProduct.getLikeit();
+        product.Likeit = NetProduct.isLikeit();
         product.LikeCount = NetProduct.getLikeCount();
         product.Discontinued = NetProduct.getDiscontinued();
         product.Description = NetProduct.getDescription();
@@ -999,7 +999,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Description = productClass.getDescription();
         product.Discontinued = productClass.getDiscontinued();
         product.LikeCount = productClass.getLikeCount();
-        product.Likeit = productClass.getLikeit();
+        product.Likeit = productClass.isLikeit();
         product.ListPrice = productClass.getListPrice();
         product.MinimumReorderQuantity = productClass.getMinimumReorderQuantity();
         product.ProductID = productClass.getProductID();
