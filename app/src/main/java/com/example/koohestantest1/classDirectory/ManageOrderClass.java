@@ -37,15 +37,15 @@ public class ManageOrderClass {
         sendOrderClass.setOrderDate("2020-08-18T21:54:43.5172323+04:30"); //String.valueOf(Calendar.getInstance().getTime()));
     }
 
-    public boolean addProductToCart(SendProductClass sendProductClass) {
+    public boolean addProductToCart(ReceiveProductClass receiveProductClass) {
         try {
             Order_DetailsViewModels orderDetail = new Order_DetailsViewModels();
-            orderDetail.setProductID(sendProductClass.getProductID());
-            orderDetail.setProductName(sendProductClass.getProductName());
+            orderDetail.setProductID(receiveProductClass.getProductID());
+            orderDetail.setProductName(receiveProductClass.getProductName());
             orderDetail.setQuantity(1);
-            orderDetail.setDiscount(sendProductClass.getListPrice());
+            orderDetail.setDiscount(receiveProductClass.getStandardCost().getShowoffPrice());
 
-            String S = sendProductClass.getStandardCost();
+            String S = receiveProductClass.getStandardCost().getShowPrice();
             orderDetail.setUnitPrice(String.valueOf((int) StringUtils.getNumberFromStringV2(S)));
 
             //orderDetail.setSumPrice(p);
@@ -56,7 +56,7 @@ public class ManageOrderClass {
             orderDetail.setPurchaseOrderID("1");
             orderDetail.setDateAllocated("2020-08-18T21:54:43.5172323+04:30");
 
-            for (ProductPropertisClass pp : sendProductClass.getProductPropertis()
+            for (ProductPropertisClass pp : receiveProductClass.getProductPropertis()
             ) {
                 orderDetail.getPropertisViewModels().add(pp);
             }

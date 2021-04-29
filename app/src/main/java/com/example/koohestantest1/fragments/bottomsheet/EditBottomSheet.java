@@ -9,26 +9,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.koohestantest1.AddProductActivity;
-import com.example.koohestantest1.EditFieldActivity;
 import com.example.koohestantest1.Utils.NumberTextChanger;
 import com.example.koohestantest1.Utils.StringUtils;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
+import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.databinding.BottomSheetEditBinding;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.EditBodyRequest;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.ProductViewModel;
 import com.example.koohestantest1.viewModel.ProfileSharedViewModel;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.text.SimpleDateFormat;
@@ -78,7 +74,7 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
     private static BaseCodeClass.productFieldEnum mode = null;
     private static String value = null;
     private static AllProductData productData;
-    private static SendProductClass productData2;
+    private static ReceiveProductClass productData2;
    /* public static EditBottomSheet onNewInstance(int state, String price, String productId) {
         EditBottomSheet editBottomSheet = new EditBottomSheet();
         Bundle bundle = new Bundle();
@@ -106,10 +102,10 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
 
 
 
-    public static EditBottomSheet onNewInstance2(int state, String myValue, String productId, BaseCodeClass.productFieldEnum myMode, SendProductClass sendProductClass) {
+    public static EditBottomSheet onNewInstance2(int state, String myValue, String productId, BaseCodeClass.productFieldEnum myMode, ReceiveProductClass receiveProductClass) {
         mode = myMode;
         value = myValue;
-        productData2 = sendProductClass;
+        productData2 = receiveProductClass;
         EditBottomSheet editBottomSheet = new EditBottomSheet();
         Bundle bundle = new Bundle();
         bundle.putInt(PARAM_KEY_STATE, state);
@@ -462,7 +458,9 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
                 Log.d("Temporary", "Description");
                 break;
             case StandardCost:
-                selectedProduct.getProductClass().setStandardCost(newValue);
+                StandardPrice standardPrice = new StandardPrice();
+                standardPrice.setShowPrice(newValue);
+                selectedProduct.getProductClass().setStandardCost(standardPrice);
                 productViewModel.setEditedValue(newValue);
                 break;
             case ListPrice:

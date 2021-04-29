@@ -5,7 +5,7 @@ import com.example.koohestantest1.model.EditBodyRequest;
 import java.util.List;
 
 import com.example.koohestantest1.classDirectory.GetResualt;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -17,8 +17,8 @@ public interface ProductAPI {
     Call<GetResualt> callForEditingProduct(@Body EditBodyRequest bodyRequest);
 
     @POST("Products/LoadUnVisibleProduct")
-    Call<List<SendProductClass>> callForInvisibleProducts(@Query("CompanyID") String companyId, @Query("UserID") String userId, @Query("Token") String token);
+    Call<List<ReceiveProductClass>> callForInvisibleProducts(@Query("CompanyID") String companyId, @Query("UserID") String userId, @Query("Token") String token);
 
     @POST("Products/LoadNonexistentProduct")
-    Call<List<SendProductClass>> callForNotInStock(@Query("CompanyID") String companyId, @Query("UserID") String userId, @Query("Token") String token);
+    Call<List<ReceiveProductClass>> callForNotInStock(@Query("CompanyID") String companyId, @Query("UserID") String userId, @Query("Token") String token);
 }

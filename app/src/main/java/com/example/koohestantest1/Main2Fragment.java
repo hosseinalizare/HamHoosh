@@ -48,9 +48,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.koohestantest1.classDirectory.SendProduct;
+import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.constants.CurrentCartId;
 import com.example.koohestantest1.constants.FilterOption;
-import com.example.koohestantest1.fragments.bottomsheet.EditBottomSheet;
 import com.example.koohestantest1.fragments.transinterface.CartTransitionInterface;
 import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.local_db.entity.Product;
@@ -99,7 +100,7 @@ import com.example.koohestantest1.classDirectory.ProductPropertisClass;
 import com.example.koohestantest1.classDirectory.ProductRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -179,8 +180,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     public Main2Fragment() {
     }
 
+
+
     @Override
-    public Call<GetResualt> sendProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> sendProductDetail(SendProduct sendProductClass) {
         return null;
     }
 
@@ -195,17 +198,17 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId) {
         return null;
     }
 
     @Override
-    public void onResponseLoadProduct(List<SendProductClass> sendProductClasses) {
+    public void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses) {
         productRecyclerViewAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId, String userID) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId, String userID) {
         return null;
     }
 
@@ -274,12 +277,14 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
     @Override
-    public Call<GetResualt> editProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> editProductDetail(SendProduct receiveProductClass) {
         return null;
     }
 
+
+
     @Override
-    public Call<List<SendProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
+    public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
         return null;
     }
 
@@ -765,7 +770,13 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         allProductsPId.clear();
         List<Properties> properties = new ArrayList<>();
         for (Product product : products) {
-
+            StandardPrice standardPrice = new StandardPrice();
+            standardPrice.setOffPrice(product.offPrice);
+            standardPrice.setPrice(product.Price);
+            standardPrice.setShowoffPrice(product.ShowoffPrice);
+            standardPrice.setShowPrice(product.ShowPrice);
+            standardPrice.setShowStandardCost(product.ShowStandardCost);
+            standardPrice.setStandardCost(product.StandardCost);
             allProductsPId.add(product.ProductID);
 
             if (product.Deleted ||
@@ -783,7 +794,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             }
             if(properties.size() == 0)
                 continue;
-            SendProductClass spc = new SendProductClass(product, properties);
+            ReceiveProductClass spc = new ReceiveProductClass(product, properties,standardPrice);
 
 
 
@@ -798,21 +809,25 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 }
             }
             NumberFormat formatter = new DecimalFormat("#,###");
-            String nPrice = product.StandardCost;
+            String nPrice = product.ShowStandardCost;
             if (nPrice != null && !nPrice.isEmpty()) {
-                String[] aPrice = nPrice.split("\\.");
-                nPrice = (aPrice[0]);
+                String[] aPrice = nPrice.split(",");
+                StringBuilder priceBuilder = new StringBuilder();
+                for (String s : aPrice) {
+                    priceBuilder.append(s);
+                }
+                nPrice = priceBuilder.toString();
                 nPrice = formatter.format(Integer.parseInt(nPrice));
             }
 
-            String LPrice = product.ListPrice;
+            String LPrice = product.ShowoffPrice;
             if (LPrice != null && !LPrice.isEmpty()) {
                 String[] aPrice = LPrice.split("\\.");
                 LPrice = (aPrice[0]);
 
             }
-            AllProductData allProductData = new AllProductData(mContext, null, false, product.Likeit,
-                    null, product.Saveit, /*Integer.getInteger(product.LikeCount)*/0, /*Integer.getInteger(product.ViewedCount)*/0, category, spc);
+            AllProductData allProductData = new AllProductData(mContext, BaseCodeClass.getCompanyName(), false, product.Likeit,
+                    null, product.Saveit, /*Integer.getInteger(product.LikeCount)*/product.LikeCount, /*Integer.getInteger(product.ViewedCount)*/product.ViewedCount, category, spc);
             if (ISParticular(String.valueOf(product.ReorderLevel))) {
                 particularProduct.add(allProductData);
             }
@@ -830,7 +845,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 }
 
             } catch (Exception e) {
-
+                Log.d("Error",e.toString());
             }
             //  String[] like = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare2)).split("&");
             // String[] bookmark = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare3)).split("&");
@@ -854,23 +869,24 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
     private void loadProductFromServer(String CompanyId) {
-        Call<List<SendProductClass>> call = loadProductApi.loadProduct(CompanyId, baseCodeClass.getUserID());
-        call.enqueue(new Callback<List<SendProductClass>>() {
+        String test = baseCodeClass.getUserID();
+        Call<List<ReceiveProductClass>> call = loadProductApi.loadProduct(CompanyId, baseCodeClass.getUserID());
+        call.enqueue(new Callback<List<ReceiveProductClass>>() {
             @Override
-            public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+            public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                 synchronizeProductTableVer2(response.body(), false, dbViewModel);
             }
 
             @Override
-            public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+            public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                 Log.d("Error",t.getMessage());
             }
         });
     }
 
-    SendProductClass inQueueProduct = null;
+    ReceiveProductClass inQueueProduct = null;
 
-    private Boolean synchronizeProductTableVer2(List<SendProductClass> NetProduct, boolean updateMode, DBViewModel dbViewModel) {
+    private Boolean synchronizeProductTableVer2(List<ReceiveProductClass> NetProduct, boolean updateMode, DBViewModel dbViewModel) {
         boolean result = true;
         final boolean[] mustUpdate = {false};
 
@@ -949,17 +965,22 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         }
         return false;
     }
-    private void insertIntoDB(SendProductClass NetProduct, DBViewModel dbViewModel) {
+    private void insertIntoDB(ReceiveProductClass NetProduct, DBViewModel dbViewModel) {
 
         Product product = new Product();
         product.ViewedCount = NetProduct.getViewedCount();
-        product.UserID = NetProduct.getUserID();
+
         product.UpdateDate = NetProduct.getUpdateDate();
         product.Unit = NetProduct.getUnit();
-        product.Token = NetProduct.getToken();
+
         product.TargetLevel = NetProduct.getTargetLevel();
         product.SupplierID = NetProduct.getSupplierID();
-        product.StandardCost = NetProduct.getStandardCost();
+        product.StandardCost = NetProduct.getStandardCost().getStandardCost();
+        product.offPrice = NetProduct.getStandardCost().getOffPrice();
+        product.Price = NetProduct.getStandardCost().getPrice();
+        product.ShowStandardCost = NetProduct.getStandardCost().getShowStandardCost();
+        product.ShowoffPrice = NetProduct.getStandardCost().getShowoffPrice();
+        product.ShowPrice = NetProduct.getStandardCost().getShowPrice();
         product.Show = NetProduct.getShow();
         product.SellCount = NetProduct.getSellCount();
         product.Saveit = NetProduct.getSaveit();
@@ -969,7 +990,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.ProductName = NetProduct.getProductName();
         product.ProductID = NetProduct.getProductID();
         product.MinimumReorderQuantity = NetProduct.getMinimumReorderQuantity();
-        product.ListPrice = NetProduct.getListPrice();
         product.Likeit = NetProduct.isLikeit();
         product.LikeCount = NetProduct.getLikeCount();
         product.Discontinued = NetProduct.getDiscontinued();
@@ -977,6 +997,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Deleted = NetProduct.getDeleted();
         product.CompanyID = NetProduct.getCompanyID();
         product.Category = NetProduct.getCategory();
+
         dbViewModel.insertProduct(product);
 
         for (ProductPropertisClass productPropertis : NetProduct.getProductPropertis()) {
@@ -991,7 +1012,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
     }
 
-    private void updateProduct(SendProductClass productClass, DBViewModel dbViewModel) {
+    private void updateProduct(ReceiveProductClass productClass, DBViewModel dbViewModel) {
         Product product = new Product();
         product.Deleted = productClass.getDeleted();
         product.Category = productClass.getCategory();
@@ -1000,7 +1021,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Discontinued = productClass.getDiscontinued();
         product.LikeCount = productClass.getLikeCount();
         product.Likeit = productClass.isLikeit();
-        product.ListPrice = productClass.getListPrice();
         product.MinimumReorderQuantity = productClass.getMinimumReorderQuantity();
         product.ProductID = productClass.getProductID();
         product.ProductName = productClass.getProductName();
@@ -1010,13 +1030,16 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Saveit = productClass.getSaveit();
         product.SellCount = productClass.getSellCount();
         product.Show = productClass.getShow();
-        product.StandardCost = productClass.getStandardCost();
+        product.StandardCost = productClass.getStandardCost().getStandardCost();
+        product.offPrice = productClass.getStandardCost().getOffPrice();
+        product.Price = productClass.getStandardCost().getPrice();
+        product.ShowStandardCost = productClass.getStandardCost().getShowStandardCost();
+        product.ShowoffPrice = productClass.getStandardCost().getShowoffPrice();
+        product.ShowPrice = productClass.getStandardCost().getShowPrice();
         product.SupplierID = productClass.getSupplierID();
         product.TargetLevel = productClass.getTargetLevel();
-        product.Token = productClass.getToken();
         product.Unit = productClass.getUnit();
         product.UpdateDate = productClass.getUpdateDate();
-        product.UserID = productClass.getUserID();
         product.ViewedCount = productClass.getViewedCount();
         dbViewModel.updateProduct(product);
     }
@@ -1025,16 +1048,16 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         lastUpdateTime = convertStrToDate(updateTime);
         try {
             UpdatedProductBody updatedProductBody = new UpdatedProductBody(companyID, baseCodeClass.getUserID(), updateTime);
-            Call<List<SendProductClass>> call = loadProductApi.getUpdatedData(updatedProductBody);
-            call.enqueue(new Callback<List<SendProductClass>>() {
+            Call<List<ReceiveProductClass>> call = loadProductApi.getUpdatedData(updatedProductBody);
+            call.enqueue(new Callback<List<ReceiveProductClass>>() {
                 @Override
-                public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+                public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                     synchronizeProductTableVer2(response.body(), true, dbViewModel);
                     Log.d(TAG, "onResponse: ******update*******" + response.body().size());
                 }
 
                 @Override
-                public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+                public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                     Log.d(TAG, "onFailure: " + t.getMessage());
                     swipeRefreshLayout.setRefreshing(false);
                 }

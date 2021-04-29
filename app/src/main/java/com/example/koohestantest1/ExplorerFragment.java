@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 
@@ -43,7 +44,7 @@ import com.example.koohestantest1.classDirectory.GetPropertisOfCompanyProducts;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
 import com.example.koohestantest1.classDirectory.SendHashtagClass;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 
 import okhttp3.MultipartBody;
@@ -52,7 +53,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.categoryRecyclerViewAdapter;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
@@ -196,28 +196,28 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
         try {
             if (companyID.equals("") || companyID.isEmpty() || companyID == "") {
 
-                Call<List<SendProductClass>> call = explorerApi.loadAllProduct(txt, "1");
-                call.enqueue(new Callback<List<SendProductClass>>() {
+                Call<List<ReceiveProductClass>> call = explorerApi.loadAllProduct(txt, "1");
+                call.enqueue(new Callback<List<ReceiveProductClass>>() {
                     @Override
-                    public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+                    public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                         search(response.body());
                     }
 
                     @Override
-                    public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+                    public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                         Log.d("Error",t.getMessage());
                     }
                 });
             } else {
-                Call<List<SendProductClass>> call = explorerApi.loadProduct(txt, "1", companyID);
-                call.enqueue(new Callback<List<SendProductClass>>() {
+                Call<List<ReceiveProductClass>> call = explorerApi.loadProduct(txt, "1", companyID);
+                call.enqueue(new Callback<List<ReceiveProductClass>>() {
                     @Override
-                    public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+                    public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                         search(response.body());
                     }
 
                     @Override
-                    public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+                    public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                         Log.d("Error",t.getMessage());
                     }
                 });
@@ -233,28 +233,28 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
         try {
             if (companyID.equals("") || companyID.isEmpty() || companyID == "") {
                 /**1399/10/11**/
-                Call<List<SendProductClass>> call = explorerApi.searchAllTag(new SendHashtagClass(tag, "1"));
-                call.enqueue(new Callback<List<SendProductClass>>() {
+                Call<List<ReceiveProductClass>> call = explorerApi.searchAllTag(new SendHashtagClass(tag, "1"));
+                call.enqueue(new Callback<List<ReceiveProductClass>>() {
                     @Override
-                    public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+                    public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                         search(response.body());
                     }
 
                     @Override
-                    public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+                    public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                         Log.d("Error",t.getMessage());
                     }
                 });
             } else {
-                Call<List<SendProductClass>> call = explorerApi.searchAllTagNewVersion(new SendHashtagClass(tag, "1", companyID));
-                call.enqueue(new Callback<List<SendProductClass>>() {
+                Call<List<ReceiveProductClass>> call = explorerApi.searchAllTagNewVersion(new SendHashtagClass(tag, "1", companyID));
+                call.enqueue(new Callback<List<ReceiveProductClass>>() {
                     @Override
-                    public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+                    public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                         search(response.body());
                     }
 
                     @Override
-                    public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+                    public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
 
                     }
                 });
@@ -264,14 +264,14 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
         }
     }
 
-    public void search(List<SendProductClass> productClasses) {
+    public void search(List<ReceiveProductClass> productClasses) {
         try {
             if (productClasses == null) {
                 //baseCodeClass.logMessage("محصولی یافت نشد!", mContext);
             } else {
                 mCategory.clear();
                 mCategory.add("همه");
-                for (SendProductClass spc : productClasses
+                for (ReceiveProductClass spc : productClasses
                 ) {
                     if (!spc.getCompanyID().equals(baseCodeClass.getCompanyID())) {
                         productClasses.remove(spc);
@@ -298,12 +298,12 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
         }
     }
 
-    public void initExplorerRecyclerView(List<SendProductClass> sendProductClass) {
+    public void initExplorerRecyclerView(List<ReceiveProductClass> receiveProductClasses) {
         try {
             LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.searchProduct_RecyclerView);
             recyclerView.setLayoutManager(layoutManager);
-            adapter = new ExplorerRecyclerViewAdapter(mContext, sendProductClass, this);
+            adapter = new ExplorerRecyclerViewAdapter(mContext, receiveProductClasses, this);
             recyclerView.setAdapter(adapter);
             if (edSearch.getText().length() == 0) {
                 adapter.clearList();
@@ -359,8 +359,10 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
         Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
     }
 
+
+
     @Override
-    public Call<GetResualt> sendProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> sendProductDetail(SendProduct sendProductClass) {
         return null;
     }
 
@@ -375,17 +377,17 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId) {
         return null;
     }
 
     @Override
-    public void onResponseLoadProduct(List<SendProductClass> sendProductClasses) {
+    public void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses) {
 
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId, String userID) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId, String userID) {
         return null;
     }
 
@@ -455,12 +457,14 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
     }
 
     @Override
-    public Call<GetResualt> editProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> editProductDetail(SendProduct receiveProductClass) {
         return null;
     }
 
+
+
     @Override
-    public Call<List<SendProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
+    public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
         return null;
     }
 

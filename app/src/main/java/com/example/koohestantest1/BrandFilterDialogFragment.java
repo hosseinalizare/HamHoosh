@@ -16,13 +16,12 @@ import com.example.koohestantest1.ApiDirectory.LoadProductApi;
 import com.example.koohestantest1.ViewModels.BookMarkViewModel;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
 import com.example.koohestantest1.ViewModels.PostViewViewModel;
-import com.example.koohestantest1.activity.Main2Activity;
 import com.example.koohestantest1.adapter.BrandFilterRecyclerViewAdapter;
-import com.example.koohestantest1.classDirectory.FilterRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.GetPropertisOfCompanyProducts;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
+import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 
@@ -70,8 +69,10 @@ public class BrandFilterDialogFragment extends DialogFragment implements LoadPro
     }
 
 
+
+
     @Override
-    public Call<GetResualt> sendProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> sendProductDetail(SendProduct sendProductClass) {
         return null;
     }
 
@@ -86,17 +87,17 @@ public class BrandFilterDialogFragment extends DialogFragment implements LoadPro
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId) {
         return null;
     }
 
     @Override
-    public void onResponseLoadProduct(List<SendProductClass> sendProductClasses) {
+    public void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses) {
 
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId, String userID) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId, String userID) {
         return null;
     }
 
@@ -166,12 +167,14 @@ public class BrandFilterDialogFragment extends DialogFragment implements LoadPro
     }
 
     @Override
-    public Call<GetResualt> editProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> editProductDetail(SendProduct receiveProductClass) {
         return null;
     }
 
+
+
     @Override
-    public Call<List<SendProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
+    public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
         return null;
     }
 

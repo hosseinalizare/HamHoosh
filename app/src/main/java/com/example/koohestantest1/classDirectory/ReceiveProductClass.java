@@ -2,20 +2,22 @@ package com.example.koohestantest1.classDirectory;
 
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SendProductClass {
-    private String Token;
-    private String UserID;
+public class ReceiveProductClass {
+    //private String Token;
+    //private String UserID;
     private String CompanyID;
     private String SupplierID;
     private String ProductID;
     private String ProductName;
     private String Description;
-    private String StandardCost;
-    private String ListPrice; //Kharid Kolli
+    @SerializedName("StandardPric")
+    private StandardPrice StandardCost;
+    //private String ListPrice; //Kharid Kolli
     private int ReorderLevel; //Star of product number 0 - 255
     private int TargetLevel; // 0 - ~
     private String Unit; //kg || m || ...
@@ -47,14 +49,14 @@ public class SendProductClass {
     private List<ProductPropertisClass> productPropertis;
 
     private boolean Likeit;
-    public SendProductClass(Product product, List<Properties> properties){
+    public ReceiveProductClass(Product product, List<Properties> properties, StandardPrice standardPrice){
         CompanyID = product.CompanyID;
         SupplierID = product.SupplierID;
         ProductID = product.ProductID;
         ProductName = product.ProductName;
         Description = product.Description;
-        StandardCost = product.StandardCost;
-        ListPrice = product.ListPrice;
+        StandardCost = standardPrice;
+        //ListPrice = product.ListPrice;
         ReorderLevel = product.ReorderLevel;
         TargetLevel = product.TargetLevel;
         Unit = product.Unit;
@@ -90,22 +92,22 @@ public class SendProductClass {
         }
     }
 
-    public SendProductClass(String token, String userID, String companyID, String supplierID, String productID,
-                            String productName, String description, String standardCost, String listPrice, int reorderLevel,
-                            int targetLevel, String unit, String quantityPerUnit, int discontinued, int minimumReorderQuantity,
-                            String category, boolean show, long updateDate, boolean deleted,boolean deleted1, int viewedCount, int likeCount,
-                            int saveCount, boolean likeit, boolean saveit,String spare1,String spare2,String spare3,int id,
-                            int productType,boolean activeLike,boolean activeComment,boolean activeSave,
-                            String creatorUserID,String linkOut,String linkToInstagram,boolean chatWhitCreator,List<ProductPropertisClass> productPropertis) {
-        Token = token;
-        UserID = userID;
+    public ReceiveProductClass(String companyID, String supplierID, String productID,
+                               String productName, String description, StandardPrice standardCost, int reorderLevel,
+                               int targetLevel, String unit, String quantityPerUnit, int discontinued, int minimumReorderQuantity,
+                               String category, boolean show, long updateDate, boolean deleted, boolean deleted1, int viewedCount, int likeCount,
+                               int saveCount, boolean likeit, boolean saveit, String spare1, String spare2, String spare3, int id,
+                               int productType, boolean activeLike, boolean activeComment, boolean activeSave,
+                               String creatorUserID, String linkOut, String linkToInstagram, boolean chatWhitCreator, List<ProductPropertisClass> productPropertis) {
+//        Token = token;
+//        UserID = userID;
         CompanyID = companyID;
         SupplierID = supplierID;
         ProductID = productID;
         ProductName = productName;
         Description = description;
         StandardCost = standardCost;
-        ListPrice = listPrice;
+        //ListPrice = listPrice;
         ReorderLevel = reorderLevel;
         TargetLevel = targetLevel;
         Unit = unit;
@@ -135,6 +137,14 @@ public class SendProductClass {
         CreatorUserID = creatorUserID;
         ChatWhitCreator = chatWhitCreator;
         this.productPropertis = productPropertis;
+    }
+
+    public StandardPrice getStandardCost() {
+        return StandardCost;
+    }
+
+    public void setStandardCost(StandardPrice standardCost) {
+        StandardCost = standardCost;
     }
 
     public boolean isChatWhitCreator() {
@@ -245,13 +255,13 @@ public class SendProductClass {
         Deleted = deleted;
     }
 
-    public String getToken() {
-        return Token;
-    }
-
-    public String getUserID() {
-        return UserID;
-    }
+//    public String getToken() {
+//        return Token;
+//    }
+//
+//    public String getUserID() {
+//        return UserID;
+//    }
 
     public String getCompanyID() {
         return CompanyID;
@@ -273,14 +283,12 @@ public class SendProductClass {
         return Description;
     }
 
-    public String getStandardCost() {
-        return StandardCost;
-    }
 
-    public String getListPrice() {
+
+    /*public String getListPrice() {
         return ListPrice;
     }
-
+*/
     public int getReorderLevel() {
         return ReorderLevel;
     }
@@ -345,13 +353,11 @@ public class SendProductClass {
         LikeCount = likeCount;
     }
 
-    public void setStandardCost(String standardCost) {
-        StandardCost = standardCost;
-    }
-    public  void  setListPrice(String listPrice)
+
+    /*public  void  setListPrice(String listPrice)
     {
         ListPrice = listPrice;
-    }
+    }*/
 
     public boolean getSaveit() {
         return Saveit;

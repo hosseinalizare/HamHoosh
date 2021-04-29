@@ -28,7 +28,7 @@ import java.util.List;
 
 import com.example.koohestantest1.DB.MyDataBase;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import com.example.koohestantest1.fragments.bottomsheet.EditBottomSheet;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.badge;
@@ -42,7 +42,7 @@ import static com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirec
 
 public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRecyclerViewAdapterV2.MyViewHolder> {
     private Context mContext;
-    public List<SendProductClass> showProductData;
+    public List<ReceiveProductClass> showProductData;
     private final String TAG = ProductRecyclerViewAdapterV2.class.getSimpleName();
     BaseCodeClass baseCodeClass = new BaseCodeClass();
     MyDataBase mydb;
@@ -61,7 +61,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
         this.fragmentManager = fragmentManager;
     }
 
-    public void setData(List<SendProductClass> _productData) {
+    public void setData(List<ReceiveProductClass> _productData) {
         showProductData = _productData;
         notifyDataSetChanged();
     }
@@ -115,7 +115,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
 
             String detail = showProductData.get(position).getDescription().replace("\n", " ");
             mholder.txtDetail.setText(detail);
-            String dirtyPrice = showProductData.get(position).getStandardCost();
+            String dirtyPrice = showProductData.get(position).getStandardCost().getShowPrice();
             float floatPrice = Float.parseFloat(dirtyPrice);
             int intPrice = (int) floatPrice;
             Log.d(TAG, "loadProduct: " + intPrice);
@@ -250,7 +250,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
                         }else {
                             productId = showProductData.get(position).getProductID();
                             editBottomSheet = EditBottomSheet.
-                                    onNewInstance(0, showProductData.get(position).getStandardCost(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
+                                    onNewInstance(0, showProductData.get(position).getStandardCost().getShowPrice(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
                             editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         }
                         break;
@@ -265,7 +265,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
 /*
                         AllProductData productData = showProductData.get(position);
 */
-                        SendProductClass productData = showProductData.get(position);
+                        ReceiveProductClass productData = showProductData.get(position);
                         editBottomSheet = EditBottomSheet.
                                 onNewInstance2(0,null,productId, BaseCodeClass.productFieldEnum.Deleted,productData);
                         editBottomSheet.show(fragmentManager,"DELETE_PRODUCT");

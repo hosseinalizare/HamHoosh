@@ -10,12 +10,12 @@ import com.example.koohestantest1.model.repository.EventsRepository;
 
 import java.util.List;
 
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 
 public class EventsViewModel extends ViewModel implements EventsLikedCallBacks, EventsBookmarkedCallBacks {
     private EventsRepository eventsRepository;
-    private MutableLiveData<List<SendProductClass>> liveDataBookmarks = new MutableLiveData<>();
-    private MutableLiveData<List<SendProductClass>> liveDataFavs = new MutableLiveData<>();
+    private MutableLiveData<List<ReceiveProductClass>> liveDataBookmarks = new MutableLiveData<>();
+    private MutableLiveData<List<ReceiveProductClass>> liveDataFavs = new MutableLiveData<>();
     private MutableLiveData<String> liveDataErrBookmarks = new MutableLiveData<>();
     private MutableLiveData<String> liveDataErrFavs = new MutableLiveData<>();
 
@@ -31,11 +31,11 @@ public class EventsViewModel extends ViewModel implements EventsLikedCallBacks, 
         eventsRepository.callForLikedProducts(companyId, userId);
     }
 
-    public LiveData<List<SendProductClass>> getLiveBookmarks() {
+    public LiveData<List<ReceiveProductClass>> getLiveBookmarks() {
         return liveDataBookmarks;
     }
 
-    public LiveData<List<SendProductClass>> getLiveFavs() {
+    public LiveData<List<ReceiveProductClass>> getLiveFavs() {
         return liveDataFavs;
     }
 
@@ -48,7 +48,7 @@ public class EventsViewModel extends ViewModel implements EventsLikedCallBacks, 
     }
 
     @Override
-    public void onSuccessBookmarked(List<SendProductClass> res) {
+    public void onSuccessBookmarked(List<ReceiveProductClass> res) {
         liveDataBookmarks.setValue(res);
     }
 
@@ -58,7 +58,7 @@ public class EventsViewModel extends ViewModel implements EventsLikedCallBacks, 
     }
 
     @Override
-    public void onSuccessLiked(List<SendProductClass> res) {
+    public void onSuccessLiked(List<ReceiveProductClass> res) {
         liveDataFavs.setValue(res);
     }
 

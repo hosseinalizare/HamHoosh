@@ -153,8 +153,9 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+
     @Override
-    public Call<GetResualt> sendProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> sendProductDetail(SendProduct sendProductClass) {
         return null;
     }
 
@@ -169,17 +170,17 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId) {
         return null;
     }
 
     @Override
-    public void onResponseLoadProduct(List<SendProductClass> sendProductClasses) {
+    public void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses) {
 
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId, String userID) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId, String userID) {
         return null;
     }
 
@@ -249,12 +250,14 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public Call<GetResualt> editProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> editProductDetail(SendProduct receiveProductClass) {
         return null;
     }
 
+
+
     @Override
-    public Call<List<SendProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
+    public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
         return null;
     }
 
@@ -462,7 +465,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 showPopup(v,position);
             });
 
-            if (!showProductData.get(position).getProductClass().getListPrice().equals("0")){
+            if (!showProductData.get(position).getProductClass().getStandardCost().getShowoffPrice().equals("0")){
 
 
                 final int sdk = android.os.Build.VERSION.SDK_INT;
@@ -472,9 +475,9 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     holder.txtPrice.setBackground(ContextCompat.getDrawable(context, R.drawable.red_line));
                 }
                 holder.imgDiscount.setVisibility(View.VISIBLE);
-                int firstPrice=Integer.parseInt(showProductData.get(position).getProductClass().getStandardCost());
-                int discountPrice=Integer.parseInt(showProductData.get(position).getProductClass().getListPrice());
-                int finalPrice = firstPrice-discountPrice;
+                /*int firstPrice=showProductData.get(position).getProductClass().getStandardCost().getPrice();
+                int discountPrice=showProductData.get(position).getProductClass().getStandardCost().getOffPrice();*/
+                int finalPrice = showProductData.get(position).getProductClass().getStandardCost().getPrice();
 
                 holder.txtPrice2.setText(StringUtils.getNumberWithoutDot(finalPrice));
                 holder.txtPrice2.setVisibility(View.VISIBLE);
@@ -497,7 +500,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             } else {
                 holder.txtDetail.setText(detail);
             }
-            holder.txtPrice.setText(StringUtils.getNumberWithoutDot(showProductData.get(position).getProductClass().getStandardCost()));
+            holder.txtPrice.setText(StringUtils.getNumberWithoutDot(showProductData.get(position).getProductClass().getStandardCost().getShowPrice()));
 
             if (!baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")) {
                 boolean changePricePermission = baseCodeClass.getPermissions().get(BaseCodeClass.EmploeeAccessLevel.EditeProductPrice.getValue()).isState();
@@ -507,7 +510,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         return false;
                     }else {
                         String productId = showProductData.get(position).getProductClass().getProductID();
-                        EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, showProductData.get(position).getProductClass().getStandardCost(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
+                        EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, showProductData.get(position).getProductClass().getStandardCost().getShowPrice(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
                         editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         return true;
                     }
@@ -519,7 +522,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         return false;
                     }else {
                         String productId = showProductData.get(position).getProductClass().getProductID();
-                        EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, showProductData.get(position).getProductClass().getStandardCost(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
+                        EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, showProductData.get(position).getProductClass().getStandardCost().getShowPrice(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
                         editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         return true;
                     }
@@ -630,7 +633,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }else {
                             productId = showProductData.get(position).getProductClass().getProductID();
                             editBottomSheet = EditBottomSheet.
-                                    onNewInstance(0, showProductData.get(position).getProductClass().getStandardCost(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
+                                    onNewInstance(0, showProductData.get(position).getProductClass().getStandardCost().getShowPrice(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
                             editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         }
                         break;
@@ -659,8 +662,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void sortCheapData() {
         Collections.sort(filteredProduct, (o1, o2) -> {
 
-            String itemPrice1 = o1.getProductClass().getStandardCost();
-            String itemPrice2 = o2.getProductClass().getStandardCost();
+            String itemPrice1 = o1.getProductClass().getStandardCost().getShowPrice();
+            String itemPrice2 = o2.getProductClass().getStandardCost().getShowPrice();
             if (isFieldEmpty(itemPrice1, itemPrice2))
                 return 1;
 
@@ -698,8 +701,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void sortExpensiveData() {
         Collections.sort(filteredProduct, (o1, o2) -> {
 
-            String itemPrice1 = o1.getProductClass().getStandardCost();
-            String itemPrice2 = o2.getProductClass().getStandardCost();
+            String itemPrice1 = o1.getProductClass().getStandardCost().getShowPrice();
+            String itemPrice2 = o2.getProductClass().getStandardCost().getShowPrice();
             if (isFieldEmpty(itemPrice1, itemPrice2))
                 return 0;
 

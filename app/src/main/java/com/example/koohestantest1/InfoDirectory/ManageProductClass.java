@@ -35,7 +35,7 @@ import com.example.koohestantest1.DB.MyDataBase;
 import com.example.koohestantest1.classDirectory.AllProductData;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.ProductPropertisClass;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import io.reactivex.Single;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -109,10 +109,10 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
 
     public void LoadAllProduct(String CompanyId) {
         try {
-            Call<List<SendProductClass>> call = productApi.loadProduct(CompanyId, baseCodeClass.getUserID());
-            call.enqueue(new Callback<List<SendProductClass>>() {
+            Call<List<ReceiveProductClass>> call = productApi.loadProduct(CompanyId, baseCodeClass.getUserID());
+            call.enqueue(new Callback<List<ReceiveProductClass>>() {
                 @Override
-                public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+                public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                     try {
                         Log.d(TAG, "onResponse: ****size all list****" + response.body().size());
                         /*synchronizeProductTable(response.body(), false).subscribe(new SingleObserver<Boolean>() {
@@ -143,7 +143,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                 }
 
                 @Override
-                public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+                public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
 
                 }
             });
@@ -232,7 +232,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                             continue;
                         }
                         String pid = product.ProductID;
-                        SendProductClass spc = new SendProductClass(product, null);
+                        ReceiveProductClass spc = new ReceiveProductClass(product, null,null);
 
 
                         List<String> category = new ArrayList<>();
@@ -246,14 +246,14 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                             }
                         }
                         NumberFormat formatter = new DecimalFormat("#,###");
-                        String nPrice = product.StandardCost;
+                        String nPrice = product.ShowPrice;
                         if (nPrice != null && !nPrice.isEmpty()) {
                             String[] aPrice = nPrice.split("\\.");
                             nPrice = (aPrice[0]);
                             nPrice = formatter.format(Integer.parseInt(nPrice));
                         }
 
-                        String LPrice = product.ListPrice;
+                        String LPrice = product.ShowoffPrice;
                         if (LPrice != null && !LPrice.isEmpty()) {
                             String[] aPrice = LPrice.split("\\.");
                             LPrice = (aPrice[0]);
@@ -390,7 +390,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
     }
 
 
-    private Boolean synchronizeProductTableVer2(List<SendProductClass> NetProduct, boolean updateMode) {
+    private Boolean synchronizeProductTableVer2(List<ReceiveProductClass> NetProduct, boolean updateMode) {
         boolean result = true;
         //DatabaseService databaseService = new DatabaseService(mContext);
         long itemId;
@@ -425,17 +425,17 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
 
     }
 
-    private void insertIntoDB(SendProductClass NetProduct, DBViewModel dbViewModel) {
+    private void insertIntoDB(ReceiveProductClass NetProduct, DBViewModel dbViewModel) {
 
         Product product = new Product();
         product.ViewedCount = NetProduct.getViewedCount();
-        product.UserID = NetProduct.getUserID();
+
         product.UpdateDate = NetProduct.getUpdateDate();
         product.Unit = NetProduct.getUnit();
-        product.Token = NetProduct.getToken();
+
         product.TargetLevel = NetProduct.getTargetLevel();
         product.SupplierID = NetProduct.getSupplierID();
-        product.StandardCost = NetProduct.getStandardCost();
+        product.StandardCost = NetProduct.getStandardCost().getStandardCost();
         product.Show = NetProduct.getShow();
         product.SellCount = NetProduct.getSellCount();
         product.Saveit = NetProduct.getSaveit();
@@ -445,7 +445,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         product.ProductName = NetProduct.getProductName();
         product.ProductID = NetProduct.getProductID();
         product.MinimumReorderQuantity = NetProduct.getMinimumReorderQuantity();
-        product.ListPrice = NetProduct.getListPrice();
+
         product.Likeit = NetProduct.isLikeit();
         product.LikeCount = NetProduct.getLikeCount();
         product.Discontinued = NetProduct.getDiscontinued();
@@ -467,7 +467,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
 
     }
 
-    private void updateProduct(SendProductClass productClass, DBViewModel dbViewModel) {
+    private void updateProduct(ReceiveProductClass productClass, DBViewModel dbViewModel) {
         Product product = new Product();
         product.Deleted = productClass.getDeleted();
         product.Category = productClass.getCategory();
@@ -476,7 +476,6 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         product.Discontinued = productClass.getDiscontinued();
         product.LikeCount = productClass.getLikeCount();
         product.Likeit = productClass.isLikeit();
-        product.ListPrice = productClass.getListPrice();
         product.MinimumReorderQuantity = productClass.getMinimumReorderQuantity();
         product.ProductID = productClass.getProductID();
         product.ProductName = productClass.getProductName();
@@ -486,13 +485,11 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         product.Saveit = productClass.getSaveit();
         product.SellCount = productClass.getSellCount();
         product.Show = productClass.getShow();
-        product.StandardCost = productClass.getStandardCost();
+        product.StandardCost = productClass.getStandardCost().getStandardCost();
         product.SupplierID = productClass.getSupplierID();
         product.TargetLevel = productClass.getTargetLevel();
-        product.Token = productClass.getToken();
         product.Unit = productClass.getUnit();
         product.UpdateDate = productClass.getUpdateDate();
-        product.UserID = productClass.getUserID();
         product.ViewedCount = productClass.getViewedCount();
         dbViewModel.updateProduct(product);
     }
@@ -509,7 +506,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         }
     }
 
-    private Single<Boolean> synchronizeProductTable(List<SendProductClass> NetProduct, boolean updateMode) {
+    private Single<Boolean> synchronizeProductTable(List<ReceiveProductClass> NetProduct, boolean updateMode) {
         if (!updateMode) {
             Log.d(TAG, "synchronizeProductTable: " + Thread.currentThread().getName());
             ProductIDList.clear();
@@ -520,9 +517,9 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         return insertDataToDb(NetProduct);
     }
 
-    private Single<Boolean> insertDataToDb(List<SendProductClass> netProduct) {
+    private Single<Boolean> insertDataToDb(List<ReceiveProductClass> netProduct) {
         return Single.create((SingleOnSubscribe<Boolean>) emitter -> {
-            for (SendProductClass productClass : netProduct
+            for (ReceiveProductClass productClass : netProduct
             ) {
                 /*if (mydb.insertProduct(mContext, productClass.getCategory(),
                         productClass.getDeleted(), "false",
@@ -664,10 +661,10 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
     private void updateData(String companyID) {
         try {
             UpdatedProductBody updatedProductBody = new UpdatedProductBody(companyID, baseCodeClass.getUserID(), updateTime);
-            Call<List<SendProductClass>> call = productApi.getUpdatedData(updatedProductBody);
-            call.enqueue(new Callback<List<SendProductClass>>() {
+            Call<List<ReceiveProductClass>> call = productApi.getUpdatedData(updatedProductBody);
+            call.enqueue(new Callback<List<ReceiveProductClass>>() {
                 @Override
-                public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+                public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                     synchronizeProductTableVer2(response.body(), true);
                    /* synchronizeProductTable(response.body(), true).subscribe(new SingleObserver<Boolean>() {
                         @Override
@@ -692,7 +689,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                 }
 
                 @Override
-                public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+                public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                     Log.d(TAG, "onFailure: " + t.getMessage());
                 }
             });

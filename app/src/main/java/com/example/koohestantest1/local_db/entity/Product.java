@@ -13,11 +13,9 @@ public class Product {
     @ColumnInfo(name = "product_id")
     public String ProductID;
 
-    @ColumnInfo(name = "token")
-    public String Token;
 
-    @ColumnInfo(name = "user_id")
-    public String UserID;
+
+
 
     @ColumnInfo(name = "company_id")
     public String CompanyID;
@@ -33,10 +31,9 @@ public class Product {
     public String Description;
 
     @ColumnInfo(name = "standard_cost")
-    public String StandardCost;
+    public int StandardCost;
 
-    @ColumnInfo(name = "list_price")
-    public String ListPrice;
+
 
     @ColumnInfo(name = "reorder_level")
     public int ReorderLevel;
