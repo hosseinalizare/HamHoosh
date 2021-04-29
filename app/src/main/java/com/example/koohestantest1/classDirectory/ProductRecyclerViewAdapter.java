@@ -723,10 +723,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public void sortByNewProduct(){
         Collections.sort(filteredProduct, (o1, o2) -> {
-           Date date1 = TimeUtils.convertStrToDate(String.valueOf(o1.getProductClass().getUpdateDate()));
-           Date date2 = TimeUtils.convertStrToDate(String.valueOf(o2.getProductClass().getUpdateDate()));
-           long d1 = date1.getTime();
-           long d2 = date2.getTime();
+           long d1 = o1.getProductClass().getUpdateDate();
+           long d2 = o2.getProductClass().getUpdateDate();
 
                 return Long.compare(d1,d2);
 
@@ -740,6 +738,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     }
 
+    private Date fromDotNetTicks(long ticks)
+    {
+        // Rebase to Jan 1st 1970, the Unix epoch
+        ticks -= 621355968000000000L;
+        long millis = ticks / 10000;
+        return new Date(millis);
+    }
 
     public void sortMostSell() {
         Collections.sort(filteredProduct, (o1, o2) -> {
