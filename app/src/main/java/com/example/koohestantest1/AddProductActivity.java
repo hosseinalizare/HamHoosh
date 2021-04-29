@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.PersistableBundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -45,8 +44,9 @@ import com.canhub.cropper.CropImage;
 import com.canhub.cropper.CropImageView;
 import com.example.koohestantest1.Utils.Cache;
 import com.example.koohestantest1.Utils.NumberTextChanger;
+import com.example.koohestantest1.classDirectory.SendProduct;
+import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.model.DeleteProduct;
-import com.example.koohestantest1.model.Permission;
 import com.example.koohestantest1.model.UpdatedProductBody;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -69,7 +69,7 @@ import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.ProductPropertiesRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.ProductPropertisClass;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 
 import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
@@ -139,7 +139,7 @@ public class AddProductActivity extends AppCompatActivity {
     private String TAG = AddProductActivity.class.getSimpleName();
     private CheckBox cbShowToUser;
     private TextView txtShowToUser;
-    private SendProductClass mainSendProductClass;
+    private SendProduct mainSendProductClass;
 
     private Bitmap mainBitmap = null;
 
@@ -222,8 +222,10 @@ public class AddProductActivity extends AppCompatActivity {
                 btnDelete.setVisibility(View.GONE);
 
             callBack = new LoadProductApi() {
+
+
                 @Override
-                public Call<GetResualt> sendProductDetail(SendProductClass sendProductClass) {
+                public Call<GetResualt> sendProductDetail(SendProduct sendProductClass) {
                     return null;
                 }
 
@@ -259,17 +261,17 @@ public class AddProductActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public Call<List<SendProductClass>> loadProduct(String companyId) {
+                public Call<List<ReceiveProductClass>> loadProduct(String companyId) {
                     return null;
                 }
 
                 @Override
-                public void onResponseLoadProduct(List<SendProductClass> sendProductClasses) {
+                public void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses) {
 
                 }
 
                 @Override
-                public Call<List<SendProductClass>> loadProduct(String companyId, String userID) {
+                public Call<List<ReceiveProductClass>> loadProduct(String companyId, String userID) {
                     return null;
                 }
 
@@ -380,12 +382,14 @@ public class AddProductActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public Call<GetResualt> editProductDetail(SendProductClass sendProductClass) {
+                public Call<GetResualt> editProductDetail(SendProduct receiveProductClass) {
                     return null;
                 }
 
+
+
                 @Override
-                public Call<List<SendProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
+                public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
                     return null;
                 }
 
@@ -528,9 +532,9 @@ public class AddProductActivity extends AppCompatActivity {
                 try {
                     productID = pid;
                     EdProductName.setText(selectedProduct.getProductClass().getProductName());
-                    EdProductPrice.setText(selectedProduct.getProductClass().getStandardCost());
+                    EdProductPrice.setText(selectedProduct.getProductClass().getStandardCost().getShowPrice());
                     EdProductDescription.setText(selectedProduct.getProductClass().getDescription());
-                    EdDiscount.setText(selectedProduct.getProductClass().getListPrice());
+                    EdDiscount.setText(selectedProduct.getProductClass().getStandardCost().getShowoffPrice());
                     EdInventory.setText(String.valueOf(selectedProduct.getProductClass().getDiscontinued()));
 
                     String showTik = String.valueOf(selectedProduct.getProductClass().getShow());
@@ -819,8 +823,9 @@ public class AddProductActivity extends AppCompatActivity {
             return false;
         }
 
-        String standardCost = EdProductPrice.getText().toString();
-        if (checkEmptyString(standardCost)) {
+        StandardPrice standardCost = new StandardPrice();
+        standardCost.setShowStandardCost(EdProductPrice.getText().toString());
+        if (checkEmptyString(EdProductPrice.getText().toString())) {
             Toast.makeText(this, "قیمت نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -852,15 +857,20 @@ public class AddProductActivity extends AppCompatActivity {
             Toast.makeText(this, "به مشخصات اصلی کالا حداقل یک مورد اضافه کنید.", Toast.LENGTH_SHORT).show();
             return false;
         }
+        mainSendProductClass = new SendProduct(baseCodeClass.getToken(),baseCodeClass.getUserID(),
+                baseCodeClass.getCompanyID(),baseCodeClass.getCompanyID(),productID,productName,
+                description,standardCost.getStandardCost(),standardCost.getOffPrice(),Integer.parseInt(reOrder),
+                10,UnitValue,"1",Count,1,
+                MainCategory + "." + SubCat1 + "." + SubCat2,true,false,null,
+                null,null,0,false,false,false,
+                baseCodeClass.getUserID(),null,null,false,productPropertisClasses);
+        /*mainSendProductClass = new SendProduct(
+                baseCodeClass.getCompanyID(),baseCodeClass.getCompanyID(),productID,productName,description,standardCost,
+                Integer.parseInt(reOrder),10,UnitValue,"1",Count,1,MainCategory + "." + SubCat1 + "." + SubCat2,showToUser,
+                0,false,false,0,0,0,false,false,null,null,null,1,0,false,false,false,BaseCodeClass.userID,null,null,false,
+                productPropertisClasses
+        );*/
 
-        mainSendProductClass = new SendProductClass
-                (baseCodeClass.getToken(), baseCodeClass.getUserID(),
-                        baseCodeClass.getCompanyID(), baseCodeClass.getCompanyID(), productID, productName, description
-                        , standardCost, (listPrice != null || listPrice.equals("")) ? listPrice : "0",
-                        Integer.parseInt(reOrder), 10, UnitValue, "1", Count, 1,
-                        MainCategory + "." + SubCat1 + "." + SubCat2, showToUser, 0, false, false,
-                        0, 0, 0, false, false,null,null,null,0,0,false,false,false,baseCodeClass.getUserID(),null,
-                        null,false,productPropertisClasses);
 
         return true;
     }
@@ -870,7 +880,7 @@ public class AddProductActivity extends AppCompatActivity {
 
             if (mainSendProductClass != null) {
                 Call<GetResualt> call = loadProductApi.editProductDetail(mainSendProductClass);
-                Log.d(TAG, "editProduct: " + mainSendProductClass.getCompanyID() + " user: " + mainSendProductClass.getUserID());
+                Log.d(TAG, "editProduct: " + mainSendProductClass.getCompanyID());
                 call.enqueue(new Callback<GetResualt>() {
                     @Override
                     public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
@@ -958,10 +968,10 @@ public class AddProductActivity extends AppCompatActivity {
     public void addProduct() {
         try {
             if (mainSendProductClass != null) {
-                if (mainSendProductClass.getListPrice().equals("") | mainSendProductClass.getListPrice() == "")
-                    mainSendProductClass.setListPrice("0");
+                if (mainSendProductClass.getListPrice() <= 0)
+                    mainSendProductClass.setListPrice(0);
                 Call<GetResualt> call = loadProductApi.sendProductDetail(mainSendProductClass);
-                Log.d(TAG, "editProduct: " + mainSendProductClass.getCompanyID() + " user: " + mainSendProductClass.getUserID());
+                Log.d(TAG, "editProduct: " + mainSendProductClass.getCompanyID());
                 call.enqueue(new Callback<GetResualt>() {
                     @Override
                     public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {

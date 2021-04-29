@@ -29,6 +29,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.example.koohestantest1.Utils.BadgeCounter;
 import com.example.koohestantest1.Utils.StringUtils;
 import com.example.koohestantest1.activity.Main2Activity;
+import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.constants.IntentKeys;
 import com.example.koohestantest1.fragments.bottomsheet.CommentsBottomSheet;
 import com.example.koohestantest1.fragments.bottomsheet.EditBottomSheet;
@@ -244,8 +245,10 @@ public class ViewProductActivity extends AppCompatActivity {
 
         //get edited value from bottom sheet to refresh edit text
         productViewModel.getLiveEditedValue().observe(this, s -> {
+            StandardPrice standardPrice = new StandardPrice();
+            standardPrice.setShowPrice(s);
             txtPPrice.setText(s);
-            selectedProduct.getProductClass().setStandardCost(s);
+            selectedProduct.getProductClass().setStandardCost(standardPrice);
         });
     }
 
@@ -379,7 +382,7 @@ public class ViewProductActivity extends AppCompatActivity {
             });
 
 
-            txtPPrice.setText(selectedProduct.getProductClass().getStandardCost());
+            txtPPrice.setText(selectedProduct.getProductClass().getStandardCost().getShowPrice());
             String category = selectedProduct.getProductClass().getCategory();
             Log.d(TAG, "loadingProduct: " + category);
             if (category != null && !category.isEmpty()) {

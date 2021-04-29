@@ -29,13 +29,13 @@ import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage
 public class ExplorerRecyclerViewAdapter extends RecyclerView.Adapter<ExplorerRecyclerViewAdapter.ViewHolder> implements Filterable {
 
     private Context mContext;
-    List<SendProductClass> showProductData = new ArrayList<>();
-    List<SendProductClass> allProduct = new ArrayList<>();
+    List<ReceiveProductClass> showProductData = new ArrayList<>();
+    List<ReceiveProductClass> allProduct = new ArrayList<>();
     public LoadProductApi loadProductApi;
 
     BaseCodeClass baseCodeClass = new BaseCodeClass();
 
-    public ExplorerRecyclerViewAdapter(Context mContext, List<SendProductClass> showProductData, LoadProductApi loadApi) {
+    public ExplorerRecyclerViewAdapter(Context mContext, List<ReceiveProductClass> showProductData, LoadProductApi loadApi) {
         try {
             this.mContext = mContext;
             this.allProduct = showProductData;
@@ -72,7 +72,7 @@ public class ExplorerRecyclerViewAdapter extends RecyclerView.Adapter<ExplorerRe
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         try {
             holder.name.setText(showProductData.get(position).getProductName());
-            String myPrice = showProductData.get(position).getStandardCost();
+            String myPrice = showProductData.get(position).getStandardCost().getShowPrice();
             holder.price.setText(StringUtils.getNumberWithoutDot(myPrice));
             newDownloadImage(showProductData.get(position).getProductID(), holder);
 
@@ -103,7 +103,7 @@ public class ExplorerRecyclerViewAdapter extends RecyclerView.Adapter<ExplorerRe
                 @SuppressWarnings("unchecked")
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
-                    showProductData = (List<SendProductClass>) results.values;
+                    showProductData = (List<ReceiveProductClass>) results.values;
                     //load10Data();
                     loadProductApi.recyclerViewCanUpdating();
                     notifyDataSetChanged();
@@ -113,7 +113,7 @@ public class ExplorerRecyclerViewAdapter extends RecyclerView.Adapter<ExplorerRe
                 protected FilterResults performFiltering(CharSequence constraint) {
 
                     FilterResults results = new FilterResults();
-                    ArrayList<SendProductClass> FilteredArrayNames = new ArrayList<>();
+                    ArrayList<ReceiveProductClass> FilteredArrayNames = new ArrayList<>();
                     // perform your search here using the searchConstraint String.
 
                     // constraint = constraint.toString().toLowerCase();

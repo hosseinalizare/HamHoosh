@@ -289,7 +289,7 @@ public class MyDataBase extends SQLiteAssetHelper {
                               String SupplierID_,
                               int TargetLevel_,
                               String Unit_,
-                              int UpdateDate_,
+                              long UpdateDate_,
                               boolean LikeIt,
                               boolean SaveIt,
                               int SellCount_

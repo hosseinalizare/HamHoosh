@@ -29,13 +29,13 @@ public class AllProductData {
         this.listCategory = listCategory;
     }
 
-    private SendProductClass productClass;
+    private ReceiveProductClass productClass;
     BaseCodeClass baseCodeClass = new BaseCodeClass();
 
 
     public AllProductData(Context mContext, String companyName, boolean selectedToCart, boolean like,
                           List<String> comment, boolean bookMark, int likeCount, int viewCount, List<String> listCategory,
-                          SendProductClass productClass) {
+                          ReceiveProductClass productClass) {
         this.mContext = mContext;
         this.companyName = companyName;
         this.selectedToCart = selectedToCart;
@@ -122,11 +122,11 @@ public class AllProductData {
         this.viewCount = viewCount;
     }
 
-    public SendProductClass getProductClass() {
+    public ReceiveProductClass getProductClass() {
         return productClass;
     }
 
-    public void setProductClass(SendProductClass productClass) {
+    public void setProductClass(ReceiveProductClass productClass) {
         this.productClass = productClass;
     }
 

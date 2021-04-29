@@ -9,7 +9,7 @@ import com.example.koohestantest1.model.repository.callback.EventsLikedCallBacks
 
 import java.util.List;
 
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,17 +30,17 @@ public class EventsRepository {
     }
 
     public void callForLikedProducts(String companyId, String userId) {
-        Call<List<SendProductClass>> call = eventsAPI.getLikedProducts(companyId, userId);
-        call.enqueue(new Callback<List<SendProductClass>>() {
+        Call<List<ReceiveProductClass>> call = eventsAPI.getLikedProducts(companyId, userId);
+        call.enqueue(new Callback<List<ReceiveProductClass>>() {
             @Override
-            public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+            public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                 if (response.isSuccessful())
                     eventsLikedCallBacks.onSuccessLiked(response.body());
                 Log.d(TAG, "onResponse: " + response.isSuccessful() + " - " + response.body().size());
             }
 
             @Override
-            public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+            public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                 eventsLikedCallBacks.onErrorLiked(t.getMessage());
 
                 Log.d(TAG, "onFailure: " + t.getMessage());
@@ -51,10 +51,10 @@ public class EventsRepository {
 
     public void callForBookmarkedProducts(String companyId, String userId) {
 
-        Call<List<SendProductClass>> call = eventsAPI.getSavedProducts(companyId, userId);
-        call.enqueue(new Callback<List<SendProductClass>>() {
+        Call<List<ReceiveProductClass>> call = eventsAPI.getSavedProducts(companyId, userId);
+        call.enqueue(new Callback<List<ReceiveProductClass>>() {
             @Override
-            public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+            public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                 if (response.isSuccessful())
                     eventsBookmarkedCallBacks.onSuccessBookmarked(response.body());
                 Log.d(TAG, "onResponse: " + response.isSuccessful() + " - " + response.body().size());
@@ -63,7 +63,7 @@ public class EventsRepository {
             }
 
             @Override
-            public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+            public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                 eventsBookmarkedCallBacks.onErrorBookmarked(t.getMessage());
                 Log.d(TAG, "onFailure: " + t.getMessage());
 

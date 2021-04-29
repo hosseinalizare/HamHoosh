@@ -38,7 +38,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.PageShow;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.addressSaved;
@@ -74,8 +73,8 @@ public class DownloadPrudoctThread extends Thread {
 
     int treahdTimer = 0;
     int SavedProduct = 0;
-    List<SendProductClass> LocalProduct;
-    List<SendProductClass> NetProduct = new ArrayList<>();
+    List<ReceiveProductClass> LocalProduct;
+    List<ReceiveProductClass> NetProduct = new ArrayList<>();
 
     public DownloadPrudoctThread(TextView edtxt_, Context context_) {
         try {
@@ -188,8 +187,10 @@ public class DownloadPrudoctThread extends Thread {
             };
 
             callBack = new LoadProductApi() {
+
+
                 @Override
-                public Call<GetResualt> sendProductDetail(SendProductClass sendProductClass) {
+                public Call<GetResualt> sendProductDetail(SendProduct sendProductClass) {
                     return null;
                 }
 
@@ -204,14 +205,14 @@ public class DownloadPrudoctThread extends Thread {
                 }
 
                 @Override
-                public Call<List<SendProductClass>> loadProduct(String companyId) {
+                public Call<List<ReceiveProductClass>> loadProduct(String companyId) {
                     return null;
                 }
 
                 @Override
-                public void onResponseLoadProduct(List<SendProductClass> sendProductClasses) {
+                public void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses) {
                     NetProduct.clear();
-                    NetProduct = sendProductClasses;
+                    NetProduct = receiveProductClasses;
                     SycronizProductTable_();
                     // ProductIDList.clear();
 //                    for (SendProductClass productClass : sendProductClasses
@@ -224,7 +225,7 @@ public class DownloadPrudoctThread extends Thread {
                 }
 
                 @Override
-                public Call<List<SendProductClass>> loadProduct(String companyId, String userID) {
+                public Call<List<ReceiveProductClass>> loadProduct(String companyId, String userID) {
                     return null;
                 }
 
@@ -295,12 +296,14 @@ public class DownloadPrudoctThread extends Thread {
                 }
 
                 @Override
-                public Call<GetResualt> editProductDetail(SendProductClass sendProductClass) {
+                public Call<GetResualt> editProductDetail(SendProduct receiveProductClass) {
                     return null;
                 }
 
+
+
                 @Override
-                public Call<List<SendProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
+                public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
                     return null;
                 }
 
@@ -498,16 +501,16 @@ public class DownloadPrudoctThread extends Thread {
             SavedProduct = 0;
             ProductIDList.clear();
             mydb.SetAllProductEnable(context, baseCodeClass.getCompanyID());
-            for (SendProductClass productClass : NetProduct
+            for (ReceiveProductClass productClass : NetProduct
             ) {
                 if (mydb.insertProduct(context, productClass.getCategory(),
                         productClass.getDeleted(), "false",
                         productClass.getDescription(), String.valueOf(productClass.getDiscontinued()),
-                        "", productClass.getListPrice(), productClass.getMinimumReorderQuantity(),
+                        "", productClass.getStandardCost().getShowoffPrice(), productClass.getMinimumReorderQuantity(),
                         productClass.getProductID(),
                         productClass.getProductName(), productClass.getQuantityPerUnit(),
                         productClass.getReorderLevel(), productClass.getShow(), productClass.getSpare1(),
-                        productClass.getSpare2(), productClass.getSpare3(), productClass.getStandardCost(),
+                        productClass.getSpare2(), productClass.getSpare3(), productClass.getStandardCost().getShowPrice(),
                         productClass.getSupplierID(), productClass.getTargetLevel(), productClass.getUnit(),
                         productClass.getUpdateDate(), productClass.isLikeit(), productClass.getSaveit(), productClass.getSellCount()) != -2) {
                     ProductIDList.add(productClass.getProductID());
@@ -678,10 +681,10 @@ public class DownloadPrudoctThread extends Thread {
     public void loadProduct() {
         setText(" loadProduct Start");
         try {
-            Call<List<SendProductClass>> call = loadProductApi.loadProduct(baseCodeClass.getCompanyID(), baseCodeClass.getUserID());
-            call.enqueue(new Callback<List<SendProductClass>>() {
+            Call<List<ReceiveProductClass>> call = loadProductApi.loadProduct(baseCodeClass.getCompanyID(), baseCodeClass.getUserID());
+            call.enqueue(new Callback<List<ReceiveProductClass>>() {
                 @Override
-                public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+                public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                     try {
                         callBack.onResponseLoadProduct(response.body());
                     } catch (Exception e) {
@@ -690,7 +693,7 @@ public class DownloadPrudoctThread extends Thread {
                 }
 
                 @Override
-                public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+                public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
 
                 }
             });

@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 
@@ -25,7 +26,7 @@ import com.example.koohestantest1.classDirectory.FilterRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.GetPropertisOfCompanyProducts;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -73,8 +74,10 @@ public class FilterDialogFragment extends DialogFragment implements LoadProductA
         return view;
     }
 
+
+
     @Override
-    public Call<GetResualt> sendProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> sendProductDetail(SendProduct sendProductClass) {
         return null;
     }
 
@@ -89,17 +92,17 @@ public class FilterDialogFragment extends DialogFragment implements LoadProductA
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId) {
         return null;
     }
 
     @Override
-    public void onResponseLoadProduct(List<SendProductClass> sendProductClasses) {
+    public void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses) {
 
     }
 
     @Override
-    public Call<List<SendProductClass>> loadProduct(String companyId, String userID) {
+    public Call<List<ReceiveProductClass>> loadProduct(String companyId, String userID) {
         return null;
     }
 
@@ -169,12 +172,14 @@ public class FilterDialogFragment extends DialogFragment implements LoadProductA
     }
 
     @Override
-    public Call<GetResualt> editProductDetail(SendProductClass sendProductClass) {
+    public Call<GetResualt> editProductDetail(SendProduct receiveProductClass) {
         return null;
     }
 
+
+
     @Override
-    public Call<List<SendProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
+    public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
         return null;
     }
 

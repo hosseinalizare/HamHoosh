@@ -2,6 +2,7 @@ package com.example.koohestantest1.ApiDirectory;
 
 import android.view.View;
 
+import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 
@@ -13,7 +14,7 @@ import com.example.koohestantest1.ViewModels.PostViewViewModel;
 import com.example.koohestantest1.classDirectory.GetPropertisOfCompanyProducts;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -28,7 +29,7 @@ import retrofit2.http.Query;
 public interface LoadProductApi {
 
     @POST("Products/product")
-    Call<GetResualt> sendProductDetail(@Body SendProductClass sendProductClass);
+    Call<GetResualt> sendProductDetail(@Body SendProduct sendProductClass);
     void onResponseSendProduct(GetResualt getResualt);
 
     @Multipart
@@ -36,11 +37,11 @@ public interface LoadProductApi {
     Call<GetResualt> uploadProductImage(@Query("ProductID") String prId, @Query("CompanyID") String coId, @Query("UserID") String uID, @Query("Token") String token, @Part MultipartBody.Part file);
 
     @POST("Products/LoadProduct")
-    Call<List<SendProductClass>> loadProduct(@Query("CompanyID")String companyId);
-    void onResponseLoadProduct(List<SendProductClass> sendProductClasses);
+    Call<List<ReceiveProductClass>> loadProduct(@Query("CompanyID")String companyId);
+    void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses);
 
     @POST("Products/LoadProduct")
-    Call<List<SendProductClass>> loadProduct(@Query("CompanyID")String companyId, @Query("UserID") String userID);
+    Call<List<ReceiveProductClass>> loadProduct(@Query("CompanyID")String companyId, @Query("UserID") String userID);
 
     @POST("Products/Deletproduct")
     Call<GetResualt> deleteProduct(@Body SendDeleteProduct sendDeleteProduct);
@@ -72,10 +73,10 @@ public interface LoadProductApi {
     Call<GetResualt> saveProduct(@Body BookMarkViewModel postViewViewModel);
 
     @POST("Products/Editproduct")
-    Call<GetResualt> editProductDetail(@Body SendProductClass sendProductClass);
+    Call<GetResualt> editProductDetail(@Body SendProduct receiveProductClass);
 
     @POST("Products/LoadUpdatedProduct")
-    Call<List<SendProductClass>> getUpdatedData(@Body UpdatedProductBody updatedProductBody);
+    Call<List<ReceiveProductClass>> getUpdatedData(@Body UpdatedProductBody updatedProductBody);
 
      void recyclerViewListClicked(View v, String value, boolean notify);
      void brandRecyclerViewListClicked(View v, String value, boolean notify);

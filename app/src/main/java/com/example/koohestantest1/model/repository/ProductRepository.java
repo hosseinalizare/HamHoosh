@@ -12,7 +12,7 @@ import com.example.koohestantest1.model.repository.callback.ProductEditCallBack;
 import java.util.List;
 
 import com.example.koohestantest1.classDirectory.GetResualt;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,16 +52,16 @@ public class ProductRepository {
     }
 
     public void callForInvisibleProducts(String companyId, String userId, String token) {
-        productAPI.callForInvisibleProducts(companyId, userId, token).enqueue(new Callback<List<SendProductClass>>() {
+        productAPI.callForInvisibleProducts(companyId, userId, token).enqueue(new Callback<List<ReceiveProductClass>>() {
             @Override
-            public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+            public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                 Log.d(TAG, "onResponse: " + response.body().size());
                 if (response.isSuccessful())
                     invisibleProductCallBack.onSuccessInvisible(response.body());
             }
 
             @Override
-            public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+            public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + t.getMessage());
                 invisibleProductCallBack.onErrorInvisible(t.getMessage());
             }
@@ -69,16 +69,16 @@ public class ProductRepository {
     }
 
     public void callForNotInStockProducts(String companyId, String userId, String token) {
-        productAPI.callForNotInStock(companyId, userId, token).enqueue(new Callback<List<SendProductClass>>() {
+        productAPI.callForNotInStock(companyId, userId, token).enqueue(new Callback<List<ReceiveProductClass>>() {
             @Override
-            public void onResponse(Call<List<SendProductClass>> call, Response<List<SendProductClass>> response) {
+            public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
                 Log.d(TAG, "onResponse: " + response.body().size());
                 if (response.isSuccessful())
                     notInStockCallBack.onSuccessStock(response.body());
             }
 
             @Override
-            public void onFailure(Call<List<SendProductClass>> call, Throwable t) {
+            public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + t.getMessage());
                 notInStockCallBack.onErrorStock(t.getMessage());
             }

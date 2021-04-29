@@ -13,7 +13,7 @@ import com.example.koohestantest1.model.repository.callback.ProductEditCallBack;
 import java.util.List;
 
 import com.example.koohestantest1.classDirectory.GetResualt;
-import com.example.koohestantest1.classDirectory.SendProductClass;
+import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 
 public class ProductViewModel extends ViewModel implements ProductEditCallBack, InvisibleProductCallBack, NotInStockCallBack {
     private ProductRepository productRepository;
@@ -25,10 +25,10 @@ public class ProductViewModel extends ViewModel implements ProductEditCallBack, 
     private final MutableLiveData<String> liveEditedValue = new MutableLiveData<>();
 
 
-    private final MutableLiveData<List<SendProductClass>> liveInvisibleProducts = new MutableLiveData<>();
+    private final MutableLiveData<List<ReceiveProductClass>> liveInvisibleProducts = new MutableLiveData<>();
     private final MutableLiveData<String> liveErrorInvisibleProducts = new MutableLiveData<>();
 
-    public LiveData<List<SendProductClass>> getLiveStockProducts() {
+    public LiveData<List<ReceiveProductClass>> getLiveStockProducts() {
         return liveStockProducts;
     }
 
@@ -36,7 +36,7 @@ public class ProductViewModel extends ViewModel implements ProductEditCallBack, 
         return liveErrorStockProducts;
     }
 
-    private final MutableLiveData<List<SendProductClass>> liveStockProducts = new MutableLiveData<>();
+    private final MutableLiveData<List<ReceiveProductClass>> liveStockProducts = new MutableLiveData<>();
     private final MutableLiveData<String> liveErrorStockProducts = new MutableLiveData<>();
 
     public ProductViewModel() {
@@ -78,7 +78,7 @@ public class ProductViewModel extends ViewModel implements ProductEditCallBack, 
     }
 
     @Override
-    public void onSuccessInvisible(List<SendProductClass> results) {
+    public void onSuccessInvisible(List<ReceiveProductClass> results) {
         liveInvisibleProducts.setValue(results);
     }
 
@@ -92,7 +92,7 @@ public class ProductViewModel extends ViewModel implements ProductEditCallBack, 
         liveErrorEditProduct.setValue(error);
     }
 
-    public LiveData<List<SendProductClass>> getLiveInvisibleProducts() {
+    public LiveData<List<ReceiveProductClass>> getLiveInvisibleProducts() {
         return liveInvisibleProducts;
     }
 
@@ -101,7 +101,7 @@ public class ProductViewModel extends ViewModel implements ProductEditCallBack, 
     }
 
     @Override
-    public void onSuccessStock(List<SendProductClass> res) {
+    public void onSuccessStock(List<ReceiveProductClass> res) {
         liveStockProducts.setValue(res);
     }
 
