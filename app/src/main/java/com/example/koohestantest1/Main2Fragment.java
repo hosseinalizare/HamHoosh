@@ -997,7 +997,9 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Deleted = NetProduct.getDeleted();
         product.CompanyID = NetProduct.getCompanyID();
         product.Category = NetProduct.getCategory();
-
+        product.Spare1 = NetProduct.getSpare1();
+        product.Spare2 = NetProduct.getSpare2();
+        product.Spare3 = NetProduct.getSpare3();
         dbViewModel.insertProduct(product);
 
         for (ProductPropertisClass productPropertis : NetProduct.getProductPropertis()) {
@@ -1009,7 +1011,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             properties.UpdateTime = productPropertis.getUpdatTime();
             dbViewModel.insertProperties(properties);
         }
-
     }
 
     private void updateProduct(ReceiveProductClass productClass, DBViewModel dbViewModel) {
@@ -1041,6 +1042,9 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Unit = productClass.getUnit();
         product.UpdateDate = productClass.getUpdateDate();
         product.ViewedCount = productClass.getViewedCount();
+        product.Spare1 = productClass.getSpare1();
+        product.Spare2 = productClass.getSpare2();
+        product.Spare3 = productClass.getSpare3();
         dbViewModel.updateProduct(product);
     }
 
