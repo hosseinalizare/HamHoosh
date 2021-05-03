@@ -636,6 +636,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 }
             }
             if (updateFromDb) {
+                String ddd = baseCodeClass.getUserID();
+                Log.d("LOG",ddd);
                 //new ManageProductClass(mContext, main2Fragment, baseCodeClass.getCompanyID()).execute(baseCodeClass.getCompanyID(), BaseCodeClass.DownloadParam);
                 dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                     @Override
@@ -768,6 +770,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         particularProduct.clear();
         bulletinProduct.clear();
         allProductsPId.clear();
+
         List<Properties> properties = new ArrayList<>();
         for (Product product : products) {
             StandardPrice standardPrice = new StandardPrice();

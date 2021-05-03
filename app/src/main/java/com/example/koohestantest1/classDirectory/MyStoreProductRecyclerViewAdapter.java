@@ -2,6 +2,7 @@ package com.example.koohestantest1.classDirectory;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,6 +97,10 @@ public class MyStoreProductRecyclerViewAdapter extends RecyclerView.Adapter<Recy
         try {
             if (productData.get(position) != null) {
                 newDownloadImage(productData.get(position).getProductClass().getProductID(), holder);
+                String color = productData.get(position).getProductClass().getSpare2();
+                if (!color.equals("null")){
+                    holder.imageView.setBackgroundColor(Color.parseColor(color));
+                }
                 holder.name.setText(productData.get(position).getProductClass().getProductName());
 
                 holder.imageView.setOnClickListener(v -> {

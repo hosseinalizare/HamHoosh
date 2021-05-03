@@ -2,6 +2,7 @@ package com.example.koohestantest1.classDirectory;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -489,10 +490,18 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             }
 
+
+
             holder.txtPName.setText(showProductData.get(position).getProductClass().getProductName());
 
             Log.d(TAG, "loadProduct: " + showProductData.get(position).getProductClass().getProductID());
             newDownloadImage(showProductData.get(position).getProductClass().getProductID());
+
+            String color = showProductData.get(position).getProductClass().getSpare1();
+
+            if (!color.equals("null")){
+                holder.pImageView.setBackgroundColor(Color.parseColor(color));
+            }
 
             String detail = showProductData.get(position).getProductClass().getDescription().replace("\n", " ");
             if (detail.length() >= 21) {
@@ -536,6 +545,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     if (baseCodeClass.loadSelectedProduct(showProductData.get(position).getProductClass().getProductID(), mContext)) {
                         Intent intent = new Intent(mContext, ViewProductActivity.class);
                         intent.putExtra("PID", showProductData.get(position).getProductClass().getProductID());
+                        intent.putExtra("colorCode", showProductData.get(position).getProductClass().getSpare1());
                         mContext.startActivity(intent);
                     } else {
 //                    toastMessage("خطای درون برنامه ای");
@@ -553,6 +563,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 holder.btnAddToCart.setImageResource(R.drawable.ic_add_cart);
                 holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.purple1));
             }
+
 
             /*
              Modifies Number of Items to Cart

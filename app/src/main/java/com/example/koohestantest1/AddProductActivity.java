@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 import com.example.koohestantest1.model.network.RetrofitInstance;
+import com.google.android.gms.common.util.AndroidUtilsLight;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.File;
@@ -142,6 +144,8 @@ public class AddProductActivity extends AppCompatActivity {
     private SendProduct mainSendProductClass;
 
     private Bitmap mainBitmap = null;
+    private static final int CHOOSE_IMAGE_CODE= 13784;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,8 +213,19 @@ public class AddProductActivity extends AppCompatActivity {
             Unit.setAdapter(unitAdapter);
 
             imageView = (ImageView) findViewById(R.id.imageView);
-
             imageView.setOnClickListener(v -> CropImage.startPickImageActivity(AddProductActivity.this));
+/*
+            imageView.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                //setType to image/* so that only images will show up
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, CHOOSE_IMAGE_CODE);
+            });
+*/
+
 
             String pid = getIntent().getStringExtra("PID");
 
@@ -636,6 +651,12 @@ public class AddProductActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+/*
+        manageChooseImageInOnResult1(requestCode,resultCode,data);
+*/
+
+
 //        if (requestCode == PICK_IMAGE /*&& requestCode == RESULT_OK && data != null*/) {
 ////            Uri imageData = data.getData();
 ////            //imageProduct.setImageURI(imageData);
@@ -717,6 +738,38 @@ public class AddProductActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void manageChooseImageInOnResult1(int requestCode, int resultCode, Intent data){
+        if (requestCode == CHOOSE_IMAGE_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            //chosenPhotoUri is the Uri of the image the user has picked
+
+            try {
+                Uri chosenPhotoUri = data.getData();
+                File file = new File(chosenPhotoUri.getPath());
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), chosenPhotoUri);
+                mainBitmap = bitmap;
+/*
+                imageView.setImageURI(chosenPhotoUri);
+*/
+
+                Glide.with(this).load(bitmap)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .into(imageView);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+          /*  //display the chosen photo in the image view
+            Glide.with(this).load(chosenPhotoUri).into(imageView);*/
+
+        }
+    }
+
 
     public void loadProperty() {
         try {
@@ -999,6 +1052,7 @@ public class AddProductActivity extends AppCompatActivity {
         try {
 
             Cache cache = new Cache(this);
+
             File file = cache.saveToCacheAndGetFile(mainBitmap, productID);
 /*
             Bitmap imageBitmap;
@@ -1071,15 +1125,12 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
 
-
     private void sendImageProduct(final String productID) {
         try {
 
             Cache cache = new Cache(this);
             File file = cache.saveToCacheAndGetFile2(mainBitmap, productID);
-/*
-            Bitmap imageBitmap;
-*/
+
             Bitmap imageBitmap = new Compressor(this)
                     .setMaxWidth(1080)
                     .setMaxHeight(1080)
@@ -1323,6 +1374,20 @@ public class AddProductActivity extends AppCompatActivity {
 
     public void btnCancel(View view) {
         finish();
+    }
+
+    public Bitmap replaceColor(Bitmap src) {
+        if (src == null)
+            return null;
+        int width = src.getWidth();
+        int height = src.getHeight();
+        int[] pixels = new int[width * height];
+        src.getPixels(pixels, 0, 1 * width, 0, 0, width, height);
+        for (int x = 0; x < pixels.length; ++x) {
+            //    pixels[x] = ~(pixels[x] << 8 & 0xFF000000) & Color.BLACK;
+            if(pixels[x] == Color.BLACK) pixels[x] = 0;
+        }
+        return Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888);
     }
 
 

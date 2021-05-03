@@ -8,7 +8,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyApiClient {
     private static Retrofit retrofit;
+
     private static final String BASE_URL2 = "https://dehkade.nokhbgan.ir/api/";
+    /*private static final String BASE_URL2 = "https://serverv2.nokhbgan.ir/api/";*/
     public static Retrofit getRetrofitTest() {
         if (retrofit == null) {
             synchronized (MyApiClient.class) {

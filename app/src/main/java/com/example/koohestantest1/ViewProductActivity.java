@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -77,7 +78,7 @@ public class ViewProductActivity extends AppCompatActivity {
     ImageView PImage, like, bookmark;
     Button btnAddToCart;
 
-    private String selectedPid;
+    private String selectedPid,colorCode;
     private MyDataBase mydb;
     BaseCodeClass baseCodeClass;
     LoadProductApi loadProductApi;
@@ -148,6 +149,7 @@ public class ViewProductActivity extends AppCompatActivity {
         mydb = new MyDataBase(this);
 
         selectedPid = getIntent().getStringExtra("PID");
+        colorCode = getIntent().getStringExtra("colorCode");
         Log.d(TAG, "onCreate: " + selectedPid);
         Log.d(TAG, "onCreate: " + selectedProduct.getProductClass().getProductName());
         int stock = selectedProduct.getProductClass().getDiscontinued();
@@ -394,6 +396,7 @@ public class ViewProductActivity extends AppCompatActivity {
                 }
             }
             newDownloadImage(selectedPid, PImage);
+            PImage.setBackgroundColor(Color.parseColor(colorCode));
         } catch (Exception e) {
             Log.d("Error" , e.getMessage());
         }
