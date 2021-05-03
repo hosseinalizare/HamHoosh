@@ -270,11 +270,11 @@ public class AddNewAddressActivity extends AppCompatActivity implements OnMapRea
 
             if (selectedAddress.getLocation() != null) {
                 String[] mapData = selectedAddress.getLocation().split(":");
-                Log.d(TAG, "setUpPassedData: " + mapData[0] + " " + mapData[1]);
-                if (!mapData[0].equals("null") && !mapData[1].equals("null")) {
+                Log.d(TAG, "setUpPassedData: " + mapData[0] + " " + mapData[0]);
+                if (!mapData[0].equals("null") && !mapData[0].equals("null")) {
                     Log.d(TAG, "setUpPassedData: 8");
                     finalLat = mapData[0];
-                    finalLong = mapData[1];
+                    finalLong = mapData[0];
                     lng = new LatLng(Double.parseDouble(finalLat), Double.parseDouble(finalLong));
                     setUpMap();
                 }
