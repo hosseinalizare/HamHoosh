@@ -1000,9 +1000,18 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Deleted = NetProduct.getDeleted();
         product.CompanyID = NetProduct.getCompanyID();
         product.Category = NetProduct.getCategory();
-        product.Spare1 = NetProduct.getSpare1();
-        product.Spare2 = NetProduct.getSpare2();
-        product.Spare3 = NetProduct.getSpare3();
+        if(NetProduct.getSpare1() == null || NetProduct.getSpare1().equals(""))
+            product.Spare1 = "#ffffff";
+        else
+            product.Spare1 = NetProduct.getSpare1();
+        if(NetProduct.getSpare2() == null || NetProduct.getSpare1().equals(""))
+            product.Spare2 = "#ffffff";
+        else
+            product.Spare2 = NetProduct.getSpare2();
+        if(NetProduct.getSpare3() == null || NetProduct.getSpare1().equals(""))
+            product.Spare3 = "#ffffff";
+        else
+            product.Spare3 = NetProduct.getSpare3();
         dbViewModel.insertProduct(product);
 
         for (ProductPropertisClass productPropertis : NetProduct.getProductPropertis()) {
@@ -1045,9 +1054,18 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Unit = productClass.getUnit();
         product.UpdateDate = productClass.getUpdateDate();
         product.ViewedCount = productClass.getViewedCount();
-        product.Spare1 = productClass.getSpare1();
-        product.Spare2 = productClass.getSpare2();
-        product.Spare3 = productClass.getSpare3();
+        if(productClass.getSpare1() == null || productClass.getSpare1().equals(""))
+            product.Spare1 = "#ffffff";
+        else
+            product.Spare1 = productClass.getSpare1();
+        if(productClass.getSpare2() == null || productClass.getSpare1().equals(""))
+            product.Spare2 = "#ffffff";
+        else
+            product.Spare2 = productClass.getSpare2();
+        if(productClass.getSpare3() == null || productClass.getSpare1().equals(""))
+            product.Spare3 = "#ffffff";
+        else
+            product.Spare3 = productClass.getSpare3();
         dbViewModel.updateProduct(product);
     }
 
