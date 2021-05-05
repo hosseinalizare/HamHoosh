@@ -24,11 +24,12 @@ import retrofit2.http.Part;
 public class SendMessageVM extends ViewModel {
     private MutableLiveData<GetResualt> messageLiveData;
     private MutableLiveData<GetResualt> uploadImageMessageLiveData;
+    private MutableLiveData<GetResualt> uploadDocMessageLiveData;
   public   CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public LiveData<GetResualt> sendMessage(SendMessageViewModel sendMessageViewModel){
         messageLiveData = new MutableLiveData<>();
-       Single<GetResualt> resualtSingle = MyApiClient.getRetrofitTest().create(MessageApi.class).sendAMessage(sendMessageViewModel);
+       Single<GetResualt> resualtSingle = RetrofitInstance.getRetrofit().create(MessageApi.class).sendAMessage(sendMessageViewModel);
        compositeDisposable.add(resualtSingle.subscribeOn(Schedulers.newThread())
                .observeOn(AndroidSchedulers.mainThread())
                .subscribeWith(new DisposableSingleObserver<GetResualt>() {
@@ -68,6 +69,27 @@ public class SendMessageVM extends ViewModel {
                 })
         );
         return uploadImageMessageLiveData;
+    }
+    public LiveData<GetResualt> sendDocMessage(int msgId, MultipartBody.Part body){
+        uploadDocMessageLiveData = new MutableLiveData<>();
+        Single<GetResualt> resualtSingle = MyApiClient.getRetrofitTest().create(MessageApi.class).uploadMessageImage(msgId,body);
+        compositeDisposable.add(resualtSingle.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<GetResualt>(){
+
+                    @Override
+                    public void onSuccess(@NonNull GetResualt getResualt) {
+                        uploadDocMessageLiveData.setValue(getResualt);
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                })
+        );
+        return uploadDocMessageLiveData;
     }
 
 

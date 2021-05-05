@@ -2,17 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_gravity="start"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraint_layout_imgMsgRecive_parent"
+    android:id="@+id/constraint_layout_docRecived_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="200dp"
-
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="5dp"
     android:layout_marginEnd="5dp">
 
     <androidx.cardview.widget.CardView
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
@@ -25,44 +23,35 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <androidx.cardview.widget.CardView
-
-                android:id="@+id/cardFrameImage_layout_imageMessageRecived"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                app:layout_constraintEnd_toEndOf="parent"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#AC7402"
+                android:id="@+id/img_layout_Doc_message_recived"
+                android:src="@drawable/ic_download"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/img_layout_imageMessageRecived"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/placeholder" />
-
-            </androidx.cardview.widget.CardView>
-
-
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
             <TextView
-                android:id="@+id/txt_layout_imageMessageRecived"
+                android:id="@+id/txt_layout_Doc_message_recived"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="15dp"
                 android:fontFamily="@font/koodak"
                 android:padding="6dp"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardFrameImage_layout_imageMessageRecived"
+                app:layout_constraintStart_toEndOf="@+id/img_layout_Doc_message_recived"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Check recieved" />
 
             <TextView
-                android:id="@+id/txtTime_layout_imageMessageRecived"
+                android:id="@+id/txtTime_layout_Doc_message_recived"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
@@ -72,7 +61,7 @@
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_layout_imageMessageRecived"
+                app:layout_constraintTop_toBottomOf="@+id/txt_layout_Doc_message_recived"
                 tools:text="10:10 AM" />
 
 

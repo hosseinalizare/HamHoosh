@@ -30,7 +30,10 @@ public class MessageManagerClass {
     public MessageManagerClass(Context context, MessageApi callBack){
         mContext = context;
 
+/*
         retrofit = MyApiClient.getRetrofitTest();
+*/
+        retrofit = RetrofitInstance.getRetrofit();
 
         /*retrofit = RetrofitInstance.getRetrofit();*/
                 /*new Retrofit.Builder()

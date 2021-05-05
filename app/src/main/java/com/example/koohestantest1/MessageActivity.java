@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -19,14 +20,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -34,7 +32,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
-import android.widget.Switch;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,17 +41,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.canhub.cropper.CropImage;
 import com.canhub.cropper.CropImageView;
 import com.example.koohestantest1.Utils.Cache;
+import com.example.koohestantest1.Utils.FileUtils;
 import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.constants.EmployeeStatus;
 import com.example.koohestantest1.model.EmployeeAdding;
-import com.example.koohestantest1.model.IranProvince;
 import com.example.koohestantest1.viewModel.CompanyViewModel;
 import com.example.koohestantest1.viewModel.SendMessageVM;
 import com.example.koohestantest1.viewModel.UserProfileViewModel;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,6 +65,9 @@ import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.MessageRecyclerViewAdapter;
+import com.jaiselrahman.filepicker.activity.FilePickerActivity;
+import com.jaiselrahman.filepicker.config.Configurations;
+import com.jaiselrahman.filepicker.model.MediaFile;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
@@ -74,21 +75,23 @@ import io.reactivex.Single;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 
-public class MessageActivity extends AppCompatActivity implements MessageApi, SendImageMessageBottomSheetDialog.OnclickOnFloatingButtonMessageBsheet {
+public class MessageActivity extends AppCompatActivity implements MessageApi, SendImageMessageBottomSheetDialog.OnclickOnFloatingButtonMessageBsheet, EasyPermissions.PermissionCallbacks {
     public static final int PICK_IMAGE = 123;
     public static final int CAMERA_REQUEST_CODE = 5;
     public static final int CAMERA_PERMISSION_CODE = 101;
+    public static final int CHOSE_DOC_REQUEST_CODE = 1387;
+    public static final int READ_STORAGE_PERMISSION_REQUEST = 1387;
     ImageView imgMessage;
     private Bitmap mainBitmap = null;
     SendImageMessageBottomSheetDialog sheetDialog;
-    private boolean isLoading =true;
+    private boolean isLoading = true;
+    String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
 
 
     AutoCompleteTextView auEdtPosition;
@@ -204,8 +207,22 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
                 }
             });
-            imgSendFile.setOnClickListener(v -> {
+        /*    imgSendFile.setOnClickListener(v -> {
                 CropImage.startPickImageActivity(MessageActivity.this);
+
+
+            });*/
+
+            imgSendFile.setOnClickListener(v -> {
+
+
+                if (EasyPermissions.hasPermissions(this, permission)) {
+                    showBottomSheetFilePicker();
+                } else {
+
+                    EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
+
+                }
 
 
             });
@@ -251,6 +268,51 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         } catch (Exception e) {
             logMessage(e.getMessage() + " >> 2", mContext);
         }
+    }
+
+    private void showBottomSheetFilePicker() {
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext);
+        View viewBottomSheetDialog = getLayoutInflater().from(mContext).inflate(R.layout.layout_bottom_sheet_filepicker, null, false);
+        RelativeLayout relPicture, relAudio, relFile;
+        relPicture = viewBottomSheetDialog.findViewById(R.id.rel_layoutBottomSheetFilePicker_Picture);
+        relFile = viewBottomSheetDialog.findViewById(R.id.rel_layoutBottomSheetFilePicker_File);
+
+        bottomSheetDialog.setContentView(viewBottomSheetDialog);
+        bottomSheetDialog.show();
+
+        relPicture.setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+            CropImage.startPickImageActivity(MessageActivity.this);
+        });
+        relFile.setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+
+            Intent intent = new Intent(this, FilePickerActivity.class);
+            intent.putExtra(FilePickerActivity.CONFIGS, new Configurations.Builder()
+                    .setCheckPermission(true)
+                    .setMaxSelection(1)
+                    .setSkipZeroSizeFiles(true)
+                    .setShowImages(false)
+                    .setShowAudios(false)
+                    .setShowVideos(false)
+                    .setShowFiles(true)
+                    .setSuffixes("txt", "pdf", "html", "rtf", "csv", "xml",
+                            "zip", "tar", "gz", "rar", "7z", "torrent",
+                            "doc", "docx", "odt", "ott",
+                            "ppt", "pptx", "pps",
+                            "xls", "xlsx", "ods", "ots")
+                    .build());
+            startActivityForResult(intent, CHOSE_DOC_REQUEST_CODE);
+
+
+
+           /* FilePickerBuilder.getInstance()
+                        .setMaxCount(1)
+                        .setActivityTheme(R.style.AppTheme)
+                        .pickFile(MessageActivity.this,CHOSE_DOC_REQUEST_CODE);*/
+        });
+
     }
 
     public void initMessageRecyclerView() {
@@ -329,20 +391,16 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 }
             }
 
-            if (isLoading){
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if (isLoading){
+                            new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
 
-
-                        new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
-
-
+                        }
 
                     }
-                },700);
-
-            }
+                }, 700);
 
 
 /*
@@ -538,7 +596,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
                     mainBitmap = bitmap;
 
-                    sheetDialog = new SendImageMessageBottomSheetDialog(mainBitmap,this::onClickFloating);
+                    sheetDialog = new SendImageMessageBottomSheetDialog(mainBitmap, this::onClickFloating);
                     sheetDialog.show(getSupportFragmentManager(), null);
 
 
@@ -546,6 +604,25 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                     e.printStackTrace();
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
+            }
+        }
+
+        if (requestCode == CHOSE_DOC_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                try {
+
+                    ArrayList<MediaFile> files = data.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
+                    Uri uri = files.get(0).getUri();
+                    File file = FileUtils.getFile(mContext,uri);
+                    sendDocMessage(files.get(0).getName(), file,uri);
+
+
+                } catch (Exception e) {
+                    Toast.makeText(mContext, "catch is run", Toast.LENGTH_SHORT).show();
+
+                }
+
+
             }
         }
     }
@@ -576,7 +653,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 @Override
                 public void onChanged(GetResualt getResualt) {
                     if (getResualt.getResualt().equals("100")) {
-                        isLoading=true;
+                        isLoading = true;
                         new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
 
                     } else {
@@ -592,6 +669,30 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
     }
 
+    private void uploadFile(File file,Uri fileUri, final int msgId) {
+
+        RequestBody requestBody = RequestBody.create(file, MediaType.parse(getContentResolver().getType(fileUri)));
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+
+        /*RequestBody requestBody = RequestBody.create(file, MediaType.parse("multipart/form-data"));
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);*/
+
+
+        sendMessageVM.sendDocMessage(msgId, body).observe(this, getResualt -> {
+
+              if (getResualt.getResualt().equals("100")) {
+                isLoading = true;
+                new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
+                Toast.makeText(mContext, "فایل با موفقیت آپلود شد", Toast.LENGTH_SHORT).show();
+                
+            } else {
+                Toast.makeText(mContext, "خطای نا شناخته", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+    }
+
 
     @Override
     public void onClickFloating(String imgCaption) {
@@ -599,19 +700,58 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         sheetDialog.dismiss();
         SendMessageViewModel sendMessageViewModel2 = new SendMessageViewModel(senderUser, 222);
         adapter.messageViewModels.add(sendMessageViewModel2);
-        adapter.initWaitValue(mainBitmap, imgCaption,sendMessageVM);
+        adapter.initWaitValue(mainBitmap, imgCaption, sendMessageVM);
         messageRecycler.setAdapter(adapter);
 
         SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
                 imgCaption, "", "", "", BaseCodeClass.variableType.Image_.getValue(), "", 1, 100);
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
-            if (getResualt.getResualt().equals("100")){
+            if (getResualt.getResualt().equals("100")) {
                 sendImageMessage(Integer.parseInt(getResualt.getMsg()));
 
             }
         });
     }
 
+    private void sendDocMessage(String docName, File file,Uri fileUri) {
+        isLoading = false;
+        SendMessageViewModel sendMessageViewModel2 = new SendMessageViewModel(senderUser, 333);
+        adapter.messageViewModels.add(sendMessageViewModel2);
+        adapter.initWaitValueDoc(docName, sendMessageVM);
+        messageRecycler.setAdapter(adapter);
+        SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
+                docName, "", "", "", BaseCodeClass.variableType.File_.getValue(), "", 1, 100);
+        LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
+        resualtLiveData.observe(this, getResualt -> {
+            if (getResualt.getResualt().equals("100")) {
+                uploadFile(file,fileUri, Integer.parseInt(getResualt.getMsg()));
+            }
+        });
+
+    }
+
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        showBottomSheetFilePicker();
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+
+            new AppSettingsDialog.Builder(this).build().show();
+        }
+
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
 
 }

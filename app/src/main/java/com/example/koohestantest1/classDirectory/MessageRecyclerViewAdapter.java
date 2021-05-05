@@ -37,13 +37,17 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private Bitmap bitmap;
     private String caption;
     private SendMessageVM sendMessageVM;
+    private String docName;
 
 
     private final int SENDER = 0;
     private final int GETTER = 1;
     private final int IMAGE_SENDER = 2;
     private final int IMAGE_GETTER = 3;
+    private final int DOC_SENDER = 4;
+    private final int DOC_GETTER = 5;
     private final int WAIT_FOR_UPLOAD = 100;
+    private final int WAIT_FOR_UPLOAD_DOC = 200;
 
     public MessageRecyclerViewAdapter(Context mContext, List<SendMessageViewModel> messageViewModels) {
         this.mContext = mContext;
@@ -73,9 +77,18 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         } else if (viewType == IMAGE_SENDER){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_image_message_sent, parent, false);
             return new ImageSenderViewHolder(view);
-        }else {
+        }else if (viewType == DOC_GETTER){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_doc_message_recived, parent, false);
+            return new DocGetterViewHolder(view);
+        }else if (viewType == DOC_SENDER){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_doc_message_send, parent, false);
+            return new DocSenderViewHolder(view);
+        }else if (viewType == WAIT_FOR_UPLOAD){
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_wait_for_send_image_message_sent, parent, false);
             return new WaitForUploadImageHolder(view);
+        }else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_wait_for_send_doc_message_sent, parent, false);
+            return new WaitForUploadDocHolder(view);
         }
     }
 
@@ -103,9 +116,22 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     ImageSenderViewHolder imageSenderViewHolder = (ImageSenderViewHolder) holder;
                     imageSenderViewHolder.holder(sendMessageViewModel);
                 }
+            }else if (msgType == BaseCodeClass.variableType.File_.getValue()){
+                if (userSender.equals(MessageActivity.senderId)) {
+                    DocGetterViewHolder docGetterViewHolder = (DocGetterViewHolder) holder;
+                    docGetterViewHolder.holder(sendMessageViewModel);
+
+                } else {
+                    DocSenderViewHolder docSenderViewHolder = (DocSenderViewHolder) holder;
+                    docSenderViewHolder.holder(sendMessageViewModel);
+                }
             }else if (msgType ==222){
                 WaitForUploadImageHolder waitForUploadImageHolder = (WaitForUploadImageHolder) holder;
                 waitForUploadImageHolder.holder(bitmap,caption,position);
+
+            }else if (msgType == 333){
+                WaitForUploadDocHolder waitForUploadDocHolder = (WaitForUploadDocHolder) holder;
+                waitForUploadDocHolder.holder(docName,position);
 
             }
 
@@ -153,9 +179,20 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             } else {
                 return IMAGE_SENDER;
             }
-        }else if (msgType ==222){
+        }else if (msgType == BaseCodeClass.variableType.File_.getValue()){
+            if (userSender.equals(MessageActivity.senderId)){
+                return DOC_GETTER;
+            }else {
+                return DOC_SENDER;
+            }
+        }
+
+        else if (msgType ==222){
             return WAIT_FOR_UPLOAD;
-        }else return 20;
+        }else if (msgType == 333){
+            return WAIT_FOR_UPLOAD_DOC;
+
+        }else return 656;
 
 
       /*  if (messageViewModels.get(position).getUserSender().equals(MessageActivity.senderId)) {
@@ -274,6 +311,33 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
     }
+    public class DocSenderViewHolder extends RecyclerView.ViewHolder{
+        TextView txtDocName;
+
+        public DocSenderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            txtDocName = itemView.findViewById(R.id.txt_layout_Doc_message_send);
+        }
+
+        void holder(SendMessageViewModel messageData){
+            txtDocName.setText(messageData.getMessage1());
+
+        }
+    }
+    public class DocGetterViewHolder extends RecyclerView.ViewHolder{
+        TextView txtDocName;
+
+        public DocGetterViewHolder(@NonNull View itemView) {
+            super(itemView);
+            txtDocName = itemView.findViewById(R.id.txt_layout_Doc_message_recived);
+        }
+
+        void holder(SendMessageViewModel messageData){
+            txtDocName.setText(messageData.getMessage1());
+
+        }
+    }
+
 
     public class WaitForUploadImageHolder extends RecyclerView.ViewHolder {
         ImageView imgMessageSend;
@@ -323,6 +387,22 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
     }
+    public class WaitForUploadDocHolder extends RecyclerView.ViewHolder {
+        TextView txtDocName;
+
+
+        public WaitForUploadDocHolder(@NonNull View itemView) {
+            super(itemView);
+            txtDocName = itemView.findViewById(R.id.txt_layout_docMsgSendWait);
+
+        }
+
+        void holder(String docName,int position) {
+            txtDocName.setText(docName);
+        }
+
+    }
+
 
 
 
@@ -344,16 +424,14 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         mContext.startActivity(intent);
     }
 
-    public void addNewRow(SendMessageViewModel sendMessageViewModel){
-        messageViewModels.add(sendMessageViewModel);
-        MessageRecyclerViewAdapter.this.notifyItemInserted(messageViewModels.size() - 1);
-        MessageRecyclerViewAdapter.this.notifyDataSetChanged();
-
-    }
 
     public void initWaitValue(Bitmap bitmap ,String caption,SendMessageVM sendMessageVM){
         this.bitmap = bitmap;
         this.caption = caption;
+        this.sendMessageVM = sendMessageVM;
+    }
+    public void initWaitValueDoc(String docName,SendMessageVM sendMessageVM){
+        this.docName = docName;
         this.sendMessageVM = sendMessageVM;
     }
 

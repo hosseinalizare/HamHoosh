@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layoutDirection="rtl"
+    android:padding="6dp"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rel_layoutBottomSheetFilePicker_Picture"
+        android:layout_margin="@dimen/material_size_4"
+        android:layout_weight="0.33"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:padding="4dp"
+            android:background="#00C853"
+            android:scaleType="fitCenter"
+            android:id="@+id/img_picture"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_picture_filepicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/koodak"
+            android:layout_centerHorizontal="true"
+            android:text="Picture"
+            android:layout_below="@+id/img_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rel_layoutBottomSheetFilePicker_Audio"
+        android:layout_margin="4dp"
+        android:layout_weight="0.33"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:background="#304FFE"
+            android:scaleType="fitCenter"
+            android:padding="4dp"
+            android:id="@+id/img_Audio"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_audio_filepicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/koodak"
+            android:layout_centerHorizontal="true"
+            android:text="Audio"
+            android:layout_below="@+id/img_Audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rel_layoutBottomSheetFilePicker_File"
+        android:layout_margin="4dp"
+        android:layout_weight="0.33"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:background="#FFAB00"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:id="@+id/img_File"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_file_filepicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/koodak"
+            android:layout_centerHorizontal="true"
+            android:text="Doc"
+            android:layout_below="@+id/img_File"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
+
+
+
+</LinearLayout>
+<!--
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:src="@drawable/allfilter"
+        android:id="@+id/layout_bottomSheetFilePicker_imgPicture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        app:layout_goneMarginStart="30dp"
+        android:src="@drawable/allfilter"
+        android:id="@+id/layout_bottomSheetFilePicker_imgAudio"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/layout_bottomSheetFilePicker_imgPicture"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        app:layout_goneMarginStart="30dp"
+        android:src="@drawable/allfilter"
+        android:id="@+id/layout_bottomSheetFilePicker_imgFile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/layout_bottomSheetFilePicker_imgAudio"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>-->
