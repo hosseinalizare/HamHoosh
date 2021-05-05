@@ -1,15 +1,22 @@
 package com.example.koohestantest1.classDirectory;
 
+import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -22,10 +29,14 @@ import com.example.koohestantest1.MessageActivity;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.Utils.TimeUtils;
 
+import java.io.File;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.viewModel.SendMessageVM;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -344,17 +355,25 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
     public class DocGetterViewHolder extends RecyclerView.ViewHolder{
         TextView txtDocName,txtTime;
+        CircularImageView imgDownload;
+        ProgressBar prg;
 
         public DocGetterViewHolder(@NonNull View itemView) {
             super(itemView);
             txtDocName = itemView.findViewById(R.id.txt_layout_Doc_message_recived);
-            txtTime = itemView.findViewById(R.id.txtTime_layout_Doc_message_send);
+            txtTime = itemView.findViewById(R.id.txtTime_layout_Doc_message_recived);
+            imgDownload = itemView.findViewById(R.id.img_layout_Doc_message_recived);
+            prg = itemView.findViewById(R.id.prg_layout_Doc_message_recived);
         }
 
         void holder(SendMessageViewModel messageData){
             txtDocName.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtTime.setText(time);
+            imgDownload.setOnClickListener(v -> {
+                downloadDoc(prg,imgDownload,messageData.getMessage1(),generateUrl(Integer.parseInt(messageData.getId())));
+
+            });
 
         }
     }
@@ -454,6 +473,65 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void initWaitValueDoc(String docName,SendMessageVM sendMessageVM){
         this.docName = docName;
         this.sendMessageVM = sendMessageVM;
+    }
+
+
+    public void createFilePathForDownload(){
+        File file = new File(Environment.getExternalStorageDirectory().getPath()+"/hamyarDownload");
+        file.mkdirs();
+    }
+
+    private void downloadDoc(ProgressBar progressBar,CircularImageView imageView,String name,String link){
+        progressBar.setVisibility(View.VISIBLE);
+        Uri uri = Uri.parse(link);
+        DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setTitle("در حال دانلود");
+        request.setDescription("لطفا منتظر بمانید...");
+        final String fileName = name;
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+
+        request.setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_DOWNLOADS, fileName);
+
+        final long id = downloadManager.enqueue(request);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                DownloadManager.Query query = new DownloadManager.Query();
+                query.setFilterById(id);
+                Cursor cursor = downloadManager.query(query);
+                if (cursor.moveToFirst()){
+                    long downloadedBytes = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+
+                    long totalBytes = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                    final int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                    final int percent = (int) ((downloadedBytes * 100) / totalBytes);
+                    ((Activity)mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setProgress(percent);
+                            if (percent ==100){
+                                Toast.makeText(mContext, "دانلود با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
+                                timer.purge();
+                                timer.cancel();
+                                progressBar.setVisibility(View.GONE);
+                                imageView.setImageResource(R.drawable.ic_doc3);
+                                imageView.setClickable(false);
+                                imageView.setEnabled(false);
+                            }
+                        }
+                    });
+
+                }
+
+
+            }
+        },0,100);
+
+
+
+
     }
 
 

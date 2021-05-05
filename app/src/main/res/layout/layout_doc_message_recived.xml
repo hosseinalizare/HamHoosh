@@ -52,6 +52,7 @@
                 tools:text="Check recieved" />
 
             <TextView
+                android:layout_marginTop="8dp"
                 android:id="@+id/txtTime_layout_Doc_message_recived"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,6 +65,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_layout_Doc_message_recived"
                 tools:text="10:10 AM" />
+
+            <ProgressBar
+                android:visibility="gone"
+                android:id="@+id/prg_layout_Doc_message_recived"
+                style="?android:attr/progressBarStyleLargeInverse"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_centerInParent="true"
+                app:layout_constraintBottom_toBottomOf="@+id/img_layout_Doc_message_recived"
+                app:layout_constraintEnd_toEndOf="@+id/img_layout_Doc_message_recived"
+                app:layout_constraintStart_toStartOf="@+id/img_layout_Doc_message_recived"
+                app:layout_constraintTop_toTopOf="@+id/img_layout_Doc_message_recived" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
