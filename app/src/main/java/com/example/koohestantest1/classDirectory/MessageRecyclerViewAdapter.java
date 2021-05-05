@@ -313,14 +313,28 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
     public class DocSenderViewHolder extends RecyclerView.ViewHolder{
         TextView txtDocName;
+        ImageView imgMessageTick;
 
         public DocSenderViewHolder(@NonNull View itemView) {
             super(itemView);
             txtDocName = itemView.findViewById(R.id.txt_layout_Doc_message_send);
+            imgMessageTick = itemView.findViewById(R.id.iv_layout_Doc_message_recived_tick);
+
         }
 
         void holder(SendMessageViewModel messageData){
             txtDocName.setText(messageData.getMessage1());
+            switch (messageData.getStatus()) {
+                case "1":
+                    imgMessageTick.setImageResource(R.drawable.ic_tick);
+                    break;
+                case "2":
+                    imgMessageTick.setImageResource(R.drawable.ic_tick_done);
+                    break;
+                case "3":
+                    imgMessageTick.setImageResource(R.drawable.ic_tick_seen);
+                    break;
+            }
 
         }
     }

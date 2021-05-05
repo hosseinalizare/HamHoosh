@@ -671,7 +671,8 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
     private void uploadFile(File file,Uri fileUri, final int msgId) {
 
-        RequestBody requestBody = RequestBody.create(file, MediaType.parse(getContentResolver().getType(fileUri)));
+        /*RequestBody requestBody = RequestBody.create(file, MediaType.parse(getContentResolver().getType(fileUri)));*/
+        RequestBody requestBody = RequestBody.create(file, MediaType.parse("*/*"));
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 
         /*RequestBody requestBody = RequestBody.create(file, MediaType.parse("multipart/form-data"));
