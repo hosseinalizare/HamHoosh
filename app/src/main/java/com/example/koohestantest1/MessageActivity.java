@@ -614,6 +614,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                     ArrayList<MediaFile> files = data.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
                     Uri uri = files.get(0).getUri();
                     File file = FileUtils.getFile(mContext,uri);
+
+                    long fileSizeInBytes = file.length();
+                    long fileSizeInKB = fileSizeInBytes / 1024;
+                    long fileSizeInMB = fileSizeInKB / 1024;
+
                     sendDocMessage(files.get(0).getName(), file,uri);
 
 
@@ -674,11 +679,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         /*RequestBody requestBody = RequestBody.create(file, MediaType.parse(getContentResolver().getType(fileUri)));*/
         RequestBody requestBody = RequestBody.create(file, MediaType.parse("*/*"));
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-
-        /*RequestBody requestBody = RequestBody.create(file, MediaType.parse("multipart/form-data"));
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);*/
-
-
         sendMessageVM.sendDocMessage(msgId, body).observe(this, getResualt -> {
 
               if (getResualt.getResualt().equals("100")) {

@@ -23,17 +23,18 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <de.hdodenhof.circleimageview.CircleImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:layout_marginStart="10dp"
                 app:civ_border_width="2dp"
+                android:scaleType="centerInside"
                 android:layout_marginTop="10dp"
                 app:civ_border_color="@color/green800"
                 android:id="@+id/img_layout_Doc_message_send"
-                android:src="@drawable/ic_file_filepicker"
+                android:src="@drawable/ic_doc"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_width="40dp"
-                android:layout_height="40dp"/>
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
             <TextView
                 android:id="@+id/txt_layout_Doc_message_send"
                 android:layout_width="0dp"
@@ -51,6 +52,7 @@
                 tools:text="Check recieved" />
 
             <TextView
+                android:layout_marginTop="8dp"
                 android:id="@+id/txtTime_layout_Doc_message_send"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

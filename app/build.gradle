@@ -271,6 +271,9 @@ dependencies {
 
     implementation 'com.github.jaiselrahman:FilePicker:1.3.2'
 
+    implementation 'com.mikhaellopez:circularimageview:4.2.0'
+
+
 
     // runtime permission
     implementation 'pub.devrel:easypermissions:3.0.0'

@@ -312,18 +312,22 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     }
     public class DocSenderViewHolder extends RecyclerView.ViewHolder{
-        TextView txtDocName;
+        TextView txtDocName,txtTime;
         ImageView imgMessageTick;
 
         public DocSenderViewHolder(@NonNull View itemView) {
             super(itemView);
             txtDocName = itemView.findViewById(R.id.txt_layout_Doc_message_send);
             imgMessageTick = itemView.findViewById(R.id.iv_layout_Doc_message_recived_tick);
+            txtTime = itemView.findViewById(R.id.txtTime_layout_Doc_message_send);
+
 
         }
 
         void holder(SendMessageViewModel messageData){
             txtDocName.setText(messageData.getMessage1());
+            String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
+            txtTime.setText(time);
             switch (messageData.getStatus()) {
                 case "1":
                     imgMessageTick.setImageResource(R.drawable.ic_tick);
@@ -339,15 +343,18 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
     public class DocGetterViewHolder extends RecyclerView.ViewHolder{
-        TextView txtDocName;
+        TextView txtDocName,txtTime;
 
         public DocGetterViewHolder(@NonNull View itemView) {
             super(itemView);
             txtDocName = itemView.findViewById(R.id.txt_layout_Doc_message_recived);
+            txtTime = itemView.findViewById(R.id.txtTime_layout_Doc_message_send);
         }
 
         void holder(SendMessageViewModel messageData){
             txtDocName.setText(messageData.getMessage1());
+            String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
+            txtTime.setText(time);
 
         }
     }
