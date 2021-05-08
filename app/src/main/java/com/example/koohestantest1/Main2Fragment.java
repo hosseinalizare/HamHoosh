@@ -48,6 +48,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.koohestantest1.activity.NewsLetterActivity;
 import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.constants.CurrentCartId;
@@ -135,7 +136,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     List<String> allProductsPId= new ArrayList<>();
     Date lastUpdateTime = new Date();
     String updateTime;
-    private FrameLayout frameLayout;
+    private FrameLayout frameLayout,frmNewsLetter;
     private ImageView ivCartIcon;
     private final String TAG = Main2Fragment.class.getSimpleName();
     private CountsViewModel countsViewModel;
@@ -460,6 +461,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         view = inflater.inflate(R.layout.fragment_main2, container, false);
         dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         frameLayout = view.findViewById(R.id.frame_cart_icon);
+        frmNewsLetter = view.findViewById(R.id.newsLetter);
         ivCartIcon = view.findViewById(R.id.iv_cart);
         recyclerView_ = view.findViewById(R.id.productrc);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
@@ -510,6 +512,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         });
 
         companyLogo.setOnClickListener(v -> startActivity(new Intent(mContext, ShowStoreActivity.class)));
+
+        frmNewsLetter.setOnClickListener(v -> startActivity(new Intent(mContext, NewsLetterActivity.class)));
 
         productRecyclerView = view.findViewById(R.id.productRecyclerView);
         productRecyclerView.setNestedScrollingEnabled(false);
@@ -1489,5 +1493,12 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
     public void toastMessage(String message, int id) {
         Toast.makeText(mContext, id + ">>" + message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dbViewModel.getAllProducts().removeObservers(getViewLifecycleOwner());
+        dbViewModel.getAllProperties().removeObservers(getViewLifecycleOwner());
     }
 }

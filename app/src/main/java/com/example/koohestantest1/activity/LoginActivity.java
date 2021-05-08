@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.koohestantest1.ForgotPasswordActivity;
 import com.example.koohestantest1.MainActivity;
 import com.example.koohestantest1.R;
+import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.model.VersioCheck;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 
@@ -241,6 +242,11 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public Call<GetResualt> getLastVersion(VersioCheck versioCheck) {
+                return null;
+            }
+
+            @Override
+            public Call<List<NewsLetter>> getAllNews(String companyId, long time) {
                 return null;
             }
         });

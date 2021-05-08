@@ -2,6 +2,7 @@ package com.example.koohestantest1.local_db;
 
 import android.app.Application;
 
+import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 
@@ -9,6 +10,10 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class DBRepository {
@@ -84,5 +89,21 @@ public class DBRepository {
 
     public Flowable<List<Properties>> getSpecificProperties(String productId){
         return localApi.getPropertiesOfProduct(productId);
+    }
+
+    public Single<Long> insertNewsLetter(NewsLetter newsLetter){
+
+        return localApi.insertNewsLetter(newsLetter)
+                .subscribeOn(Schedulers.io());
+    }
+
+    public void deleteAllNews(){
+        localApi.deleteAllNewsLetter()
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public Flowable<List<NewsLetter>> getAllNews(){
+        return localApi.getAllNews();
     }
 }

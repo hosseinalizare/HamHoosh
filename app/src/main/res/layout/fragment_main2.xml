@@ -67,6 +67,21 @@
 
                 </FrameLayout>
 
+                <FrameLayout
+                    android:id="@+id/newsLetter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/frame_user_chat"
+                    app:layout_constraintEnd_toStartOf="@id/frame_cart_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_auto_stories"/>
+                </FrameLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 

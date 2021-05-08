@@ -2,6 +2,7 @@ package com.example.koohestantest1.local_db;
 
 import android.content.Context;
 
+import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 
@@ -15,6 +16,13 @@ public class DatabaseService {
     public DatabaseService(Context context) {
         this.context = context;
         localDatabase = LocalDatabase.getInstance(context);
+    }
+
+    public void insertNewsLetter(List<NewsLetter> newsLetters){
+        for(NewsLetter newsLetter:newsLetters){
+            DBExecutor.getInstance().diskIO().execute(() ->
+            localDatabase.localApi().insertNewsLetter(newsLetter));
+        }
     }
 
     public long insertOneProduct(Product product){
@@ -53,6 +61,7 @@ public class DatabaseService {
         DBExecutor.getInstance().diskIO().execute(() ->  localDatabase.localApi().getProducts());
         return BaseCodeClass.localProducts;
     }
+
 
     public Product getOneProduct(String productId){
         DBExecutor.getInstance().diskIO().execute(() ->  localDatabase.localApi().getProduct(productId));

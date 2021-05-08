@@ -38,6 +38,7 @@ import com.example.koohestantest1.classDirectory.SendLoginDetail;
 import com.example.koohestantest1.classDirectory.SendMobileNumberForSmsClass;
 import com.example.koohestantest1.classDirectory.SendVerifyCode;
 import com.example.koohestantest1.classDirectory.TermsAndConditions;
+import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.model.VersioCheck;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 
@@ -366,6 +367,11 @@ public class GenerantCodeActivity extends AppCompatActivity {
 
             @Override
             public Call<GetResualt> getLastVersion(VersioCheck versioCheck) {
+                return null;
+            }
+
+            @Override
+            public Call<List<NewsLetter>> getAllNews(String companyId, long time) {
                 return null;
             }
         });

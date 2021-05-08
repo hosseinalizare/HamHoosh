@@ -11,6 +11,7 @@ import com.example.koohestantest1.classDirectory.SendLoginDetail;
 import com.example.koohestantest1.classDirectory.SendMobileNumberForSmsClass;
 import com.example.koohestantest1.classDirectory.SendVerifyCode;
 import com.example.koohestantest1.classDirectory.TermsAndConditions;
+import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.model.VersioCheck;
 
 import retrofit2.Call;
@@ -45,4 +46,8 @@ public interface JsonApi {
 
     @POST("User/VersionCheck")
     Call<GetResualt> getLastVersion(@Body VersioCheck versioCheck);
+
+    @POST("News/LoadUpdatedNews")
+    Call<List<NewsLetter>> getAllNews(@Query("CompanyId") String companyId,
+                                @Query("Time") long time);
 }

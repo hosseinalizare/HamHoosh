@@ -21,13 +21,14 @@
         android:name=".classDirectory.BaseCodeClass"
         android:allowBackup="true"
         android:largeHeap="true"
-        tools:replace="android:supportsRtl"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:ignore="UnusedAttribute">
-        <activity android:name=".ActivityShowFullScreenImage"></activity>
+        tools:ignore="UnusedAttribute"
+        tools:replace="android:supportsRtl">
+        <activity android:name=".activity.NewsLetterActivity"></activity>
+        <activity android:name=".ActivityShowFullScreenImage" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

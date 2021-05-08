@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 
@@ -53,4 +54,13 @@ public interface LocalApi {
 
     @Query("DELETE FROM properties")
     Completable deleteAllProperties();
+
+    @Query("SELECT * FROM news_letter")
+    Flowable<List<NewsLetter>> getAllNews();
+
+    @Insert
+    Single<Long> insertNewsLetter(NewsLetter newsLetter);
+
+    @Query("DELETE FROM news_letter")
+    Completable deleteAllNewsLetter();
 }
