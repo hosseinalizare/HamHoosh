@@ -15,6 +15,7 @@ import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -60,6 +61,10 @@ public class DBViewModel extends AndroidViewModel {
 
     public LiveData<List<Product>> getAllProducts(){
         return LiveDataReactiveStreams.fromPublisher(repository.getAllProducts());
+    }
+
+    public LiveData<String> getLastUpdate(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getLastUpdate());
     }
 
     public LiveData<List<Properties>> getAllProperties(){

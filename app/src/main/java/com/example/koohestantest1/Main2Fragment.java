@@ -513,7 +513,11 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
         companyLogo.setOnClickListener(v -> startActivity(new Intent(mContext, ShowStoreActivity.class)));
 
-        frmNewsLetter.setOnClickListener(v -> startActivity(new Intent(mContext, NewsLetterActivity.class)));
+        frmNewsLetter.setOnClickListener(v ->{
+            dbViewModel.getAllProducts().removeObservers(getViewLifecycleOwner());
+            dbViewModel.getAllProperties().removeObservers(getViewLifecycleOwner());
+            startActivity(new Intent(mContext, NewsLetterActivity.class));
+        });
 
         productRecyclerView = view.findViewById(R.id.productRecyclerView);
         productRecyclerView.setNestedScrollingEnabled(false);
@@ -1495,10 +1499,5 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         Toast.makeText(mContext, id + ">>" + message, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        dbViewModel.getAllProducts().removeObservers(getViewLifecycleOwner());
-        dbViewModel.getAllProperties().removeObservers(getViewLifecycleOwner());
-    }
+
 }

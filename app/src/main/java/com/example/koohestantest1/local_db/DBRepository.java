@@ -6,6 +6,7 @@ import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -89,6 +90,10 @@ public class DBRepository {
 
     public Flowable<List<Properties>> getSpecificProperties(String productId){
         return localApi.getPropertiesOfProduct(productId);
+    }
+
+    public Flowable<String> getLastUpdate(){
+        return localApi.getLastUpdate();
     }
 
     public Single<Long> insertNewsLetter(NewsLetter newsLetter){

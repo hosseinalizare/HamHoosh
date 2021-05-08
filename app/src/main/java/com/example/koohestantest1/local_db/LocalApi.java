@@ -10,6 +10,7 @@ import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 
+import java.sql.Date;
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -63,4 +64,7 @@ public interface LocalApi {
 
     @Query("DELETE FROM news_letter")
     Completable deleteAllNewsLetter();
+
+    @Query("SELECT MAX(update_date) FROM news_letter")
+    Flowable<String> getLastUpdate();
 }
