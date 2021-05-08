@@ -70,6 +70,7 @@ import com.jaiselrahman.filepicker.config.Configurations;
 import com.jaiselrahman.filepicker.model.MediaFile;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import droidninja.filepicker.FilePickerBuilder;
 import id.zelory.compressor.Compressor;
 import io.reactivex.Single;
 import okhttp3.MediaType;
@@ -294,6 +295,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                     .setMaxSelection(1)
                     .setSkipZeroSizeFiles(true)
                     .setShowImages(false)
+                    .setSingleChoiceMode(true)
                     .setShowAudios(false)
                     .setShowVideos(false)
                     .setShowFiles(true)
@@ -307,7 +309,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
 
 
-           /* FilePickerBuilder.getInstance()
+          /*  FilePickerBuilder.getInstance()
                         .setMaxCount(1)
                         .setActivityTheme(R.style.AppTheme)
                         .pickFile(MessageActivity.this,CHOSE_DOC_REQUEST_CODE);*/
@@ -391,16 +393,16 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 }
             }
 
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (isLoading){
-                            new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
-
-                        }
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isLoading) {
+                        new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
 
                     }
-                }, 700);
+
+                }
+            }, 700);
 
 
 /*
@@ -613,13 +615,13 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
                     ArrayList<MediaFile> files = data.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
                     Uri uri = files.get(0).getUri();
-                    File file = FileUtils.getFile(mContext,uri);
+                    File file = FileUtils.getFile(mContext, uri);
 
                     long fileSizeInBytes = file.length();
                     long fileSizeInKB = fileSizeInBytes / 1024;
                     long fileSizeInMB = fileSizeInKB / 1024;
 
-                    sendDocMessage(files.get(0).getName(), file,uri);
+                    sendDocMessage(files.get(0).getName(), file, uri);
 
 
                 } catch (Exception e) {
@@ -674,18 +676,18 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
     }
 
-    private void uploadFile(File file,Uri fileUri, final int msgId) {
+    private void uploadFile(File file, Uri fileUri, final int msgId) {
 
         /*RequestBody requestBody = RequestBody.create(file, MediaType.parse(getContentResolver().getType(fileUri)));*/
         RequestBody requestBody = RequestBody.create(file, MediaType.parse("*/*"));
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
         sendMessageVM.sendDocMessage(msgId, body).observe(this, getResualt -> {
 
-              if (getResualt.getResualt().equals("100")) {
+            if (getResualt.getResualt().equals("100")) {
                 isLoading = true;
                 new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
                 Toast.makeText(mContext, "فایل با موفقیت آپلود شد", Toast.LENGTH_SHORT).show();
-                
+
             } else {
                 Toast.makeText(mContext, "خطای نا شناخته", Toast.LENGTH_SHORT).show();
 
@@ -715,7 +717,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         });
     }
 
-    private void sendDocMessage(String docName, File file,Uri fileUri) {
+    private void sendDocMessage(String docName, File file, Uri fileUri) {
         isLoading = false;
         SendMessageViewModel sendMessageViewModel2 = new SendMessageViewModel(senderUser, 333);
         adapter.messageViewModels.add(sendMessageViewModel2);
@@ -726,7 +728,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
             if (getResualt.getResualt().equals("100")) {
-                uploadFile(file,fileUri, Integer.parseInt(getResualt.getMsg()));
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()));
             }
         });
 

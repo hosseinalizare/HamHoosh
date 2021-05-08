@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray300"
+    android:fitsSystemWindows="true"
+    android:windowSoftInputMode="adjustResize"
+    tools:context=".MessageActivity">
+
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_margin="6dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/img_layoutProfile_imgBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_back_white"/>
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/cmg_layoutProfile_cmgProfile"
+            android:layout_toEndOf="@+id/img_layoutProfile_imgBack"
+            android:layout_width="60dp"
+            android:layout_centerVertical="true"
+            app:civ_border_width="2dp"
+            android:src="@drawable/ic_profile"
+            app:civ_border_color="@color/white"
+            android:layout_height="60dp"/>
+        <LinearLayout
+            android:gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/cmg_layoutProfile_cmgProfile"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txt_layoutProfile_txtName"
+                android:fontFamily="@font/koodak"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                tools:text="Ali mohamadi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/txt_layoutProfile_txtOnlineUser"
+                android:fontFamily="@font/koodak"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                tools:text="سه روز پیش"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_layoutProfile_cardInfo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+    </androidx.cardview.widget.CardView>
+
+    <TableLayout
+        android:id="@+id/tbl_layoutProfile_tablayout"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/card_layoutProfile_cardInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_layoutProfile_viewPager"
+        android:layoutDirection="rtl"
+        app:layout_constraintTop_toBottomOf="@+id/tbl_layoutProfile_tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

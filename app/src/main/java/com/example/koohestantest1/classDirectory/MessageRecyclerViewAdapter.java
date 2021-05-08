@@ -1,7 +1,10 @@
 package com.example.koohestantest1.classDirectory;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,7 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -27,9 +32,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.koohestantest1.ActivityShowFullScreenImage;
 import com.example.koohestantest1.MessageActivity;
 import com.example.koohestantest1.R;
+import com.example.koohestantest1.Utils.FileUtils;
 import com.example.koohestantest1.Utils.TimeUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.util.Collection;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,6 +47,8 @@ import java.util.TimerTask;
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.viewModel.SendMessageVM;
 import com.mikhaellopez.circularimageview.CircularImageView;
+
+import static com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirectory;
 
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -49,7 +61,9 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private String caption;
     private SendMessageVM sendMessageVM;
     private String docName;
-
+    private File  myDir;
+    private String root;
+    private File myFile;
 
     private final int SENDER = 0;
     private final int GETTER = 1;
@@ -63,6 +77,27 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public MessageRecyclerViewAdapter(Context mContext, List<SendMessageViewModel> messageViewModels) {
         this.mContext = mContext;
         this.messageViewModels = messageViewModels;
+      /*  root = getCacheDirectory(mContext).getPath()+"/chat";
+        myDir = new File(root);
+        myDir.mkdir();
+*/
+
+        /*root = Environment.getExternalStorageDirectory()+File.separator+"applicationAsbid";
+        myDir = new File(root);
+        myDir.mkdirs();*/
+
+        /*root = Environment.getExternalStorageDirectory()+"/myAsbid";
+        myDir = new File(root);
+        myDir.mkdirs();*/
+
+        root = Environment.getExternalStorageDirectory()+"asbid";
+
+        myDir = new File(root,"asbidd");
+       myDir.mkdir();
+
+
+
+
     }
 
 
@@ -152,23 +187,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         }
 
-      /*  try {
-
-            SendMessageViewModel currentMessage = messageViewModels.get(position);
-            //check if message is received or sent
-            if (currentMessage.getUserSender().equals(MessageActivity.senderId)) {
-                //message is received:
-                GetterViewHolder getterViewHolder = (GetterViewHolder) holder;
-                getterViewHolder.holder(currentMessage);
-
-            } else {
-                //message is sent:
-                SenderViewHolder senderViewHolder = (SenderViewHolder) holder;
-                senderViewHolder.holder(currentMessage);
-            }
-        } catch (Exception e) {
-            Log.d(TAG, "onBindViewHolder:  " + e.getMessage());
-        }*/
     }
 
     @Override
@@ -364,16 +382,61 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtTime = itemView.findViewById(R.id.txtTime_layout_Doc_message_recived);
             imgDownload = itemView.findViewById(R.id.img_layout_Doc_message_recived);
             prg = itemView.findViewById(R.id.prg_layout_Doc_message_recived);
+
         }
 
         void holder(SendMessageViewModel messageData){
             txtDocName.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtTime.setText(time);
-            imgDownload.setOnClickListener(v -> {
-                downloadDoc(prg,imgDownload,messageData.getMessage1(),generateUrl(Integer.parseInt(messageData.getId())));
 
-            });
+        /*    String fname = myDir + "/" +messageData.getMessage1();
+
+            myFile = new File(root,messageData.getMessage1());
+
+            if (myFile.exists()){
+                imgDownload.setImageResource(R.drawable.ic_doc3);
+                imgDownload.setContentDescription("after");
+
+
+            }*/
+
+           imgDownload.setOnClickListener(v -> {
+               downloadDoc(prg,imgDownload,messageData.getMessage1(),generateUrl(Integer.parseInt(messageData.getId())));
+
+
+             /*  if (imgDownload.getContentDescription().equals("befor")){
+                   downloadDoc(prg,imgDownload,messageData.getMessage1(),generateUrl(Integer.parseInt(messageData.getId())));
+               }else {
+                   Toast.makeText(mContext, "فایل قبلا دانلود شده است", Toast.LENGTH_SHORT).show();
+                 Uri uri =  FileUtils.getUri(myFile);
+               File f=  FileUtils.getFile(mContext,uri);
+
+                   openFile(f);
+               }*/
+
+           });
+
+
+        /*    if (file.exists()) {
+                imgDownload.setImageResource(R.drawable.ic_doc3);
+                imgDownload.setContentDescription("after");
+            }else {
+                imgDownload.setImageResource(R.drawable.ic_download2);
+                imgDownload.setContentDescription("befor");
+            }
+            imgDownload.setOnClickListener(v -> {
+                if (imgDownload.getContentDescription().equals("befor")){
+                    downloadDoc(prg,imgDownload,messageData.getMessage1(),generateUrl(Integer.parseInt(messageData.getId())));
+
+                }else {
+                    *//*File file = new File( Environment.DIRECTORY_DOWNLOADS+ "/"+messageData.getMessage1());
+                    openFile(file);*//*
+
+                    Toast.makeText(mContext, "فایل قبلا دانلود شده است", Toast.LENGTH_SHORT).show();
+                }
+
+            });*/
 
         }
     }
@@ -407,23 +470,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     notifyItemRemoved(position);
                 }
             });
-           /* String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
-            txtImageMessageTimeSend.setText(time);
-*/
-
-/*
-            switch (messageData.getStatus()) {
-                case "1":
-                    imgMessageTick.setImageResource(R.drawable.ic_tick);
-                    break;
-                case "2":
-                    imgMessageTick.setImageResource(R.drawable.ic_tick_done);
-                    break;
-                case "3":
-                    imgMessageTick.setImageResource(R.drawable.ic_tick_seen);
-                    break;
-            }
-*/
         }
 
     }
@@ -475,12 +521,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         this.sendMessageVM = sendMessageVM;
     }
 
-
-    public void createFilePathForDownload(){
-        File file = new File(Environment.getExternalStorageDirectory().getPath()+"/hamyarDownload");
-        file.mkdirs();
-    }
-
     private void downloadDoc(ProgressBar progressBar,CircularImageView imageView,String name,String link){
         progressBar.setVisibility(View.VISIBLE);
         Uri uri = Uri.parse(link);
@@ -491,7 +531,13 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         final String fileName = name;
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
 
+/*
         request.setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_DOWNLOADS, fileName);
+*/
+
+        request.setDestinationInExternalFilesDir(mContext,root,fileName);
+
+
 
         final long id = downloadManager.enqueue(request);
         Timer timer = new Timer();
@@ -517,21 +563,82 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                                 timer.cancel();
                                 progressBar.setVisibility(View.GONE);
                                 imageView.setImageResource(R.drawable.ic_doc3);
-                                imageView.setClickable(false);
-                                imageView.setEnabled(false);
+                                imageView.setContentDescription("after");
+                               /* imageView.setClickable(false);
+                                imageView.setEnabled(false);*/
                             }
                         }
                     });
-
                 }
 
 
             }
         },0,100);
+    }
 
+    private void openFile(File url) {
 
+        try {
 
+/*
+            Uri uri = Uri.fromFile(url);
+*/
+            Uri uri = FileProvider.getUriForFile(mContext, mContext.getApplicationContext().getPackageName() + ".provider",url);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            if (url.toString().contains(".doc") || url.toString().contains(".docx")) {
+                // Word document
+                intent.setDataAndType(uri, "application/msword");
+            } else if (url.toString().contains(".pdf")) {
+                // PDF file
+                intent.setDataAndType(uri, "application/pdf");
+            } else if (url.toString().contains(".ppt") || url.toString().contains(".pptx")) {
+                // Powerpoint file
+                intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+            } else if (url.toString().contains(".xls") || url.toString().contains(".xlsx")) {
+                // Excel file
+                intent.setDataAndType(uri, "application/vnd.ms-excel");
+            } else if (url.toString().contains(".zip")) {
+                // ZIP file
+                intent.setDataAndType(uri, "application/zip");
+            } else if (url.toString().contains(".rar")){
+                // RAR file
+                intent.setDataAndType(uri, "application/x-rar-compressed");
+            } else if (url.toString().contains(".rtf")) {
+                // RTF file
+                intent.setDataAndType(uri, "application/rtf");
+            } else if (url.toString().contains(".wav") || url.toString().contains(".mp3")) {
+                // WAV audio file
+                intent.setDataAndType(uri, "audio/x-wav");
+            } else if (url.toString().contains(".gif")) {
+                // GIF file
+                intent.setDataAndType(uri, "image/gif");
+            } else if (url.toString().contains(".jpg") || url.toString().contains(".jpeg") || url.toString().contains(".png")) {
+                // JPG file
+                intent.setDataAndType(uri, "image/jpeg");
+            } else if (url.toString().contains(".txt")) {
+                // Text file
+                intent.setDataAndType(uri, "text/plain");
+            } else if (url.toString().contains(".3gp") || url.toString().contains(".mpg") ||
+                    url.toString().contains(".mpeg") || url.toString().contains(".mpe") || url.toString().contains(".mp4") || url.toString().contains(".avi")) {
+                // Video files
+                intent.setDataAndType(uri, "video/*");
+            } else {
+                intent.setDataAndType(uri, "*/*");
+            }
 
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ((AppCompatActivity)mContext).startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(mContext, "No application found which can open the file", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean fileExists(Context context, String filename) {
+        File file = context.getFileStreamPath(filename);
+        if(file == null || !file.exists()) {
+            return false;
+        }
+        return true;
     }
 
 

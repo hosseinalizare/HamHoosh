@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +35,8 @@ import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.constants.IntentKeys;
 import com.example.koohestantest1.fragments.bottomsheet.CommentsBottomSheet;
 import com.example.koohestantest1.fragments.bottomsheet.EditBottomSheet;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Properties;
 import com.example.koohestantest1.model.entity.CartProduct;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.BadgeSharedViewModel;
@@ -418,7 +421,7 @@ public class ViewProductActivity extends AppCompatActivity {
         int i = 0;
         File imgFile = null;
         try {
-            Cursor cursor = mydb.GetProductProperties(this, selectedPid);
+           /* Cursor cursor = mydb.GetProductProperties(this, selectedPid);
             List<String> s = new ArrayList<>();
 
             if (cursor.moveToFirst()) {
@@ -426,9 +429,21 @@ public class ViewProductActivity extends AppCompatActivity {
                     mPropertyName.add(cursor.getString(cursor.getColumnIndex(mydb.PropertisName)));
                     mPropertyValue.add(cursor.getString(cursor.getColumnIndex(mydb.PropertisValue)));
                 } while (cursor.moveToNext());
-            }
+            }*/
 
-            initPropertyRecyclerView();
+
+            DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+            dbViewModel.getSpecificProperties(selectedPid).observe(this, new Observer<List<Properties>>() {
+                @Override
+                public void onChanged(List<Properties> propertiesList) {
+                    for(Properties properties:propertiesList){
+                        mPropertyName.add(properties.PropertiesName);
+                        mPropertyValue.add(properties.PropertiesValue);
+                    }
+                    initPropertyRecyclerView();
+                }
+            });
+
         } catch (Exception ex) {
             Log.d("Error",ex.getMessage());
         }
