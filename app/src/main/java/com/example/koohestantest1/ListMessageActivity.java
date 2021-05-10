@@ -25,6 +25,7 @@ import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.ListMessageRecyclerViewAdapter;
+import com.example.koohestantest1.model.DeleteMessageM;
 
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
@@ -173,6 +174,10 @@ public class ListMessageActivity extends AppCompatActivity implements MessageApi
         return null;
     }
 
+    @Override
+    public Single<GetResualt> deleteMessage(DeleteMessageM deleteMessageM) {
+        return null;
+    }
 
 
     @Override

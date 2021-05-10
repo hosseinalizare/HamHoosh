@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -44,6 +45,7 @@ import com.example.koohestantest1.Utils.Cache;
 import com.example.koohestantest1.Utils.FileUtils;
 import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.constants.EmployeeStatus;
+import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.EmployeeAdding;
 import com.example.koohestantest1.viewModel.CompanyViewModel;
 import com.example.koohestantest1.viewModel.SendMessageVM;
@@ -70,7 +72,6 @@ import com.jaiselrahman.filepicker.config.Configurations;
 import com.jaiselrahman.filepicker.model.MediaFile;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import droidninja.filepicker.FilePickerBuilder;
 import id.zelory.compressor.Compressor;
 import io.reactivex.Single;
 import okhttp3.MediaType;
@@ -82,7 +83,7 @@ import retrofit2.Call;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 
-public class MessageActivity extends AppCompatActivity implements MessageApi, SendImageMessageBottomSheetDialog.OnclickOnFloatingButtonMessageBsheet, EasyPermissions.PermissionCallbacks {
+public class MessageActivity extends AppCompatActivity implements MessageApi, SendImageMessageBottomSheetDialog.OnclickOnFloatingButtonMessageBsheet, EasyPermissions.PermissionCallbacks, MessageRecyclerViewAdapter.OnClickMessage {
     public static final int PICK_IMAGE = 123;
     public static final int CAMERA_REQUEST_CODE = 5;
     public static final int CAMERA_PERMISSION_CODE = 101;
@@ -135,6 +136,13 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     private int CURRENT_USER_ROLE = -1;
     private CircleImageView circleImageView;
     private SendMessageVM sendMessageVM;
+    private ImageView imgDeleteMessage, imgForwardMessage, imgReplyMessage;
+    private RelativeLayout relReplyMessage;
+    private ImageView imgCloseReplyMessage;
+    private TextView txtUserNameReplyMessage, txtValueReplyMessage;
+    private boolean isReplyMode = false;
+    private String replyMessageId = "";
+    private String messageId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +171,13 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             tvName = findViewById(R.id.profileNameTxt);
             circleImageView = findViewById(R.id.profilePhoto);
             imgSendFile = findViewById(R.id.imgSendFile);
+            imgDeleteMessage = findViewById(R.id.img_deleteMessage);
+            imgForwardMessage = findViewById(R.id.img_forwardMessage);
+            imgReplyMessage = findViewById(R.id.img_replyMessage);
+            relReplyMessage = findViewById(R.id.rel_activityMessage_relativeReplay);
+            imgCloseReplyMessage = findViewById(R.id.img_activityMessage_imgCloseReplay);
+            txtUserNameReplyMessage = findViewById(R.id.txt_activityMessage_txtUserNameReplay);
+            txtValueReplyMessage = findViewById(R.id.txt_activityMessage_txtMessageValueReplay);
             setSupportActionBar(toolbar);
 //
 //            menuButton.setOnClickListener(v -> {
@@ -200,13 +215,37 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 Toast.makeText(this, "خطایی رخ داده", Toast.LENGTH_SHORT).show();
 
             btnSend.setOnClickListener(v -> {
+                if (!isReplyMode) {
+                    if (!edMessage.getText().toString().isEmpty()) {
+                        new MessageManagerClass(mContext, messageActivity).sendMessage(new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
+                                edMessage.getText().toString(), "", "", "", BaseCodeClass.variableType.string_.getValue(), "", 1, 100));
+                        edMessage.setText("");
 
-                if (!edMessage.getText().toString().isEmpty()) {
-                    new MessageManagerClass(mContext, messageActivity).sendMessage(new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
-                            edMessage.getText().toString(), "", "", "", BaseCodeClass.variableType.string_.getValue(), "", 1, 100));
-                    edMessage.setText("");
+                    }
+
+                } else {
+
+                    if (!edMessage.getText().toString().isEmpty()) {
+
+                        SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
+                                edMessage.getText().toString(), "", "", replyMessageId, BaseCodeClass.variableType.string_.getValue(), "", 1, 100);
+                        sendMessageVM.sendMessage(sendMessageViewModel).observe(MessageActivity.this, new Observer<GetResualt>() {
+                            @Override
+                            public void onChanged(GetResualt getResualt) {
+                                edMessage.setText("");
+                                relReplyMessage.setVisibility(View.GONE);
+                                messageUnSelected(replyMessageId);
+
+
+                            }
+                        });
+
+                    }
+
 
                 }
+
+
             });
         /*    imgSendFile.setOnClickListener(v -> {
                 CropImage.startPickImageActivity(MessageActivity.this);
@@ -323,7 +362,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             layoutManager.setStackFromEnd(true);
             messageRecycler.setLayoutManager(layoutManager);
             latestMsgSize = sendMessageViewModels.size();
-            adapter = new MessageRecyclerViewAdapter(mContext, sendMessageViewModels);
+            adapter = new MessageRecyclerViewAdapter(mContext, sendMessageViewModels, this);
             messageRecycler.setAdapter(adapter);
         } catch (Exception e) {
             baseCodeClass.logMessage("Recy=>>" + e.getMessage(), mContext);
@@ -350,6 +389,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         return null;
     }
 
+    @Override
+    public Single<GetResualt> deleteMessage(DeleteMessageM deleteMessageM) {
+        return null;
+    }
+
 
     @Override
     public Call<GetResualt> sendReport(SendReportViewModel sendReportViewModel) {
@@ -368,7 +412,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
     @Override
     public void onResponseGetMessage(List<SendMessageViewModel> sendMessageViewModelss) {
-
         try {
             if (adapter == null) {
                 sendMessageViewModels = sendMessageViewModelss;
@@ -398,12 +441,9 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 public void run() {
                     if (isLoading) {
                         new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser);
-
                     }
-
                 }
             }, 700);
-
 
 /*
                 handler.postDelayed(() -> new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser), 700);
@@ -504,6 +544,12 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                     }
                 });
 
+                break;
+
+            case R.id.menu_chat_delete_chat_history:
+                DeleteMessageM deleteMessageM = new DeleteMessageM(baseCodeClass.getToken(), senderUser, getterUser, null);
+
+                sendMessageVM.deleteMessage(deleteMessageM).observe(this, getResualt -> Toast.makeText(mContext, getResualt.getResualt() + "", Toast.LENGTH_SHORT).show());
                 break;
         }
         return true;
@@ -756,5 +802,79 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
+
+
+    @Override
+    public void messageSelected(ConstraintLayout parent, String messageId, SendMessageViewModel messageData) {
+        imgForwardMessage.setVisibility(View.VISIBLE);
+        imgDeleteMessage.setVisibility(View.VISIBLE);
+        imgReplyMessage.setVisibility(View.VISIBLE);
+        adapter.messageIdList.add(Integer.parseInt(messageId));
+
+        if (adapter.messageIdList.size() > 1) {
+            imgReplyMessage.setVisibility(View.GONE);
+            relReplyMessage.setVisibility(View.GONE);
+            isReplyMode = false;
+        }
+
+
+        imgDeleteMessage.setOnClickListener(v -> {
+            DeleteMessageM deleteMessageM = new DeleteMessageM(baseCodeClass.getToken(), senderUser, getterUser, adapter.messageIdList);
+            sendMessageVM.deleteMessage(deleteMessageM).observe(this, new Observer<GetResualt>() {
+                @Override
+                public void onChanged(GetResualt getResualt) {
+                    Toast.makeText(mContext, getResualt.getResualt(), Toast.LENGTH_SHORT).show();
+                    adapter.messageIdList.clear();
+                    imgForwardMessage.setVisibility(View.GONE);
+                    imgDeleteMessage.setVisibility(View.GONE);
+                    imgReplyMessage.setVisibility(View.GONE);
+                }
+            });
+
+
+        });
+        imgReplyMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isReplyMode = true;
+                replyMessageId = messageData.getId();
+                relReplyMessage.setVisibility(View.VISIBLE);
+                txtUserNameReplyMessage.setText(messageData.getUserSender());
+                txtValueReplyMessage.setText(messageData.getMessage1());
+            }
+        });
+        imgCloseReplyMessage.setOnClickListener(v -> {
+            isReplyMode = false;
+            relReplyMessage.setVisibility(View.GONE);
+        });
+
+
+    }
+
+    @Override
+    public void messageUnSelected(String id) {
+        int i = 0;
+        for (int item : adapter.messageIdList) {
+            if (Integer.parseInt(id) == item) {
+                adapter.messageIdList.remove(i);
+            }
+            i++;
+        }
+        if (adapter.messageIdList.size() == 0) {
+            adapter.selectedFalse();
+            imgForwardMessage.setVisibility(View.GONE);
+            imgDeleteMessage.setVisibility(View.GONE);
+            imgReplyMessage.setVisibility(View.GONE);
+            relReplyMessage.setVisibility(View.GONE);
+            isReplyMode = false;
+        }
+
+        if (adapter.messageIdList.size() == 1) {
+            isReplyMode = true;
+            imgReplyMessage.setVisibility(View.VISIBLE);
+
+        }
+    }
+
 
 }

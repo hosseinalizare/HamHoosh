@@ -41,6 +41,7 @@ import com.example.koohestantest1.activity.CostumersListActivity;
 import com.example.koohestantest1.activity.InvisibleProductActivity;
 import com.example.koohestantest1.activity.NotInStockActivity;
 import com.example.koohestantest1.model.CountsDetail;
+import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.CountsViewModel;
 import com.google.android.material.badge.BadgeDrawable;
@@ -562,6 +563,11 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
 
     @Override
     public Single<GetResualt> uploadMessageImage(int MsgId, MultipartBody.Part file) {
+        return null;
+    }
+
+    @Override
+    public Single<GetResualt> deleteMessage(DeleteMessageM deleteMessageM) {
         return null;
     }
 

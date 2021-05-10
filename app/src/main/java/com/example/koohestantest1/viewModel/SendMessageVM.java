@@ -8,6 +8,7 @@ import com.example.koohestantest1.ApiDirectory.MessageApi;
 import com.example.koohestantest1.MyApiClient;
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
+import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 
 import io.reactivex.Single;
@@ -25,6 +26,7 @@ public class SendMessageVM extends ViewModel {
     private MutableLiveData<GetResualt> messageLiveData;
     private MutableLiveData<GetResualt> uploadImageMessageLiveData;
     private MutableLiveData<GetResualt> uploadDocMessageLiveData;
+    private MutableLiveData<GetResualt> deleteMessageLiveData;
   public   CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public LiveData<GetResualt> sendMessage(SendMessageViewModel sendMessageViewModel){
@@ -90,6 +92,29 @@ public class SendMessageVM extends ViewModel {
                 })
         );
         return uploadDocMessageLiveData;
+    }
+
+    public LiveData<GetResualt> deleteMessage(DeleteMessageM deleteMessageM){
+        deleteMessageLiveData = new MutableLiveData<>();
+        Single<GetResualt> resualtSingle = RetrofitInstance.getRetrofit().create(MessageApi.class).deleteMessage(deleteMessageM);
+        compositeDisposable.add(resualtSingle.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<GetResualt>() {
+                    @Override
+                    public void onSuccess(@NonNull GetResualt getResualt) {
+                        deleteMessageLiveData.setValue(getResualt);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                })
+
+        );
+        return deleteMessageLiveData;
+
+
     }
 
 

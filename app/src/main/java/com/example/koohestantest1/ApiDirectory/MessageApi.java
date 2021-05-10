@@ -6,11 +6,13 @@ import com.example.koohestantest1.ViewModels.ContactListViewModel;
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
+import com.example.koohestantest1.model.DeleteMessageM;
 
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -29,6 +31,9 @@ public interface MessageApi {
     @Multipart
     @POST("User/ChatFilesPost")
     Single<GetResualt> uploadMessageImage(@Query("MsgId") int MsgId, @Part MultipartBody.Part file);
+
+        @POST("User/Deletemessage")
+    Single<GetResualt> deleteMessage(@Body DeleteMessageM deleteMessageM);
 
 
 

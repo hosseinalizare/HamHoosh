@@ -11,6 +11,7 @@
     android:layout_marginEnd="5dp">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardRoot_LayoutDocMessageSend"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
@@ -76,6 +77,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/txtPosition_layout_Doc_message_send"
+                android:padding="4dp"
+                android:textColor="@color/DarkGray"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@+id/txtTime_layout_Doc_message_send"
+                android:text="[  ]"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/iv_layout_Doc_message_recived_tick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

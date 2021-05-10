@@ -18,6 +18,11 @@
     </item>
 
     <item
+        android:id="@+id/menu_chat_delete_chat_history"
+        android:title="حذف تاریخچه چت">
+    </item>
+
+    <item
         android:visible="false"
         android:id="@+id/search"
         android:title="جستجو">

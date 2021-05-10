@@ -18,6 +18,7 @@ import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.HardwareIdsMobile;
 import com.example.koohestantest1.databinding.ActivityReportBinding;
+import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.Report;
 import com.example.koohestantest1.viewModel.ReportViewModel;
 
@@ -102,6 +103,10 @@ public class ReportActivity extends AppCompatActivity implements MessageApi {
         return null;
     }
 
+    @Override
+    public Single<GetResualt> deleteMessage(DeleteMessageM deleteMessageM) {
+        return null;
+    }
 
 
     @Override

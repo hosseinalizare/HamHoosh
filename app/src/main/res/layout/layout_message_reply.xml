@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/layout_messageSent_parent"
+    android:id="@+id/layout_messageSentReply_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -28,10 +28,9 @@
                 android:padding="6dp"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="check text"
-                android:id="@+id/tv_message_sent"
+                android:id="@+id/tv_messageReply_nameUser"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/messageTime"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="10dp"
@@ -42,12 +41,45 @@
                 android:textSize="16sp" />
 
             <TextView
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="سلام چطوری خوبی ؟ چه خبر؟ چیکا میکنی ؟ خوش می گذره؟"
+                android:id="@+id/tv_messageReply_oldValue"
+                android:layout_width="match_parent"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/tv_messageReply_nameUser"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/koodak"
+                android:textSize="12sp" />
+
+            <TextView
+                android:padding="6dp"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="check text"
+                android:id="@+id/tv_messageReply_replyValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/tv_messageReply_oldValue"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/koodak"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+
+            <TextView
                 android:id="@+id/tv_message_sent_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="10:10 AM"
-                app:layout_constraintTop_toBottomOf="@+id/tv_message_sent"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_messageReply_replyValue"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="5dp"
                 android:layout_marginStart="10dp"
@@ -59,7 +91,7 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:src="@drawable/ic_tick_seen"
-                app:layout_constraintTop_toBottomOf="@+id/tv_message_sent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_messageReply_replyValue"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="10dp"
