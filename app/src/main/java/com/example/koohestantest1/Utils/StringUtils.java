@@ -103,4 +103,22 @@ public class StringUtils {
         return viewCount;
 
     }
+
+    public static  boolean textIsEmpty(String text){
+        String temp = null;
+        if (text==null){
+            return true;
+        }
+
+        if (text.equals(temp)){
+            return true;
+        }
+
+        if (text.equals("")){
+            return true;
+        }
+
+        return false;
+
+    }
 }

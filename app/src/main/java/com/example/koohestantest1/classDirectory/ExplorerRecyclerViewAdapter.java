@@ -163,7 +163,7 @@ public class ExplorerRecyclerViewAdapter extends RecyclerView.Adapter<ExplorerRe
     public void newDownloadImage(String pid, ViewHolder holder) {
         try {
 
-            String url = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+            String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
             Glide.with(mContext).load(url).into(holder.image);
         } catch (Exception e) {
             baseCodeClass.logMessage("ExplorerAdapter glide : " + e.getMessage(), mContext);

@@ -293,7 +293,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
      * this was updateImage
      **/
     public void newDownloadImage(String pid) {
-        String url = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+        String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
         Glide.with(mContext).load(url).into(holder.pImageView);
     }
 
@@ -545,7 +545,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     if (baseCodeClass.loadSelectedProduct(showProductData.get(position).getProductClass().getProductID(), mContext)) {
                         Intent intent = new Intent(mContext, ViewProductActivity.class);
                         intent.putExtra("PID", showProductData.get(position).getProductClass().getProductID());
-                        intent.putExtra("colorCode", showProductData.get(position).getProductClass().getSpare1());
                         mContext.startActivity(intent);
                     } else {
 //                    toastMessage("خطای درون برنامه ای");

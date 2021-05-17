@@ -191,7 +191,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
     @Override
     public void onResume() {
         super.onResume();
-        String url = baseCodeClass.pBASE_URL + "User/DownloadFile?UserID=" + baseCodeClass.getUserID() + "&fileNumber=" + 1;
+        String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + baseCodeClass.getUserID() + "&fileNumber=" + 1;
         Glide.with(this).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)

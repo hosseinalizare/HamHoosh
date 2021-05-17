@@ -81,7 +81,7 @@ public class ViewProductActivity extends AppCompatActivity {
     ImageView PImage, like, bookmark;
     Button btnAddToCart;
 
-    private String selectedPid,colorCode;
+    private String selectedPid;
     private MyDataBase mydb;
     BaseCodeClass baseCodeClass;
     LoadProductApi loadProductApi;
@@ -152,7 +152,10 @@ public class ViewProductActivity extends AppCompatActivity {
         mydb = new MyDataBase(this);
 
         selectedPid = getIntent().getStringExtra("PID");
-        colorCode = getIntent().getStringExtra("colorCode");
+
+
+
+
         Log.d(TAG, "onCreate: " + selectedPid);
         Log.d(TAG, "onCreate: " + selectedProduct.getProductClass().getProductName());
         int stock = selectedProduct.getProductClass().getDiscontinued();
@@ -399,7 +402,7 @@ public class ViewProductActivity extends AppCompatActivity {
                 }
             }
             newDownloadImage(selectedPid, PImage);
-            PImage.setBackgroundColor(Color.parseColor(colorCode));
+            PImage.setBackgroundColor(Color.parseColor(selectedProduct.getProductClass().getSpare1()));
         } catch (Exception e) {
             Log.d("Error" , e.getMessage());
         }
@@ -409,7 +412,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
     public void newDownloadImage(String pid, ImageView _imageView) {
         try {
-            String url = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+            String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
             Glide.with(this).load(url).into(_imageView);
         } catch (Exception e) {
             baseCodeClass.logMessage("ViewProduct glide :" + e.getMessage(), this);

@@ -68,7 +68,7 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
 
     public void newDownloadImage(String pid, ImageView _imageView) {
         try {
-            String url = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+            String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
             Glide.with(mContext).load(url).into(_imageView);
         } catch (Exception e) {
             baseCodeClass.logMessage("ViewProduct glide :" + e.getMessage(), mContext);

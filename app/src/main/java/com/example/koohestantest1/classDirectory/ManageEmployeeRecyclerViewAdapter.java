@@ -80,7 +80,7 @@ public class ManageEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Mana
 
         void bindData(CompanyFollowerViewModel item) {
 
-            String url = baseCodeClass.pBASE_URL + "User/DownloadFile?UserID=" + item.getUserID() + "&fileNumber=" + 1;
+            String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + item.getUserID() + "&fileNumber=" + 1;
             Glide.with(imageView.getContext()).load(url)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)

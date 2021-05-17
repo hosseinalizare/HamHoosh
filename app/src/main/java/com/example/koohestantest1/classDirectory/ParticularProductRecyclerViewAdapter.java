@@ -39,7 +39,7 @@ public class ParticularProductRecyclerViewAdapter extends RecyclerView.Adapter<P
     }
 
     public void newDownloadImage(String pid, ViewHolder holder){
-        String url = baseCodeClass.pBASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+        String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
         Glide.with(mContext).load(url).into(holder.image);
     }
 

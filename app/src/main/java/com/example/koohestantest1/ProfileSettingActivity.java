@@ -128,7 +128,7 @@ public class ProfileSettingActivity extends AppCompatActivity implements ISettin
 
     private void updateApp() {
         FileDownloadManager fileDownloadManager = new FileDownloadManager(this);
-        long id = fileDownloadManager.downloadFromUrl(baseCodeClass.pBASE_URL + "User/DownloadLastVersion?CompanyID=" + baseCodeClass.getCompanyID(), "dehkade_latest_version", FileDownloadManager.APK_FORMAT);
+        long id = fileDownloadManager.downloadFromUrl(baseCodeClass.BASE_URL + "User/DownloadLastVersion?CompanyID=" + baseCodeClass.getCompanyID(), "dehkade_latest_version", FileDownloadManager.APK_FORMAT);
         downloadReceiver.setDownloadId(id);
     }
 

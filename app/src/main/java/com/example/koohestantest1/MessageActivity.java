@@ -44,6 +44,7 @@ import com.canhub.cropper.CropImageView;
 import com.example.koohestantest1.Utils.Cache;
 import com.example.koohestantest1.Utils.FileUtils;
 import com.example.koohestantest1.Utils.TimeUtils;
+import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.constants.EmployeeStatus;
 import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.EmployeeAdding;
@@ -143,6 +144,8 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     private boolean isReplyMode = false;
     private String replyMessageId = "";
     private String messageId;
+    private int replyMessageType;
+    private SendOrderClass sendOrderClassData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,7 +201,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             //another user Id(Friend)
             getterUser = getIntent().getStringExtra("getter");
 
-            String url = baseCodeClass.pBASE_URL + "User/DownloadFile?UserID=" + getterUser + "&fileNumber=" + 1;
+            String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + getterUser + "&fileNumber=" + 1;
             Glide.with(this).load(url)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
@@ -226,17 +229,14 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 } else {
 
                     if (!edMessage.getText().toString().isEmpty()) {
-
                         SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
-                                edMessage.getText().toString(), "", "", replyMessageId, BaseCodeClass.variableType.string_.getValue(), "", 1, 100);
+                                edMessage.getText().toString(), "", "", replyMessageId, replyMessageType, "", 1, 100);
                         sendMessageVM.sendMessage(sendMessageViewModel).observe(MessageActivity.this, new Observer<GetResualt>() {
                             @Override
                             public void onChanged(GetResualt getResualt) {
                                 edMessage.setText("");
                                 relReplyMessage.setVisibility(View.GONE);
                                 messageUnSelected(replyMessageId);
-
-
                             }
                         });
 
@@ -244,8 +244,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
 
                 }
-
-
             });
         /*    imgSendFile.setOnClickListener(v -> {
                 CropImage.startPickImageActivity(MessageActivity.this);
@@ -475,6 +473,17 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     public void onResponseGetContactV2(List<ContactListViewModel> contactListViewModels) {
 
     }
+
+    @Override
+    public Single<SendOrderClass> getOrderData(String orderId) {
+        return null;
+    }
+
+    @Override
+    public Call<SendOrderClass> getOrderData2(String orderId) {
+        return null;
+    }
+
 
     public void btnBack(View view) {
         finish();
@@ -805,7 +814,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
 
     @Override
-    public void messageSelected(ConstraintLayout parent, String messageId, SendMessageViewModel messageData) {
+    public void messageSelected(ConstraintLayout parent, String messageId, SendMessageViewModel messageData,int messageType) {
         imgForwardMessage.setVisibility(View.VISIBLE);
         imgDeleteMessage.setVisibility(View.VISIBLE);
         imgReplyMessage.setVisibility(View.VISIBLE);
@@ -838,6 +847,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             public void onClick(View v) {
                 isReplyMode = true;
                 replyMessageId = messageData.getId();
+               replyMessageType = generateMsgType(messageType);
                 relReplyMessage.setVisibility(View.VISIBLE);
                 txtUserNameReplyMessage.setText(messageData.getUserSender());
                 txtValueReplyMessage.setText(messageData.getMessage1());
@@ -875,6 +885,40 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
         }
     }
+
+    @Override
+    public void scrollToCertainPosition(int position) {
+        messageRecycler.smoothScrollToPosition(position);
+    }
+
+    @Override
+    public void getOrderDataInChat(String OrderID, TextView orderId) {
+
+        sendMessageVM.getOrderData(OrderID).observe(this, new Observer<SendOrderClass>() {
+            @Override
+            public void onChanged(SendOrderClass sendOrderClass) {
+                String ordId = sendOrderClass.getId();
+                orderId.setText(ordId+"");
+
+
+
+            }
+        });
+    }
+
+
+    private int generateMsgType(int msgType){
+
+        for (BaseCodeClass.variableType type : BaseCodeClass.variableType.values()){
+            if (type.getValue() == msgType){
+                return type.getValue();
+            }
+        }
+
+        return -1;
+
+    }
+
 
 
 }

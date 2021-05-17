@@ -6,6 +6,7 @@ import com.example.koohestantest1.ViewModels.ContactListViewModel;
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
+import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.model.DeleteMessageM;
 
 import io.reactivex.Single;
@@ -52,4 +53,11 @@ public interface MessageApi {
     @POST("User/GetNewContactList")
     Call<List<ContactListViewModel>> getContactV2(@Query("Token") String token, @Query("UserID") String userID, @Query("ObjectID") String objectID);
     void onResponseGetContactV2(List<ContactListViewModel> contactListViewModels);
+
+
+    @POST("Order/downloadOrder")
+    Single<SendOrderClass> getOrderData(@Query("OrderID") String orderId);
+
+    @POST("Order/downloadOrder")
+    Call<SendOrderClass> getOrderData2(@Query("OrderID") String orderId);
 }

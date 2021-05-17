@@ -40,6 +40,7 @@ import com.example.koohestantest1.activity.CompanySettingActivity;
 import com.example.koohestantest1.activity.CostumersListActivity;
 import com.example.koohestantest1.activity.InvisibleProductActivity;
 import com.example.koohestantest1.activity.NotInStockActivity;
+import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.model.CountsDetail;
 import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.network.RetrofitInstance;
@@ -522,7 +523,7 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
     }
 
     private void loadCompanyImage() {
-        String url = baseCodeClass.pBASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
+        String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
         Glide.with(this).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
@@ -610,6 +611,16 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
     @Override
     public void onResponseGetContactV2(List<ContactListViewModel> contactListViewModels) {
 
+    }
+
+    @Override
+    public Single<SendOrderClass> getOrderData(String orderId) {
+        return null;
+    }
+
+    @Override
+    public Call<SendOrderClass> getOrderData2(String orderId) {
+        return null;
     }
 
     @Override

@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.koohestantest1.ApiDirectory.MessageApi;
-import com.example.koohestantest1.MyApiClient;
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
+import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 
@@ -27,6 +27,7 @@ public class SendMessageVM extends ViewModel {
     private MutableLiveData<GetResualt> uploadImageMessageLiveData;
     private MutableLiveData<GetResualt> uploadDocMessageLiveData;
     private MutableLiveData<GetResualt> deleteMessageLiveData;
+    private MutableLiveData<SendOrderClass> orderDataLiveData;
   public   CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public LiveData<GetResualt> sendMessage(SendMessageViewModel sendMessageViewModel){
@@ -53,7 +54,7 @@ public class SendMessageVM extends ViewModel {
 
     public LiveData<GetResualt> sendImageMessage(int msgId, MultipartBody.Part body){
         uploadImageMessageLiveData = new MutableLiveData<>();
-        Single<GetResualt> resualtSingle = MyApiClient.getRetrofitTest().create(MessageApi.class).uploadMessageImage(msgId,body);
+        Single<GetResualt> resualtSingle = RetrofitInstance.getRetrofit().create(MessageApi.class).uploadMessageImage(msgId,body);
         compositeDisposable.add(resualtSingle.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSingleObserver<GetResualt>(){
@@ -74,7 +75,7 @@ public class SendMessageVM extends ViewModel {
     }
     public LiveData<GetResualt> sendDocMessage(int msgId, MultipartBody.Part body){
         uploadDocMessageLiveData = new MutableLiveData<>();
-        Single<GetResualt> resualtSingle = MyApiClient.getRetrofitTest().create(MessageApi.class).uploadMessageImage(msgId,body);
+        Single<GetResualt> resualtSingle = RetrofitInstance.getRetrofit().create(MessageApi.class).uploadMessageImage(msgId,body);
         compositeDisposable.add(resualtSingle.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableSingleObserver<GetResualt>(){
@@ -114,6 +115,30 @@ public class SendMessageVM extends ViewModel {
         );
         return deleteMessageLiveData;
 
+
+    }
+
+    public LiveData<SendOrderClass> getOrderData(String orderId){
+        orderDataLiveData = new MutableLiveData<>();
+        Single<SendOrderClass> orderClassSingle = RetrofitInstance.getRetrofit().create(MessageApi.class).getOrderData(orderId);
+        compositeDisposable.add(orderClassSingle.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<SendOrderClass>() {
+                    @Override
+                    public void onSuccess(@NonNull SendOrderClass sendOrderClass) {
+                        orderDataLiveData.setValue(sendOrderClass);
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                })
+
+        );
+
+        return orderDataLiveData;
 
     }
 

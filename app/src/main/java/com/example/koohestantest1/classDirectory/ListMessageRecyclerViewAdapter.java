@@ -90,7 +90,7 @@ public class ListMessageRecyclerViewAdapter extends RecyclerView.Adapter<ListMes
         String time = contactListViewModels.get(position).getLastMsgTime();
         holder.time.setText(time);
 
-        String url = baseCodeClass.pBASE_URL + "User/DownloadFile?UserID=" + contactListViewModels.get(position).getObjectID() + "&fileNumber=" + 1;
+        String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + contactListViewModels.get(position).getObjectID() + "&fileNumber=" + 1;
         Glide.with(mcContext).load(url)
                 .placeholder(R.drawable.ic_profile).into(holder.image);
 //                .diskCacheStrategy(DiskCacheStrategy.NONE)

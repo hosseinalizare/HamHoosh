@@ -17,6 +17,7 @@ import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.HardwareIdsMobile;
+import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.databinding.ActivityReportBinding;
 import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.Report;
@@ -155,5 +156,15 @@ public class ReportActivity extends AppCompatActivity implements MessageApi {
     @Override
     public void onResponseGetContactV2(List<ContactListViewModel> contactListViewModels) {
 
+    }
+
+    @Override
+    public Single<SendOrderClass> getOrderData(String orderId) {
+        return null;
+    }
+
+    @Override
+    public Call<SendOrderClass> getOrderData2(String orderId) {
+        return null;
     }
 }

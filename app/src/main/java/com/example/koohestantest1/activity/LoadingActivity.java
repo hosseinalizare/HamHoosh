@@ -350,7 +350,7 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
     private void loadCompanyImage() {
-        String url = baseCodeClass.pBASE_URL + "Company/DownloadFile?CompanyID=" + BaseCodeClass.CompanyID + "&ImageAddress=" + 1;
+        String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + BaseCodeClass.CompanyID + "&ImageAddress=" + 1;
         Glide.with(this).load(url)
                 .placeholder(R.drawable.dehkade)
                 .error(R.drawable.dehkade)

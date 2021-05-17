@@ -114,7 +114,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
         dataBase = new DataBase(mContext);
         baseCodeClass = new BaseCodeClass();
         baseCodeClass.LoadBaseData(mContext);
-        String url = baseCodeClass.pBASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
+        String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
         Glide.with(this).load(url)
                 .placeholder(R.drawable.emptycart)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)

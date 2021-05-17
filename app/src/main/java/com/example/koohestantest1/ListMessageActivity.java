@@ -25,6 +25,7 @@ import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.ListMessageRecyclerViewAdapter;
+import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.model.DeleteMessageM;
 
 import io.reactivex.Single;
@@ -223,5 +224,15 @@ public class ListMessageActivity extends AppCompatActivity implements MessageApi
     @Override
     public void onResponseGetContactV2(List<ContactListViewModel> contactListViewModels) {
 
+    }
+
+    @Override
+    public Single<SendOrderClass> getOrderData(String orderId) {
+        return null;
+    }
+
+    @Override
+    public Call<SendOrderClass> getOrderData2(String orderId) {
+        return null;
     }
 }

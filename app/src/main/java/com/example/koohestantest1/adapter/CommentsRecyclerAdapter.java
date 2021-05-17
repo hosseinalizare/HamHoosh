@@ -50,7 +50,7 @@ public class CommentsRecyclerAdapter extends RecyclerView.Adapter<CommentsRecycl
         GetComments comment = commentsList.get(position);
         holder.txtSenderComment.setText(comment.getSenderName());
         holder.txtCommentContent.setText(comment.getData());
-        String url = baseCodeClass.pBASE_URL + "User/DownloadFile?UserID=" + comment.getSenderId() + "&fileNumber=" + 1;
+        String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + comment.getSenderId() + "&fileNumber=" + 1;
         Glide.with(context).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
