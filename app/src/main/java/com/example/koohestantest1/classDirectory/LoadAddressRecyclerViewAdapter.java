@@ -43,6 +43,8 @@ public class LoadAddressRecyclerViewAdapter extends RecyclerView.Adapter<LoadAdd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        AddressViewModel addressViewModel = addressList.get(position);
+
         holder.address.setText(addressList.get(position).getAddress1());
         holder.state.setText(addressList.get(position).getState() + " , " + addressList.get(position).getCity() + " , " + addressList.get(position).getArea());
         holder.number.setText(addressList.get(position).getPhoneNumber());

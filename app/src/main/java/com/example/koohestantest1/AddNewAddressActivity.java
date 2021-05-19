@@ -268,7 +268,7 @@ public class AddNewAddressActivity extends AppCompatActivity implements OnMapRea
             if (selectedAddress.getPhoneNumber() != null)
                 edPhoneNumber.setText(selectedAddress.getPhoneNumber());
 
-            if (selectedAddress.getLocation() != null) {
+          /*  if (selectedAddress.getLocation() != null) {
                 String[] mapData = selectedAddress.getLocation().split(":");
                 Log.d(TAG, "setUpPassedData: " + mapData[0] + " " + mapData[0]);
                 if (!mapData[0].equals("null") && !mapData[0].equals("null")) {
@@ -278,7 +278,7 @@ public class AddNewAddressActivity extends AppCompatActivity implements OnMapRea
                     lng = new LatLng(Double.parseDouble(finalLat), Double.parseDouble(finalLong));
                     setUpMap();
                 }
-            }
+            }*/
         }
     }
 
@@ -374,7 +374,7 @@ public class AddNewAddressActivity extends AppCompatActivity implements OnMapRea
         else return false;
     }
 
-    @Override
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_CODE_INTENT_ADD_MAP) {
@@ -392,7 +392,7 @@ public class AddNewAddressActivity extends AppCompatActivity implements OnMapRea
                     break;
             }
         }
-    }
+    }*/
 
     private void setUpMap() {
         constraintLayout.setVisibility(View.GONE);

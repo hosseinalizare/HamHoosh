@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_gravity="end"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_layout_docSend_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="5dp"
+    android:layout_marginEnd="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardRoot_LayoutDocMessageSend"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:alpha="0.9"
+        app:cardBackgroundColor="@android:color/holo_green_light"
+        app:cardCornerRadius="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:layout_marginStart="10dp"
+                app:civ_border_width="2dp"
+                android:scaleType="centerInside"
+                android:layout_marginTop="10dp"
+                app:civ_border_color="@color/green800"
+                android:id="@+id/img_layout_Doc_message_send"
+                android:src="@drawable/ic_music_green"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+            <TextView
+                android:id="@+id/txt_layout_Doc_message_send"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="15dp"
+                android:fontFamily="@font/koodak"
+                android:padding="6dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img_layout_Doc_message_send"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Check recieved" />
+
+            <TextView
+                android:layout_marginTop="8dp"
+                android:id="@+id/txtTime_layout_Doc_message_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:padding="4dp"
+                android:textColor="@color/DarkGray"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_layout_Doc_message_send"
+                tools:text="10:10 AM" />
+
+            <ImageView
+                android:id="@+id/iv_layout_Doc_message_recived_tick"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/ic_tick_seen"
+                app:layout_constraintTop_toBottomOf="@+id/txt_layout_Doc_message_send"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:id="@+id/txtPosition_layout_Doc_message_send"
+                android:padding="4dp"
+                android:textColor="@color/DarkGray"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@+id/txtTime_layout_Doc_message_send"
+                android:text="[  ]"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/iv_layout_Doc_message_recived_tick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

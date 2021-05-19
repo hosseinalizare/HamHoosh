@@ -2,6 +2,7 @@ package com.example.koohestantest1.Utils;
 
 import android.util.Log;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -101,7 +102,7 @@ public class TimeUtils {
 
     //gets yyyy-MM-dd'T'HH:mm:ss and converts it to
 
-    public static Date convertStrToDate2(String dateTime) {
+    private static Date convertStrToDate2(String dateTime) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             return sdf.parse(dateTime);
@@ -140,6 +141,13 @@ public class TimeUtils {
             int day = persianDate.getShDay();
             return day + month + year;
         } else return "Error";
+    }
+
+    public static String getStringFromDate(Date date){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        String strDate = dateFormat.format(date);
+
+        return strDate;
     }
 }
 

@@ -98,7 +98,10 @@ public class CompanyOrderRecyclerViewAdapter extends RecyclerView.Adapter<Compan
         String price = sendOrderClasses.get(position).getSumPrice();
 
         holder.sumPrice.setText(price);
-        String orderCount = "اقلام: "+ sendOrderClasses.get(position).Order_Details.size();
+        int quantity = sendOrderClasses.get(position).getOrder_Details().get(0).getQuantity();
+        String orderCount = "اقلام: "+ quantity;
+        /*String orderCount = "اقلام: "+ sendOrderClasses.get(position).Order_Details.size();*/
+
 
         holder.productCount.setText(orderCount);
 

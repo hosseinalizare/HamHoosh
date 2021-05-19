@@ -61,11 +61,11 @@ public class MessageManagerClass {
         });
     }
 
-    public void getMessage(String senderUser, String getterUser){
+    public void getMessage(String senderUser, String getterUser,String lastTime){
         messageApi = retrofit.create(MessageApi.class);
 
         Call<List<SendMessageViewModel>> call = messageApi.getMessage(new SendMessageViewModel(baseCodeClass.getToken(),baseCodeClass.getUserID(),"0", senderUser,
-                getterUser, "", "9/4/2019 9:18:45 PM", "", "",1,"",1,100));
+                getterUser, "", lastTime, "", "",1,"",1,100));
         call.enqueue(new Callback<List<SendMessageViewModel>>() {
             @Override
             public void onResponse(Call<List<SendMessageViewModel>> call, Response<List<SendMessageViewModel>> response) {
