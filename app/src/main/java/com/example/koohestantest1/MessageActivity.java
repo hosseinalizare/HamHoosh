@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -46,6 +48,7 @@ import com.example.koohestantest1.Utils.FileUtils;
 import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.constants.EmployeeStatus;
+import com.example.koohestantest1.fragments.MyProfileFragment;
 import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.EmployeeAdding;
 import com.example.koohestantest1.viewModel.CompanyViewModel;
@@ -150,6 +153,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     private SendOrderClass sendOrderClassData;
     private String lastUpdateTime ="2020-05-17T10:54:33.037";
     private Date dateTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -277,6 +281,16 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
 
             });*/
+
+            circleImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    Fragment fragment = new MyProfileFragment();
+                    transaction.replace(R.id.mainLayout,fragment);
+                    transaction.commit();
+                }
+            });
 
             imgSendFile.setOnClickListener(v -> {
 

@@ -25,6 +25,10 @@ public class RetrofitInstance {
     private static final String BASE_URL2 = "https://dehkade.nokhbgan.ir/api/";
 
     public static Retrofit getRetrofit() {
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.connectTimeout(2,TimeUnit.MINUTES);
+        client.readTimeout(2,TimeUnit.MINUTES);
+        client.writeTimeout(2,TimeUnit.MINUTES);
         if (retrofit == null) {
             synchronized (RetrofitInstance.class) {
                 if (retrofit == null) {
@@ -33,6 +37,7 @@ public class RetrofitInstance {
                             .baseUrl(BASE_URL)
                             .addConverterFactory(GsonConverterFactory.create())
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                            .client(client.build())
                             .build();
                 }
             }

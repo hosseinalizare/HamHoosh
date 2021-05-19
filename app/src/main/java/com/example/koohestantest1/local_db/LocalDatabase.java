@@ -7,10 +7,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.koohestantest1.local_db.entity.NewsLetter;
+import com.example.koohestantest1.local_db.entity.NewsLetterImage;
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 
-@Database(entities = {Product.class, Properties.class, NewsLetter.class},version = 2)
+@Database(entities = {Product.class, Properties.class, NewsLetter.class, NewsLetterImage.class},version = 2)
 public abstract class LocalDatabase extends RoomDatabase {
     private static final String DB_NAME = "hamyar_db";
     private static  LocalDatabase instance;

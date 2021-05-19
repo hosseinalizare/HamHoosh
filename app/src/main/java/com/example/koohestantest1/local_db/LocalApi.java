@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.example.koohestantest1.local_db.entity.NewsLetter;
+import com.example.koohestantest1.local_db.entity.NewsLetterImage;
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 
@@ -62,9 +63,21 @@ public interface LocalApi {
     @Insert
     Single<Long> insertNewsLetter(NewsLetter newsLetter);
 
+    /*@Insert
+    Single<Long> insertImageNews(NewsLetterImage newsLetterImage);*/
+
     @Query("DELETE FROM news_letter")
     Completable deleteAllNewsLetter();
 
     @Query("SELECT MAX(update_date) FROM news_letter")
     Flowable<String> getLastUpdate();
+
+    @Query("SELECT src FROM news_letter_image WHERE news_id LIKE :newsId")
+    Flowable<List<String>> getNewsImage(String newsId);
+
+    @Query("UPDATE news_letter SET like_it=:likeIt WHERE news_id LIKE :newsId")
+    Completable updateNewsLikeValue(boolean likeIt,String newsId);
+
+    @Update
+    Completable updateNews(NewsLetter newsLetter);
 }

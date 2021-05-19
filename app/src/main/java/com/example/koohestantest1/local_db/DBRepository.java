@@ -3,6 +3,7 @@ package com.example.koohestantest1.local_db;
 import android.app.Application;
 
 import com.example.koohestantest1.local_db.entity.NewsLetter;
+import com.example.koohestantest1.local_db.entity.NewsLetterImage;
 import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 
@@ -102,6 +103,21 @@ public class DBRepository {
                 .subscribeOn(Schedulers.io());
     }
 
+    /*public Single<Long> insertNewsImage(NewsLetterImage newsLetterImage){
+        return localApi.insertImageNews(newsLetterImage)
+                .subscribeOn(Schedulers.io());
+    }*/
+
+    public void updateNewsLikeValue(boolean likeIt,String newsId){
+        localApi.updateNewsLikeValue(likeIt,newsId);
+    }
+
+    public void updateNewsLetter(NewsLetter newsLetter){
+        localApi.updateNews(newsLetter)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
     public void deleteAllNews(){
         localApi.deleteAllNewsLetter()
                 .subscribeOn(Schedulers.io())
@@ -110,5 +126,9 @@ public class DBRepository {
 
     public Flowable<List<NewsLetter>> getAllNews(){
         return localApi.getAllNews();
+    }
+
+    public Flowable<List<String>> getNewsImage(String newsId){
+        return localApi.getNewsImage(newsId);
     }
 }

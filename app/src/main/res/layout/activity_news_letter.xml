@@ -5,10 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.NewsLetterActivity">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNewsLetter"
+    <FrameLayout
+        android:id="@+id/frm_newsLetterActivity_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"/>
+        android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

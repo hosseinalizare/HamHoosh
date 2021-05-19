@@ -516,7 +516,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         frmNewsLetter.setOnClickListener(v ->{
             dbViewModel.getAllProducts().removeObservers(getViewLifecycleOwner());
             dbViewModel.getAllProperties().removeObservers(getViewLifecycleOwner());
-            startActivity(new Intent(mContext, NewsLetterActivity.class));
+            Intent intent = new Intent(mContext, NewsLetterActivity.class);
+            startActivity(intent);
         });
 
         productRecyclerView = view.findViewById(R.id.productRecyclerView);
