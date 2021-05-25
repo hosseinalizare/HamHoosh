@@ -23,6 +23,9 @@ public interface LocalApi {
     @Query("SELECT * FROM products")
     Flowable<List<Product>> getProducts();
 
+    @Query("SELECT * FROM products WHERE product_id=:product_id")
+    Flowable<Product> getSpecificProduct(String product_id);
+
     @Query("SELECT * FROM properties WHERE product_id=:product_id")
     Flowable<List<Properties>> getPropertiesOfProduct(String product_id);
 

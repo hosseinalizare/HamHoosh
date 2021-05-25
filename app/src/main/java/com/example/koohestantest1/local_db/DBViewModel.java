@@ -69,6 +69,10 @@ public class DBViewModel extends AndroidViewModel {
         return LiveDataReactiveStreams.fromPublisher(repository.getLastUpdate());
     }
 
+    public LiveData<Product> getSpecificProduct(String productId){
+        return LiveDataReactiveStreams.fromPublisher(repository.getSpecificProduct(productId));
+    }
+
     public LiveData<List<Properties>> getAllProperties(){
         return LiveDataReactiveStreams.fromPublisher(repository.getAllProperties());
     }

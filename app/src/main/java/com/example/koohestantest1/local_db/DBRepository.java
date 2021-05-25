@@ -89,6 +89,10 @@ public class DBRepository {
         return localApi.getProduct(productId);
     }
 
+    public Flowable<Product> getSpecificProduct(String productId){
+        return localApi.getSpecificProduct(productId);
+    }
+
     public Flowable<List<Properties>> getSpecificProperties(String productId){
         return localApi.getPropertiesOfProduct(productId);
     }
