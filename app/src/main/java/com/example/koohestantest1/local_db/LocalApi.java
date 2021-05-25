@@ -80,4 +80,7 @@ public interface LocalApi {
 
     @Update
     Completable updateNews(NewsLetter newsLetter);
+
+    @Delete
+    Completable deleteNewsLetter(NewsLetter newsLetter);
 }

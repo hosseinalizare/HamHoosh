@@ -39,6 +39,7 @@ import com.example.koohestantest1.classDirectory.SendMobileNumberForSmsClass;
 import com.example.koohestantest1.classDirectory.SendVerifyCode;
 import com.example.koohestantest1.classDirectory.TermsAndConditions;
 import com.example.koohestantest1.local_db.entity.NewsLetter;
+import com.example.koohestantest1.model.DeleteNewsLetter;
 import com.example.koohestantest1.model.NewsLetterModel;
 import com.example.koohestantest1.model.VersioCheck;
 import com.example.koohestantest1.model.network.RetrofitInstance;
@@ -386,6 +387,11 @@ public class GenerantCodeActivity extends AppCompatActivity {
 
             @Override
             public Call<GetResualt> uploadNewsLetterImage(String newsLetterId, String coId, String uID, String token, List<MultipartBody.Part> files) {
+                return null;
+            }
+
+            @Override
+            public Call<GetResualt> deleteOneNewsLetter(DeleteNewsLetter deleteNewsLetter) {
                 return null;
             }
         });

@@ -131,4 +131,10 @@ public class DBRepository {
     public Flowable<List<String>> getNewsImage(String newsId){
         return localApi.getNewsImage(newsId);
     }
+
+    public void deleteOneNews(NewsLetter newsLetter){
+        localApi.deleteNewsLetter(newsLetter)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
 }

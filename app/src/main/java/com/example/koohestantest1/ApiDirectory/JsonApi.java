@@ -12,6 +12,7 @@ import com.example.koohestantest1.classDirectory.SendMobileNumberForSmsClass;
 import com.example.koohestantest1.classDirectory.SendVerifyCode;
 import com.example.koohestantest1.classDirectory.TermsAndConditions;
 import com.example.koohestantest1.local_db.entity.NewsLetter;
+import com.example.koohestantest1.model.DeleteNewsLetter;
 import com.example.koohestantest1.model.NewsLetterModel;
 import com.example.koohestantest1.model.VersioCheck;
 
@@ -69,4 +70,7 @@ public interface JsonApi {
                                            @Query("UserID") String uID,
                                            @Query("Token") String token,
                                            @Part List<MultipartBody.Part> files);
+
+    @POST("News/DeleteNews")
+    Call<GetResualt> deleteOneNewsLetter(@Body DeleteNewsLetter deleteNewsLetter);
 }

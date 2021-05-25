@@ -109,6 +109,7 @@ public class DBViewModel extends AndroidViewModel {
             }
         });
 
+
         /*if (newsLetter.src.size() == 0) {
             Log.d("TAG",newsLetter.Title);
         } else {
@@ -168,6 +169,10 @@ public class DBViewModel extends AndroidViewModel {
                 }
             });
         }*/
+    }
+
+    public void deleteOneNewsLetter(NewsLetter newsLetter){
+        repository.deleteOneNews(newsLetter);
     }
 
     /*public void insertNewsImage(NewsLetter newsLetter){

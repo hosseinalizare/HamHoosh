@@ -48,15 +48,10 @@ import retrofit2.Retrofit;
 import static android.app.Activity.RESULT_OK;
 
 public class NewsLetterFragment extends Fragment {
-    private Retrofit retrofit;
-    private JsonApi jsonApi;
     private DBViewModel dbViewModel;
     private static long timeStamp;
-    private FloatingActionButton fbtnAdd;
     private RecyclerView rvNews;
     private NewsLetterAdapter adapter;
-    private static List<NewsLetter> newsLetterList;
-    private static List<NewsLetterImage> newsLetterImageList;
     List<Uri> imageUriList;
     List<String> partNames;
     @Override
@@ -65,11 +60,10 @@ public class NewsLetterFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_news_letter, container, false);
         imageUriList = new ArrayList<>();
         partNames = new ArrayList<>();
-        fbtnAdd = view.findViewById(R.id.fbtn_newsLetterFragent_addNews);
+        FloatingActionButton fbtnAdd = view.findViewById(R.id.fbtn_newsLetterFragent_addNews);
         rvNews = view.findViewById(R.id.rv_newsLetterFragment_newsList);
         dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
-        newsLetterList = new ArrayList<>();
-        newsLetterImageList = new ArrayList<>();
+
         //*************************Fetching received data from Gallery*****************************/
         ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -150,6 +144,7 @@ public class NewsLetterFragment extends Fragment {
                 else {
 
                     adapter = new NewsLetterAdapter(newsLetters,getContext(),getActivity().getSupportFragmentManager(),dbViewModel);
+                   // adapter.notifyDataSetChanged();
                     rvNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                     rvNews.setAdapter(adapter);
 
@@ -159,9 +154,7 @@ public class NewsLetterFragment extends Fragment {
         //*****************************************************************************************/
 
         fbtnAdd.setOnClickListener(v -> {
-            /*FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            Fragment addImageNewsFragment = new NewsLetterAddImageFragment();
-            transaction.replace(R.id.frm_newsLetterActivity_layout, addImageNewsFragment).commit();*/
+
             mPermissionResult.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
         });
 
@@ -171,8 +164,8 @@ public class NewsLetterFragment extends Fragment {
 
     //************Get recent news letter from Server Base on the last news letter in Local DB******/
     private void getAllNews(String companyId, long time) {
-        retrofit = RetrofitInstance.getRetrofit();
-        jsonApi = retrofit.create(JsonApi.class);
+        Retrofit retrofit = RetrofitInstance.getRetrofit();
+        JsonApi jsonApi = retrofit.create(JsonApi.class);
         Call<List<NewsLetter>> call = jsonApi.getAllNews(companyId, time,BaseCodeClass.userID);
         call.enqueue(new Callback<List<NewsLetter>>() {
             @Override

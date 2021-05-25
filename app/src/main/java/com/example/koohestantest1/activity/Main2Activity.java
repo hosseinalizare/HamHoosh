@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -25,6 +26,8 @@ import com.example.koohestantest1.fragments.transinterface.CartTransitionInterfa
 import com.example.koohestantest1.model.entity.CartInformation;
 import com.example.koohestantest1.viewModel.BadgeSharedViewModel;
 import com.example.koohestantest1.viewModel.LocalCartViewModel;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -90,9 +93,12 @@ public class Main2Activity extends BaseActivity implements CartTransitionInterfa
         badge = bottomNavigationView.getOrCreateBadge(R.id.ic_cart);
 
 
+
 //        attachKeyboardListeners();
 
 //        getFireBaseToken();
+
+
 
         localCartViewModel.getProductCount().observe(this, count -> {
             if (count == 0)
@@ -125,7 +131,7 @@ public class Main2Activity extends BaseActivity implements CartTransitionInterfa
 
         //listen for new cart id
         localCartViewModel.getInsertedCartId().observe(this, CurrentCartId::setId);
-
+        //appHelp();
     }
 
     /*private void getFireBaseToken() {
@@ -254,6 +260,118 @@ public class Main2Activity extends BaseActivity implements CartTransitionInterfa
                 showCartFragment();
                 bottomNavigationView.setSelectedItemId(R.id.ic_cart);
             }
+        }
+    }
+
+    private void appHelp(){
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences("appHelp",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        boolean hasSeen = sharedPreferences.getBoolean("help1",false);
+        if(!hasSeen){
+            TapTargetSequence sequence = new TapTargetSequence(this);
+
+            TapTarget shoppingCenterTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_shoppingCenter),"دکمه مرکز خرید","از طریق این دکمه می توانید به صفحه مرکز خرید دسترسی داشته باشید")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+            TapTarget searchTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_search),"دکمه جستجو","از طریق این دکمه می توانید محصول موردنظر خود را جستجو کنید")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+
+            TapTarget myStoreTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_myStore),"دکمه فروشگاه من","از طریق این دکمه می توانید فروشگاه خود را ایجاد یا وارد آن شوید")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+
+            TapTarget basketTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_cart),"دکمه سبد خرید","از طریق این دکمه می توانید هزینه خرید خود را پرداخت کنید")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+
+            TapTarget profileTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_profile),"دکمه دهکده من","از طریق این دکمه می توانید پروفایل شخصی خود را ایجاد یا ویرایش کنید")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+
+
+            sequence.targets(shoppingCenterTarget,searchTarget,myStoreTarget,basketTarget,profileTarget);
+            sequence.listener(new TapTargetSequence.Listener() {
+                @Override
+                public void onSequenceFinish() {
+                    editor.putBoolean("help1",true);
+                    editor.apply();
+
+                    main2Fragment.appHelp();
+                }
+
+                @Override
+                public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                }
+
+                @Override
+                public void onSequenceCanceled(TapTarget lastTarget) {
+
+                }
+            }).start();
         }
     }
 

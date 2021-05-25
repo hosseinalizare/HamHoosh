@@ -39,6 +39,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -48,6 +50,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.koohestantest1.activity.Main2Activity;
 import com.example.koohestantest1.activity.NewsLetterActivity;
 import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.classDirectory.StandardPrice;
@@ -102,6 +105,7 @@ import com.example.koohestantest1.classDirectory.ProductRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.classDirectory.ReceiveProductClass;
+
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -133,10 +137,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private ScrollView scrollView;
     private DBViewModel dbViewModel;
     private RelativeLayout mainLayout;
-    List<String> allProductsPId= new ArrayList<>();
+    List<String> allProductsPId = new ArrayList<>();
     Date lastUpdateTime = new Date();
     String updateTime;
-    private FrameLayout frameLayout,frmNewsLetter;
+    private FrameLayout frameLayout, frmNewsLetter;
     private ImageView ivCartIcon;
     private final String TAG = Main2Fragment.class.getSimpleName();
     private CountsViewModel countsViewModel;
@@ -180,7 +184,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
     public Main2Fragment() {
     }
-
 
 
     @Override
@@ -283,7 +286,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
 
-
     @Override
     public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
         return null;
@@ -321,7 +323,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     public void recyclerViewListClicked(View v, String value, boolean notify) {
         try {
             keyFilter = value;
-            productRecyclerViewAdapter.getFilter().filter("F"+value);
+            productRecyclerViewAdapter.getFilter().filter("F" + value);
             filterValue = value;
             if (notify) {
                 initFilterRecyclerView();
@@ -336,7 +338,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     public void brandRecyclerViewListClicked(View v, String value, boolean notify) {
 
         keyFilter = value;
-        productRecyclerViewAdapter.getFilter().filter("B"+value);
+        productRecyclerViewAdapter.getFilter().filter("B" + value);
         filterValue = value;
         if (notify) {
             initFilterRecyclerView();
@@ -376,19 +378,19 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             }
             try {
                 String brand = null;
-                for (ProductPropertisClass productPropertisClass :allProductData.getProductClass().getProductPropertis()) {
-                    if (productPropertisClass.getPropertisName().equals("برند")){
+                for (ProductPropertisClass productPropertisClass : allProductData.getProductClass().getProductPropertis()) {
+                    if (productPropertisClass.getPropertisName().equals("برند")) {
                         brand = productPropertisClass.getPropertisValue();
                         break;
                     }
                 }
-                if (brand != null ){
-                    if (!filterBrandName.contains(brand)){
-                       filterBrandName.add(brand);
-                       filterBrandImage.add(GetImag(brand));
+                if (brand != null) {
+                    if (!filterBrandName.contains(brand)) {
+                        filterBrandName.add(brand);
+                        filterBrandImage.add(GetImag(brand));
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
 
@@ -486,7 +488,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         dataBase = new DataBase(mContext);
         baseCodeClass.LoadBaseData(mContext);
         // baseCodeClass = new BaseCodeClass();
-
+        //appHelp();
         BadgeDrawable badgeDrawable = BadgeDrawable.create(requireContext());
         badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
         badgeDrawable.setVerticalOffset(25);
@@ -513,7 +515,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
         companyLogo.setOnClickListener(v -> startActivity(new Intent(mContext, ShowStoreActivity.class)));
 
-        frmNewsLetter.setOnClickListener(v ->{
+        frmNewsLetter.setOnClickListener(v -> {
             dbViewModel.getAllProducts().removeObservers(getViewLifecycleOwner());
             dbViewModel.getAllProperties().removeObservers(getViewLifecycleOwner());
             Intent intent = new Intent(mContext, NewsLetterActivity.class);
@@ -607,8 +609,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
 
 
-
-
         return view;
     }//end onCreateView
 
@@ -617,6 +617,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //appHelp();
+
         localCartViewModel.getCartData().observe(getViewLifecycleOwner(), cartWithProducts -> {
             if (cartWithProducts.size() > 0) {
                 if (!isDataLoaded) {
@@ -646,7 +647,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             }
             if (updateFromDb) {
                 String ddd = baseCodeClass.getUserID();
-                Log.d("LOG",ddd);
+                Log.d("LOG", ddd);
                 //new ManageProductClass(mContext, main2Fragment, baseCodeClass.getCompanyID()).execute(baseCodeClass.getCompanyID(), BaseCodeClass.DownloadParam);
                 dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                     @Override
@@ -655,17 +656,16 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                             loadProductFromServer(CompanyID);
                         } else {
 
-                                dbViewModel.getAllProperties().observe(getViewLifecycleOwner(), new Observer<List<Properties>>() {
-                                    @Override
-                                    public void onChanged(List<Properties> propertiesList) {
-                                        analyzeReceiveProduct(products, propertiesList);
-                                        if(!checkUpdateProduct) {
-                                            updateData(CompanyID);
-                                            checkUpdateProduct = true;
-                                        }
+                            dbViewModel.getAllProperties().observe(getViewLifecycleOwner(), new Observer<List<Properties>>() {
+                                @Override
+                                public void onChanged(List<Properties> propertiesList) {
+                                    analyzeReceiveProduct(products, propertiesList);
+                                    if (!checkUpdateProduct) {
+                                        updateData(CompanyID);
+                                        checkUpdateProduct = true;
                                     }
-                                });
-
+                                }
+                            });
 
 
                         }
@@ -680,29 +680,14 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
     }
 
-    private void appHelp(){
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences("appHelp",Context.MODE_PRIVATE);
+    public void appHelp() {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("appHelp", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        boolean hasSeen = sharedPreferences.getBoolean("help",false);
-        if(!hasSeen){
+        boolean hasSeen = sharedPreferences.getBoolean("help2", false);
+        if (!hasSeen) {
             TapTargetSequence sequence = new TapTargetSequence(getActivity());
-            TapTarget btnFilterTarget = TapTarget.forView(view.findViewById(R.id.btnFilter),"دکمه فیلتر محصول","به کمک این دکمه می توانید محصول خود را فیلتر کنید")
-                    .cancelable(false)
-                    .drawShadow(true)
-                    .dimColor(android.R.color.tab_indicator_text)
-                    .outerCircleColor(android.R.color.holo_blue_dark)
-                    .targetCircleColor(android.R.color.holo_green_dark)
-                    .transparentTarget(true)
-                    .targetRadius(32)
-                    .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
-                    .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
-                    .titleTextColor(android.R.color.white)
-                    .tintTarget(false);
-            TapTarget btnSortTarget = TapTarget.forView(view.findViewById(R.id.btnSort),"دکمه مرتب سازی محصول","به کمک این دکمه می توانید محصول خود را مرتب کنید کنید")
+            TapTarget btnFilterTarget = TapTarget.forView(view.findViewById(R.id.btnFilter), "دکمه فیلتر محصول", "به کمک این دکمه می توانید محصول خود را فیلتر کنید")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -718,7 +703,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-            TapTarget btnGoProfileTarget = TapTarget.forView(view.findViewById(R.id.companyLogo),"دکمه پروفایل","این دکمه شما را به صفحه پروفایل می برد")
+            TapTarget btnSortTarget = TapTarget.forView(view.findViewById(R.id.btnSort), "دکمه مرتب سازی محصول", "به کمک این دکمه می توانید محصول خود را مرتب کنید کنید")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -734,8 +719,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-
-            /*TapTarget t = TapTarget.forBounds(bottomNavigationViewEx.getBottomNavigationItemView(R.id.ic_shoppingCenter).getClipBounds(),"Title","Description")
+            TapTarget btnGoProfileTarget = TapTarget.forView(view.findViewById(R.id.companyLogo), "دکمه پروفایل", "این دکمه شما را به صفحه پروفایل می برد")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -749,26 +733,31 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .descriptionTextColor(android.R.color.white)
                     .textColor(android.R.color.holo_blue_bright)
                     .titleTextColor(android.R.color.white)
-                    .tintTarget(false);*/
+                    .tintTarget(false);
 
-            sequence.targets(btnFilterTarget,btnSortTarget,btnGoProfileTarget);
-            sequence.listener(new TapTargetSequence.Listener() {
-                @Override
-                public void onSequenceFinish() {
-                    editor.putBoolean("help",true);
-                    editor.apply();
-                }
+            sequence.targets(btnFilterTarget, btnSortTarget, btnGoProfileTarget);
+            try {
+                sequence.listener(new TapTargetSequence.Listener() {
+                    @Override
+                    public void onSequenceFinish() {
+                        editor.putBoolean("help2", true);
+                        editor.apply();
 
-                @Override
-                public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+                    }
 
-                }
+                    @Override
+                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+                        Log.d("Error", "Test");
+                    }
 
-                @Override
-                public void onSequenceCanceled(TapTarget lastTarget) {
-
-                }
-            }).start();
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        Log.d("Error", "Test");
+                    }
+                }).start();
+            } catch (Exception e) {
+                Log.d("Error", e.getMessage());
+            }
         }
     }
 
@@ -804,10 +793,9 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     properties.add(proper);
                 }
             }
-            if(properties.size() == 0)
+            if (properties.size() == 0)
                 continue;
-            ReceiveProductClass spc = new ReceiveProductClass(product, properties,standardPrice);
-
+            ReceiveProductClass spc = new ReceiveProductClass(product, properties, standardPrice);
 
 
             List<String> category = new ArrayList<>();
@@ -857,7 +845,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 }
 
             } catch (Exception e) {
-                Log.d("Error",e.toString());
+                Log.d("Error", e.toString());
             }
             //  String[] like = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare2)).split("&");
             // String[] bookmark = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare3)).split("&");
@@ -891,7 +879,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
             @Override
             public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
-                Log.d("Error",t.getMessage());
+                Log.d("Error", t.getMessage());
             }
         });
     }
@@ -914,13 +902,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             if (updateMode) {
 
                 inQueueProduct = NetProduct.get(i);
-                if(ProductExistinLocal(inQueueProduct.getProductID()))
-                {
+                if (ProductExistinLocal(inQueueProduct.getProductID())) {
                     mustUpdate[0] = true;
                     updateProduct(inQueueProduct, dbViewModel);
-                }
-                else
-                {
+                } else {
                     insertIntoDB(inQueueProduct, dbViewModel);
                     allProductsPId.add(inQueueProduct.getProductID());
                 }
@@ -969,14 +954,14 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
     }
 
-    private  boolean ProductExistinLocal(String PID)
-    {
-        for (String  p:
+    private boolean ProductExistinLocal(String PID) {
+        for (String p :
                 allProductsPId) {
-            if(p.equals(PID))return true;
+            if (p.equals(PID)) return true;
         }
         return false;
     }
+
     private void insertIntoDB(ReceiveProductClass NetProduct, DBViewModel dbViewModel) {
 
         Product product = new Product();
@@ -1009,15 +994,15 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Deleted = NetProduct.getDeleted();
         product.CompanyID = NetProduct.getCompanyID();
         product.Category = NetProduct.getCategory();
-        if(NetProduct.getSpare1() == null || NetProduct.getSpare1().equals(""))
+        if (NetProduct.getSpare1() == null || NetProduct.getSpare1().equals(""))
             product.Spare1 = "#ffffff";
         else
             product.Spare1 = NetProduct.getSpare1();
-        if(NetProduct.getSpare2() == null || NetProduct.getSpare1().equals(""))
+        if (NetProduct.getSpare2() == null || NetProduct.getSpare1().equals(""))
             product.Spare2 = "#ffffff";
         else
             product.Spare2 = NetProduct.getSpare2();
-        if(NetProduct.getSpare3() == null || NetProduct.getSpare1().equals(""))
+        if (NetProduct.getSpare3() == null || NetProduct.getSpare1().equals(""))
             product.Spare3 = "#ffffff";
         else
             product.Spare3 = NetProduct.getSpare3();
@@ -1063,15 +1048,15 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.Unit = productClass.getUnit();
         product.UpdateDate = productClass.getUpdateDate();
         product.ViewedCount = productClass.getViewedCount();
-        if(productClass.getSpare1() == null || productClass.getSpare1().equals(""))
+        if (productClass.getSpare1() == null || productClass.getSpare1().equals(""))
             product.Spare1 = "#ffffff";
         else
             product.Spare1 = productClass.getSpare1();
-        if(productClass.getSpare2() == null || productClass.getSpare1().equals(""))
+        if (productClass.getSpare2() == null || productClass.getSpare1().equals(""))
             product.Spare2 = "#ffffff";
         else
             product.Spare2 = productClass.getSpare2();
-        if(productClass.getSpare3() == null || productClass.getSpare1().equals(""))
+        if (productClass.getSpare3() == null || productClass.getSpare1().equals(""))
             product.Spare3 = "#ffffff";
         else
             product.Spare3 = productClass.getSpare3();
@@ -1171,7 +1156,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 return lppc;
             }
         } catch (Exception e) {
-            Log.d("Error",e.getMessage());
+            Log.d("Error", e.getMessage());
             return null;
         }
         return null;
@@ -1236,7 +1221,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             }
 
         } catch (Exception e) {
-            Log.d("Error" , e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
@@ -1463,13 +1448,13 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
     private void showPopup(View v) {
-        PopupMenu popupMenu = new PopupMenu(mContext,v);
+        PopupMenu popupMenu = new PopupMenu(mContext, v);
         MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.filtering_menu,popupMenu.getMenu());
+        inflater.inflate(R.menu.filtering_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.categoriFiltering_menu:
                         try {
                             dialogFragment.show(getChildFragmentManager(), "dialogAlert");
@@ -1493,7 +1478,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         popupMenu.show();
 
     }
-
 
 
     public void toastMessage(String message, int id) {

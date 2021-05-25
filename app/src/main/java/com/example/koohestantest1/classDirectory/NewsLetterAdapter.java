@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.annotation.NonNull;
@@ -19,12 +20,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.asura.library.posters.Poster;
 import com.asura.library.posters.RemoteImage;
 import com.asura.library.posters.RemoteVideo;
 import com.asura.library.views.PosterSlider;
 import com.bumptech.glide.Glide;
+import com.example.koohestantest1.ApiDirectory.JsonApi;
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
@@ -33,7 +37,9 @@ import com.example.koohestantest1.fragments.bottomsheet.CommentsBottomSheet;
 import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.local_db.entity.NewsLetterImage;
+import com.example.koohestantest1.model.DeleteNewsLetter;
 import com.example.koohestantest1.model.FilledNewsImage;
+import com.example.koohestantest1.model.JsonSrc;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -64,20 +70,25 @@ import static com.example.koohestantest1.classDirectory.BaseCodeClass.selectedPr
 public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.NewsLetterViewHolder> {
     List<NewsLetter> newsLetterList;
 
-    private static List<Poster> posterList;
+        private static List<Poster> posterList;
+    //private List<String> posterList;
     Context context;
     FragmentManager manager;
     DBViewModel dbViewModel;
     boolean likeIt = false;
     String newsId = "";
     List<String> imageList;
-    public NewsLetterAdapter(List<NewsLetter> newsLetterList,Context context,
-                             FragmentManager manager,DBViewModel dbViewModel) {
+
+    public NewsLetterAdapter(List<NewsLetter> newsLetterList, Context context,
+                             FragmentManager manager, DBViewModel dbViewModel) {
+
+
         this.newsLetterList = newsLetterList;
 
         this.context = context;
         this.manager = manager;
         this.dbViewModel = dbViewModel;
+//        posterList = new ArrayList<>();
         posterList = new ArrayList<>();
         imageList = new ArrayList<>();
     }
@@ -85,7 +96,7 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
     @NonNull
     @Override
     public NewsLetterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_news_letter_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_news_letter_item, parent, false);
         return new NewsLetterViewHolder(view);
     }
 
@@ -93,11 +104,15 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
     public void onBindViewHolder(@NonNull NewsLetterViewHolder holder, int position) {
         RemoteImage remoteImage;
         RemoteVideo remoteVideo;
+
+
         newsId = newsLetterList.get(position).NewsID;
+
         try {
             JSONArray jsonArray = new JSONArray(newsLetterList.get(position).Jsonsrc);
+//            posterList.clear();
             posterList.clear();
-            for(int i = 0;i < jsonArray.length(); i++){
+            for (int i = 0; i < jsonArray.length(); i++) {
                 if(jsonArray.getString(i).contains(".jpg") || jsonArray.getString(i).contains(".jpeg") || jsonArray.getString(i).contains(".png")) {
                     remoteImage = new RemoteImage(jsonArray.getString(i));
                     remoteImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -105,12 +120,18 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
                 }
                 else {
                     remoteVideo = new RemoteVideo(Uri.parse(jsonArray.getString(i)));
+                    Log.d("Video",Uri.parse(jsonArray.getString(i))+"");
                     posterList.add(remoteVideo);
                 }
-//
+                //posterList.add(jsonArray.getString(i));
+
             }
 
             holder.slider.setPosters(posterList);
+            //NewsLetterViewPagerAdapter adapter = new NewsLetterViewPagerAdapter(context, posterList);
+            //  adapter.notifyDataSetChanged();
+            //holder.slider.setAdapter(adapter);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -118,55 +139,56 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
 
         holder.txtNewsTitle.setText(newsLetterList.get(position).Title);
         holder.txtNewsDesc.setText(newsLetterList.get(position).Description);
-        if(!newsLetterList.get(position).ActiveComment)
+        if (!newsLetterList.get(position).ActiveComment)
             holder.imgLike.setEnabled(false);
 
-        if(newsLetterList.get(position).Likeit)
+        if (newsLetterList.get(position).Likeit)
             holder.imgLike.setImageResource(R.drawable.ic_liked);
         else
             holder.imgLike.setImageResource(R.drawable.ic_like);
 
-        if(!newsLetterList.get(position).ActiveComment)
+        if (!newsLetterList.get(position).ActiveComment)
             holder.imgComment.setEnabled(false);
 
-        if(!newsLetterList.get(position).ActiveSave)
+        if (!newsLetterList.get(position).ActiveSave)
             holder.imgBookmark.setEnabled(false);
 
 
         holder.imgBookmark.setOnClickListener(v -> {
-            Bitmap bitmap = ((BitmapDrawable)holder.imgBookmark.getDrawable()).getBitmap();
+            Bitmap bitmap = ((BitmapDrawable) holder.imgBookmark.getDrawable()).getBitmap();
             Drawable myDrawable = context.getResources().getDrawable(R.drawable.ic_bookmarked);
-            Bitmap bitmap1 = ((BitmapDrawable)myDrawable).getBitmap();
-            if(bitmap.sameAs(bitmap1)){
+            Bitmap bitmap1 = ((BitmapDrawable) myDrawable).getBitmap();
+            if (bitmap.sameAs(bitmap1)) {
                 holder.imgBookmark.setImageResource(R.drawable.ic_bookmark);
-            }else{
+            } else {
                 holder.imgBookmark.setImageResource(R.drawable.ic_bookmarked);
             }
         });
 
+        holder.imgDelete.setOnClickListener(v -> deleteNewsLetter(newsLetterList.get(position)));
+
         holder.imgComment.setOnClickListener(v -> {
             CommentsBottomSheet commentsBottomSheet = new CommentsBottomSheet(newsLetterList.get(position).NewsID,
-                    BaseCodeClass.userID,BaseCodeClass.token,BaseCodeClass.CompanyID);
-            commentsBottomSheet.show(manager,"TAG_COMMENT_SHEET");
+                    BaseCodeClass.userID, BaseCodeClass.token, BaseCodeClass.CompanyID);
+            commentsBottomSheet.show(manager, "TAG_COMMENT_SHEET");
         });
 
         holder.imgLike.setOnClickListener(v -> {
-            NewsLetter newsLetter = new NewsLetter();
-            newsLetter = newsLetterList.get(position);
-            Bitmap bitmapImgLike = ((BitmapDrawable)holder.imgLike.getDrawable()).getBitmap();
+            NewsLetter newsLetter = newsLetterList.get(position);
+            Bitmap bitmapImgLike = ((BitmapDrawable) holder.imgLike.getDrawable()).getBitmap();
             Drawable drawable = context.getResources().getDrawable(R.drawable.ic_liked);
-            Bitmap bitmapLike = ((BitmapDrawable)drawable).getBitmap();
-            if(bitmapImgLike.sameAs(bitmapLike)){
+            Bitmap bitmapLike = ((BitmapDrawable) drawable).getBitmap();
+            if (bitmapImgLike.sameAs(bitmapLike)) {
                 holder.imgLike.setImageResource(R.drawable.ic_like);
                 likeIt = false;
 
                 newsLetter.Likeit = likeIt;
-                likePost(newsLetterList.get(position).NewsID,BaseCodeClass.userID,false,newsLetter);
-            }else{
+                likePost(newsLetterList.get(position).NewsID, BaseCodeClass.userID, false, newsLetter);
+            } else {
                 holder.imgLike.setImageResource(R.drawable.ic_liked);
                 likeIt = true;
                 newsLetter.Likeit = likeIt;
-                likePost(newsLetterList.get(position).NewsID,BaseCodeClass.userID,true,newsLetter);
+                likePost(newsLetterList.get(position).NewsID, BaseCodeClass.userID, true, newsLetter);
 
             }
         });
@@ -178,7 +200,6 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
             holder.slider.setPosters(posterList);
         }*/
 
-
     }
 
     @Override
@@ -186,10 +207,12 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
         return newsLetterList.size();
     }
 
-    class NewsLetterViewHolder extends RecyclerView.ViewHolder{
-        ImageView imgBookmark,imgLike,imgComment,imgViewCount;
+
+    class NewsLetterViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgBookmark, imgLike, imgComment, imgViewCount, imgDelete;
         PosterSlider slider;
-        TextView txtNewsTitle,txtNewsDesc,txtLikeCount;
+        TextView txtNewsTitle, txtNewsDesc, txtLikeCount;
+
         public NewsLetterViewHolder(@NonNull View itemView) {
             super(itemView);
             imgBookmark = itemView.findViewById(R.id.newsBookmark);
@@ -200,10 +223,11 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
             txtNewsTitle = itemView.findViewById(R.id.txt_newsTitle);
             txtNewsDesc = itemView.findViewById(R.id.newsDescription);
             txtLikeCount = itemView.findViewById(R.id.txt_newsLike_count);
+            imgDelete = itemView.findViewById(R.id.img_newsLetter_delete);
         }
     }
 
-    private void likePost(String pid, String uid, boolean viewCount,NewsLetter newsLetter) {
+    private void likePost(String pid, String uid, boolean viewCount, NewsLetter newsLetter) {
         LoadProductApi loadProductApi;
         Retrofit retrofit = RetrofitInstance.getRetrofit();
         loadProductApi = retrofit.create(LoadProductApi.class);
@@ -230,14 +254,34 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
                 }
             });
         } catch (Exception e) {
-            Log.d("Error" , e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
-    private void setImageInFlipper(String imgUrl,NewsLetterViewHolder holder){
-        ImageView imageView = new ImageView(context);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Glide.with(context).load(imgUrl).into(imageView);
-        holder.slider.addView(imageView);
+    private void deleteNewsLetter(NewsLetter newsLetter) {
+        JsonApi jsonApi;
+        Retrofit retrofit = RetrofitInstance.getRetrofit();
+        jsonApi = retrofit.create(JsonApi.class);
+        dbViewModel.deleteOneNewsLetter(newsLetter);
+        DeleteNewsLetter deleteNewsLetter = new DeleteNewsLetter();
+        deleteNewsLetter.setCompanyId(newsLetter.SupplierID);
+        deleteNewsLetter.setNewsId(newsLetter.NewsID);
+        deleteNewsLetter.setToken(BaseCodeClass.token);
+        deleteNewsLetter.setUserId(newsLetter.CreatorUserID);
+        Call<GetResualt> call = jsonApi.deleteOneNewsLetter(deleteNewsLetter);
+        call.enqueue(new Callback<GetResualt>() {
+            @Override
+            public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
+                if (response.body().getResualt().equals("100")) {
+                    Toast.makeText(context, "خبر با موفقیت حذف شد", Toast.LENGTH_SHORT).show();
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetResualt> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
     }
 }
