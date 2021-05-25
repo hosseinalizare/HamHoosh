@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.downloadmanager.DownloadReceiver;
 import com.example.koohestantest1.downloadmanager.IDownloadManager;
+import com.example.koohestantest1.model.DiscountModel;
 import com.example.koohestantest1.model.MyTime;
 import com.example.koohestantest1.viewModel.TimeViewModel;
 
@@ -373,6 +374,11 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
             logMessage("MyStoreReport 300 >> " + e.getMessage(), mContext);
         }
 
+    }
+
+    @Override
+    public Call<GetResualt> setDiscount(DiscountModel discountModel) {
+        return null;
     }
 
     public void setDefaultColor(RelativeLayout layout) {

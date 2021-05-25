@@ -43,12 +43,14 @@ public class SendOrderClass {
     private String  Spare3 ;
     private String SumPrice;//کل هزینه این سفارش بدون در نظر کرفتن هزینه حمل و نقل و هزینه مالیات و تخفیفها
     private String id;
+    private int discountAmount = 0;
     public List<Order_DetailsViewModels> Order_Details;
 
 
     private String SumDiscount;
     private String SumTotal;
 
+    public int TotalPrice = 0;
     public SendOrderClass(String token, String userID, String orderID, String employeeID, String customerID, String companyID, String orderDate, String shippedDate, String shipperID, String shipName, String shipAddress, String shipCity, String shipStateProvince, String shipZIPPostalCode, String shipCountryRegion, String shippingFee, String taxes, String paymentType, String paidDate, String notes, String taxRate, String taxStatus, String statusID, String sumPrice) {
         Token = token;
         UserID = userID;
@@ -213,6 +215,14 @@ public class SendOrderClass {
         return StatusID;
     }
 
+    public int getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(int discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
     public String getSumPrice() {
         calculateSumPrice();
       return  SumPrice;
@@ -222,7 +232,7 @@ public class SendOrderClass {
         try {
             int sumPrice = 0;
             int sumDiscount = 0;
-            int TotalPrice = 0;
+
 
             for (Order_DetailsViewModels o : getOrder_Details()
             ) {
@@ -250,7 +260,7 @@ public class SendOrderClass {
             Log.d(TAG, "getSumPrice: (4): " + sumPrice);
 
             SumDiscount = String.valueOf(sumDiscount);
-            SumTotal = String.valueOf(TotalPrice);
+            SumTotal = String.valueOf(TotalPrice - discountAmount);
             NumberFormat formatter = new DecimalFormat("#,###");
             if (SumPrice != null && !SumPrice.isEmpty()) {
                 SumPrice = formatter.format(Integer.parseInt(SumPrice));
@@ -313,7 +323,11 @@ public class SendOrderClass {
         return SumTotal;
     }
 
- /*   public String getSumPrice() {
+    public void setSumTotal(String sumTotal) {
+        SumTotal = sumTotal;
+    }
+
+    /*   public String getSumPrice() {
         int bb = 0;
         try {
             double sumPrice = 0;

@@ -12,50 +12,29 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.asura.library.posters.Poster;
 import com.asura.library.posters.RemoteImage;
 import com.asura.library.posters.RemoteVideo;
 import com.asura.library.views.PosterSlider;
-import com.bumptech.glide.Glide;
 import com.example.koohestantest1.ApiDirectory.JsonApi;
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
-import com.example.koohestantest1.ViewProductActivity;
 import com.example.koohestantest1.fragments.bottomsheet.CommentsBottomSheet;
 import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.local_db.entity.NewsLetter;
-import com.example.koohestantest1.local_db.entity.NewsLetterImage;
 import com.example.koohestantest1.model.DeleteNewsLetter;
-import com.example.koohestantest1.model.FilledNewsImage;
-import com.example.koohestantest1.model.JsonSrc;
 import com.example.koohestantest1.model.network.RetrofitInstance;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -64,8 +43,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static android.content.ContentValues.TAG;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.selectedProduct;
 
 public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.NewsLetterViewHolder> {
     List<NewsLetter> newsLetterList;

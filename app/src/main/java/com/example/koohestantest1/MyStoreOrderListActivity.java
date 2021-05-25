@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.koohestantest1.downloadmanager.DownloadReceiver;
 import com.example.koohestantest1.downloadmanager.IDownloadManager;
+import com.example.koohestantest1.model.DiscountModel;
 import com.example.koohestantest1.viewModel.TimeViewModel;
 
 import java.util.ArrayList;
@@ -163,6 +164,11 @@ public class MyStoreOrderListActivity extends AppCompatActivity implements CartA
     @Override
     public void onResponseUserOrder(List<SendOrderClass> sendOrderClasses) {
 
+    }
+
+    @Override
+    public Call<GetResualt> setDiscount(DiscountModel discountModel) {
+        return null;
     }
 
     public void getListFromServer() {

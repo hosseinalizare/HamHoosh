@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.koohestantest1.Utils.SharedPreferenceUtils;
 import com.example.koohestantest1.Utils.StringUtils;
 import com.example.koohestantest1.adapter.recyclerinterface.ICartEvents;
+import com.example.koohestantest1.model.DiscountModel;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.BadgeSharedViewModel;
 import com.example.koohestantest1.viewModel.LocalCartViewModel;
@@ -80,7 +81,8 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
     double sum = 0;
     ViewFlipper vf;
     RecyclerView cartListRecyclerView;
-    Button btnAddCart, btnCopy;
+    Button btnAddCart, btnCopy,btnDiscount;
+    EditText edtDiscount;
     MyDataBase myDataBase;
     RelativeLayout cashLayout;
     RadioGroup radioGroup;
@@ -138,7 +140,8 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         cashLayout = view.findViewById(R.id.cashLayout);
         paygir = view.findViewById(R.id.paygir);
         radioGroup = view.findViewById(R.id.radioGroup);
-
+        btnDiscount = view.findViewById(R.id.btn_discountCode);
+        edtDiscount = view.findViewById(R.id.edt_discountCode);
         /*radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.personalReceive:
@@ -221,6 +224,10 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
             generatePaymentButtonSabegh();
         });
 
+        btnDiscount.setOnClickListener(v ->{
+            checkDiscount();
+        });
+
         return view;
     }
 
@@ -266,9 +273,10 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
     private void calcPrice() {
         try {
-            cartSumPrice.setText("قیمت کالاها : " + baseCodeClass.sendOrderClass.getSumPrice() + " تومان");
-            cartSumDiscount.setText("جمع تخفیف ها : " + baseCodeClass.sendOrderClass.getSumDisCount() + " تومان");
-            cartSumP.setText("مبلغ قابل پرداخت : " + baseCodeClass.sendOrderClass.getSumTotal() + " تومان");
+
+            cartSumPrice.setText("قیمت کالاها : " + sendOrderClass.getSumPrice() + " تومان");
+            cartSumDiscount.setText("جمع تخفیف ها : " + sendOrderClass.getSumDisCount() + " تومان");
+            cartSumP.setText("مبلغ قابل پرداخت : " +sendOrderClass.getSumTotal()   + " تومان");
 
 
         } catch (Exception e) {
@@ -721,7 +729,68 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         }
     }
 
+    private void checkDiscount(){
+        if(edtDiscount.getText().toString().isEmpty())
+            Toast.makeText(mContext, "لطفا کد تخفیف خود را وارد کنید", Toast.LENGTH_SHORT).show();
+        else {
+            DiscountModel discountModel = new DiscountModel();
+            sendOrderClass.setShipAddress(selectedAddress.getId());
+            sendOrderClass.setShipCountryRegion(selectedAddress.getCountry());
+            sendOrderClass.setShipStateProvince(selectedAddress.getState());
+            sendOrderClass.setShipCity(selectedAddress.getCity());
+            sendOrderClass.setShipZIPPostalCode(selectedAddress.getPostalCode());
+            sendOrderClass.setSpare1(selectedAddress.getAddress1());
 
+
+            sendOrderClass.setStatusID("1");
+            sendOrderClass.setPaymentType(String.valueOf(paymentType));
+            sendOrderClass.setToken(baseCodeClass.getToken());
+            sendOrderClass.setCompanyID(baseCodeClass.getCompanyID());
+            sendOrderClass.setEmployeeID(baseCodeClass.companyEmployees.get(0).getEmployeeID());//"EmnJnjtsqhU"
+            sendOrderClass.setUserID(baseCodeClass.getUserID());
+            sendOrderClass.setCustomerID(baseCodeClass.getCompanyID() + baseCodeClass.getUserID());
+
+            sendOrderClass.setNotes(note.getText().toString() + "\n" + paygir.getText().toString());
+            sendOrderClass.setShipperID(baseCodeClass.companyProfile.getCompanyID());
+            sendOrderClass.setShipName(baseCodeClass.companyProfile.getCompanyName());
+            sendOrderClass.setShippedDate("2020-08-18T21:54:43.5172323+04:30");
+            sendOrderClass.setShippingFee("0");
+            sendOrderClass.setTaxes("0");
+            sendOrderClass.setTaxRate("0");
+            sendOrderClass.setTaxStatus(String.valueOf(receiveChecked));
+            sendOrderClass.setDeleted("false");
+            sendOrderClass.setPaidDate("2020-08-18T21:54:43.5172323+04:30");
+            sendOrderClass.setUpdateDate("2020-08-18T21:54:43.5172323+04:30");
+
+            sendOrderClass.calculateSumPrice();
+            sendOrderClass.setSumPrice(String.valueOf((int) StringUtils.getNumberFromStringV2(sendOrderClass.getSumTotal())));
+
+            String discount = edtDiscount.getText().toString();
+            discountModel.setDiscountCode(discount);
+            discountModel.setSendOrderClass(sendOrderClass);
+
+            Call<GetResualt> call = cartApi.setDiscount(discountModel);
+            call.enqueue(new Callback<GetResualt>() {
+                @Override
+                public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
+                    if(response.body().getResualt().equals("100")) {
+                        int discountPrice = Integer.parseInt(response.body().getMsg());
+
+                        sendOrderClass.setDiscountAmount(sendOrderClass.TotalPrice - discountPrice);
+                        calcPrice();
+                        btnDiscount.setEnabled(false);
+                        edtDiscount.setEnabled(false);
+                    }else
+                        Toast.makeText(getContext(), "دوباره تلاش کنید", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Call<GetResualt> call, Throwable t) {
+                    Log.d("Error",t.getMessage());
+                }
+            });
+        }
+    }
 
 
 

@@ -40,6 +40,7 @@ public class CartInformation {
     private String spare3;
     private String sumPrice;
 
+
     public CartInformation(long cartId, boolean closed, String orderID, String token, String userID, String employeeID, String customerID, String companyID, String orderDate, String shippedDate, String shipperID, String shipName, String shipAddress, String shipCity, String shipStateProvince, String shipZIPPostalCode, String shipCountryRegion, String shippingFee, String taxes, String paymentType,
                            String paidDate, String notes, String taxRate, String taxStatus, String statusID, String updateDate, String deleted, String spare1, String spare2, String spare3, String sumPrice) {
         this.cartId = cartId;

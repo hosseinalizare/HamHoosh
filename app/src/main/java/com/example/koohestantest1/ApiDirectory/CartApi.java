@@ -6,6 +6,8 @@ import com.example.koohestantest1.ViewModels.UpdateOrderClass;
 import com.example.koohestantest1.ViewModels.UserReportViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
+import com.example.koohestantest1.model.DiscountModel;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -27,5 +29,8 @@ public interface CartApi {
     @POST("Order/downloadUserOrders")
     Call<List<SendOrderClass>> getUserOrder(@Body UserReportViewModel userReportViewModel);
     void onResponseUserOrder(List<SendOrderClass> sendOrderClasses);
+
+    @POST("DiscountCode/Check")
+    Call<GetResualt> setDiscount(@Body DiscountModel discountModel);
 
 }

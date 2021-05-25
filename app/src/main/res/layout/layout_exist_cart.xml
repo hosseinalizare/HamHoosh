@@ -92,7 +92,10 @@
                             android:layout_height="match_parent"
                             android:layoutDirection="rtl"
                             android:orientation="vertical">
-
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/backgroundGray"/>
                             <TextView
                                 android:id="@+id/cartSumPrice"
                                 android:layout_width="wrap_content"
@@ -140,6 +143,30 @@
                                 android:text="مبلغ قابل پرداخت :"
                                 android:textColor="@color/black"
                                 android:textSize="20sp" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="end"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp">
+                                <androidx.appcompat.widget.AppCompatButton
+                                    android:id="@+id/btn_discountCode"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="8dp"
+                                    android:background="@color/purple1"
+                                    android:textColor="@color/white"
+                                    android:text="بررسی کد تخفیف"
+                                    android:padding="5dp"/>
+                                <EditText
+                                    android:id="@+id/edt_discountCode"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:hint="کد تخفیف..."
+                                    android:layout_margin="8dp"/>
+
+                            </LinearLayout>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
