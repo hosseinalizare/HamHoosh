@@ -781,7 +781,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                         btnDiscount.setEnabled(false);
                         edtDiscount.setEnabled(false);
                     }else
-                        Toast.makeText(getContext(), "دوباره تلاش کنید", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), response.body().getMsg(), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

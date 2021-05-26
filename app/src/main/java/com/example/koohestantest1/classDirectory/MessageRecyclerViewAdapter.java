@@ -128,9 +128,9 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         // root  +="asbid";
 
         //myDir = new File(root,"asbidd");
-        root = Environment.getExternalStorageDirectory().getPath()/*+ "/Dehkade/Chat1"*/;
+        root = Environment.getExternalStorageDirectory().getPath()+ "/Dehkade/Chat1";
         myDir = new File(root);
-        myDir.mkdir();
+        myDir.mkdirs();
 
 
     }
@@ -827,16 +827,16 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtDocName.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtTime.setText(time);
-       /*     String fname = root + "/" +messageData.getMessage1();
+            String fname = Environment.DIRECTORY_DOWNLOADS + "/Dehkadeh/" +messageData.getMessage1();
             File file = new File(fname);
-            if (file.canRead()){
+            File f1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/"+messageData.getMessage1() );
+
+            if (f1.exists()){
                 imgDownload.setImageResource(R.drawable.ic_doc3);
                 imgDownload.setContentDescription("after");
+            }else{
+                Log.d("Error","Test");
             }
-            if (file.exists()){
-                imgDownload.setImageResource(R.drawable.ic_doc3);
-                imgDownload.setContentDescription("after");
-            }*/
 
             if (isDocDownload(Integer.parseInt(messageData.getId()))) {
                 imgDownload.setImageResource(R.drawable.ic_doc3);
@@ -1907,12 +1907,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         request.setTitle("در حال دانلود");
         request.setDescription("لطفا منتظر بمانید...");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"/Dehkadeh/" + name);
 
-/*
-        request.setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_DOWNLOADS, fileName);
-*/
+        //request.setDestinationInExternalFilesDir(mContext, Environment.getStorageState(myDir), name);
 
-        request.setDestinationInExternalFilesDir(mContext, root, name);
+//        request.setDestinationInExternalFilesDir(mContext, root, name);
 
         final long id = downloadManager.enqueue(request);
         Timer timer = new Timer();
@@ -1962,7 +1961,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         request.setTitle("در حال دانلود");
         request.setDescription("لطفا منتظر بمانید...");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-
+//        request.setDestinationInExternalPublicDir("/Hooman",name);
 /*
         request.setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_DOWNLOADS, fileName);
 */
