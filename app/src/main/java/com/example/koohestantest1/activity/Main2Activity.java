@@ -131,7 +131,7 @@ public class Main2Activity extends BaseActivity implements CartTransitionInterfa
 
         //listen for new cart id
         localCartViewModel.getInsertedCartId().observe(this, CurrentCartId::setId);
-        //appHelp();
+        appHelp();
     }
 
     /*private void getFireBaseToken() {
