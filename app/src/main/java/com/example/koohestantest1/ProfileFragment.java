@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -34,8 +35,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.example.koohestantest1.ApiDirectory.UserProfileApi;
+import com.example.koohestantest1.Utils.StringUtils;
+import com.example.koohestantest1.ViewModels.CompanyProfileFieldViewModel;
 import com.example.koohestantest1.activity.EventActivity;
 import com.example.koohestantest1.activity.LoadingActivity;
+import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.LogOutVewModel;
 import com.google.android.material.navigation.NavigationView;
@@ -55,6 +60,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
+import static com.example.koohestantest1.classDirectory.BaseCodeClass.selectedProfileField;
 
 public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdapter.OnListListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -99,6 +105,9 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
     private ArrayList<Integer> mImageUrlss = new ArrayList<>();
     private ImageView ivProfile;
     private LogOutVewModel logOutVewModel;
+    private LinearLayout linearIdentifierCode;
+    private EditText edtIdentifierCode;
+    private ImageView imgSaveIdentifierCode;
 
     public ProfileFragment() {
     }
@@ -121,6 +130,9 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
         edRPassword = view.findViewById(R.id.EdRepeatPasswordSignUp);
         edtName = view.findViewById(R.id.edt_sign_up_name);
         edtFamily = view.findViewById(R.id.edt_sign_up_family);
+        linearIdentifierCode = view.findViewById(R.id.rel_identifierCode);
+        edtIdentifierCode = view.findViewById(R.id.edt_identifierCode);
+        imgSaveIdentifierCode = view.findViewById(R.id.img_saveIdentifierCode);
 
         tvRules = view.findViewById(R.id.tvRulsSignUp);
         view_ = view.findViewById(R.id.btnSignUp);
@@ -146,6 +158,43 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
         } else {
             vf.setDisplayedChild(0);
         }
+
+        imgSaveIdentifierCode.setOnClickListener(v -> {
+            try {
+                if (edtIdentifierCode.getText().toString().isEmpty()){
+                    Toast.makeText(mContext, "کد معرف را وارد کنید!", Toast.LENGTH_SHORT).show();
+                }else {
+                    UserProfileApi userProfileApi = RetrofitInstance.getRetrofit().create(UserProfileApi.class);
+                    Call<GetResualt> call =   userProfileApi.updateUserProfileField(new CompanyProfileFieldViewModel(baseCodeClass.getUserID(),
+                            baseCodeClass.getToken(),
+                            baseCodeClass.getUserID(),
+                            edtIdentifierCode.getText().toString(),
+                            BaseCodeClass.CompanyEnum.U_Referredby.name()));
+                    call.enqueue(new Callback<GetResualt>() {
+                        @Override
+                        public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
+                            if (response.body().getResualt().equals("100")){
+                                Toast.makeText(getContext(),"با موفقیت ثبت شد" , Toast.LENGTH_SHORT).show();
+                                linearIdentifierCode.setVisibility(View.GONE);
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<GetResualt> call, Throwable t) {
+
+                        }
+                    });
+                }
+
+
+            } catch (Exception e) {
+                logMessage("EditField 100 >> " + e.getMessage(), getContext());
+            }
+        });
+
+
+
 
         view_.setOnClickListener(v -> btnSignUpClick());
 
@@ -396,6 +445,14 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
             recyclerView.setLayoutManager(layoutManager);
             ProfileSettingRecyclerViewAdapter adapter = new ProfileSettingRecyclerViewAdapter(mContext, mNamess, mImageUrlss, R.layout.layout_verticallistitem);
             recyclerView.setAdapter(adapter);
+
+            if (StringUtils.textIsEmpty(BaseCodeClass.userProfile.getReferredby())){
+                linearIdentifierCode.setVisibility(View.VISIBLE);
+
+            }else {
+                linearIdentifierCode.setVisibility(View.GONE);
+
+            }
         } catch (Exception e) {
             logMessage("ProfileFragment 400 >> " + e.getMessage(), mContext);
         }
