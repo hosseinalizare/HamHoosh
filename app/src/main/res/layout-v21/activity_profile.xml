@@ -35,14 +35,13 @@
             app:expandedTitleMarginStart="64dp"
             app:expandedTitleTextAppearance="@color/transparent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
             <ImageView
                 android:id="@+id/img_activityProfile_imgProfile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="first"
                 android:fitsSystemWindows="false"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 app:layout_collapseMode="parallax" />
 
             <View

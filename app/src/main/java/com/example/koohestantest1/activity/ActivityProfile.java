@@ -161,10 +161,18 @@ public class ActivityProfile extends AppCompatActivity {
                 viewPager.setAdapter(pagerAdapter);
                 viewPager.setCurrentItem(titles.size()-1);
                 cl_product.setOnClickListener(v -> {
-                    if (viewPager.getCurrentItem()!=0){
+                        int position =viewPager.getCurrentItem();
+                        int index =0;
+                        for (Item item:profileModel.getItem()){
+                          if (item.getGroupType() ==1){
+                              position = index;
+                              break;
+                          }
+                          index++;
+                        }
                         setAnimation(Techniques.Tada,100L,cl_product);
-                        viewPager.setCurrentItem(0);
-                    }
+                        viewPager.setCurrentItem(position);
+
                 });
                 fbCall.setOnClickListener(v -> {
                     setAnimation(Techniques.Tada,100L,fbCall);
