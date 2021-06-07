@@ -6,8 +6,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -48,7 +46,6 @@ import com.example.koohestantest1.Utils.FileUtils;
 import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.constants.EmployeeStatus;
-import com.example.koohestantest1.fragments.MyProfileFragment;
 import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.EmployeeAdding;
 import com.example.koohestantest1.viewModel.CompanyViewModel;
@@ -93,6 +90,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     public static final int CAMERA_PERMISSION_CODE = 101;
     public static final int CHOSE_DOC_REQUEST_CODE = 13870;
     public static final int CHOSE_MUSIC_REQUEST_CODE = 13880;
+    public static final int CHOSE_VIDEO_REQUEST_CODE = 18480;
     public static final int READ_STORAGE_PERMISSION_REQUEST = 1387;
     ImageView imgMessage;
     private Bitmap mainBitmap = null;
@@ -276,21 +274,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
                 }
             });
-        /*    imgSendFile.setOnClickListener(v -> {
-                CropImage.startPickImageActivity(MessageActivity.this);
 
-
-            });*/
-
-            circleImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    Fragment fragment = new MyProfileFragment();
-                    transaction.replace(R.id.mainLayout,fragment);
-                    transaction.commit();
-                }
-            });
 
             imgSendFile.setOnClickListener(v -> {
 
@@ -353,10 +337,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext);
         View viewBottomSheetDialog = getLayoutInflater().from(mContext).inflate(R.layout.layout_bottom_sheet_filepicker, null, false);
-        RelativeLayout relPicture, relAudio, relFile;
+        RelativeLayout relPicture, relAudio, relFile,relVideo;
         relPicture = viewBottomSheetDialog.findViewById(R.id.rel_layoutBottomSheetFilePicker_Picture);
         relFile = viewBottomSheetDialog.findViewById(R.id.rel_layoutBottomSheetFilePicker_File);
         relAudio = viewBottomSheetDialog.findViewById(R.id.rel_layoutBottomSheetFilePicker_Audio);
+        relVideo = viewBottomSheetDialog.findViewById(R.id.rel_layoutBottomSheetFilePicker_Video);
 
         bottomSheetDialog.setContentView(viewBottomSheetDialog);
         bottomSheetDialog.show();
@@ -409,6 +394,21 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                     .build());
             startActivityForResult(intent, CHOSE_MUSIC_REQUEST_CODE);
 
+        });
+        relVideo.setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+            Intent intent = new Intent(this, FilePickerActivity.class);
+            intent.putExtra(FilePickerActivity.CONFIGS, new Configurations.Builder()
+                    .setCheckPermission(true)
+                    .setMaxSelection(1)
+                    .setSkipZeroSizeFiles(true)
+                    .setShowImages(false)
+                    .setSingleChoiceMode(true)
+                    .setShowAudios(false)
+                    .setShowVideos(true)
+                    .setShowFiles(false)
+                    .build());
+            startActivityForResult(intent, CHOSE_VIDEO_REQUEST_CODE);
         });
 
     }
@@ -796,6 +796,31 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
             }
         }
+
+        if (requestCode == CHOSE_VIDEO_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                try {
+
+                    ArrayList<MediaFile> files = data.getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
+                    Uri uri = files.get(0).getUri();
+                    File file = FileUtils.getFile(mContext, uri);
+
+                    long fileSizeInBytes = file.length();
+                    long fileSizeInKB = fileSizeInBytes / 1024;
+                    long fileSizeInMB = fileSizeInKB / 1024;
+
+                    sendVideoMessage(files.get(0).getName(), file, uri);
+
+
+                } catch (Exception e) {
+                    Toast.makeText(mContext, "catch is run", Toast.LENGTH_SHORT).show();
+
+                }
+
+
+            }
+        }
+
     }
 
 
@@ -844,7 +869,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
     }
 
-    private void uploadFile(File file, Uri fileUri, final int msgId) {
+    private void uploadFile(File file, Uri fileUri, final int msgId,String type) {
 
         /*RequestBody requestBody = RequestBody.create(file, MediaType.parse(getContentResolver().getType(fileUri)));*/
         RequestBody requestBody = RequestBody.create(file, MediaType.parse("*/*"));
@@ -853,9 +878,19 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
             if (getResualt.getResualt().equals("100")) {
                 isLoading = true;
-                adapter.messageViewModels.remove(adapter.docWaitPosition);
-                adapter. notifyItemRemoved(adapter.docWaitPosition);
-                adapter. notifyItemRangeChanged(adapter.docWaitPosition, adapter.messageViewModels.size());
+                if (type.equals("doc")){
+                    adapter.messageViewModels.remove(adapter.docWaitPosition);
+                    adapter. notifyItemRemoved(adapter.docWaitPosition);
+                    adapter. notifyItemRangeChanged(adapter.docWaitPosition, adapter.messageViewModels.size());
+                }else if (type.equals("music")){
+                    adapter.messageViewModels.remove(adapter.musicWaitPosition);
+                    adapter. notifyItemRemoved(adapter.musicWaitPosition);
+                    adapter. notifyItemRangeChanged(adapter.musicWaitPosition, adapter.messageViewModels.size());
+                }else if (type.equals("video")){
+                    adapter.messageViewModels.remove(adapter.videoWaitPosition);
+                    adapter. notifyItemRemoved(adapter.videoWaitPosition);
+                    adapter. notifyItemRangeChanged(adapter.videoWaitPosition, adapter.messageViewModels.size());
+                }
                 new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser,"");
                 Toast.makeText(mContext, "فایل با موفقیت آپلود شد", Toast.LENGTH_SHORT).show();
 
@@ -865,27 +900,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         });
 
     }
-    private void uploadMusic(File file, Uri fileUri, final int msgId) {
 
-        /*RequestBody requestBody = RequestBody.create(file, MediaType.parse(getContentResolver().getType(fileUri)));*/
-        RequestBody requestBody = RequestBody.create(file, MediaType.parse("*/*"));
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        sendMessageVM.sendDocMessage(msgId, body).observe(this, getResualt -> {
-
-            if (getResualt.getResualt().equals("100")) {
-                isLoading = true;
-                adapter.messageViewModels.remove(adapter.musicWaitPosition);
-                adapter. notifyItemRemoved(adapter.musicWaitPosition);
-                adapter. notifyItemRangeChanged(adapter.musicWaitPosition, adapter.messageViewModels.size());
-                new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser,"");
-                Toast.makeText(mContext, "فایل با موفقیت آپلود شد", Toast.LENGTH_SHORT).show();
-
-            } else {
-                Toast.makeText(mContext, "خطای نا شناخته", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 
 
     @Override
@@ -918,7 +933,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
             if (getResualt.getResualt().equals("100")) {
-                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()));
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()),"doc");
             }
         });
 
@@ -934,10 +949,25 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
             if (getResualt.getResualt().equals("100")) {
-                uploadMusic(file, fileUri, Integer.parseInt(getResualt.getMsg()));
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()),"music");
             }
         });
 
+    }
+    private void sendVideoMessage(String videoName, File file, Uri fileUri) {
+        isLoading = false;
+        SendMessageViewModel sendMessageViewModel2 = new SendMessageViewModel(senderUser, 555);
+        adapter.messageViewModels.add(sendMessageViewModel2);
+        adapter.initWaitValueVideo(videoName, sendMessageVM);
+        messageRecycler.setAdapter(adapter);
+        SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
+                videoName, "", "", "", BaseCodeClass.variableType.Video_.getValue(), "", 1, 100);
+        LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
+        resualtLiveData.observe(this, getResualt -> {
+            if (getResualt.getResualt().equals("100")) {
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()),"video");
+            }
+        });
     }
 
 

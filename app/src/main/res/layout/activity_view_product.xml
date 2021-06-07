@@ -144,7 +144,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/iv_comment_viewCount" />
 
 
-
                     <ImageView
                         android:id="@+id/bookmark"
                         android:layout_width="30dp"
@@ -242,17 +241,49 @@
                             android:textSize="20sp" />
 
                         <TextView
+                            android:padding="6dp"
                             android:id="@+id/productDescription"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right"
                             android:layout_margin="15dp"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/koodak"
-                            android:maxLines="5"
+                            android:fontFamily="@font/behdad"
+                            android:justificationMode="inter_word"
+                            android:maxLines="3"
                             android:text="توضیحاتی درباره محصول"
                             android:textColor="@color/DarkGray"
-                            android:textSize="18sp" />
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:id="@+id/linear_activityViewProduct_seeMore"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layoutDirection="rtl"
+                            android:orientation="horizontal"
+                            android:padding="4dp"
+                            android:visibility="gone">
+
+                            <TextView
+
+                                android:id="@+id/txt_activityViewProduct_seeFewer"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="جزئیات بیشتر" />
+
+                            <ImageView
+                                android:id="@+id/img_activityViewProduct_loadMore"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:contentDescription="befor"
+                                android:scaleType="centerInside"
+                                android:src="@drawable/ic_more_details" />
+
+
+                        </LinearLayout>
+
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 

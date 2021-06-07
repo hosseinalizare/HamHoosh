@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="130dp"
+    android:layout_height="130dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layoutDirection="rtl">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="4dp"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_layout_profile_recycler_item_video_imgVideo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_placeholder" />
+
+            <ImageView
+                android:id="@+id/img_layout_profile_recycler_item_video_imgVideoPlay"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_play_icon" />
+
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/circularProgressBar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:visibility="gone"
+                app:cpb_background_progressbar_color="#b6bbd8"
+                android:layout_centerInParent="true"
+                app:cpb_background_progressbar_width="5dp"
+                app:cpb_progress_direction="to_right"
+                app:cpb_progressbar_color="#017732"
+                app:cpb_progressbar_width="10dp"
+                app:cpb_round_border="false" />
+
+            <TextView
+                android:layout_below="@+id/circularProgressBar"
+                android:visibility="gone"
+                android:id="@+id/txt_video_persent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#017732"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/behdad"
+                tools:text="% 10" />
+
+
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</RelativeLayout>

@@ -1,13 +1,16 @@
 package com.example.koohestantest1.classDirectory;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -22,14 +25,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.koohestantest1.ActivityShowFullScreenImage;
 import com.example.koohestantest1.ApiDirectory.MessageApi;
 import com.example.koohestantest1.MessageActivity;
@@ -40,22 +43,28 @@ import com.example.koohestantest1.Utils.TimeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.example.koohestantest1.ViewModels.SendMessageViewModel;
+import com.example.koohestantest1.activity.ActivityVideoPlay;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.SendMessageVM;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import org.jetbrains.annotations.NotNull;
+
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirectory;
-
-public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements EasyPermissions.PermissionCallbacks {
 
     private Context mContext;
     public List<SendMessageViewModel> messageViewModels;
@@ -66,9 +75,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private SendMessageVM sendMessageVM;
     private String docName;
     private String musicName;
-    private File myDir;
-    private String root;
-    private File myFile;
+    private String videoName;
     private final int SENDER = 0;
     private final int GETTER = 1;
     private final int IMAGE_SENDER = 2;
@@ -88,22 +95,39 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private final int MUSIC_GETTER = 16;
     private final int MUSIC_SENDER_REPLY = 17;
     private final int MUSIC_GETTER_REPLY = 18;
+    private final int VIDEO_SENDER = 19;
+    private final int VIDEO_GETTER = 20;
+    private final int VIDEO_SENDER_REPLY = 21;
+    private final int VIDEO_GETTER_REPLY = 22;
     private final int LAKE_SUPPORT_SENDER = 805;
     private final int LAKE_SUPPORT_GETTER = 806;
     private final int WAIT_FOR_UPLOAD = 100;
     private final int WAIT_FOR_UPLOAD_DOC = 200;
     private final int WAIT_FOR_UPLOAD_MUSIC = 300;
+    private final int WAIT_FOR_UPLOAD_VIDEO = 400;
 
     OnClickMessage onClickMessage;
     public List<Integer> messageIdList;
     private List<Integer> downloadList;
+    private List<Integer> playedList;
     private boolean isSelectedMode = false;
     private List<SendOrderClass> loadedObject;
     public int imgWaitPosition;
     public int docWaitPosition;
     public int musicWaitPosition;
+    public int videoWaitPosition;
     public List<Integer> deletePositionList;
+    private MediaPlayer mediaPlayer;
+    private String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+    private final int READ_STORAGE_PERMISSION_REQUEST = 130587;
 
+    private boolean playSender = false;
+    private boolean playGeter = false;
+    private boolean playTwo = false;
+    private  CircularImageView cr_send,cr_get;
+  private   Map<Integer,CircularImageView> cr_getMap,cr_sendMap;
+  private int playPosition;
+    private YoYo.YoYoString yoYoString;
     public MessageRecyclerViewAdapter(Context mContext, List<SendMessageViewModel> messageViewModels, OnClickMessage onClickMessage) {
         this.mContext = mContext;
         this.messageViewModels = messageViewModels;
@@ -112,27 +136,14 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         downloadList = new ArrayList<>();
         loadedObject = new ArrayList<>();
         deletePositionList = new ArrayList<>();
-      /*  root = getCacheDirectory(mContext).getPath()+"/chat";
+        playedList = new ArrayList<>();
+        cr_getMap = new HashMap<>();
+        cr_sendMap = new HashMap<>();
+     /*   root = getCacheDirectory(mContext).getPath()+"/chat";
         myDir = new File(root);
-        myDir.mkdir();
-*/
-
-        /*root = Environment.getExternalStorageDirectory()+File.separator+"applicationAsbid";
-        myDir = new File(root);
-        myDir.mkdirs();*/
-
-        /*root = Environment.getExternalStorageDirectory()+"/myAsbid";
-        myDir = new File(root);
-        myDir.mkdirs();*/
-
-        // root  +="asbid";
-
-        //myDir = new File(root,"asbidd");
-        root = Environment.getExternalStorageDirectory().getPath()+ "/Dehkade/Chat1";
-        myDir = new File(root);
-        myDir.mkdirs();
-
-
+        if (!myDir.exists()){
+            myDir.mkdir();
+        }*/
     }
 
 
@@ -193,34 +204,48 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         } else if (viewType == DOC_GETTER_REPLY) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_doc_message_reply_get, parent, false);
             return new ReplyDocMsgGetterViwHolder(view);
-        } else if (viewType == WAIT_FOR_UPLOAD_DOC) {
+        } else if (viewType == VIDEO_SENDER_REPLY) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_image_message_reply_send, parent, false);
+            return new ReplyVideoMsgSenderViwHolder(view);
+        }else if (viewType == VIDEO_GETTER_REPLY) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_image_message_reply_get, parent, false);
+            return new ReplyVideoMsgGetterViwHolder(view);
+
+        }else if (viewType == WAIT_FOR_UPLOAD_DOC) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_wait_for_send_doc_message_sent, parent, false);
             return new WaitForUploadDocHolder(view);
         } else if (viewType == WAIT_FOR_UPLOAD_MUSIC) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_wait_for_send_music_message_sent, parent, false);
             return new WaitForUploadMusicHolder(view);
+        }else if (viewType == WAIT_FOR_UPLOAD_VIDEO) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_video_message_sent, parent, false);
+            return new WaitForUploadVideoHolder(view);
         }else if (viewType == MUSIC_SENDER) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_music_message_send, parent, false);
             return new MusicSenderViewHolder(view);
-        }else if (viewType == MUSIC_GETTER) {
+        } else if (viewType == MUSIC_GETTER) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_doc_message_recived, parent, false);
             return new MusicGetterViewHolder(view);
-        }else if (viewType == MUSIC_SENDER_REPLY) {
+        } else if (viewType == MUSIC_SENDER_REPLY) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_music_message_reply_send, parent, false);
             return new ReplyMusicMsgSenderViwHolder(view);
 
         } else if (viewType == MUSIC_GETTER_REPLY) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_music_message_reply_get, parent, false);
             return new ReplyMusicMsgGetterViwHolder(view);
-        }else if (viewType ==DATE_MESSAGE){
+        } else if (viewType == VIDEO_SENDER) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_video_message_sent, parent, false);
+            return new VideoSenderViewHolder(view);
+        }else if (viewType == VIDEO_GETTER) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_video_message_get, parent, false);
+            return new VideoGetterViewHolder(view);
+        }else if (viewType == DATE_MESSAGE) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_date_message, parent, false);
             return new DateHolder(view);
-        }
-
-        else if (viewType == LAKE_SUPPORT_GETTER) {
+        } else if (viewType == LAKE_SUPPORT_GETTER) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_lack_of_message_recieved, parent, false);
             return new LakeSupportGetterHolder(view);
-        } else  {
+        } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_lack_of_message_send, parent, false);
             return new LakeSupportSenderHolder(view);
         }
@@ -231,10 +256,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         try {
             SendMessageViewModel sendMessageViewModel = messageViewModels.get(position);
 
-/*
-            generateDate(sendMessageViewModel.getDateSend(), (DateHolder) holder);
-*/
-
             int msgType = sendMessageViewModel.getMsgType();
             String userSender = sendMessageViewModel.getUserSender();
             if (msgType == BaseCodeClass.variableType.string_.getValue() || msgType == BaseCodeClass.variableType.int_.getValue()) {
@@ -244,20 +265,20 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
                     if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                         ReplyMsgGetterViwHolder replyMsgGetterViwHolder = (ReplyMsgGetterViwHolder) holder;
-                        replyMsgGetterViwHolder.holder(sendMessageViewModel,position);
+                        replyMsgGetterViwHolder.holder(sendMessageViewModel, position);
 
                     } else {
                         GetterViewHolder getterViewHolder = (GetterViewHolder) holder;
-                        getterViewHolder.holder(sendMessageViewModel,position);
+                        getterViewHolder.holder(sendMessageViewModel, position);
                     }
 
                 } else {
                     if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                         ReplyMsgSenderViwHolder replyMsgSenderViwHolder = (ReplyMsgSenderViwHolder) holder;
-                        replyMsgSenderViwHolder.holder(sendMessageViewModel,position);
+                        replyMsgSenderViwHolder.holder(sendMessageViewModel, position);
                     } else {
                         SenderViewHolder senderViewHolder = (SenderViewHolder) holder;
-                        senderViewHolder.holder(sendMessageViewModel,position);
+                        senderViewHolder.holder(sendMessageViewModel, position);
                     }
 
                 }
@@ -268,10 +289,10 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
                     if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                         ReplyImgMsgGetterViwHolder replyImgMsgGetterViwHolder = (ReplyImgMsgGetterViwHolder) holder;
-                        replyImgMsgGetterViwHolder.holder(sendMessageViewModel,position);
+                        replyImgMsgGetterViwHolder.holder(sendMessageViewModel, position);
                     } else {
                         ImageGetterViewHolder imageGetterViewHolder = (ImageGetterViewHolder) holder;
-                        imageGetterViewHolder.holder(sendMessageViewModel,position);
+                        imageGetterViewHolder.holder(sendMessageViewModel, position);
                     }
 
                 } else {
@@ -279,11 +300,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
 
                         ReplyImgMsgSenderViwHolder replyImgMsgSenderViwHolder = (ReplyImgMsgSenderViwHolder) holder;
-                        replyImgMsgSenderViwHolder.holder(sendMessageViewModel,position);
+                        replyImgMsgSenderViwHolder.holder(sendMessageViewModel, position);
                     } else {
 
                         ImageSenderViewHolder imageSenderViewHolder = (ImageSenderViewHolder) holder;
-                        imageSenderViewHolder.holder(sendMessageViewModel,position);
+                        imageSenderViewHolder.holder(sendMessageViewModel, position);
                     }
 
                 }
@@ -293,11 +314,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
 
                         ReplyDocMsgGetterViwHolder replyDocMsgGetterViwHolder = (ReplyDocMsgGetterViwHolder) holder;
-                        replyDocMsgGetterViwHolder.holder(sendMessageViewModel,position);
+                        replyDocMsgGetterViwHolder.holder(sendMessageViewModel, position);
                     } else {
 
                         DocGetterViewHolder docGetterViewHolder = (DocGetterViewHolder) holder;
-                        docGetterViewHolder.holder(messageViewModels.get(position),position);
+                        docGetterViewHolder.holder(messageViewModels.get(position), position);
 
                     }
                 } else {
@@ -305,13 +326,41 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
 
                         ReplyDocMsgSenderViwHolder replyDocMsgSenderViwHolder = (ReplyDocMsgSenderViwHolder) holder;
-                        replyDocMsgSenderViwHolder.holder(sendMessageViewModel,position);
+                        replyDocMsgSenderViwHolder.holder(sendMessageViewModel, position);
                     } else {
                         DocSenderViewHolder docSenderViewHolder = (DocSenderViewHolder) holder;
                         docSenderViewHolder.holder(messageViewModels.get(position), position);
                     }
                 }
-            } else if (msgType == BaseCodeClass.variableType.Order_.getValue()) {
+            } else if (msgType == BaseCodeClass.variableType.Video_.getValue()){
+
+                if (userSender.equals(MessageActivity.senderId)) {
+
+
+                    if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
+
+                        ReplyVideoMsgGetterViwHolder replyVideoMsgGetterViwHolder = (ReplyVideoMsgGetterViwHolder) holder;
+                        replyVideoMsgGetterViwHolder.holder(sendMessageViewModel, position);
+                    } else {
+                        VideoGetterViewHolder videoGetterViewHolder = (VideoGetterViewHolder) holder;
+                        videoGetterViewHolder.holder(messageViewModels.get(position), position);
+                    }
+                } else {
+                    if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
+
+                        ReplyVideoMsgSenderViwHolder replyVideoMsgSenderViwHolder = (ReplyVideoMsgSenderViwHolder) holder;
+                        replyVideoMsgSenderViwHolder.holder(sendMessageViewModel, position);
+                    } else {
+                        VideoSenderViewHolder videoSenderViewHolder = (VideoSenderViewHolder) holder;
+                        videoSenderViewHolder.holder(messageViewModels.get(position), position);
+                    }
+                }
+
+            }
+
+
+
+            else if (msgType == BaseCodeClass.variableType.Order_.getValue()) {
                 if (userSender.equals(MessageActivity.senderId)) {
 
                     OrderGetterViewHolder orderGetterViewHolder = (OrderGetterViewHolder) holder;
@@ -321,18 +370,18 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     OrderSenderViewHolder orderSenderViewHolder = (OrderSenderViewHolder) holder;
                     orderSenderViewHolder.holder(messageViewModels.get(position).getAttachObjectID());
                 }
-            }else if (msgType == BaseCodeClass.variableType.Music_.getValue()) {
+            } else if (msgType == BaseCodeClass.variableType.Music_.getValue()) {
 
                 if (userSender.equals(MessageActivity.senderId)) {
 
                     if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
 
                         ReplyMusicMsgGetterViwHolder replyMusicMsgGetterViwHolder = (ReplyMusicMsgGetterViwHolder) holder;
-                        replyMusicMsgGetterViwHolder.holder(sendMessageViewModel,position);
+                        replyMusicMsgGetterViwHolder.holder(sendMessageViewModel, position);
                     } else {
 
                         MusicGetterViewHolder musicGetterViewHolder = (MusicGetterViewHolder) holder;
-                        musicGetterViewHolder.holder(messageViewModels.get(position),position);
+                        musicGetterViewHolder.holder(messageViewModels.get(position), position);
 
                     }
                 } else {
@@ -340,19 +389,19 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
 
                         ReplyMusicMsgSenderViwHolder replyMusicMsgSenderViwHolder = (ReplyMusicMsgSenderViwHolder) holder;
-                        replyMusicMsgSenderViwHolder.holder(sendMessageViewModel,position);
+                        replyMusicMsgSenderViwHolder.holder(sendMessageViewModel, position);
                     } else {
                         MusicSenderViewHolder musicSenderViewHolder = (MusicSenderViewHolder) holder;
                         musicSenderViewHolder.holder(messageViewModels.get(position), position);
                     }
                 }
 
-            }else if (msgType == BaseCodeClass.variableType.time.getValue()) {
+            } else if (msgType == BaseCodeClass.variableType.time.getValue()) {
 
-                DateHolder dateHolder = (DateHolder)holder;
+                DateHolder dateHolder = (DateHolder) holder;
                 dateHolder.txtTime.setText(messageViewModels.get(position).getMessage1());
 
-            }else if (msgType == 222) {
+            } else if (msgType == 222) {
                 WaitForUploadImageHolder waitForUploadImageHolder = (WaitForUploadImageHolder) holder;
                 waitForUploadImageHolder.holder(bitmap, caption, position);
 
@@ -360,12 +409,15 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 WaitForUploadDocHolder waitForUploadDocHolder = (WaitForUploadDocHolder) holder;
                 waitForUploadDocHolder.holder(docName, position);
 
-            }else if (msgType == 444) {
-                    WaitForUploadMusicHolder waitForUploadMusicHolder = (WaitForUploadMusicHolder) holder;
+            } else if (msgType == 444) {
+                WaitForUploadMusicHolder waitForUploadMusicHolder = (WaitForUploadMusicHolder) holder;
                 waitForUploadMusicHolder.holder(musicName, position);
 
-            }
-            else {
+            }else if (msgType == 555) {
+                WaitForUploadVideoHolder waitForUploadVideoHolder = (WaitForUploadVideoHolder) holder;
+                waitForUploadVideoHolder.holder(videoName, position);
+
+            }else {
                 if (userSender.equals(MessageActivity.senderId)) {
                     LakeSupportGetterHolder lakeSupportHolder = (LakeSupportGetterHolder) holder;
                     lakeSupportHolder.holder(messageViewModels.get(position));
@@ -392,13 +444,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         SendMessageViewModel sendMessageViewModel = messageViewModels.get(position);
         int msgType = sendMessageViewModel.getMsgType();
         String userSender = sendMessageViewModel.getUserSender();
-
-      /*  Date date = TimeUtils.convertStrToDate(sendMessageViewModel.getDateSend());
-        int newDay = date.getDay();
-        int oldDay = 0;
-        int newMonth = date.getMonth();
-        int oldMonth = 0;*/
-
 
         if (msgType == BaseCodeClass.variableType.string_.getValue() || msgType == BaseCodeClass.variableType.int_.getValue()) {
             if (userSender.equals(MessageActivity.senderId)) {
@@ -450,7 +495,22 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 }
 
             }
-        } else if (msgType == BaseCodeClass.variableType.Order_.getValue()) {
+        } else if (msgType == BaseCodeClass.variableType.Video_.getValue()) {
+            if (userSender.equals(MessageActivity.senderId)) {
+
+                if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
+                    return VIDEO_GETTER_REPLY;
+                } else {
+                    return VIDEO_GETTER;
+                }
+            } else {
+                if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
+                    return VIDEO_SENDER_REPLY;
+                } else {
+                    return VIDEO_SENDER;
+                }
+            }
+        }else if (msgType == BaseCodeClass.variableType.Order_.getValue()) {
             if (userSender.equals(MessageActivity.senderId)) {
                 return ORDER_GETTER;
 
@@ -477,23 +537,22 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             }
 
-        }else if (msgType == BaseCodeClass.variableType.time.getValue()) {
+        } else if (msgType == BaseCodeClass.variableType.time.getValue()) {
 
-           return DATE_MESSAGE;
+            return DATE_MESSAGE;
 
-        }else if (msgType == 222) {
+        } else if (msgType == 222) {
             return WAIT_FOR_UPLOAD;
         } else if (msgType == 333) {
             return WAIT_FOR_UPLOAD_DOC;
 
-        }else if (msgType == 444) {
+        } else if (msgType == 444) {
             return WAIT_FOR_UPLOAD_MUSIC;
 
-        }
+        }else if (msgType == 555) {
+            return WAIT_FOR_UPLOAD_VIDEO;
 
-        /*else if (newDay != oldDay && newMonth != oldMonth) {
-            return DATE_MESSAGE;
-        }*/ else {
+        }else {
             if (userSender.equals(MessageActivity.senderId)) {
                 return LAKE_SUPPORT_GETTER;
 
@@ -502,6 +561,24 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 return LAKE_SUPPORT_SENDER;
             }
         }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull @NotNull List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull @NotNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied((Activity) mContext, perms)) {
+
+            new AppSettingsDialog.Builder((Activity) mContext).build().show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
 
@@ -516,7 +593,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             parent = itemView.findViewById(R.id.layout_messageRecived_parent);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             textReceived.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             timeReceived.setText(time);
@@ -533,7 +610,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -544,7 +621,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -568,7 +645,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             Glide.with(mContext).load(generateUrl(Integer.parseInt(messageData.getId()))).placeholder(R.drawable.image_placeholder).into(imgMessageRecived);
             txtImageMessageRecived.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
@@ -586,7 +663,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     imgMsgRecParent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(imgMsgRecParent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(imgMsgRecParent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -597,7 +674,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         imgMsgRecParent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(imgMsgRecParent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(imgMsgRecParent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -621,7 +698,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             parent = itemView.findViewById(R.id.layout_messageSent_parent);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
 
             textSent.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
@@ -651,7 +728,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -662,7 +739,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     }
                 }
             });
@@ -686,7 +763,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             imgMsgSendParent = itemView.findViewById(R.id.constraint_layout_imgMsgSend_parent);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             Glide.with(mContext).load(generateUrl(Integer.parseInt(messageData.getId()))).placeholder(R.drawable.image_placeholder).into(imgMessageSend);
             txtImageMessageSend.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
@@ -717,7 +794,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     imgMsgSendParent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(imgMsgSendParent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(imgMsgSendParent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -728,7 +805,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         imgMsgSendParent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(imgMsgSendParent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(imgMsgSendParent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     }
                 }
             });
@@ -739,18 +816,24 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     public class DocSenderViewHolder extends RecyclerView.ViewHolder {
-        TextView txtDocName, txtTime;
+        TextView txtDocName, txtTime, txtPersent;
         ImageView imgMessageTick;
         CardView cardRoot;
         ConstraintLayout parent;
+        CircularImageView img;
+        ProgressBar prg;
 
         public DocSenderViewHolder(@NonNull View itemView) {
             super(itemView);
+            img = itemView.findViewById(R.id.img_layout_Doc_message_send);
             txtDocName = itemView.findViewById(R.id.txt_layout_Doc_message_send);
             imgMessageTick = itemView.findViewById(R.id.iv_layout_Doc_message_recived_tick);
             txtTime = itemView.findViewById(R.id.txtTime_layout_Doc_message_send);
             cardRoot = itemView.findViewById(R.id.cardRoot_LayoutDocMessageSend);
             parent = itemView.findViewById(R.id.constraint_layout_docSend_parent);
+            prg = itemView.findViewById(R.id.prg_layout_Doc_message_recived);
+            txtPersent = itemView.findViewById(R.id.txtPersent);
+
 
         }
 
@@ -777,12 +860,34 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             }
 
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+
+            if (file.exists()) {
+                img.setImageResource(R.drawable.ic_doc);
+                img.setContentDescription("downloaded");
+            } else {
+                img.setImageResource(R.drawable.ic_download_green);
+                img.setContentDescription("not_downloaded");
+            }
+
+            img.setOnClickListener(v -> {
+                if (img.getContentDescription().equals("downloaded")) {
+                    openFile(mContext, file);
+
+
+                } else {
+                    downloadList.add(Integer.parseInt(messageData.getId()));
+                    downloadFile(prg, img, txtPersent, messageData.getMessage1(), generateUrl(Integer.parseInt(messageData.getId())), "doc_sender");
+                }
+
+            });
+
             parent.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -793,7 +898,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -805,7 +910,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     public class DocGetterViewHolder extends RecyclerView.ViewHolder {
-        TextView txtDocName, txtTime;
+        TextView txtDocName, txtTime, txtPersent;
         CircularImageView imgDownload;
         ProgressBar prg;
         CardView cardRoot;
@@ -819,45 +924,42 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             prg = itemView.findViewById(R.id.prg_layout_Doc_message_recived);
             cardRoot = itemView.findViewById(R.id.cardRoot_LayoutDocMessageSend);
             parent = itemView.findViewById(R.id.constraint_layout_docRecived_parent);
+            txtPersent = itemView.findViewById(R.id.txtPersent);
 
 
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             txtDocName.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtTime.setText(time);
-            String fname = Environment.DIRECTORY_DOWNLOADS + "/Dehkadeh/" +messageData.getMessage1();
-            File file = new File(fname);
-            File f1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/"+messageData.getMessage1() );
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
 
-            if (f1.exists()){
+            if (file.exists()) {
                 imgDownload.setImageResource(R.drawable.ic_doc3);
-                imgDownload.setContentDescription("after");
-            }else{
-                Log.d("Error","Test");
+                imgDownload.setContentDescription("downloaded");
+            } else {
+                imgDownload.setImageResource(R.drawable.ic_download2);
+                imgDownload.setContentDescription("not_downloaded");
             }
 
-            if (isDocDownload(Integer.parseInt(messageData.getId()))) {
+           /* if (isDocDownload(Integer.parseInt(messageData.getId()))) {
                 imgDownload.setImageResource(R.drawable.ic_doc3);
                 prg.setVisibility(View.GONE);
 
             } else {
                 imgDownload.setImageResource(R.drawable.ic_download2);
                 prg.setVisibility(View.GONE);
-            }
+            }*/
 
             imgDownload.setOnClickListener(v -> {
-                if (imgDownload.getContentDescription().equals("after")) {
-                   /* String fname = root + "/" +messageData.getMessage1();
-                    File file = new File(fname);
-
-                    openFile(file);*/
+                if (imgDownload.getContentDescription().equals("downloaded")) {
+                    openFile(mContext, file);
 
 
                 } else {
                     downloadList.add(Integer.parseInt(messageData.getId()));
-                    downloadDoc(prg, imgDownload, messageData.getMessage1(), generateUrl(Integer.parseInt(messageData.getId())), messageData);
+                    downloadFile(prg, imgDownload, txtPersent, messageData.getMessage1(), generateUrl(Integer.parseInt(messageData.getId())), "doc_geter");
                 }
 
             });
@@ -874,7 +976,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -885,7 +987,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -986,10 +1088,12 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     public class MusicSenderViewHolder extends RecyclerView.ViewHolder {
-        TextView txtDocName, txtTime;
+        TextView txtDocName, txtTime, txtPersent;
         ImageView imgMessageTick;
         CardView cardRoot;
         ConstraintLayout parent;
+        ProgressBar prg;
+        CircularImageView imageView;
 
         public MusicSenderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -998,10 +1102,16 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtTime = itemView.findViewById(R.id.txtTime_layout_Doc_message_send);
             cardRoot = itemView.findViewById(R.id.cardRoot_LayoutDocMessageSend);
             parent = itemView.findViewById(R.id.constraint_layout_docSend_parent);
+            prg = itemView.findViewById(R.id.prg_layout_Doc_message_recived);
+            txtPersent = itemView.findViewById(R.id.txtPersent);
+            imageView = itemView.findViewById(R.id.img_layout_Doc_message_send);
+
 
         }
 
         void holder(SendMessageViewModel messageData, int position) {
+            cr_send = imageView;
+            cr_sendMap.put(position,imageView);
             txtDocName.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtTime.setText(time);
@@ -1024,12 +1134,89 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             }
 
+
+
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+            if (file.exists()) {
+                imageView.setImageResource(R.drawable.ic_play_music_green);
+                imageView.setContentDescription("downloaded");
+            } else {
+                imageView.setImageResource(R.drawable.ic_download_green);
+                imageView.setContentDescription("not_downloaded");
+            }
+
+            if (isPlayedMusic(Integer.parseInt(messageData.getId()))) {
+                imageView.setImageResource(R.drawable.ic_pause_music_green);
+            } else {
+                imageView.setImageResource(R.drawable.ic_play_music_green);
+            }
+
+            imageView.setOnClickListener(v -> {
+                if (imageView.getContentDescription().equals("downloaded")) {
+                    if (!playSender) {
+                        if (playGeter) {
+                            stop(mediaPlayer, "music_geter");
+                            initPlayedGetMusic();
+                            playPosition = position;
+                            yoYoString.stop(true);
+                            playedList.add(Integer.parseInt(messageData.getId()));
+                            playMusic(file.getAbsolutePath(), imageView, "music_sender");
+                        }else {
+                            playedList.add(Integer.parseInt(messageData.getId()));
+                            playPosition = position;
+                            playMusic(file.getAbsolutePath(), imageView, "music_sender");
+                        }
+                    } else {
+                        initPlayedSendMusic();
+                        imageView.setImageResource(R.drawable.ic_play_music_green);
+                        yoYoString.stop(true);
+                        stop(mediaPlayer, "music_sender");
+                        playedList.remove(new Integer(Integer.parseInt(messageData.getId())));
+                        playPosition =-1;
+                    }
+
+                } else {
+                    downloadList.add(Integer.parseInt(messageData.getId()));
+                    downloadFile(prg, imageView, txtPersent, messageData.getMessage1(), generateUrl(Integer.parseInt(messageData.getId())), "music_sender");
+                }
+
+            });
+
+/*
+            imageView.setOnClickListener(v -> {
+                if (imageView.getContentDescription().equals("downloaded")) {
+                    if (!playSender) {
+                        if (playGeter) {
+                            stop(mediaPlayer, "music_geter");
+                            cr_get.setImageResource(R.drawable.ic_music_play);
+                            yoYoString.stop(true);
+                            playedList.add(Integer.parseInt(messageData.getId()));
+                            playMusic(file.getAbsolutePath(), imageView, "music_sender");
+                        }else {
+                            playedList.add(Integer.parseInt(messageData.getId()));
+                            playMusic(file.getAbsolutePath(), imageView, "music_sender");
+                        }
+                    } else {
+                        imageView.setImageResource(R.drawable.ic_play_music_green);
+                        yoYoString.stop(true);
+                        stop(mediaPlayer, "music_sender");
+                        playedList.remove(new Integer(Integer.parseInt(messageData.getId())));
+                    }
+
+                } else {
+                    downloadList.add(Integer.parseInt(messageData.getId()));
+                    downloadFile(prg, imageView, txtPersent, messageData.getMessage1(), generateUrl(Integer.parseInt(messageData.getId())), "music_sender");
+                }
+
+            });
+*/
+
             parent.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1040,7 +1227,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -1050,8 +1237,9 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         }
     }
+
     public class MusicGetterViewHolder extends RecyclerView.ViewHolder {
-        TextView txtDocName, txtTime;
+        TextView txtDocName, txtTime, txtPersent;
         CircularImageView imgDownload;
         ProgressBar prg;
         CardView cardRoot;
@@ -1065,47 +1253,63 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             prg = itemView.findViewById(R.id.prg_layout_Doc_message_recived);
             cardRoot = itemView.findViewById(R.id.cardRoot_LayoutDocMessageSend);
             parent = itemView.findViewById(R.id.constraint_layout_docRecived_parent);
+            prg = itemView.findViewById(R.id.prg_layout_Doc_message_recived);
+            txtPersent = itemView.findViewById(R.id.txtPersent);
 
 
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
+            cr_get =imgDownload;
+            cr_getMap.put(position,imgDownload);
             txtDocName.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtTime.setText(time);
-       /*     String fname = root + "/" +messageData.getMessage1();
-            File file = new File(fname);
-            if (file.canRead()){
-                imgDownload.setImageResource(R.drawable.ic_doc3);
-                imgDownload.setContentDescription("after");
-            }
-            if (file.exists()){
-                imgDownload.setImageResource(R.drawable.ic_doc3);
-                imgDownload.setContentDescription("after");
-            }*/
 
-            if (isDocDownload(Integer.parseInt(messageData.getId()))) {
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+            if (file.exists()) {
                 imgDownload.setImageResource(R.drawable.ic_music_play);
-                prg.setVisibility(View.GONE);
-
+                imgDownload.setContentDescription("downloaded");
             } else {
                 imgDownload.setImageResource(R.drawable.ic_download2);
-                prg.setVisibility(View.GONE);
+                imgDownload.setContentDescription("not_downloaded");
             }
 
+
+            if (isPlayedMusic(Integer.parseInt(messageData.getId()))) {
+                imgDownload.setImageResource(R.drawable.ic_pause_yellow);
+            } else {
+                imgDownload.setImageResource(R.drawable.ic_music_play);
+            }
+
+
             imgDownload.setOnClickListener(v -> {
-                if (imgDownload.getContentDescription().equals("after")) {
-                   /* String fname = root + "/" +messageData.getMessage1();
-                    File file = new File(fname);
-
-                    openFile(file);*/
-
-
+                if (imgDownload.getContentDescription().equals("downloaded")) {
+                    if (!playGeter) {
+                        if (playSender) {
+                            stop(mediaPlayer, "music_sender");
+                            initPlayedSendMusic();
+                            playPosition = position;
+                            yoYoString.stop(true);
+                            playedList.add(Integer.parseInt(messageData.getId()));
+                            playMusic(file.getAbsolutePath(), imgDownload, "music_geter");
+                        }else {
+                            playMusic(file.getAbsolutePath(), imgDownload, "music_geter");
+                            playedList.add(Integer.parseInt(messageData.getId()));
+                            playPosition = position;
+                        }
+                    } else {
+                        initPlayedGetMusic();
+                        imgDownload.setImageResource(R.drawable.ic_music_play);
+                        yoYoString.stop(true);
+                        stop(mediaPlayer,"music_geter");
+                        playedList.remove(new Integer(Integer.parseInt(messageData.getId())));
+                        playPosition =-1;
+                    }
                 } else {
                     downloadList.add(Integer.parseInt(messageData.getId()));
-                    downloadMusic(prg, imgDownload, messageData.getMessage1(), generateUrl(Integer.parseInt(messageData.getId())), messageData);
+                    downloadFile(prg, imgDownload, txtPersent, messageData.getMessage1(), generateUrl(Integer.parseInt(messageData.getId())), "music_geter");
                 }
-
             });
 
 
@@ -1120,7 +1324,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1131,9 +1335,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
-
-
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     }
                 }
             });
@@ -1142,7 +1344,214 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    public class VideoSenderViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgTumb,imgPlay,imgSeenTick;
+        TextView txtVideoName,txtTimeSend,txtPersent;
+        RelativeLayout imgCancel;
+        CircularProgressBar circularProgressBar;
+        ConstraintLayout parent;
 
+        public VideoSenderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imgTumb = itemView.findViewById(R.id.img_layout_imageMessageSent);
+            imgPlay = itemView.findViewById(R.id.img_layout_imgPlay);
+            imgCancel = itemView.findViewById(R.id.img_cancelUpload);
+            imgSeenTick = itemView.findViewById(R.id.iv_imageMessage_sent_tick);
+            txtVideoName = itemView.findViewById(R.id.txt_layout_imageMessageSent);
+            txtTimeSend = itemView.findViewById(R.id.txtTime_layout_imageMessageSent);
+            txtPersent = itemView.findViewById(R.id.txt_video_persent);
+            circularProgressBar = itemView.findViewById(R.id.circularProgressBar);
+            parent = itemView.findViewById(R.id.constraint_layout_videoMsgSend_parent);
+
+
+        }
+
+        void holder(SendMessageViewModel messageData, int position) {
+            imgCancel.setVisibility(View.GONE);
+            imgPlay.setVisibility(View.VISIBLE);
+            imgSeenTick.setVisibility(View.VISIBLE);
+            txtTimeSend.setVisibility(View.VISIBLE);
+            circularProgressBar.setVisibility(View.GONE);
+
+            Glide.with(mContext).load(generateThumNailUrl(Integer.parseInt(messageData.getId()))).placeholder(R.drawable.image_placeholder).into(imgTumb);
+            txtVideoName.setText(messageData.getMessage1());
+            String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
+            txtTimeSend.setText(time);
+            switch (messageData.getStatus()) {
+                case "1":
+                    imgSeenTick.setImageResource(R.drawable.ic_tick);
+                    break;
+                case "2":
+                    imgSeenTick.setImageResource(R.drawable.ic_tick_done);
+                    break;
+                case "3":
+                    imgSeenTick.setImageResource(R.drawable.ic_tick_seen);
+                    break;
+            }
+
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+            if (file.exists()) {
+                imgPlay.setImageResource(R.drawable.ic_play_icon);
+                imgPlay.setContentDescription("downloaded");
+            } else {
+                imgPlay.setImageResource(R.drawable.donwloadvideo);
+                imgPlay.setContentDescription("not_downloaded");
+            }
+
+            imgPlay.setOnClickListener(v -> {
+                if (imgPlay.getContentDescription().equals("not_downloaded")){
+                    downloadList.add(Integer.parseInt(messageData.getId()));
+                    downloadVideo(circularProgressBar,imgPlay,txtPersent,messageData.getMessage1(), generateUrl(Integer.parseInt(messageData.getId())));
+
+                }else {
+                    playVideo(file.getAbsolutePath());
+                    /*Intent intent = new Intent(mContext, ActivityVideoPlay.class);
+                    intent.putExtra("videoName",messageData.getMessage1());
+                    mContext.startActivity(intent);*/
+                }
+
+            });
+
+            if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
+                parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+            } else {
+                parent.setBackgroundColor(Color.TRANSPARENT);
+
+            }
+
+            if (isDocDownload(Integer.parseInt(messageData.getId()))){
+                circularProgressBar.setVisibility(View.VISIBLE);
+            }else {
+                circularProgressBar.setVisibility(View.GONE);
+
+            }
+
+            parent.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    isSelectedMode = true;
+                    parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
+                    return true;
+                }
+            });
+            parent.setOnClickListener(v -> {
+                if (isSelectedMode) {
+                    if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
+                        parent.setBackgroundColor(Color.TRANSPARENT);
+                        onClickMessage.messageUnSelected(messageData.getId());
+                    } else {
+                        parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
+
+
+                    }
+                }
+            });
+
+        }
+
+    }
+    public class VideoGetterViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgTumb,imgPlay;
+        TextView txtVideoName,txtTimeSend,txtPersent;
+        RelativeLayout imgCancel;
+        CircularProgressBar circularProgressBar;
+        ConstraintLayout parent;
+
+        public VideoGetterViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imgTumb = itemView.findViewById(R.id.img_layout_imageMessageSent);
+            imgPlay = itemView.findViewById(R.id.img_layout_imgPlay);
+            imgCancel = itemView.findViewById(R.id.img_cancelUpload);
+            txtVideoName = itemView.findViewById(R.id.txt_layout_imageMessageSent);
+            txtTimeSend = itemView.findViewById(R.id.txtTime_layout_imageMessageSent);
+            txtPersent = itemView.findViewById(R.id.txt_video_persent);
+            circularProgressBar = itemView.findViewById(R.id.circularProgressBar);
+            parent = itemView.findViewById(R.id.constraint_layout_videoMsgSend_parent);
+
+
+        }
+
+        void holder(SendMessageViewModel messageData, int position) {
+            imgCancel.setVisibility(View.GONE);
+            imgPlay.setVisibility(View.VISIBLE);
+            txtTimeSend.setVisibility(View.VISIBLE);
+            circularProgressBar.setVisibility(View.GONE);
+
+            Glide.with(mContext).load(generateThumNailUrl(Integer.parseInt(messageData.getId()))).placeholder(R.drawable.image_placeholder).into(imgTumb);
+            txtVideoName.setText(messageData.getMessage1());
+            String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
+            txtTimeSend.setText(time);
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+            if (file.exists()) {
+                imgPlay.setImageResource(R.drawable.ic_play_icon);
+                imgPlay.setContentDescription("downloaded");
+            } else {
+                imgPlay.setImageResource(R.drawable.donwloadvideo);
+                imgPlay.setContentDescription("not_downloaded");
+            }
+
+            imgPlay.setOnClickListener(v -> {
+                if (imgPlay.getContentDescription().equals("not_downloaded")){
+                    downloadList.add(Integer.parseInt(messageData.getId()));
+                    downloadVideo(circularProgressBar,imgPlay,txtPersent,messageData.getMessage1(), generateUrl(Integer.parseInt(messageData.getId())));
+
+                }else {
+                   playVideo(file.getAbsolutePath());
+                   /* Intent intent = new Intent(mContext, ActivityVideoPlay.class);
+                    intent.putExtra("videoName",messageData.getMessage1());
+                    mContext.startActivity(intent);*/
+                }
+
+            });
+
+            if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
+                parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+            } else {
+                parent.setBackgroundColor(Color.TRANSPARENT);
+
+            }
+
+            if (isDocDownload(Integer.parseInt(messageData.getId()))){
+                circularProgressBar.setVisibility(View.VISIBLE);
+            }else {
+                circularProgressBar.setVisibility(View.GONE);
+
+            }
+
+            parent.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    isSelectedMode = true;
+                    parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
+                    return true;
+                }
+            });
+            parent.setOnClickListener(v -> {
+                if (isSelectedMode) {
+                    if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
+                        parent.setBackgroundColor(Color.TRANSPARENT);
+                        onClickMessage.messageUnSelected(messageData.getId());
+                    } else {
+                        parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
+
+
+                    }
+                }
+            });
+
+        }
+
+    }
+
+    private void playVideo(String path) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
+        intent.setDataAndType(Uri.parse(path), "video/*");
+        mContext.startActivity(intent);
+    }
 
 
     public class ReplyMsgSenderViwHolder extends RecyclerView.ViewHolder {
@@ -1162,7 +1571,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             oldMessage = itemView.findViewById(R.id.rel_oldMessage);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             txtUserName.setText(messageData.getUserSender());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -1193,7 +1602,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1204,7 +1613,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -1240,7 +1649,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             imgOld = itemView.findViewById(R.id.img_messageReply_oldValue);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             txtUserName.setText(messageData.getUserSender());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -1275,7 +1684,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1286,7 +1695,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -1321,7 +1730,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             oldMessage = itemView.findViewById(R.id.rel_oldMessage);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             txtUserName.setText(messageData.getUserSender());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -1353,7 +1762,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1364,7 +1773,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -1380,6 +1789,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         }
     }
+
     public class ReplyMusicMsgSenderViwHolder extends RecyclerView.ViewHolder {
         TextView txtUserName, txtOldMsg, txtNewMsg, txtTimeSent;
         ImageView imagSeen;
@@ -1398,7 +1808,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             oldMessage = itemView.findViewById(R.id.rel_oldMessage);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             txtUserName.setText(messageData.getUserSender());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -1430,7 +1840,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1441,7 +1851,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -1458,6 +1868,89 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    public class ReplyVideoMsgSenderViwHolder extends RecyclerView.ViewHolder {
+        TextView txtUserName, txtOldMsg, txtNewMsg, txtTimeSent;
+        ImageView imagSeen, imgOld;
+        ConstraintLayout parent;
+        LinearLayout oldMessage;
+
+
+        public ReplyVideoMsgSenderViwHolder(@NonNull View itemView) {
+            super(itemView);
+            txtUserName = itemView.findViewById(R.id.tv_messageReply_nameUser);
+            txtOldMsg = itemView.findViewById(R.id.tv_messageReply_oldValue);
+            txtNewMsg = itemView.findViewById(R.id.tv_messageReply_replyValue);
+            txtTimeSent = itemView.findViewById(R.id.tv_message_sent_time);
+            imagSeen = itemView.findViewById(R.id.iv_message_sent_tick);
+            parent = itemView.findViewById(R.id.layout_messageSentReply_parent);
+            oldMessage = itemView.findViewById(R.id.rel_oldMessage);
+            imgOld = itemView.findViewById(R.id.img_messageReply_oldValue);
+        }
+
+        void holder(SendMessageViewModel messageData, int position) {
+            txtUserName.setText(messageData.getUserSender());
+            txtNewMsg.setText(messageData.getMessage1());
+            txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
+
+            String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
+            txtTimeSent.setText(time);
+            String oldId = getOldMessageid(messageData.getReplyMsg());
+
+            Glide.with(mContext).load(generateThumNailUrl(Integer.parseInt(oldId))).placeholder(R.drawable.image_placeholder).into(imgOld);
+            switch (messageData.getStatus()) {
+                case "1":
+                    imagSeen.setImageResource(R.drawable.ic_tick);
+                    break;
+                case "2":
+                    imagSeen.setImageResource(R.drawable.ic_tick_done);
+                    break;
+                case "3":
+                    imagSeen.setImageResource(R.drawable.ic_tick_seen);
+                    break;
+            }
+
+
+            if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
+                parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+            } else {
+                parent.setBackgroundColor(Color.TRANSPARENT);
+
+            }
+
+            parent.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    isSelectedMode = true;
+                    parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
+                    return true;
+                }
+            });
+            parent.setOnClickListener(v -> {
+                if (isSelectedMode) {
+                    if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
+                        parent.setBackgroundColor(Color.TRANSPARENT);
+                        onClickMessage.messageUnSelected(messageData.getId());
+                    } else {
+                        parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
+
+
+                    }
+                }
+            });
+
+            oldMessage.setOnClickListener(v -> {
+                int oldPosition = getOldMsgPosition(messageData.getReplyMsg());
+                if (oldPosition != -1) {
+                    onClickMessage.scrollToCertainPosition(oldPosition);
+                }
+            });
+
+        }
+    }
+
+
     public class ReplyMsgGetterViwHolder extends RecyclerView.ViewHolder {
         TextView txtUserName, txtOldMsg, txtNewMsg, txtTimeSent;
         ConstraintLayout parent;
@@ -1473,7 +1966,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             oldMsg = itemView.findViewById(R.id.rel_oldMessage);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             txtUserName.setText(messageData.getUserSender());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -1493,7 +1986,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1504,7 +1997,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -1539,7 +2032,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             imgOld = itemView.findViewById(R.id.img_messageReply_oldValue);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             txtUserName.setText(messageData.getUserSender());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -1562,7 +2055,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1573,7 +2066,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -1606,7 +2099,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             oldMessage = itemView.findViewById(R.id.rel_oldMessage);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             txtUserName.setText(messageData.getUserSender());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -1626,7 +2119,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1637,7 +2130,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -1653,6 +2146,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         }
     }
+
     public class ReplyMusicMsgGetterViwHolder extends RecyclerView.ViewHolder {
         TextView txtUserName, txtOldMsg, txtNewMsg, txtTimeSent;
         ConstraintLayout parent;
@@ -1669,7 +2163,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             oldMessage = itemView.findViewById(R.id.rel_oldMessage);
         }
 
-        void holder(SendMessageViewModel messageData,int position) {
+        void holder(SendMessageViewModel messageData, int position) {
             txtUserName.setText(messageData.getUserSender());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -1689,7 +2183,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 public boolean onLongClick(View v) {
                     isSelectedMode = true;
                     parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
                     return true;
                 }
             });
@@ -1700,7 +2194,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         onClickMessage.messageUnSelected(messageData.getId());
                     } else {
                         parent.setBackgroundColor(Color.parseColor("#81BDC6"));
-                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(),position);
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
 
 
                     }
@@ -1716,6 +2210,75 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         }
     }
+    public class ReplyVideoMsgGetterViwHolder extends RecyclerView.ViewHolder {
+        TextView txtUserName, txtOldMsg, txtNewMsg, txtTimeSent;
+        ImageView imgOld;
+        ConstraintLayout parent;
+        LinearLayout oldMessage;
+
+
+        public ReplyVideoMsgGetterViwHolder(@NonNull View itemView) {
+            super(itemView);
+            txtUserName = itemView.findViewById(R.id.tv_messageReply_nameUser);
+            txtOldMsg = itemView.findViewById(R.id.tv_messageReply_oldValue);
+            txtNewMsg = itemView.findViewById(R.id.tv_messageReply_replyValue);
+            txtTimeSent = itemView.findViewById(R.id.tv_message_sent_time);
+            parent = itemView.findViewById(R.id.layout_messageSentReply_parent);
+            oldMessage = itemView.findViewById(R.id.rel_oldMessage);
+            imgOld = itemView.findViewById(R.id.img_messageReply_oldValue);
+        }
+
+        void holder(SendMessageViewModel messageData, int position) {
+            txtUserName.setText(messageData.getUserSender());
+            txtNewMsg.setText(messageData.getMessage1());
+            txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
+
+            String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
+            txtTimeSent.setText(time);
+            String oldId = getOldMessageid(messageData.getReplyMsg());
+
+            Glide.with(mContext).load(generateThumNailUrl(Integer.parseInt(oldId))).placeholder(R.drawable.image_placeholder).into(imgOld);
+
+            if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
+                parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+            } else {
+                parent.setBackgroundColor(Color.TRANSPARENT);
+
+            }
+
+            parent.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    isSelectedMode = true;
+                    parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+                    onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
+                    return true;
+                }
+            });
+            parent.setOnClickListener(v -> {
+                if (isSelectedMode) {
+                    if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
+                        parent.setBackgroundColor(Color.TRANSPARENT);
+                        onClickMessage.messageUnSelected(messageData.getId());
+                    } else {
+                        parent.setBackgroundColor(Color.parseColor("#81BDC6"));
+                        onClickMessage.messageSelected(parent, messageData.getId(), messageData, messageData.getMsgType(), position);
+
+
+                    }
+                }
+            });
+
+            oldMessage.setOnClickListener(v -> {
+                int oldPosition = getOldMsgPosition(messageData.getReplyMsg());
+                if (oldPosition != -1) {
+                    onClickMessage.scrollToCertainPosition(oldPosition);
+                }
+            });
+
+        }
+    }
+
 
 
     public class WaitForUploadImageHolder extends RecyclerView.ViewHolder {
@@ -1762,11 +2325,12 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(String docName, int position) {
-            docWaitPosition =position;
+            docWaitPosition = position;
             txtDocName.setText(docName);
         }
 
     }
+
     public class WaitForUploadMusicHolder extends RecyclerView.ViewHolder {
         TextView txtMusicName;
 
@@ -1778,11 +2342,54 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(String docName, int position) {
-            musicWaitPosition =position;
+            musicWaitPosition = position;
             txtMusicName.setText(docName);
         }
 
     }
+
+    public class WaitForUploadVideoHolder extends RecyclerView.ViewHolder {
+        ImageView imgTumb,imgPlay,imgSeenTick;
+        RelativeLayout imgCancel;
+        TextView txtVideoName,txtTimeSend;
+        CircularProgressBar circularProgressBar;
+
+        public WaitForUploadVideoHolder(@NonNull View itemView) {
+            super(itemView);
+            imgTumb = itemView.findViewById(R.id.img_layout_imageMessageSent);
+            imgPlay = itemView.findViewById(R.id.img_layout_imgPlay);
+            imgCancel = itemView.findViewById(R.id.img_cancelUpload);
+            imgSeenTick = itemView.findViewById(R.id.iv_imageMessage_sent_tick);
+            txtVideoName = itemView.findViewById(R.id.txt_layout_imageMessageSent);
+            txtTimeSend = itemView.findViewById(R.id.txtTime_layout_imageMessageSent);
+            circularProgressBar = itemView.findViewById(R.id.circularProgressBar);
+
+        }
+
+        void holder(String caption, int position) {
+            imgCancel.setVisibility(View.VISIBLE);
+            imgPlay.setVisibility(View.GONE);
+            imgSeenTick.setVisibility(View.GONE);
+            txtTimeSend.setVisibility(View.GONE);
+            circularProgressBar.setVisibility(View.GONE);
+
+            videoWaitPosition = position;
+          /*  Glide.with(mContext).load(bitmap)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(imgMessageSend);*/
+
+
+            txtVideoName.setText(caption);
+            imgCancel.setOnClickListener(v -> {
+                sendMessageVM.compositeDisposable.dispose();
+                messageViewModels.remove(position);
+                notifyItemRemoved(position);
+            });
+        }
+
+    }
+
 
     public class LakeSupportSenderHolder extends RecyclerView.ViewHolder {
 
@@ -1876,13 +2483,18 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     }
+    private String generateThumNailUrl(int chatId) {
+        String url = baseCodeClass.BASE_URL + "User/Downloadthumbnails?Chatid=" + chatId;
+        return url;
+
+
+    }
 
     private void showFullScreenImage(String chatId) {
         Intent intent = new Intent(mContext, ActivityShowFullScreenImage.class);
         intent.putExtra("image_url", generateUrl(Integer.parseInt(chatId)));
         mContext.startActivity(intent);
     }
-
 
     public void initWaitValue(Bitmap bitmap, String caption, SendMessageVM sendMessageVM) {
         this.bitmap = bitmap;
@@ -1894,24 +2506,43 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         this.docName = docName;
         this.sendMessageVM = sendMessageVM;
     }
+
     public void initWaitValueMusic(String musicName, SendMessageVM sendMessageVM) {
         this.musicName = musicName;
         this.sendMessageVM = sendMessageVM;
     }
+    public void initWaitValueVideo(String videoName, SendMessageVM sendMessageVM) {
+        this.videoName = videoName;
+        this.sendMessageVM = sendMessageVM;
+    }
 
-    private void downloadDoc(ProgressBar progressBar, CircularImageView imageView, String name, String link, SendMessageViewModel messageData) {
+    private void downloadFile(ProgressBar progressBar, CircularImageView imageView, TextView txtPersent, String name, String link, String type) {
+        if (EasyPermissions.hasPermissions(mContext, permission)) {
+
+            download(progressBar, imageView, txtPersent, name, link, type);
+
+
+        } else {
+            EasyPermissions.requestPermissions((Activity) mContext, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
+
+        }
+
+    }
+
+    private void download(ProgressBar progressBar, CircularImageView imageView, TextView txtPersent, String name, String link, String type) {
         progressBar.setVisibility(View.VISIBLE);
+        txtPersent.setVisibility(View.VISIBLE);
         Uri uri = Uri.parse(link);
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setTitle("در حال دانلود");
         request.setDescription("لطفا منتظر بمانید...");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"/Dehkadeh/" + name);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Dehkadeh/" + name);
 
-        //request.setDestinationInExternalFilesDir(mContext, Environment.getStorageState(myDir), name);
-
-//        request.setDestinationInExternalFilesDir(mContext, root, name);
+/*
+       request.setDestinationInExternalFilesDir(mContext, root, name);
+*/
 
         final long id = downloadManager.enqueue(request);
         Timer timer = new Timer();
@@ -1931,17 +2562,34 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         @Override
                         public void run() {
                             progressBar.setProgress(percent);
+                            txtPersent.setText(" % " + percent);
                             if (percent == 100) {
                                 Toast.makeText(mContext, "دانلود با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
                                 timer.purge();
                                 timer.cancel();
-                                for (int item : downloadList) {
+                                imageView.setContentDescription("downloaded");
+                                progressBar.setVisibility(View.GONE);
+                                txtPersent.setVisibility(View.GONE);
+                                if (type.equals("doc_geter")) {
+                                    imageView.setImageResource(R.drawable.ic_doc3);
+
+                                } else if (type.equals("doc_sender")) {
+                                    imageView.setImageResource(R.drawable.ic_doc);
+
+                                } else if (type.equals("music_geter")) {
+                                    imageView.setImageResource(R.drawable.ic_music_play);
+
+                                } else if (type.equals("music_sender")) {
+                                    imageView.setImageResource(R.drawable.ic_play_music_green);
+                                }
+
+                         /*       for (int item : downloadList) {
                                     if (Integer.parseInt(messageData.getId()) == item) {
                                         imageView.setImageResource(R.drawable.ic_doc3);
                                         imageView.setContentDescription("after");
                                         progressBar.setVisibility(View.GONE);
                                     }
-                                }
+                                }*/
 
 
                             }
@@ -1953,20 +2601,35 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             }
         }, 0, 100);
     }
-    private void downloadMusic(ProgressBar progressBar, CircularImageView imageView, String name, String link, SendMessageViewModel messageData) {
+
+
+    private void downloadVideo(CircularProgressBar progressBar, ImageView imageView, TextView txtPersent, String name, String link) {
+        if (EasyPermissions.hasPermissions(mContext, permission)) {
+
+            download2(progressBar, imageView, txtPersent, name, link);
+
+
+        } else {
+            EasyPermissions.requestPermissions((Activity) mContext, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
+
+        }
+
+    }
+
+    private void download2(CircularProgressBar progressBar, ImageView imageView, TextView txtPersent, String name, String link) {
         progressBar.setVisibility(View.VISIBLE);
+        txtPersent.setVisibility(View.VISIBLE);
         Uri uri = Uri.parse(link);
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setTitle("در حال دانلود");
         request.setDescription("لطفا منتظر بمانید...");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-//        request.setDestinationInExternalPublicDir("/Hooman",name);
-/*
-        request.setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_DOWNLOADS, fileName);
-*/
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Dehkadeh/" + name);
 
-        request.setDestinationInExternalFilesDir(mContext, root, name);
+/*
+       request.setDestinationInExternalFilesDir(mContext, root, name);
+*/
 
         final long id = downloadManager.enqueue(request);
         Timer timer = new Timer();
@@ -1986,17 +2649,24 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         @Override
                         public void run() {
                             progressBar.setProgress(percent);
+                            txtPersent.setText(" % " + percent);
                             if (percent == 100) {
                                 Toast.makeText(mContext, "دانلود با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
                                 timer.purge();
                                 timer.cancel();
-                                for (int item : downloadList) {
+                                imageView.setContentDescription("downloaded");
+                                progressBar.setVisibility(View.GONE);
+                                txtPersent.setVisibility(View.GONE);
+                                imageView.setImageResource(R.drawable.ic_play_icon);
+
+
+                         /*       for (int item : downloadList) {
                                     if (Integer.parseInt(messageData.getId()) == item) {
-                                        imageView.setImageResource(R.drawable.ic_music_play);
+                                        imageView.setImageResource(R.drawable.ic_doc3);
                                         imageView.setContentDescription("after");
                                         progressBar.setVisibility(View.GONE);
                                     }
-                                }
+                                }*/
 
 
                             }
@@ -2009,70 +2679,137 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }, 0, 100);
     }
 
-    private void openFile(File url) {
+    /// set animation
+    private void setAnimation(Techniques animation, Long duration, int repeat, View view) {
+       yoYoString =  YoYo.with(animation)
+                .repeat(repeat)
+                .duration(duration)
+                .playOn(view);
 
+
+    }
+
+    /// opene file
+    public void openFile(Context context, File file) {
+        String typeFile = getTypeFile(file);
+
+        if (file.exists()) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(file), typeFile);
+            PackageManager pm = context.getPackageManager();
+            Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+            sendIntent.setType(typeFile);
+            Intent openInChooser = Intent.createChooser(intent, "Choose");
+            List<ResolveInfo> resInfo = pm.queryIntentActivities(sendIntent, 0);
+            if (resInfo.size() > 0) {
+                try {
+                    context.startActivity(openInChooser);
+                } catch (Throwable throwable) {
+                    Toast.makeText(context, "برنامه ای که بتواند این فایل را باز کند پیدا نشد!", Toast.LENGTH_SHORT).show();
+                    // PDF apps are not installed
+                }
+            } else {
+                Toast.makeText(context, "برنامه ای که بتواند این فایل را باز کند پیدا نشد!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private String getTypeFile(File file) {
+
+        if (file.toString().contains(".doc") || file.toString().contains(".docx")) {
+            // Word document
+            return "application/msword";
+        } else if (file.toString().contains(".pdf")) {
+            // PDF file
+            return "application/pdf";
+        } else if (file.toString().contains(".ppt") || file.toString().contains(".pptx")) {
+            // Powerpoint file
+            return "application/vnd.ms-powerpoint";
+        } else if (file.toString().contains(".xls") || file.toString().contains(".xlsx")) {
+            // Excel file
+            return "application/vnd.ms-excel";
+        } else if (file.toString().contains(".zip")) {
+            // ZIP file
+            return "application/zip";
+        } else if (file.toString().contains(".rar")) {
+            // RAR file
+            return "application/x-rar-compressed";
+        } else if (file.toString().contains(".rtf")) {
+            // RTF file
+            return "application/rtf";
+        } else if (file.toString().contains(".wav") || file.toString().contains(".mp3")) {
+            // WAV audio file
+            return "android.intent.action.MUSIC_PLAYER";
+        } else if (file.toString().contains(".gif")) {
+            // GIF file
+            return "image/gif";
+        } else if (file.toString().contains(".jpg") || file.toString().contains(".jpeg") || file.toString().contains(".png")) {
+            // JPG file
+            return "image/jpeg";
+        } else if (file.toString().contains(".txt")) {
+            // Text file
+            return "text/plain";
+        } else if (file.toString().contains(".3gp") || file.toString().contains(".mpg") ||
+                file.toString().contains(".mpeg") || file.toString().contains(".mpe") || file.toString().contains(".mp4") || file.toString().contains(".avi")) {
+            // Video files
+            return "video/*";
+        } else {
+            return "*/*";
+        }
+
+    }
+
+    private void playMusic(String root, CircularImageView imageView, String type) {
         try {
 
-/*
-            Uri uri = Uri.fromFile(url);
-*/
-            Uri uri = FileProvider.getUriForFile(mContext, mContext.getApplicationContext().getPackageName() + ".provider", url);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            if (url.toString().contains(".doc") || url.toString().contains(".docx")) {
-                // Word document
-                intent.setDataAndType(uri, "application/msword");
-            } else if (url.toString().contains(".pdf")) {
-                // PDF file
-                intent.setDataAndType(uri, "application/pdf");
-            } else if (url.toString().contains(".ppt") || url.toString().contains(".pptx")) {
-                // Powerpoint file
-                intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
-            } else if (url.toString().contains(".xls") || url.toString().contains(".xlsx")) {
-                // Excel file
-                intent.setDataAndType(uri, "application/vnd.ms-excel");
-            } else if (url.toString().contains(".zip")) {
-                // ZIP file
-                intent.setDataAndType(uri, "application/zip");
-            } else if (url.toString().contains(".rar")) {
-                // RAR file
-                intent.setDataAndType(uri, "application/x-rar-compressed");
-            } else if (url.toString().contains(".rtf")) {
-                // RTF file
-                intent.setDataAndType(uri, "application/rtf");
-            } else if (url.toString().contains(".wav") || url.toString().contains(".mp3")) {
-                // WAV audio file
-                intent.setDataAndType(uri, "audio/x-wav");
-            } else if (url.toString().contains(".gif")) {
-                // GIF file
-                intent.setDataAndType(uri, "image/gif");
-            } else if (url.toString().contains(".jpg") || url.toString().contains(".jpeg") || url.toString().contains(".png")) {
-                // JPG file
-                intent.setDataAndType(uri, "image/jpeg");
-            } else if (url.toString().contains(".txt")) {
-                // Text file
-                intent.setDataAndType(uri, "text/plain");
-            } else if (url.toString().contains(".3gp") || url.toString().contains(".mpg") ||
-                    url.toString().contains(".mpeg") || url.toString().contains(".mpe") || url.toString().contains(".mp4") || url.toString().contains(".avi")) {
-                // Video files
-                intent.setDataAndType(uri, "video/*");
-            } else {
-                intent.setDataAndType(uri, "*/*");
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(root);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            setAnimation(Techniques.Tada, 1000L, YoYo.INFINITE, imageView);
+            if (type.equals("music_sender")) {
+                playSender = true;
+                imageView.setImageResource(R.drawable.ic_pause_music_green);
+            } else if (type.equals("music_geter")) {
+                playGeter = true;
+                imageView.setImageResource(R.drawable.ic_pause_yellow);
+
             }
 
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ((AppCompatActivity) mContext).startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(mContext, "No application found which can open the file", Toast.LENGTH_SHORT).show();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    stop(mp, type);
+                    if (type.equals("music_sender")) {
+                        imageView.setImageResource(R.drawable.ic_play_music_green);
+                    } else if (type.equals("music_geter")) {
+                        imageView.setImageResource(R.drawable.ic_music_play);
+
+                    }
+
+
+
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+
         }
     }
 
-    public boolean fileExists(Context context, String filename) {
-        File file = context.getFileStreamPath(filename);
-        if (file == null || !file.exists()) {
-            return false;
+    public void stop(MediaPlayer mediaPlayer, String type) {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+            if (type.equals("music_sender")) {
+                playSender = false;
+
+            } else if (type.equals("music_geter")) {
+                playGeter = false;
+            }
         }
-        return true;
     }
+
 
     public boolean isSelecetedMessage(int id) {
         for (int i : messageIdList) {
@@ -2083,6 +2820,40 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
         return false;
     }
+    public boolean isPlayedMusic(int id) {
+        for (int i : playedList) {
+            if (i == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void initPlayedSendMusic(){
+        for(Map.Entry<Integer, CircularImageView> entry : cr_sendMap.entrySet()) {
+            int key = entry.getKey();
+            CircularImageView value = entry.getValue();
+            if (key==playPosition){
+                value.setImageResource(R.drawable.ic_play_music_green);
+                stop(mediaPlayer,"music_sender");
+                yoYoString.stop(true);
+            }
+
+
+        }
+    }
+    private void initPlayedGetMusic(){
+        for(Map.Entry<Integer, CircularImageView> entry : cr_getMap.entrySet()) {
+            int key = entry.getKey();
+            CircularImageView value = entry.getValue();
+            if (key==playPosition){
+                value.setImageResource(R.drawable.ic_music_play);
+                stop(mediaPlayer,"music_geter");
+                yoYoString.stop(true);
+            }
+        }
+    }
+
 
     public void selectedFalse() {
         isSelectedMode = false;
@@ -2100,7 +2871,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     public interface OnClickMessage {
-        void messageSelected(ConstraintLayout parent, String messageId, SendMessageViewModel messageData, int messageType,int position);
+        void messageSelected(ConstraintLayout parent, String messageId, SendMessageViewModel messageData, int messageType, int position);
 
         void messageUnSelected(String id);
 
@@ -2114,7 +2885,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             }
 
         }
-
         return "پیام حذف شده";
     }
 
@@ -2260,29 +3030,4 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         return null;
     }
-
-/*
-    private void generateDate(String time, DateHolder holder) {
-        Date date = TimeUtils.convertStrToDate(time);
-        newDay = date.getDay();
-        oldDay = 0;
-        newMonth = date.getMonth();
-        oldMonth = 0;
-
-
-        if (newDay != oldDay && newMonth != oldMonth) {
-*/
-/*
-            DateHolder dateHolder =(DateHolder) holder;
-*//*
-
-            String strTime = TimeUtils.getPersianCleanDate(time);
-            holder.txtTime.setText(strTime);
-            oldDay = newDay;
-            oldMonth = newMonth;
-        }
-    }
-*/
-
-
 }

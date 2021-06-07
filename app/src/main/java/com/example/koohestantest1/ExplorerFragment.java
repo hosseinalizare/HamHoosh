@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.koohestantest1.activity.ActivityProfile;
 import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
@@ -107,7 +108,10 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
         company.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+/*
                 startActivity(new Intent(mContext, ShowStoreActivity.class));
+*/
+                startActivity(new Intent(mContext, ActivityProfile.class));
             }
         });
 
@@ -273,9 +277,12 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
                 mCategory.add("همه");
                 for (ReceiveProductClass spc : productClasses
                 ) {
-                    if (!spc.getCompanyID().equals(baseCodeClass.getCompanyID())) {
-                        productClasses.remove(spc);
+                    if (spc.getCompanyID() !=null){
+                        if (!spc.getCompanyID().equals(baseCodeClass.getCompanyID())) {
+                            productClasses.remove(spc);
+                        }
                     }
+
                     try {
                         String[] cat = spc.getCategory().split("\\.");
                         if (!mCategory.contains(cat[0]))

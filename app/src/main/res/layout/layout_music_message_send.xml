@@ -31,12 +31,43 @@
                 android:layout_marginTop="10dp"
                 app:civ_border_color="@color/green800"
                 android:id="@+id/img_layout_Doc_message_send"
-                android:src="@drawable/ic_music_green"
+                android:src="@drawable/ic_download_green"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_width="50dp"
                 android:layout_height="50dp"/>
+
             <TextView
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/img_layout_Doc_message_send"
+                android:id="@+id/txtPersent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/koodak"
+                android:textColor="@color/green800"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="12sp"
+                tools:text="Check recieved" />
+
+
+            <ProgressBar
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:id="@+id/prg_layout_Doc_message_recived"
+                app:layout_constraintTop_toBottomOf="@+id/txtPersent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="gone"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:progress="10"
+                android:progressTint="@color/green800"/>
+
+
+            <TextView
+                android:ellipsize="end"
+                android:maxLines="3"
                 android:id="@+id/txt_layout_Doc_message_send"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -64,15 +95,16 @@
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txt_layout_Doc_message_send"
+                app:layout_constraintTop_toBottomOf="@+id/prg_layout_Doc_message_recived"
                 tools:text="10:10 AM" />
 
             <ImageView
+                android:layout_marginTop="6dp"
                 android:id="@+id/iv_layout_Doc_message_recived_tick"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:src="@drawable/ic_tick_seen"
-                app:layout_constraintTop_toBottomOf="@+id/txt_layout_Doc_message_send"
+                app:layout_constraintTop_toBottomOf="@+id/prg_layout_Doc_message_recived"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="10dp"

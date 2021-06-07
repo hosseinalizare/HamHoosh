@@ -19,9 +19,11 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,9 +79,10 @@ public class ViewProductActivity extends AppCompatActivity {
     ArrayList<String> mPropertyName = new ArrayList<>();
     ArrayList<String> mPropertyValue = new ArrayList<>();
 
-    TextView txtPName, txtPPrice, txtPDescription;
-    ImageView PImage, like, bookmark;
+    TextView txtPName, txtPPrice, txtPDescription,txtSeeMore;
+    ImageView PImage, like, bookmark,imgLoadMore;
     Button btnAddToCart;
+    LinearLayout linearLayoutSeeMore;
 
     private String selectedPid;
     private MyDataBase mydb;
@@ -118,6 +121,9 @@ public class ViewProductActivity extends AppCompatActivity {
         tvLikeCount = findViewById(R.id.tv_like_count);
         txtViewCount = findViewById(R.id.txt_activityViewProduct_txtViewCount);
         cardNoItem = findViewById(R.id.card_no_item);
+        imgLoadMore = findViewById(R.id.img_activityViewProduct_loadMore);
+        txtSeeMore = findViewById(R.id.txt_activityViewProduct_seeFewer);
+        linearLayoutSeeMore = findViewById(R.id.linear_activityViewProduct_seeMore);
 
         //setUp badge view
         badgeDrawable = BadgeDrawable.create(this);
@@ -379,15 +385,50 @@ public class ViewProductActivity extends AppCompatActivity {
             }
             txtPDescription.setText(spannableString);
             txtPDescription.setMovementMethod(LinkMovementMethod.getInstance());
-            txtPDescription.setOnClickListener(new View.OnClickListener() {
+
+            txtPDescription.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
-                public void onClick(View v) {
-                    int maxLine = txtPDescription.getMaxLines();
-                    if (maxLine >= 5) {
-                        txtPDescription.setMaxLines(10);
+                public void onGlobalLayout() {
+                    txtPDescription.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    int lineCount = txtPDescription.getLineCount();
+
+                    if (lineCount > 3) {
+                        txtPDescription.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        linearLayoutSeeMore.setVisibility(View.VISIBLE);
+
+                    }else {
+                        linearLayoutSeeMore.setVisibility(View.GONE);
+
                     }
+
+                    linearLayoutSeeMore.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (imgLoadMore.getContentDescription().equals("befor")){
+                                txtPDescription.setMaxLines(lineCount);
+                                imgLoadMore.setImageResource(R.drawable.ic_un_more_load);
+                                imgLoadMore.setContentDescription("after");
+                                txtSeeMore.setText("جزئیات کمتر");
+                                YoYo.with(Techniques.Bounce)
+                                        .duration(700)
+                                        .playOn(linearLayoutSeeMore);
+                            }else {
+                                txtPDescription.setMaxLines(3);
+                                imgLoadMore.setImageResource(R.drawable.ic_more_details);
+                                imgLoadMore.setContentDescription("befor");
+                                txtSeeMore.setText("جزئیات بیشتر");
+                                YoYo.with(Techniques.Bounce)
+                                        .duration(700)
+                                        .playOn(linearLayoutSeeMore);
+
+                            }
+
+                        }
+                    });
+
                 }
             });
+
 
 
             txtPPrice.setText(selectedProduct.getProductClass().getStandardCost().getShowPrice());
