@@ -31,7 +31,7 @@ public class ProfileViewPagerAdapter extends FragmentStateAdapter {
         return fragmentList.size();
     }
 
-    public void addTab(Fragment fragment){
+    public void addTab(Fragment fragment) {
         fragmentList.add(fragment);
     }
 

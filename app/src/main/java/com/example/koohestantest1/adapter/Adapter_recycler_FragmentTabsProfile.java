@@ -484,7 +484,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         void holder(FieldList fieldList) {
             try {
 
-                txtOrderId.setText(fieldList.getTitle());
+                txtOrderId.setText(fieldList.getId()+"");
                 txtOrderName.setText(fieldList.getExplain());
                 txtOrderSumPrice.setText(" جمع فاکتور =" + fieldList.getEXtraData() + " تومان ");
                 if (!StringUtils.textIsEmpty(fieldList.getFieldDate())) {

@@ -277,8 +277,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
 
             imgSendFile.setOnClickListener(v -> {
-
-
                 if (EasyPermissions.hasPermissions(this, permission)) {
                     showBottomSheetFilePicker();
                 } else {

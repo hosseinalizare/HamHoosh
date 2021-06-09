@@ -225,7 +225,6 @@ dependencies {
 
     //Compressor
     implementation 'id.zelory:compressor:2.1.0'
-
     implementation 'androidx.multidex:multidex:2.0.1'
 
 
