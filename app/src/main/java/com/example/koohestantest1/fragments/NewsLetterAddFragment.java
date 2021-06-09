@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,10 +32,14 @@ import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.model.NewsLetterModel;
 import com.example.koohestantest1.model.network.RetrofitInstance;
+import com.iceteck.silicompressorr.SiliCompressor;
 
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +64,7 @@ public class NewsLetterAddFragment extends Fragment {
     private List<String> partNames;
     private String title;
     private String description;
+    private String compressedVideoPath;
     private String category;
     private TextView txtSetting;
     private CheckBox chkPublish, chkComment, chkLike, chkSave;
@@ -219,6 +225,13 @@ public class NewsLetterAddFragment extends Fragment {
     }
 
     private void uploadNewsLetter(NewsLetterModel newsLetter) {
+        boolean isLarge = checkVideoSize(receivedUriList);
+        if (isLarge) {
+            Toast.makeText(getContext(), "حجم فایل تصویری باید کمتر از 50 مگابایت باشد", Toast.LENGTH_SHORT).show();
+            pbLoading.setVisibility(View.GONE);
+            return;
+        }
+
         Retrofit retrofit;
         JsonApi api;
         retrofit = RetrofitInstance.getRetrofit();
@@ -234,24 +247,25 @@ public class NewsLetterAddFragment extends Fragment {
                     if (partNames.size() == 0) {
                         partNames.add("0");
                     }
-                    for(Uri fileUri: receivedUriList){
+                    for (Uri fileUri : receivedUriList) {
 //                        String filePath = fileUri.getPath();
 //                        String fileExtension = filePath.substring(filePath.lastIndexOf("."));
-                        String fileExtension = getMimeType(getContext(),fileUri);
-                        if(fileExtension.equals("jpg") || fileExtension.equals("jpeg") || fileExtension.equals("png"))
+                        String fileExtension = getMimeType(getContext(), fileUri);
+                        if (fileExtension.equals("jpg") || fileExtension.equals("jpeg") || fileExtension.equals("png"))
                             imageUriList.add(fileUri);
-                        else if(fileExtension.equals("mp4"))
+                        else if (fileExtension.equals("mp4")) {
                             videoUriList.add(fileUri);
-                    }
-                    if(videoUriList != null && videoUriList.size() > 0){
-                        for(Uri videoUri:videoUriList){
-                            File file = FileUtils.getFile(getContext(),videoUri);
-                            RequestBody requestFile = RequestBody.create(MediaType.parse(FileUtils.MIME_TYPE_VIDEO),file);
-                            videoFiles.add(MultipartBody.Part.createFormData(file.getName(), file.getName(), requestFile));
+                        }
 
+                    }
+                    if (videoUriList != null && videoUriList.size() > 0) {
+                        for (Uri videoUri : videoUriList) {
+                            File file = FileUtils.getFile(getContext(), videoUri);
+                            RequestBody requestFile = RequestBody.create(MediaType.parse(FileUtils.MIME_TYPE_VIDEO), file);
+                            videoFiles.add(MultipartBody.Part.createFormData(file.getName(), file.getName(), requestFile));
                         }
                     }
-                    if(imageUriList != null && imageUriList.size() > 0)
+                    if (imageUriList != null && imageUriList.size() > 0)
                         files = convertUriToFIle(partNames, imageUriList, newsId);
                     finalFiles.addAll(files);
                     finalFiles.addAll(videoFiles);
@@ -270,6 +284,28 @@ public class NewsLetterAddFragment extends Fragment {
 
     }
 
+    private boolean checkVideoSize(List<Uri> uri) {
+        boolean result = false;
+        for (Uri fileUri : uri) {
+            String fileExtension = getMimeType(getContext(), fileUri);
+            if (fileExtension.equals("mp4")) {
+                File file = FileUtils.getFile(getContext(), fileUri);
+                RequestBody requestFile = RequestBody.create(MediaType.parse(FileUtils.MIME_TYPE_VIDEO), file);
+                try {
+                    long fileSize = requestFile.contentLength();
+                    if ((fileSize / 1000000) > 50) {
+                        result = true;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return result;
+    }
+
     private List<MultipartBody.Part> convertUriToFIle(List<String> partNames, List<Uri> imageUriList, String newsId) {
         List<MultipartBody.Part> files = new ArrayList<>();
         for (int i = 0; i < imageUriList.size(); i++) {
@@ -278,8 +314,8 @@ public class NewsLetterAddFragment extends Fragment {
                 Cache cache = new Cache(getContext());
                 File imageFile = cache.saveToCacheAndGetFile2(bitmap, newsId);
                 long fileSize = imageFile.length() / 1024;
-                int quality =(int) Math.abs((fileSize - 3775) / 61.25);
-                if(quality < 20)
+                int quality = (int) Math.abs((fileSize - 3775) / 61.25);
+                if (quality < 20)
                     quality = 20;
                 else if (quality > 100)
                     quality = 100;
@@ -304,12 +340,12 @@ public class NewsLetterAddFragment extends Fragment {
         return files;
     }
 
-    private String getMimeType(Context context,Uri uri){
+    private String getMimeType(Context context, Uri uri) {
         String extension;
-        if(uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)){
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
             final MimeTypeMap mime = MimeTypeMap.getSingleton();
             extension = mime.getExtensionFromMimeType(context.getContentResolver().getType(uri));
-        }else{
+        } else {
             extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(uri.getPath())).toString());
         }
 
@@ -330,7 +366,7 @@ public class NewsLetterAddFragment extends Fragment {
                     Toast.makeText(getContext(), "خبر با موفقیت ثبت شد", Toast.LENGTH_SHORT).show();
                     Fragment newsFragment = new NewsLetterFragment();
                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frm_newsLetterActivity_layout,newsFragment);
+                    transaction.replace(R.id.frm_newsLetterActivity_layout, newsFragment);
                     transaction.commit();
                 } else {
                     pbLoading.setVisibility(View.GONE);

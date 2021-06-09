@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -360,6 +362,7 @@ public class Main2Activity extends BaseActivity implements CartTransitionInterfa
                     editor.apply();
 
                     main2Fragment.appHelp();
+
                 }
 
                 @Override

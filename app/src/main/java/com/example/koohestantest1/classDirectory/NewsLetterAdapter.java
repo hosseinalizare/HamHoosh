@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.asura.library.posters.Poster;
 import com.asura.library.posters.RemoteImage;
@@ -47,7 +48,7 @@ import static android.content.ContentValues.TAG;
 public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.NewsLetterViewHolder> {
     List<NewsLetter> newsLetterList;
 
-        private static List<Poster> posterList;
+    private static List<Poster> posterList;
     //private List<String> posterList;
     Context context;
     FragmentManager manager;
@@ -65,8 +66,8 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
         this.context = context;
         this.manager = manager;
         this.dbViewModel = dbViewModel;
-//        posterList = new ArrayList<>();
         posterList = new ArrayList<>();
+        //posterList = new ArrayList<>();
         imageList = new ArrayList<>();
     }
 
@@ -84,29 +85,34 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
 
 
         newsId = newsLetterList.get(position).NewsID;
+        String likeCount = newsLetterList.get(position).LikeCount + "";
+        String viewCount = newsLetterList.get(position).ViewedCount + "";
+        holder.txtLikeCount.setText(likeCount);
+        holder.txtViewCount.setText(viewCount);
 
         try {
             JSONArray jsonArray = new JSONArray(newsLetterList.get(position).Jsonsrc);
 //            posterList.clear();
             posterList.clear();
             for (int i = 0; i < jsonArray.length(); i++) {
-                if(jsonArray.getString(i).contains(".jpg") || jsonArray.getString(i).contains(".jpeg") || jsonArray.getString(i).contains(".png")) {
+                if (jsonArray.getString(i).contains(".jpg") || jsonArray.getString(i).contains(".jpeg") || jsonArray.getString(i).contains(".png")) {
                     remoteImage = new RemoteImage(jsonArray.getString(i));
                     remoteImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
                     posterList.add(remoteImage);
-                }
-                else {
+                } else {
                     remoteVideo = new RemoteVideo(Uri.parse(jsonArray.getString(i)));
-                    Log.d("Video",Uri.parse(jsonArray.getString(i))+"");
+
+                    Log.d("Video", Uri.parse(jsonArray.getString(i)) + "");
                     posterList.add(remoteVideo);
                 }
+                Log.d("Video", Uri.parse(jsonArray.getString(i)) + "");
                 //posterList.add(jsonArray.getString(i));
 
             }
 
             holder.slider.setPosters(posterList);
             //NewsLetterViewPagerAdapter adapter = new NewsLetterViewPagerAdapter(context, posterList);
-            //  adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
             //holder.slider.setAdapter(adapter);
 
         } catch (JSONException e) {
@@ -130,16 +136,26 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
         if (!newsLetterList.get(position).ActiveSave)
             holder.imgBookmark.setEnabled(false);
 
+        if (newsLetterList.get(position).Saveit)
+            holder.imgBookmark.setImageResource(R.drawable.ic_bookmarked);
+        else
+            holder.imgBookmark.setImageResource(R.drawable.ic_bookmark);
+
 
         holder.imgBookmark.setOnClickListener(v -> {
+            NewsLetter newsLetter = newsLetterList.get(position);
             Bitmap bitmap = ((BitmapDrawable) holder.imgBookmark.getDrawable()).getBitmap();
             Drawable myDrawable = context.getResources().getDrawable(R.drawable.ic_bookmarked);
             Bitmap bitmap1 = ((BitmapDrawable) myDrawable).getBitmap();
             if (bitmap.sameAs(bitmap1)) {
+                newsLetter.Saveit = false;
                 holder.imgBookmark.setImageResource(R.drawable.ic_bookmark);
             } else {
+                newsLetter.Saveit = true;
                 holder.imgBookmark.setImageResource(R.drawable.ic_bookmarked);
             }
+
+            dbViewModel.updateNewsLetter(newsLetter);
         });
 
         holder.imgDelete.setOnClickListener(v -> deleteNewsLetter(newsLetterList.get(position)));
@@ -158,12 +174,14 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
             if (bitmapImgLike.sameAs(bitmapLike)) {
                 holder.imgLike.setImageResource(R.drawable.ic_like);
                 likeIt = false;
-
+                if (newsLetter.LikeCount > 0)
+                    newsLetter.LikeCount--;
                 newsLetter.Likeit = likeIt;
                 likePost(newsLetterList.get(position).NewsID, BaseCodeClass.userID, false, newsLetter);
             } else {
                 holder.imgLike.setImageResource(R.drawable.ic_liked);
                 likeIt = true;
+                newsLetter.LikeCount++;
                 newsLetter.Likeit = likeIt;
                 likePost(newsLetterList.get(position).NewsID, BaseCodeClass.userID, true, newsLetter);
 
@@ -188,7 +206,7 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
     class NewsLetterViewHolder extends RecyclerView.ViewHolder {
         ImageView imgBookmark, imgLike, imgComment, imgViewCount, imgDelete;
         PosterSlider slider;
-        TextView txtNewsTitle, txtNewsDesc, txtLikeCount;
+        TextView txtNewsTitle, txtNewsDesc, txtLikeCount,txtViewCount;
 
         public NewsLetterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -201,6 +219,7 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
             txtNewsDesc = itemView.findViewById(R.id.newsDescription);
             txtLikeCount = itemView.findViewById(R.id.txt_newsLike_count);
             imgDelete = itemView.findViewById(R.id.img_newsLetter_delete);
+            txtViewCount = itemView.findViewById(R.id.txt_newsComment_viewCount);
         }
     }
 
@@ -210,8 +229,10 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
         loadProductApi = retrofit.create(LoadProductApi.class);
         try {
             Log.d(TAG, "likePost: " + viewCount);
-
-            PostLikeViewModel viewModel = new PostLikeViewModel(uid, pid, String.valueOf(viewCount));
+            /**
+             * Ask question about like count in server site
+             */
+            PostLikeViewModel viewModel = new PostLikeViewModel(uid, pid, String.valueOf(viewCount), newsLetter.LikeCount);
             Call<GetResualt> call = loadProductApi.likeProduct(viewModel);
             call.enqueue(new Callback<GetResualt>() {
                 @Override
