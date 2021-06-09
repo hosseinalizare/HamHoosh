@@ -221,6 +221,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
 
         btnAddCart.setOnClickListener(v -> {
+            btnAddCart.setEnabled(false);
             generatePaymentButtonSabegh();
         });
 
@@ -711,11 +712,13 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                                 toastMessage(response.body().getMsg());
                                 Log.d(TAG, "onResponse: " + response.body().getMsg());
                             }
+                            //btnAddCart.setEnabled(true);
                         }
 
                         @Override
                         public void onFailure(Call<GetResualt> call, Throwable t) {
-
+                            Log.d("Error",t.getMessage());
+                            //btnAddCart.setEnabled(true);
                         }
                     });
                 } else {
@@ -724,8 +727,10 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
             } else {
                 showDialogChooseAddress();
             }
+            btnAddCart.setEnabled(true);
         } catch (Exception e) {
             Log.d("Error",e.getMessage());
+            btnAddCart.setEnabled(true);
         }
     }
 

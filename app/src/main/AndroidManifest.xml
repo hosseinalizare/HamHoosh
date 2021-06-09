@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.REQUEST_WRITE_PERMISSION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" /> <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
@@ -28,7 +28,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:replace="android:supportsRtl">
-        <activity android:name=".activity.ActivityVideoPlay"></activity>
+        <activity android:name=".AddProductMainActivity"></activity>
+        <activity android:name=".activity.ActivityVideoPlay" />
         <activity
             android:name=".activity.ActivityProfile"
             android:theme="@style/MyStyle" />

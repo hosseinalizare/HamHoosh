@@ -279,6 +279,11 @@ public class AddProductActivity extends AppCompatActivity {
                 }
 
                 @Override
+                public Call<GetResualt> uploadMultiProductImage(String prId, String coId, String uID, String token, List<MultipartBody.Part> file) {
+                    return null;
+                }
+
+                @Override
                 public Call<List<ReceiveProductClass>> loadProduct(String companyId) {
                     return null;
                 }

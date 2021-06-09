@@ -36,6 +36,14 @@ public interface LoadProductApi {
     @POST("Products/Post")
     Call<GetResualt> uploadProductImage(@Query("ProductID") String prId, @Query("CompanyID") String coId, @Query("UserID") String uID, @Query("Token") String token, @Part MultipartBody.Part file);
 
+    @Multipart
+    @POST("Products/Post")
+    Call<GetResualt> uploadMultiProductImage(@Query("ProductID") String prId,
+                                             @Query("CompanyID") String coId,
+                                             @Query("UserID") String uID,
+                                             @Query("Token") String token,
+                                             @Part List<MultipartBody.Part> file);
+
     @POST("Products/LoadProduct")
     Call<List<ReceiveProductClass>> loadProduct(@Query("CompanyID")String companyId);
     void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses);

@@ -382,7 +382,8 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
 
 
             btnAddProduct.setOnClickListener(v -> {
-                Intent i = new Intent(mContext, AddProductActivity.class);
+                //Intent i = new Intent(mContext, AddProductActivity.class);
+                Intent i = new Intent(mContext, AddProductMainActivity.class);
                 i.putExtra("PID", "");
                 startActivity(i);
             });

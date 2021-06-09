@@ -5,7 +5,22 @@ public class PostLikeViewModel {
     private  String UserID;
     private String ProductID;
     private String Liked;
+    private int likeCount;
 
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public PostLikeViewModel(String userID, String productID, String liked,int likeCount) {
+        UserID = userID;
+        ProductID = productID;
+        Liked = liked;
+        this.likeCount = likeCount;
+    }
     public PostLikeViewModel(String userID, String productID, String liked) {
         UserID = userID;
         ProductID = productID;

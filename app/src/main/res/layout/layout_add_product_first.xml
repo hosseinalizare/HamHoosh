@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/purple1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="افزودن محصول"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:textSize="22sp"/>
+    </RelativeLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="نام محصول"
+        app:boxBackgroundColor="@android:color/transparent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/FirstAddProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:fontFamily="@font/koodak"
+            android:maxLines="1"
+            android:nextFocusDown="@id/AddProductPrice"
+            android:singleLine="true"
+            android:textAlignment="textStart" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:layoutDirection="rtl"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="تخفیف"
+            android:layoutDirection="ltr"
+            app:boxBackgroundColor="@android:color/transparent"
+            app:startIconDrawable="@drawable/toman">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/FirstAddProductDiscount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:fontFamily="@font/koodak"
+                android:inputType="number"
+                android:textAlignment="textStart" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="قیمت محصول"
+            android:layoutDirection="ltr"
+            app:boxBackgroundColor="@android:color/transparent"
+            app:startIconDrawable="@drawable/toman">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/FirstAddProductPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:fontFamily="@font/koodak"
+                android:inputType="number"
+                android:nextFocusDown="@id/AddProductDiscount"
+                android:textAlignment="textStart" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="15dp"
+        android:fontFamily="@font/koodak"
+        android:text="دسته بندی محصول :"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="2dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="1dp"
+        app:cardMaxElevation="2dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+
+            <Spinner
+                android:id="@+id/FirstAddProductCat1Spinner"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/koodak"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/FirstAddProductMainCatSpinner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/FirstAddProductMainCatSpinner"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/koodak"
+                android:spinnerMode="dropdown"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/FirstAddProductCat1Spinner"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/FirstAddProductEdtCat1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/koodak"
+                android:gravity="right"
+                android:hint="دسته بندی"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/FirstAddProductEdtMainCat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/FirstAddProductEdtMainCat"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/koodak"
+                android:gravity="right"
+                android:hint="گروه دسته بندی"
+                android:spinnerMode="dropdown"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/FirstAddProductEdtCat1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/FirstAddProductSmCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="@id/FirstAddProductTxtCategory"
+                app:layout_constraintEnd_toStartOf="@+id/txtCategory"
+                app:layout_constraintTop_toTopOf="@id/FirstAddProductTxtCategory" />
+
+            <TextView
+                android:id="@+id/FirstAddProductTxtCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="خودم دسته بندی را وارد می کنم"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/FirstAddProductMainCatSpinner" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/FirstAddProductBtnNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple1"
+        android:layout_margin="10dp"
+        android:textColor="@color/white"
+        android:text="مرحله بعد"
+        android:textSize="20sp"/>
+</LinearLayout>

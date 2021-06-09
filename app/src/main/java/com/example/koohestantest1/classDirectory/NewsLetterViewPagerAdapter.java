@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
@@ -55,7 +56,6 @@ public class NewsLetterViewPagerAdapter extends PagerAdapter {
             return imageView;
         } else {
             VideoView videoView = new VideoView(context);
-
             videoView.setVideoURI(Uri.parse(posterList.get(position)));
             videoView.setOnPreparedListener(mp -> {
                 mp.setLooping(true);
