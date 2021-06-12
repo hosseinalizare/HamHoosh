@@ -101,6 +101,12 @@ android {
             applicationIdSuffix '.asbid'
             versionNameSuffix '-asbid'
         }
+
+        app_demo{
+            dimension "version"
+            applicationIdSuffix '.demo'
+            versionNameSuffix '-demo'
+        }
     }
 
 
