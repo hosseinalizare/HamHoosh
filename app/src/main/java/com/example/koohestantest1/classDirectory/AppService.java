@@ -463,9 +463,9 @@ public class AppService extends Service {
                 NotificationCompat.Builder(getApplicationContext(), channelId)
                 .setContentTitle(title)
                 .setContentText(description)
-                .setSmallIcon(R.drawable.finallogo)
+                .setSmallIcon(R.drawable.logo)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                        R.mipmap.ic_launcher_khanat_round))
+                        R.drawable.logo))
                 .setAutoCancel(true)
                 .setColor(Color.parseColor("#2f2f2f"))
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -510,9 +510,9 @@ public class AppService extends Service {
                 NotificationCompat.Builder(getApplicationContext(), channelId)
                 .setContentTitle(title)
                 .setContentText(description)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.logo)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                        R.mipmap.ic_launcher_khanat_round))
+                        R.drawable.logo))
                 .setAutoCancel(true)
                 .setColor(Color.parseColor("#2f2f2f"))
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))

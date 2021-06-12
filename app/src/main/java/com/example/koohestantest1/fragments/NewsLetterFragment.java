@@ -52,6 +52,7 @@ public class NewsLetterFragment extends Fragment {
     private static long timeStamp;
     private RecyclerView rvNews;
     private NewsLetterAdapter adapter;
+    private BaseCodeClass baseCodeClass;
     List<Uri> imageUriList;
     List<String> partNames;
     @Override
@@ -63,7 +64,12 @@ public class NewsLetterFragment extends Fragment {
         FloatingActionButton fbtnAdd = view.findViewById(R.id.fbtn_newsLetterFragent_addNews);
         rvNews = view.findViewById(R.id.rv_newsLetterFragment_newsList);
         dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
-
+        baseCodeClass = new BaseCodeClass();
+        if(baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")){
+            fbtnAdd.setVisibility(View.GONE);
+        }else{
+            fbtnAdd.setVisibility(View.VISIBLE);
+        }
         //*************************Fetching received data from Gallery*****************************/
         ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
