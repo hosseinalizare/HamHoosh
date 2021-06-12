@@ -2,6 +2,7 @@ package com.example.koohestantest1.classDirectory;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,25 @@ public class ManageEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Mana
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.name.setText(employee.get(position).getUserData().getFirstName() + " " + employee.get(position).getUserData().getLastName());
+        StringBuilder name = new StringBuilder();
+        String firstName,lastName;
+        firstName = employee.get(position).getUserData().getFirstName();
+        lastName = employee.get(position).getUserData().getLastName();
+        if (firstName != null) {
+            name.append(firstName);
+
+        }
+        if (lastName != null) {
+            name.append(" ");
+            name.append(lastName);
+
+        }
+        if (name.toString().equals(null) || name.toString().equals(""))
+            holder.name.setText("مخاطب ناشناس");
+        else
+            holder.name.setText(employee.get(position).getUserData().getFirstName() + " " + employee.get(position).getUserData().getLastName());
+
+
         holder.phone.setText(employee.get(position).getUserData().getMobilePhone());
         holder.bindData(employee.get(position));
     }
@@ -57,10 +76,11 @@ public class ManageEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Mana
         return employee.size();
     }
 
-    public void removeItem(int pos){
+    public void removeItem(int pos) {
         employee.remove(pos);
         notifyItemRemoved(pos);
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
@@ -104,11 +124,11 @@ public class ManageEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Mana
 
     }
 
-    public void searchInEmployees(String word){
+    public void searchInEmployees(String word) {
         List<CompanyFollowerViewModel> searchItems = new ArrayList<>();
-        for(int i = 0; i < employee.size(); i++){
-            if((employee.get(i).getUserData().getFirstName() != null && employee.get(i).getUserData().getFirstName().contains(word)) ||
-                    (employee.get(i).getUserData().getLastName() != null && employee.get(i).getUserData().getLastName().contains(word))){
+        for (int i = 0; i < employee.size(); i++) {
+            if ((employee.get(i).getUserData().getFirstName() != null && employee.get(i).getUserData().getFirstName().contains(word)) ||
+                    (employee.get(i).getUserData().getLastName() != null && employee.get(i).getUserData().getLastName().contains(word))) {
                 searchItems.add(employee.get(i));
             }
         }
@@ -117,7 +137,7 @@ public class ManageEmployeeRecyclerViewAdapter extends RecyclerView.Adapter<Mana
         notifyDataSetChanged();
     }
 
-    public void updateData(List<CompanyFollowerViewModel> companyFollowers){
+    public void updateData(List<CompanyFollowerViewModel> companyFollowers) {
         employee = companyFollowers;
         notifyDataSetChanged();
     }
