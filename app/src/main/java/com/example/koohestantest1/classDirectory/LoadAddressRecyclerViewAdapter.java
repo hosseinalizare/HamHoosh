@@ -62,6 +62,12 @@ public class LoadAddressRecyclerViewAdapter extends RecyclerView.Adapter<LoadAdd
         holder.edit.setOnClickListener(v -> {
             editAddress(position);
         });
+        holder.delete.setOnClickListener(v -> {
+            clickListener.AddressOnCliclckListener(addressList.get(position));
+            addressList.remove(position);
+            notifyItemRemoved(position);
+
+        });
 
     }
 

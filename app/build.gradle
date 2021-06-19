@@ -108,8 +108,6 @@ android {
             versionNameSuffix '-demo'
         }
     }
-
-
 }
 
 dependencies {

@@ -27,6 +27,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -82,17 +83,20 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
     public final static int REGULAR_USER = 0;
     private MediaPlayer mediaPlayer;
     private YoYo.YoYoString yoYoString;
-    private   Map<Integer,CircularImageView> cr_musics;
-    private int playPosition=-1;
-    private boolean play=false;
-    private boolean play2=false;
-  private boolean myStore =true;
+    private Map<Integer, CircularImageView> cr_musics;
+    private int playPosition = -1;
+    private boolean play = false;
+    private boolean play2 = false;
+    private boolean myStore = true;
+    private String childDirectory;
+
 
     public Adapter_recycler_FragmentTabsProfile(Context context, List<FieldList> fieldLists) {
         this.context = context;
         this.fieldLists = fieldLists;
         baseCodeClass = new BaseCodeClass();
         cr_musics = new HashMap<>();
+        childDirectory = context.getResources().getString(R.string.app_name);
     }
 
     @NonNull
@@ -107,10 +111,10 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         } else if (viewType == FILE) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_profile_recycler_item_file, parent, false);
             return new FileViewHolder(view);
-        }else if (viewType == MUSIC) {
+        } else if (viewType == MUSIC) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_profile_recycler_item_file, parent, false);
             return new MusicViewHolder(view);
-        }else if (viewType == INFO) {
+        } else if (viewType == INFO) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_profile_recycler_item_info, parent, false);
             return new InfoViewHolder(view);
         } else if (viewType == ORDER) {
@@ -119,10 +123,10 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         } else if (viewType == SUPPORTERS) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item_customers_list, parent, false);
             return new SupportersViewHolder(view);
-        }else if (viewType == PRODUCT) {
+        } else if (viewType == PRODUCT) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_mystore_product, parent, false);
             return new ProductViewHolder(view);
-        }else {
+        } else {
             View view = LayoutInflater.from(context).inflate(R.layout.layout_item_recycler_profile_tab1, parent, false);
             return new TabViewHolder(view);
         }
@@ -144,10 +148,10 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             } else if (valueType == BaseCodeClass.variableType.File_.getValue()) {
                 FileViewHolder fileViewHolder = (FileViewHolder) holder;
                 fileViewHolder.holder(fieldList);
-            }else if (valueType == BaseCodeClass.variableType.Music_.getValue()) {
+            } else if (valueType == BaseCodeClass.variableType.Music_.getValue()) {
                 MusicViewHolder musicViewHolder = (MusicViewHolder) holder;
-                musicViewHolder.holder(fieldList,position);
-            }else if (valueType == BaseCodeClass.variableType.string_.getValue() || valueType == BaseCodeClass.variableType.int_.getValue() || valueType == BaseCodeClass.variableType.datetime.getValue()
+                musicViewHolder.holder(fieldList, position);
+            } else if (valueType == BaseCodeClass.variableType.string_.getValue() || valueType == BaseCodeClass.variableType.int_.getValue() || valueType == BaseCodeClass.variableType.datetime.getValue()
                     || valueType == BaseCodeClass.variableType.email.getValue() || valueType == BaseCodeClass.variableType.mobile.getValue() || valueType == BaseCodeClass.variableType.webPage.getValue()
                     || valueType == BaseCodeClass.variableType.StartEndTime.getValue() || valueType == BaseCodeClass.variableType.bool_.getValue()) {
                 InfoViewHolder infoViewHolder = (InfoViewHolder) holder;
@@ -158,10 +162,10 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             } else if (valueType == BaseCodeClass.variableType.Employee_.getValue()) {
                 SupportersViewHolder supportersViewHolder = (SupportersViewHolder) holder;
                 supportersViewHolder.holder(fieldList);
-            }else if (valueType == BaseCodeClass.variableType.Product_.getValue()) {
+            } else if (valueType == BaseCodeClass.variableType.Product_.getValue()) {
                 ProductViewHolder productViewHolder = (ProductViewHolder) holder;
                 productViewHolder.holder(fieldList);
-            }else {
+            } else {
                 TabViewHolder tabViewHolder = (TabViewHolder) holder;
                 tabViewHolder.holder(fieldList);
             }
@@ -181,9 +185,9 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             return VIDEO;
         } else if (valueType == BaseCodeClass.variableType.File_.getValue()) {
             return FILE;
-        }else if (valueType == BaseCodeClass.variableType.Music_.getValue()) {
+        } else if (valueType == BaseCodeClass.variableType.Music_.getValue()) {
             return MUSIC;
-        }else if (valueType == BaseCodeClass.variableType.string_.getValue() || valueType == BaseCodeClass.variableType.int_.getValue() || valueType == BaseCodeClass.variableType.datetime.getValue()
+        } else if (valueType == BaseCodeClass.variableType.string_.getValue() || valueType == BaseCodeClass.variableType.int_.getValue() || valueType == BaseCodeClass.variableType.datetime.getValue()
                 || valueType == BaseCodeClass.variableType.email.getValue() || valueType == BaseCodeClass.variableType.mobile.getValue() || valueType == BaseCodeClass.variableType.webPage.getValue()
                 || valueType == BaseCodeClass.variableType.StartEndTime.getValue() || valueType == BaseCodeClass.variableType.bool_.getValue()) {
             return INFO;
@@ -191,9 +195,9 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             return ORDER;
         } else if (valueType == BaseCodeClass.variableType.Employee_.getValue()) {
             return SUPPORTERS;
-        }else if (valueType == BaseCodeClass.variableType.Product_.getValue()) {
+        } else if (valueType == BaseCodeClass.variableType.Product_.getValue()) {
             return PRODUCT;
-        }else {
+        } else {
             return OTHER;
         }
     }
@@ -257,15 +261,16 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             imageView = itemView.findViewById(R.id.img_layout_profile_recycler_item_video_imgVideo);
             imgPlay = itemView.findViewById(R.id.img_layout_profile_recycler_item_video_imgVideoPlay);
             progressBar = itemView.findViewById(R.id.circularProgressBar);
-            txtPersent =itemView.findViewById(R.id.txtPersent);
+            txtPersent = itemView.findViewById(R.id.txtPersent);
         }
 
         void holder(FieldList fieldList) {
-            if (!StringUtils.textIsEmpty(fieldList.getEXtraData())){
+            if (!StringUtils.textIsEmpty(fieldList.getEXtraData())) {
                 Glide.with(context).load(fieldList.getEXtraData()).into(imageView);
             }
 
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + fieldList.getValue());
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), childDirectory+"/" + fieldList.getValue());
+
             if (file.exists()) {
                 imgPlay.setImageResource(R.drawable.ic_play_icon);
                 imgPlay.setContentDescription("downloaded");
@@ -277,10 +282,10 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             imgPlay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (imgPlay.getContentDescription().equals("not_downloaded")){
-                        downloadVideo(progressBar,imgPlay,txtPersent,fieldList.getValue(), generateUrl(Integer.parseInt(fieldList.getId())));
+                    if (imgPlay.getContentDescription().equals("not_downloaded")) {
+                        downloadVideo(progressBar, imgPlay, txtPersent, fieldList.getValue(), generateUrl(Integer.parseInt(fieldList.getId())));
 
-                    }else {
+                    } else {
                         playVideo(file.getAbsolutePath());
                       /*  Intent intent = new Intent(context, ActivityVideoPlay.class);
                         intent.putExtra("videoName",fieldList.getValue());
@@ -294,7 +299,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
 
     public class FileViewHolder extends RecyclerView.ViewHolder {
         CircularImageView imageView;
-        TextView txtFileName, txtDescription, txtPersent,txtDate;
+        TextView txtFileName, txtDescription, txtPersent, txtDate;
         ProgressBar prg;
 
         public FileViewHolder(@NonNull View itemView) {
@@ -314,8 +319,9 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             txtDescription.setText(size);
             txtDate.setText(time);
 
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/"+fieldList.getValue());
-            if (file.isFile()) {
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), childDirectory+"/" + fieldList.getValue());
+
+            if (file.exists()) {
                 imageView.setImageResource(R.drawable.ic_file_blue);
                 imageView.setContentDescription("downloaded");
             } else {
@@ -325,19 +331,20 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
 
 
             imageView.setOnClickListener(v -> {
-                if (imageView.getContentDescription().equals("not_downloaded")){
+                if (imageView.getContentDescription().equals("not_downloaded")) {
                     downloadFile(prg, imageView, txtPersent, fieldList.getValue(), generateUrl(Integer.parseInt(fieldList.getId())));
-                }else {
-                   openFile(context,file);
+                } else {
+                    openFile(context, file);
                 }
 
             });
 
         }
     }
+
     public class MusicViewHolder extends RecyclerView.ViewHolder {
         CircularImageView imageView;
-        TextView txtFileName, txtDescription, txtPersent,txtDate;
+        TextView txtFileName, txtDescription, txtPersent, txtDate;
         ProgressBar prg;
 
         public MusicViewHolder(@NonNull View itemView) {
@@ -350,16 +357,17 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             txtDate = itemView.findViewById(R.id.txt_layout_profile_recycler_item_file_txtDateFile);
         }
 
-        void holder(FieldList fieldList,int position) {
+        void holder(FieldList fieldList, int position) {
             txtFileName.setText(fieldList.getValue());
             String time = TimeUtils.getPersianCleanDate(fieldList.getFieldDate());
             String size = fieldList.getExplain() + "  ,  ";
             txtDescription.setText(size);
             txtDate.setText(time);
-            cr_musics.put(position,imageView);
+            cr_musics.put(position, imageView);
 
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/"+fieldList.getValue());
-            if (file.isFile()) {
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), childDirectory+"/" + fieldList.getValue());
+
+            if (file.exists()) {
                 imageView.setImageResource(R.drawable.ic_play_music_blue);
                 imageView.setContentDescription("downloaded");
             } else {
@@ -369,22 +377,22 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
 
 
             imageView.setOnClickListener(v -> {
-                if (imageView.getContentDescription().equals("not_downloaded")){
+                if (imageView.getContentDescription().equals("not_downloaded")) {
                     downloadFile(prg, imageView, txtPersent, fieldList.getValue(), fieldList.getEXtraData());
-                }else {
-                   if (play){
-                       initPlayedMusic();
-                       imageView.setImageResource(R.drawable.ic_play_music_blue);
-                       yoYoString.stop(true);
-                       stop(mediaPlayer);
-                       playPosition =-1;
-                       play =false;
+                } else {
+                    if (play) {
+                        initPlayedMusic();
+                        imageView.setImageResource(R.drawable.ic_play_music_blue);
+                        yoYoString.stop(true);
+                        stop(mediaPlayer);
+                        playPosition = -1;
+                        play = false;
 
 
-                   }else {
-                       playMusic(file.getAbsolutePath(), imageView);
-                       playPosition = position;
-                   }
+                    } else {
+                        playMusic(file.getAbsolutePath(), imageView);
+                        playPosition = position;
+                    }
                 }
 
             });
@@ -484,7 +492,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         void holder(FieldList fieldList) {
             try {
 
-                txtOrderId.setText(fieldList.getId()+"");
+                txtOrderId.setText(fieldList.getId() + "");
                 txtOrderName.setText(fieldList.getExplain());
                 txtOrderSumPrice.setText(" جمع فاکتور =" + fieldList.getEXtraData() + " تومان ");
                 if (!StringUtils.textIsEmpty(fieldList.getFieldDate())) {
@@ -493,7 +501,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
                 try {
                     Glide.with(context).load(generateUrlOrderPicture(fieldList.getValue())).placeholder(R.drawable.image_placeholder).into(imgOrder);
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -513,12 +521,12 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
 
                             @Override
                             public void onFailure(Call<SendOrderClass> call, Throwable t) {
-                                Toast.makeText(context, "getDetailsOrderProfile>>>"+t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "getDetailsOrderProfile>>>" + t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
 
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -534,9 +542,10 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
     }
 
     public class SupportersViewHolder extends RecyclerView.ViewHolder {
-        TextView txtPosition,txtName;
+        TextView txtPosition, txtName;
         CircleImageView circleImageView;
         ImageView imgSendMessage;
+        CardView root;
 
 
         public SupportersViewHolder(@NonNull View itemView) {
@@ -545,6 +554,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             txtName = itemView.findViewById(R.id.tv_customer_location);
             imgSendMessage = itemView.findViewById(R.id.iv_customer_chat);
             circleImageView = itemView.findViewById(R.id.img_rowItemCustomer_list);
+            root = itemView.findViewById(R.id.card_rowItemCustomersList_root);
         }
 
         void holder(FieldList fieldList) {
@@ -559,7 +569,18 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
                 //getter = company(others)
                 intent.putExtra("getter", fieldList.getEXtraData());
                 intent.putExtra(STATE_MESSAGE_SENDER, REGULAR_USER);
-               context.startActivity(intent);
+                context.startActivity(intent);
+            });
+
+            root.setOnClickListener(v -> {
+                setAnimation(Techniques.Tada, 200L, root);
+                Intent intent = new Intent(context, MessageActivity.class);
+                //sender = ourselfes
+                intent.putExtra("sender", BaseCodeClass.userID);
+                //getter = company(others)
+                intent.putExtra("getter", fieldList.getEXtraData());
+                intent.putExtra(STATE_MESSAGE_SENDER, REGULAR_USER);
+                context.startActivity(intent);
             });
 
 
@@ -580,9 +601,9 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         void holder(FieldList fieldList) {
             try {
                 String color = fieldList.getExplain();
-                if (!StringUtils.textIsEmpty(color)){
+                if (!StringUtils.textIsEmpty(color)) {
                     imageView.setBackgroundColor(Color.parseColor(color));
-                }else {
+                } else {
                     imageView.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 }
                 txtProductName.setText(fieldList.getTitle());
@@ -590,15 +611,15 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
 
                 imageView.setOnClickListener(v -> {
                     if (myStore) {
-                        if (baseCodeClass.getPermissions()!=null){
-                                 if (baseCodeClass.getPermissions().get(6).isState()) {
-                            startEditProduct(fieldList.getValue());
-                        } else {
-                            //employee has not permission to edit product
-                            if (baseCodeClass.loadSelectedProduct(fieldList.getValue(), context)) {
-                                startViewProduct(fieldList.getValue());
+                        if (baseCodeClass.getPermissions() != null) {
+                            if (baseCodeClass.getPermissions().get(6).isState()) {
+                                startEditProduct(fieldList.getValue());
+                            } else {
+                                //employee has not permission to edit product
+                                if (baseCodeClass.loadSelectedProduct(fieldList.getValue(), context)) {
+                                    startViewProduct(fieldList.getValue());
+                                }
                             }
-                        }
                         }
 
                     } else {
@@ -609,8 +630,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
                 });
 
 
-
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -627,7 +647,8 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         request.setTitle("در حال دانلود");
         request.setDescription("لطفا منتظر بمانید...");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"/Dehkadeh/" + fileName);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/"+childDirectory+"/" + fileName);
+
 
         final long id = downloadManager.enqueue(request);
         Timer timer = new Timer();
@@ -647,7 +668,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
                         @Override
                         public void run() {
                             progressBar.setProgress(percent);
-                            txtPersent.setText(" % "+percent);
+                            txtPersent.setText(" % " + percent);
                             if (percent == 100) {
                                 Toast.makeText(context, "دانلود با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
                                 timer.purge();
@@ -656,7 +677,6 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
                                 imageView.setContentDescription("downloaded");
                                 progressBar.setVisibility(View.GONE);
                                 txtPersent.setVisibility(View.GONE);
-
 
 
                             }
@@ -683,16 +703,19 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + id + "&fileNumber=1";
         return url;
     }
+
     private String generateUrlEmployeePicture(String id) {
-        String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" +id+ "&fileNumber=" + 1;
+        String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + id + "&fileNumber=" + 1;
         return url;
     }
+
     private void setAnimation(Techniques animation, Long duration, View view) {
         YoYo.with(animation)
                 .duration(duration)
                 .playOn(view);
     }
-    public void openFile(Context context, File file){
+
+    public void openFile(Context context, File file) {
         String typeFile = getTypeFile(file);
 
         if (file.exists()) {
@@ -716,7 +739,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         }
     }
 
-    private String getTypeFile(File file){
+    private String getTypeFile(File file) {
 
         if (file.toString().contains(".doc") || file.toString().contains(".docx")) {
             // Word document
@@ -769,7 +792,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             mediaPlayer.start();
             setAnimation(Techniques.Tada, 1000L, YoYo.INFINITE, imageView);
             imageView.setImageResource(R.drawable.ic_pause_blue);
-            play =true;
+            play = true;
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
@@ -789,15 +812,15 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         }
     }
 
-    private void initPlayedMusic(){
-        for(Map.Entry<Integer, CircularImageView> entry : cr_musics.entrySet()) {
+    private void initPlayedMusic() {
+        for (Map.Entry<Integer, CircularImageView> entry : cr_musics.entrySet()) {
             int key = entry.getKey();
             CircularImageView value = entry.getValue();
-            if (key==playPosition){
+            if (key == playPosition) {
                 value.setImageResource(R.drawable.ic_play_music_blue);
                 stop(mediaPlayer);
                 yoYoString.stop(true);
-                play2 =true;
+                play2 = true;
             }
 
 
@@ -806,7 +829,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
 
 
     private void setAnimation(Techniques animation, Long duration, int repeat, View view) {
-        yoYoString =  YoYo.with(animation)
+        yoYoString = YoYo.with(animation)
                 .repeat(repeat)
                 .duration(duration)
                 .playOn(view);
@@ -870,18 +893,17 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             context.startActivity(intent);
     }
 
-    public void startViewProduct(String id ) {
+    public void startViewProduct(String id) {
         Intent intent = new Intent(context, ViewProductActivity.class);
         intent.putExtra("PID", id);
         context.startActivity(intent);
     }
+
     private void playVideo(String path) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(path));
         intent.setDataAndType(Uri.parse(path), "video/*");
         context.startActivity(intent);
     }
-
-
 
 
 }

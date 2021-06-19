@@ -44,6 +44,7 @@ import com.canhub.cropper.CropImageView;
 import com.example.koohestantest1.Utils.Cache;
 import com.example.koohestantest1.Utils.FileUtils;
 import com.example.koohestantest1.Utils.TimeUtils;
+import com.example.koohestantest1.activity.ActivityShowContact;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.constants.EmployeeStatus;
 import com.example.koohestantest1.model.DeleteMessageM;
@@ -97,6 +98,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     SendImageMessageBottomSheetDialog sheetDialog;
     private boolean isLoading = true;
     String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+    String permission2 = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
     AutoCompleteTextView auEdtPosition;
@@ -224,25 +226,8 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             } else
                 Toast.makeText(this, "خطایی رخ داده", Toast.LENGTH_SHORT).show();
             imgForwardMessage.setOnClickListener(v -> {
-
-
-         /*       SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
-                        "", "", "", "", BaseCodeClass.variableType.Order_.getValue(), "OXbCNMfNASt", 1, 100);
-                sendMessageVM.sendMessage(sendMessageViewModel).observe(MessageActivity.this, new Observer<GetResualt>() {
-                    @Override
-                    public void onChanged(GetResualt getResualt) {
-                        Toast.makeText(mContext, getResualt.getResualt()+"", Toast.LENGTH_SHORT).show();
-                    }
-                });*/
-
-                SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
-                        "", "", "", "", 805, "", 1, 100);
-                sendMessageVM.sendMessage(sendMessageViewModel).observe(MessageActivity.this, new Observer<GetResualt>() {
-                    @Override
-                    public void onChanged(GetResualt getResualt) {
-                        Toast.makeText(mContext, getResualt.getResualt()+"", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                Intent intent = new Intent(mContext, ActivityShowContact.class);
+                startActivity(intent);
 
             });
 
@@ -277,11 +262,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
 
             imgSendFile.setOnClickListener(v -> {
-                if (EasyPermissions.hasPermissions(this, permission)) {
+                if (EasyPermissions.hasPermissions(this, permission,permission2)) {
                     showBottomSheetFilePicker();
                 } else {
 
-                    EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
+                    EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission,permission2);
 
                 }
 
@@ -547,6 +532,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     @Override
     public void onResponseGetContactV2(List<ContactListViewModel> contactListViewModels) {
 
+    }
+
+    @Override
+    public Single<List<ContactListViewModel>> getcontacts(String token, String userID, String objectID) {
+        return null;
     }
 
     @Override

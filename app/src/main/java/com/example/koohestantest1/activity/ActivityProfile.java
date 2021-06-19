@@ -72,6 +72,7 @@ public class ActivityProfile extends AppCompatActivity implements EasyPermission
     public final static String STATE_MESSAGE_SENDER = "state_message_sender";
     public final static int REGULAR_USER = 0;
    private String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+   private String permission2 = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     public static final int READ_STORAGE_PERMISSION_REQUEST = 1307;
 
 
@@ -95,11 +96,14 @@ public class ActivityProfile extends AppCompatActivity implements EasyPermission
 */
         if (actionBar!= null) {
            actionBar.setDisplayHomeAsUpEnabled(true);
+            /*actionBar.setTitle("Abolfazl");
+            actionBar.setSubtitle("on");*/
+
         }
 
         /// check Read External storage
-        if (!EasyPermissions.hasPermissions(this, permission)) {
-            EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
+        if (!EasyPermissions.hasPermissions(this, permission,permission2)) {
+            EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission,permission2);
         }
 
         fbMessage.setOnClickListener(v -> {
@@ -261,9 +265,6 @@ public class ActivityProfile extends AppCompatActivity implements EasyPermission
         return logoIcon;
     }
 
-    public void fbCallClick(View view) {
-        Toast.makeText(this, "yesss", Toast.LENGTH_SHORT).show();
-    }
 
 
     private void changeTabsFont(TabLayout tabLayout) {
@@ -311,4 +312,6 @@ public class ActivityProfile extends AppCompatActivity implements EasyPermission
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
+
+
 }

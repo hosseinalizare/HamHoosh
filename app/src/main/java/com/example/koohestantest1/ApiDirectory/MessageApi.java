@@ -54,6 +54,11 @@ public interface MessageApi {
     Call<List<ContactListViewModel>> getContactV2(@Query("Token") String token, @Query("UserID") String userID, @Query("ObjectID") String objectID);
     void onResponseGetContactV2(List<ContactListViewModel> contactListViewModels);
 
+    @POST("User/GetNewContactList")
+    Single<List<ContactListViewModel>> getcontacts(@Query("Token") String token, @Query("UserID") String userID, @Query("ObjectID") String objectID);
+
+
+
 
     @POST("Order/downloadOrder")
     Single<SendOrderClass> getOrderData(@Query("OrderID") String orderId);

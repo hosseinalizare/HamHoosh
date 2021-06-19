@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -121,7 +122,9 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public List<Integer> deletePositionList;
     private MediaPlayer mediaPlayer;
     private String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+    private String permission2 = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private final int READ_STORAGE_PERMISSION_REQUEST = 130587;
+    private final int WHRITE_STORAGE_PERMISSION_REQUEST = 130588;
 
     private boolean playSender = false;
     private boolean playGeter = false;
@@ -130,11 +133,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private Map<Integer, CircularImageView> cr_getMap, cr_sendMap;
     private int playPosition;
     private YoYo.YoYoString yoYoString;
+   private String childDirectory;
 
-    private File myFolderCatch;
-/*
-    private String root = getCacheDirectory(mContext).getPath() + "/chat";
-*/
 
 
     public MessageRecyclerViewAdapter(Context mContext, List<SendMessageViewModel> messageViewModels, OnClickMessage onClickMessage) {
@@ -148,6 +148,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         playedList = new ArrayList<>();
         cr_getMap = new HashMap<>();
         cr_sendMap = new HashMap<>();
+        childDirectory = mContext.getResources().getString(R.string.app_name);
 
 /*
         createCatchDirectory(getCacheDirectory(mContext).getPath() + "/chat");
@@ -869,7 +870,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             }
 
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), childDirectory+"/" + messageData.getMessage1());
 
             if (file.exists()) {
                 img.setImageResource(R.drawable.ic_doc);
@@ -942,7 +943,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtDocName.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtTime.setText(time);
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), childDirectory+"/" + messageData.getMessage1());
 
             if (file.exists()) {
                 imgDownload.setImageResource(R.drawable.ic_doc3);
@@ -1142,8 +1144,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 parent.setBackgroundColor(Color.TRANSPARENT);
 
             }
-
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), childDirectory+"/" + messageData.getMessage1());
 
             if (file.exists()) {
                 imageView.setImageResource(R.drawable.ic_play_music_green);
@@ -1156,7 +1157,13 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             if (isPlayedMusic(Integer.parseInt(messageData.getId()))) {
                 imageView.setImageResource(R.drawable.ic_pause_music_green);
             } else {
-                imageView.setImageResource(R.drawable.ic_play_music_green);
+
+                if (file.exists()) {
+                    imageView.setImageResource(R.drawable.ic_play_music_green);
+                } else {
+                    imageView.setImageResource(R.drawable.ic_download_green);
+                }
+
             }
 
             imageView.setOnClickListener(v -> {
@@ -1274,7 +1281,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtTime.setText(time);
 
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), childDirectory+"/" + messageData.getMessage1());
+
             if (file.exists()) {
                 imgDownload.setImageResource(R.drawable.ic_music_play);
                 imgDownload.setContentDescription("downloaded");
@@ -1287,7 +1295,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             if (isPlayedMusic(Integer.parseInt(messageData.getId()))) {
                 imgDownload.setImageResource(R.drawable.ic_pause_yellow);
             } else {
-                imgDownload.setImageResource(R.drawable.ic_music_play);
+                if (file.exists()) {
+                    imgDownload.setImageResource(R.drawable.ic_music_play);
+                } else {
+                    imgDownload.setImageResource(R.drawable.ic_download2);
+                }
             }
 
 
@@ -1397,7 +1409,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     break;
             }
 
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), childDirectory+"/" + messageData.getMessage1());
+
             if (file.exists()) {
                 imgPlay.setImageResource(R.drawable.ic_play_icon);
                 imgPlay.setContentDescription("downloaded");
@@ -1492,7 +1505,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtVideoName.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
             txtTimeSend.setText(time);
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Dehkadeh/" + messageData.getMessage1());
+
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), childDirectory+"/" + messageData.getMessage1());
             if (file.exists()) {
                 imgPlay.setImageResource(R.drawable.ic_play_icon);
                 imgPlay.setContentDescription("downloaded");
@@ -2464,13 +2478,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtTime = itemView.findViewById(R.id.txtDateMessage);
         }
 
- /*       void holder(SendMessageViewModel messageData) {
-
-            String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
-            txtTime.setText(time);
-
-        }*/
-
     }
 
 
@@ -2528,13 +2535,13 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private void downloadFile(ProgressBar progressBar, CircularImageView imageView, TextView txtPersent, String name, String link, String type) {
-        if (EasyPermissions.hasPermissions(mContext, permission)) {
+        if (EasyPermissions.hasPermissions(mContext, permission,permission2)) {
 
             download(progressBar, imageView, txtPersent, name, link, type);
 
 
         } else {
-            EasyPermissions.requestPermissions((Activity) mContext, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
+            EasyPermissions.requestPermissions((Activity) mContext, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission,permission2);
 
         }
 
@@ -2549,11 +2556,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         request.setTitle("در حال دانلود");
         request.setDescription("لطفا منتظر بمانید...");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Dehkadeh/" + name);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/"+childDirectory+"/" + name);
 
-/*
-        request.setDestinationInExternalFilesDir(mContext,getCacheDirectory(mContext).getPath(),"/chat/" + name);
-*/
 
         final long id = downloadManager.enqueue(request);
         Timer timer = new Timer();
@@ -2615,13 +2619,13 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     private void downloadVideo(CircularProgressBar progressBar, ImageView imageView, TextView txtPersent, String name, String link) {
-        if (EasyPermissions.hasPermissions(mContext, permission)) {
+        if (EasyPermissions.hasPermissions(mContext, permission,permission2)) {
 
             download2(progressBar, imageView, txtPersent, name, link);
 
 
         } else {
-            EasyPermissions.requestPermissions((Activity) mContext, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
+            EasyPermissions.requestPermissions((Activity) mContext, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission,permission2);
 
         }
 
@@ -2636,7 +2640,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         request.setTitle("در حال دانلود");
         request.setDescription("لطفا منتظر بمانید...");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/"+childDirectory+"/" + name);
+/*
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Dehkadeh/" + name);
+*/
 
 /*
        request.setDestinationInExternalFilesDir(mContext, root, name);
@@ -3043,10 +3051,4 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         return null;
     }
 
-    private void createCatchDirectory(String root) {
-        myFolderCatch = new File(root);
-        if (!myFolderCatch.exists()) {
-            myFolderCatch.mkdir();
-        }
-    }
 }

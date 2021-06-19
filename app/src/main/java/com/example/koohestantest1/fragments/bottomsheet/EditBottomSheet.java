@@ -168,6 +168,8 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
                 binding.etEdit.setInputType(InputType.TYPE_CLASS_NUMBER);
             }
 
+
+
             //for editing birthday
             if (selectedProfileField.type.equals(BaseCodeClass.variableType.date)) {
                 binding.etEdit.setVisibility(View.GONE);
@@ -177,6 +179,8 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
 
                 binding.btnChooseDate.setVisibility(View.VISIBLE);
             }
+
+
 
             //for editing marriage status
             if (selectedProfileField.type.equals(BaseCodeClass.variableType.marital)) {
@@ -361,7 +365,11 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
                 if (selectedProfileField.mode == BaseCodeClass.editMode.companyProfile) {
                     editCompany();
                 } else if (selectedProfileField.mode == BaseCodeClass.editMode.userProfile) {
+
                     editUSer();
+
+
+
                 } else if (mode != null) {
                     String value = binding.etEdit.getText().toString();
                     shouldRefresh = true;
@@ -525,8 +533,92 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
         }
     }
 
+/*
     public void editUSer() {
         try {
+            if (selectedProfileField.type.equals(BaseCodeClass.variableType.email)){
+                String email = binding.etEdit.getText().toString();
+                if ( email.isEmpty()){
+                    Toast.makeText(baseCodeClass, "blanck", Toast.LENGTH_SHORT).show();
+                }else {
+                    //get date for editing born date
+                    String value = bornDate != null ? bornDate : binding.etEdit.getText().toString();
+
+                    //get marital for editing its status
+                    if (selectedProfileField.type.equals(BaseCodeClass.variableType.marital)) {
+                        value = binding.rbMarried.isChecked() ? MARRIED : SINGLE;
+                    }
+
+                    Log.d(TAG, "editUSer: " + value);
+
+                    Call<GetResualt> call = userProfileApi.updateUserProfileField(new CompanyProfileFieldViewModel(baseCodeClass.getUserID(),
+                            baseCodeClass.getToken(),
+                            baseCodeClass.getUserID(),
+                            value,
+                            String.valueOf(selectedProfileField.getCenum())));
+                    call.enqueue(new Callback<GetResualt>() {
+                        @Override
+                        public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
+                            if (response.body().getResualt().equals("100")) {
+                                PageShow = myProfile;
+                                profileSharedViewModel.shouldRefresh(true);
+                                dismiss();
+                            }
+                            Log.d(TAG, "onResponse: " + response.body().getMsg());
+                        }
+
+                        @Override
+                        public void onFailure(Call<GetResualt> call, Throwable t) {
+                            baseCodeClass.logMessage("onFailure >> " + t.getMessage(), requireContext());
+                        }
+                    });
+                }
+
+            }else {
+                //get date for editing born date
+                String value = bornDate != null ? bornDate : binding.etEdit.getText().toString();
+
+                //get marital for editing its status
+                if (selectedProfileField.type.equals(BaseCodeClass.variableType.marital)) {
+                    value = binding.rbMarried.isChecked() ? MARRIED : SINGLE;
+                }
+
+                Log.d(TAG, "editUSer: " + value);
+
+                Call<GetResualt> call = userProfileApi.updateUserProfileField(new CompanyProfileFieldViewModel(baseCodeClass.getUserID(),
+                        baseCodeClass.getToken(),
+                        baseCodeClass.getUserID(),
+                        value,
+                        String.valueOf(selectedProfileField.getCenum())));
+                call.enqueue(new Callback<GetResualt>() {
+                    @Override
+                    public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
+                        if (response.body().getResualt().equals("100")) {
+                            PageShow = myProfile;
+                            profileSharedViewModel.shouldRefresh(true);
+                            dismiss();
+                        }
+                        Log.d(TAG, "onResponse: " + response.body().getMsg());
+                    }
+
+                    @Override
+                    public void onFailure(Call<GetResualt> call, Throwable t) {
+                        baseCodeClass.logMessage("onFailure >> " + t.getMessage(), requireContext());
+                    }
+                });
+            }
+
+
+
+        } catch (Exception e) {
+            logMessage("EditField 100 >> " + e.getMessage(), requireContext());
+        }
+    }
+*/
+    public void editUSer() {
+        try {
+
+
 
             //get date for editing born date
             String value = bornDate != null ? bornDate : binding.etEdit.getText().toString();

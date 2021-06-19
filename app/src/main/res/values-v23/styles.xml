@@ -22,6 +22,8 @@
         <item name="fontFamily">@font/koodak</item>
     </style>
 
+
+
     <style name="BulletinStyle" parent="android:Widget.TextView">
         <item name="fontFamily">@font/digital</item>
         <item name="android:textColor">@color/black</item>

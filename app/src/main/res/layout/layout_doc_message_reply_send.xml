@@ -104,6 +104,8 @@
 
 
             <TextView
+                android:textColorLink="#2962FF"
+                android:autoLink="web"
                 android:padding="4dp"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="check text"

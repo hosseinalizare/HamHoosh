@@ -54,6 +54,8 @@ public class IconListViewAdapter extends BaseAdapter {
                 iSettingClick.onUpdateClicked();
             else if (position == 1)
                 iSettingClick.onReportClicked();
+            else if (position ==2)
+                iSettingClick.onStoreRequestClicked();
         });
         return (row);
     }

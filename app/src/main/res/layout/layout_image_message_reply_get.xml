@@ -75,6 +75,8 @@
                             android:src="@drawable/ic_profile" />
 
                         <TextView
+                            android:textColorLink="#2962FF"
+                            android:autoLink="web"
                             android:id="@+id/tv_messageReply_oldValue"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -85,7 +87,7 @@
                             android:layout_toEndOf="@+id/img_messageReply_oldValue"
                             android:ellipsize="end"
                             android:fontFamily="@font/koodak"
-                            android:maxLines="2"
+                            android:maxLines="3"
                             android:textSize="12sp"
                             tools:text="سلام چطوری خوبی ؟ چه خبر؟ چیکا میکنی ؟ خوش می گذره؟" />
 
@@ -99,6 +101,8 @@
 
 
             <TextView
+                android:textColorLink="#2962FF"
+                android:autoLink="web"
                 android:id="@+id/tv_messageReply_replyValue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

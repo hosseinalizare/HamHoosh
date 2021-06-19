@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.koohestantest1.ApiDirectory.JsonApi;
+import com.example.koohestantest1.activity.ActivityStoreRequest;
 import com.example.koohestantest1.activity.ReportActivity;
 import com.example.koohestantest1.adapter.IconListViewAdapter;
 import com.example.koohestantest1.classDirectory.GetResualt;
@@ -60,8 +61,8 @@ public class ProfileSettingActivity extends AppCompatActivity implements ISettin
 //        String[] settingItem = {"بروز رسانی", "تماس باما", "گزارش خطا"};
 //        int[] settingIcon = {R.drawable.update_icon, R.drawable.contact_us, R.drawable.bug};
 
-        String[] settingItem = {"بروز رسانی", "گزارش خطا"};
-        int[] settingIcon = {R.drawable.update_icon, R.drawable.bug};
+        String[] settingItem = {"بروز رسانی","گزارش خطا","درخواست ثبت فروشگاه"};
+        int[] settingIcon = {R.drawable.update_icon, R.drawable.bug,R.drawable.ic_store_request2};
 
         IconListViewAdapter adapter = new IconListViewAdapter(this, settingItem, settingIcon,this);
 
@@ -125,6 +126,11 @@ public class ProfileSettingActivity extends AppCompatActivity implements ISettin
         Intent intent = new Intent(this, ReportActivity.class);
         startActivity(intent);
     }
+
+    @Override
+    public void onStoreRequestClicked() {
+        Intent intent = new Intent(this, ActivityStoreRequest.class);
+        startActivity(intent);    }
 
     private void updateApp() {
         FileDownloadManager fileDownloadManager = new FileDownloadManager(this);

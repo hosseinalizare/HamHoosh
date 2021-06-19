@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.CompanyID;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.bulletinProduct;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.categoryRecyclerViewAdapter;
+import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.filterValue;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.particularProduct;
@@ -50,8 +51,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.koohestantest1.Utils.IconUtils;
+import com.example.koohestantest1.Utils.SharedPreferenceUtils;
 import com.example.koohestantest1.activity.Main2Activity;
 import com.example.koohestantest1.activity.NewsLetterActivity;
+import com.example.koohestantest1.classDirectory.AppService;
 import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.constants.CurrentCartId;
@@ -392,7 +396,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 if (brand != null) {
                     if (!filterBrandName.contains(brand)) {
                         filterBrandName.add(brand);
-                        filterBrandImage.add(GetImag(brand));
+                        /*filterBrandImage.add(GetImag(brand));*/
+                        filterBrandImage.add(IconUtils.GetImag(brand));
                     }
                 }
             } catch (Exception e) {
@@ -459,7 +464,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
     }
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint({"RestrictedApi", "UnsafeExperimentalUsageError"})
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -489,6 +494,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 .skipMemoryCache(true)
                 .into(companyLogo);
         mContext = getActivity();
+
         mydb = new MyDataBase(mContext);
         dataBase = new DataBase(mContext);
         baseCodeClass.LoadBaseData(mContext);
@@ -1239,7 +1245,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             for (String item :
                     mCategory) {
                 filterName.add(item);
-                filterImage.add(GetImag(item));
+                /*filterImage.add(GetImag(item));*/
+                filterImage.add(IconUtils.GetImag(item));
             }
             filterName.add("همه");
             filterImage.add(R.drawable.allfilter);
@@ -1253,71 +1260,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             logMessage("initFilter : " + e.getMessage(), mContext);
         }
     }
-
-    private Integer GetImag(String item) {
-
-
-        switch (item) {
-            case "خامه":
-            case "کره":
-            case "کره و خامه":
-                return R.drawable.butter;
-            case "خشکبار و برنج":
-                return R.drawable.flour;
-            case "شیرینی":
-                return R.drawable.cookies;
-            case "مربا":
-                return R.drawable.jam;
-            case "روغن":
-                return R.drawable.oil;
-            case "بستنی":
-                return R.drawable.icecream;
-            case "تخم مرغ":
-                return R.drawable.egg;
-            case "دمنوش":
-                return R.drawable.damnoosh;
-            case "قند و نبات":
-                return R.drawable.candy;
-            case "عرقیجات":
-            case "شربت و ابمیوه":
-                return R.drawable.beer;
-            case "کشک":
-                return R.drawable.kashk;
-            case "ترشیجات":
-            case "ترشی":
-                return R.drawable.pickle;
-            case "عسل":
-                return R.drawable.honey;
-            case "شیره":
-                return R.drawable.syrup;
-            case "خرما":
-                return R.drawable.khorma;
-            case "حلواشکری ارده کنجد":
-            case "حلوا ارده":
-                return R.drawable.halvaadrde;
-            case "پنیر":
-                return R.drawable.cheese;
-            case "دوغ":
-                return R.drawable.dough;
-            case "ماست":
-                return R.drawable.yogurt;
-            case "شیر":
-                return R.drawable.milk;
-            case "قره قروت":
-                return R.drawable.granola;
-            case "کرم  و شکلات صبحانه":
-                return R.drawable.ic_chocolate;
-            case "زیتون":
-                return R.drawable.ic_olive;
-            case "منجمد و یخچالی":
-                return R.drawable.ic_beef;
-            case "کره بادام زمینی":
-                return R.drawable.ic_peanutbutter;
-            default:
-                return R.drawable.invisiblepass;
-        }
-    }
-
     private void initCategoryRecyclerView() {
         try {
 

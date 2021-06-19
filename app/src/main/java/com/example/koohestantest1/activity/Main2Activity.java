@@ -1,5 +1,6 @@
 package com.example.koohestantest1.activity;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,6 +23,7 @@ import com.example.koohestantest1.Main2Fragment;
 import com.example.koohestantest1.MyStoreFragment;
 import com.example.koohestantest1.ProfileFragment;
 import com.example.koohestantest1.R;
+import com.example.koohestantest1.classDirectory.AppService;
 import com.example.koohestantest1.constants.CurrentCartId;
 import com.example.koohestantest1.constants.IntentKeys;
 import com.example.koohestantest1.fragments.transinterface.CartTransitionInterface;
@@ -44,7 +46,7 @@ import static com.example.koohestantest1.classDirectory.BaseCodeClass.myAppPage.
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.myAppPage.myProfile;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.myAppPage.myStor;
 
-public class Main2Activity extends BaseActivity implements CartTransitionInterface {
+public class Main2Activity extends AppCompatActivity implements CartTransitionInterface {
 
     private Context mContext = Main2Activity.this;
     private boolean updateFromDb = true;
@@ -67,6 +69,8 @@ public class Main2Activity extends BaseActivity implements CartTransitionInterfa
 
     private BadgeSharedViewModel badgeSharedViewModel;
     private LocalCartViewModel localCartViewModel;
+    public Intent myServiceIntent = null;
+
 
     /**
      * onCreate
@@ -75,6 +79,16 @@ public class Main2Activity extends BaseActivity implements CartTransitionInterfa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+        ///// start service ////
+        if (myServiceIntent ==null){
+            myServiceIntent = new Intent(this, AppService.class);
+            startService(myServiceIntent);
+        }else {
+            startService(myServiceIntent);
+        }
+
+
 //
         Log.d(TAG, "onCreate: ");
         view = findViewById(android.R.id.content);
@@ -400,6 +414,8 @@ public class Main2Activity extends BaseActivity implements CartTransitionInterfa
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        myServiceIntent = new Intent(this, AppService.class);
+        startService(myServiceIntent);
         Log.d(TAG, "onDestroy: ");
     }
 }

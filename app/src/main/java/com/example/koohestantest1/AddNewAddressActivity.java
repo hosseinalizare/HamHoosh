@@ -42,6 +42,7 @@ import java.util.List;
 
 import com.example.koohestantest1.classDirectory.AddressViewModel;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
@@ -144,7 +145,7 @@ public class AddNewAddressActivity extends AppCompatActivity implements OnMapRea
         edCity.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 //reset selected province's cities
-                if (filteredCities.size()>0)
+                if (filteredCities.size() > 0)
                     filteredCities.clear();
 
                 String selectedProvince = edState.getText().toString();
@@ -174,29 +175,29 @@ public class AddNewAddressActivity extends AppCompatActivity implements OnMapRea
                         .switchMap(integer -> observable)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<IranCity>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
+                        .subscribe(new Observer<IranCity>() {
+                            @Override
+                            public void onSubscribe(@NonNull Disposable d) {
 
-                    }
+                            }
 
-                    @Override
-                    public void onNext(@NonNull IranCity iranCity) {
-                        Log.d(TAG, "onNext: " + iranCity);
-                        filteredCities.add(iranCity.getTitle());
-                    }
+                            @Override
+                            public void onNext(@NonNull IranCity iranCity) {
+                                Log.d(TAG, "onNext: " + iranCity);
+                                filteredCities.add(iranCity.getTitle());
+                            }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
+                            @Override
+                            public void onError(@NonNull Throwable e) {
 
-                    }
+                            }
 
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete: ");
-                        addCityDropDowns();
-                    }
-                });
+                            @Override
+                            public void onComplete() {
+                                Log.d(TAG, "onComplete: ");
+                                addCityDropDowns();
+                            }
+                        });
 
             }
         });
@@ -312,25 +313,22 @@ public class AddNewAddressActivity extends AppCompatActivity implements OnMapRea
             }
 
             String postalCodeFinal = postalCode.getText().toString();
-            if (!ValidationCheck.postalCodeValidation(postalCodeFinal)){
-                Toast.makeText(this, "کد پستی نا معتبر است", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            String phone = edPhoneNumber.getText().toString();
-            if (!ValidationCheck.mobileValidation(phone)){
-                if (!ValidationCheck.phoneValidation(phone)){
-                    Toast.makeText(this, "شماره تلفن نا معتبر است", Toast.LENGTH_LONG).show();
+            if (!ValidationCheck.postalCodeValidation(postalCodeFinal)) {
+                if (!isEmpty(postalCodeFinal)) {
+                    Toast.makeText(this, "کد پستی نا معتبر است! اگر از کد پستی خود اطمینان ندارید فیلد مربوطه را خالی بگذارید", Toast.LENGTH_LONG).show();
                     return;
 
                 }
             }
 
+            String phone = edPhoneNumber.getText().toString();
+            if (!ValidationCheck.mobileValidation(phone)) {
+                if (!ValidationCheck.phoneValidation(phone)) {
+                    Toast.makeText(this, "شماره تلفن نا معتبر است", Toast.LENGTH_LONG).show();
+                    return;
 
-
-
-
-
+                }
+            }
 
             relativeLayout.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);

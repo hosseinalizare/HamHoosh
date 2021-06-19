@@ -3,16 +3,27 @@ package com.example.koohestantest1;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +38,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,19 +48,28 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.example.koohestantest1.activity.ActivityProfile;
 import com.example.koohestantest1.activity.CompanySettingActivity;
 import com.example.koohestantest1.activity.CostumersListActivity;
 import com.example.koohestantest1.activity.InvisibleProductActivity;
 import com.example.koohestantest1.activity.NotInStockActivity;
+import com.example.koohestantest1.adapter.ProfileViewPagerAdapter;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
+import com.example.koohestantest1.fragments.FragmentTabsProfile;
 import com.example.koohestantest1.model.CountsDetail;
 import com.example.koohestantest1.model.DeleteMessageM;
+import com.example.koohestantest1.model.Item;
+import com.example.koohestantest1.model.ProfileModel;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.CountsViewModel;
+import com.example.koohestantest1.viewModel.ProfileVM;
+import com.example.koohestantest1.viewModel.UserProfileViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
@@ -62,9 +83,15 @@ import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.MyStoreProductRecyclerViewAdapter;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
+import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
@@ -72,7 +99,7 @@ import static com.example.koohestantest1.classDirectory.BaseCodeClass.companyPro
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
 
-public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObserver.OnScrollChangedListener {
+public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObserver.OnScrollChangedListener, EasyPermissions.PermissionCallbacks {
 
     private Context mContext;
 
@@ -104,7 +131,7 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
     BadgeDrawable badgeDrawable;
     private ConstraintLayout clCostumers;
     private TextView tvMenuInReview, tvMenuInProgress, tvMenuInSend, tvMenuReady, tvMenuDelivered,
-            tvMenuCancelled, tvMenuNotInStock, tvMenuInvisible,tvMenuInVisibleComments;
+            tvMenuCancelled, tvMenuNotInStock, tvMenuInvisible, tvMenuInVisibleComments;
 
     private ImageView ivCompanyProfile;
 
@@ -114,12 +141,39 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
         baseCodeClass = new BaseCodeClass();
     }
 
+    //// Activity profile property
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private ImageView imgProfile;
+    private FloatingActionButton fbCall, fbMessage;
+    private TextView txtBio, txtAddress, txtNuOfCustomer, txtNuOfSell, txtNuOfProduct;
+    private ProgressBar prg;
+    private UserProfileViewModel userProfileViewModel;
+    private ProfileVM profileVM;
+    private BaseCodeClass baseCodeClass2;
+    private List<String> titles;
+    private ProfileViewPagerAdapter pagerAdapter;
+    private ConstraintLayout cl_customer, cl_sellProduct, cl_product;
+    public final static String STATE_MESSAGE_SENDER = "state_message_sender";
+    public final static int REGULAR_USER = 0;
+    private String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+    private String permission2 = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    public static final int READ_STORAGE_PERMISSION_REQUEST = 1307;
+    private ActionBar actionBar;
+    private String title,subTitle;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         countsViewModel = new ViewModelProvider(this).get(CountsViewModel.class);
     }
 
+    @SuppressLint("UnsafeExperimentalUsageError")
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
@@ -143,9 +197,9 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
 
         storeName = view.findViewById(R.id.StoreName);
         storeBio = view.findViewById(R.id.StoreBio);
-        NoOfCustomer = view.findViewById(R.id.NoOfCustomer);
-        NoOfSell = view.findViewById(R.id.NoOfSell);
-        NoOfProduct = view.findViewById(R.id.NoOfProduct);
+        NoOfCustomer = view.findViewById(R.id.NoOfCustomer1);
+        NoOfSell = view.findViewById(R.id.NoOfSell1);
+        NoOfProduct = view.findViewById(R.id.NoOfProduct1);
         message = view.findViewById(R.id.edMessage);
         mobileNO = view.findViewById(R.id.txtMobile);
 
@@ -154,6 +208,145 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
         drawerLayout = view.findViewById(R.id.myStore_drawer_layout);
         navigationView = view.findViewById(R.id.myStoreNavView);
         drawerMenuBtn = view.findViewById(R.id.drawer_menu_btn);
+        ///// activity profile ...................
+        setupViews(view);
+
+        /// check Read External storage
+        if (!EasyPermissions.hasPermissions(getContext(), permission,permission2)) {
+            EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
+        }
+
+        try {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+             actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        ivCompanyProfile.setOnClickListener(v -> {
+            Intent mIntent  = new Intent(mContext,ActivityProfile.class);
+            startActivity(mIntent);
+        });
+
+
+
+
+
+
+        fbMessage.setOnClickListener(v -> {
+            try {
+                setAnimation(Techniques.Tada, 100L, fbMessage);
+                Intent intent = new Intent(getContext(), MessageActivity.class);
+                //sender = ourselfes
+                intent.putExtra("sender", baseCodeClass.getUserID());
+                //getter = company(others)
+                intent.putExtra("getter", baseCodeClass.getCompanyID());
+                intent.putExtra(STATE_MESSAGE_SENDER, REGULAR_USER);
+                startActivity(intent);
+            } catch (Exception e) {
+                baseCodeClass.logMessage(e.getMessage() + "888", getContext());
+            }
+        });
+
+
+        cl_customer.setOnClickListener(v -> {
+            try {
+
+                if (baseCodeClass.getPermissions().get(10).isState()) {
+                    setAnimation(Techniques.Tada, 100L, cl_customer);
+                    Intent intent = new Intent(getContext(), CostumersListActivity.class);
+                    startActivity(intent);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        });
+        cl_sellProduct.setOnClickListener(v -> {
+
+            try {
+
+                if (baseCodeClass.getPermissions().get(10).isState()) {
+                    setAnimation(Techniques.Tada, 100L, cl_sellProduct);
+                    Intent intent = new Intent(getContext(), MyStoreOrderListActivity.class);
+                    startActivity(intent);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        });
+
+
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        tabLayout.setSelectedTabIndicatorColor(((AppCompatActivity)getActivity()).getColor(R.color.DarkYellow));
+
+        tabLayout.setTabTextColors(Color.parseColor("#ffffff"),((AppCompatActivity)getActivity()).getColor(R.color.DarkYellow));
+        profileVM = new ViewModelProvider(this).get(ProfileVM.class);
+        profileVM.getProfileData(BaseCodeClass.CompanyID, BaseCodeClass.userID).observe(requireActivity(), new Observer<ProfileModel>() {
+
+            @Override
+            public void onChanged(ProfileModel profileModel) {
+                prg.setVisibility(View.GONE);
+                txtBio.setText(profileModel.getBio());
+                txtAddress.setText(profileModel.getAddres());
+                txtNuOfCustomer.setText(profileModel.getFollowingCount());
+                txtNuOfSell.setText(profileModel.getSaleCount());
+                txtNuOfProduct.setText(profileModel.getProductCount());
+                /*title = profileModel.getCompanyName().toString();
+                subTitle = profileModel.getOnlineTime().toString();*/
+
+                actionBar.setTitle(profileModel.getCompanyName());
+                actionBar.setSubtitle(profileModel.getOnlineTime());
+
+                Glide.with(getContext()).load(generateUrlCompanyPicture(profileModel.getCompanyId())).placeholder(R.drawable.image_placeholder).into(imgProfile);
+
+                for (Item item : profileModel.getItem()) {
+                    titles.add(item.getName());
+                    pagerAdapter.addTab(new FragmentTabsProfile(item));
+                }
+                viewPager.setAdapter(pagerAdapter);
+                viewPager.setCurrentItem(titles.size() - 1);
+                cl_product.setOnClickListener(v -> {
+                    int position = viewPager.getCurrentItem();
+                    int index = 0;
+                    for (Item item : profileModel.getItem()) {
+                        if (item.getGroupType() == 1) {
+                            position = index;
+                            break;
+                        }
+                        index++;
+                    }
+                    setAnimation(Techniques.Tada, 100L, cl_product);
+                    viewPager.setCurrentItem(position);
+
+                });
+                fbCall.setOnClickListener(v -> {
+                    setAnimation(Techniques.Tada, 100L, fbCall);
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + profileModel.getBusnisePhone()));
+                    startActivity(intent);
+
+                });
+
+                new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+                    @Override
+                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                        tab.setText(titles.get(position));
+                    }
+                }).attach();
+
+            }
+        });
+
+
+        changeTabsFont(tabLayout);
+
+
+        //////.....................
 
         if (companyProfile != null) {
             String companyName = companyProfile.getCompanyName();
@@ -168,6 +361,8 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
         if (baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")) {
             //regular user
             vf.setDisplayedChild(0);
+           /* Intent intent  = new Intent(getContext(), ActivityProfile.class);
+            startActivity(intent);*/
 
             btnSendRequest.setOnClickListener(v -> {
                 try {
@@ -217,13 +412,11 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
             ivMessageIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent mIntent = new  Intent(mContext,ListMessageActivity.class);
-                    mIntent.putExtra("id",baseCodeClass.getCompanyID());
+                    Intent mIntent = new Intent(mContext, ListMessageActivity.class);
+                    mIntent.putExtra("id", baseCodeClass.getCompanyID());
                     startActivity(mIntent);
-
                 }
             });
-
 
 
             btnReports.setOnClickListener(v -> startActivity(new Intent(mContext, MyStoreReportActivity.class)));
@@ -233,9 +426,9 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
             String neighborHood = companyProfile.getNeighborhood() == null ? "" : companyProfile.getNeighborhood();
             String address = companyProfile.getAddress() == null ? "" : "،" + companyProfile.getAddress();
             storeBio.setText(bio + "\n" + neighborHood + address);
-            NoOfCustomer.setText(companyProfile.getFollowingCount());
-            NoOfSell.setText(companyProfile.getOrderCount());
-            NoOfProduct.setText(companyProfile.getProductCount());
+            NoOfCustomer.setText(companyProfile.getFollowingCount().toString());
+            NoOfSell.setText(companyProfile.getOrderCount().toString());
+            NoOfProduct.setText(companyProfile.getProductCount().toString());
 
 
             Menu menu = navigationView.getMenu();
@@ -270,7 +463,7 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
                                     startActivity(intent);
                                 }
                             } catch (Exception e) {
-                                Log.d("Error",e.getMessage());
+                                Log.d("Error", e.getMessage());
                             }
                             break;
 
@@ -282,7 +475,7 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
                                     startActivity(intent);
                                 }
                             } catch (Exception e) {
-                                Log.d("Error",e.getMessage());
+                                Log.d("Error", e.getMessage());
                             }
                             break;
                         case R.id.editmonyStore:
@@ -304,7 +497,7 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
                                     startActivity(intent);
                                 }
                             } catch (Exception e) {
-                                Log.d("Error",e.getMessage());
+                                Log.d("Error", e.getMessage());
                             }
                             break;
                         case R.id.employeeStore:
@@ -615,6 +808,11 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
     }
 
     @Override
+    public Single<List<ContactListViewModel>> getcontacts(String token, String userID, String objectID) {
+        return null;
+    }
+
+    @Override
     public Single<SendOrderClass> getOrderData(String orderId) {
         return null;
     }
@@ -652,6 +850,71 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
 //        } catch (Exception e) {
 //            baseCodeClass.logMessage("onScrollchanged : " + e.getMessage(), mContext);
 //        }
+    }
+
+
+    /// Profile
+    private void setupViews(View view) {
+        toolbar = view.findViewById(R.id.activityProfile_toolbar);
+        tabLayout = view.findViewById(R.id.activityProfile_tabLayout);
+        viewPager = view.findViewById(R.id.activityProfile_viewpager);
+        imgProfile = view.findViewById(R.id.img_activityProfile_imgProfile);
+        fbMessage = view.findViewById(R.id.fb_activityProfile_fbMessage);
+        fbCall = view.findViewById(R.id.fbCallProfile);
+        txtBio = view.findViewById(R.id.txt_activityProfile_txtBioValue);
+        txtAddress = view.findViewById(R.id.txt_activityProfile_txtAddressValue);
+        txtNuOfCustomer = view.findViewById(R.id.NoOfCustomer);
+        txtNuOfSell = view.findViewById(R.id.NoOfSell);
+        txtNuOfProduct = view.findViewById(R.id.NoOfProduct);
+        prg = view.findViewById(R.id.prg_activityProfile);
+        cl_customer = view.findViewById(R.id.cl_customers);
+        cl_sellProduct = view.findViewById(R.id.root_noOfSell);
+        cl_product = view.findViewById(R.id.cl_product);
+        titles = new ArrayList<>();
+        pagerAdapter = new ProfileViewPagerAdapter(requireActivity());
+        baseCodeClass2 = new BaseCodeClass();
+    }
+
+    private void changeTabsFont(TabLayout tabLayout) {
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildsCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildsCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    AssetManager mgr = ((AppCompatActivity) getActivity()).getAssets();
+                    Typeface tf = Typeface.createFromAsset(mgr, "font/koodak.ttf");//Font file in /assets
+                    ((TextView) tabViewChild).setTypeface(tf);
+                }
+            }
+        }
+    }
+
+    private String generateUrlCompanyPicture(String id) {
+        String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + id + "&ImageAddress=" + 1;
+        return url;
+    }
+
+    private void setAnimation(Techniques animation, Long duration, View view) {
+        YoYo.with(animation)
+                .duration(duration)
+                .playOn(view);
+    }
+
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull @NotNull List<String> perms) {
 
     }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull @NotNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this).build().show();
+        }
+    }
+
+
 }

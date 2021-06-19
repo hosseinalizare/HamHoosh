@@ -159,6 +159,11 @@ public class ReportActivity extends AppCompatActivity implements MessageApi {
     }
 
     @Override
+    public Single<List<ContactListViewModel>> getcontacts(String token, String userID, String objectID) {
+        return null;
+    }
+
+    @Override
     public Single<SendOrderClass> getOrderData(String orderId) {
         return null;
     }

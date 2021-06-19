@@ -43,6 +43,8 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:textColorLink="#2962FF"
+                android:autoLink="web"
                 android:id="@+id/txt_layout_imageMessageSent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

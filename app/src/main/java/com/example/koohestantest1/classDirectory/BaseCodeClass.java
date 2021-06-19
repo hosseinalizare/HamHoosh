@@ -185,12 +185,12 @@ public class BaseCodeClass extends Application {
             context = getApplicationContext();
         }
 
-        if (myServiceIntent ==null){
+      /*  if (myServiceIntent ==null){
             myServiceIntent = new Intent(this,AppService.class);
             startService(myServiceIntent);
         }else {
             startService(myServiceIntent);
-        }
+        }*/
     }
 
 
