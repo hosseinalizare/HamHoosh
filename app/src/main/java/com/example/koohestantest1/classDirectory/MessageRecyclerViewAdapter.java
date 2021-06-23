@@ -273,10 +273,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             int msgType = sendMessageViewModel.getMsgType();
             String userSender = sendMessageViewModel.getUserSender();
+            String subSenderId =sendMessageViewModel.getSubSenderID();
             ////// generate textMsg
             if (msgType == BaseCodeClass.variableType.string_.getValue() || msgType == BaseCodeClass.variableType.int_.getValue()) {
                 if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if (sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+                    if ( !StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyMsgSenderViwHolder replyMsgSenderViwHolder = (ReplyMsgSenderViwHolder) holder;
                             replyMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -328,7 +329,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     else if (msgType == BaseCodeClass.variableType.Image_.getValue()) {
 
                 if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if (sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyImgMsgSenderViwHolder replyImgMsgSenderViwHolder = (ReplyImgMsgSenderViwHolder) holder;
                             replyImgMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -382,7 +383,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     else if (msgType == BaseCodeClass.variableType.File_.getValue()) {
 
                 if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if (sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+                    if ( !StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyDocMsgSenderViwHolder replyDocMsgSenderViwHolder = (ReplyDocMsgSenderViwHolder) holder;
                             replyDocMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -435,7 +436,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     else if (msgType == BaseCodeClass.variableType.Video_.getValue()) {
                 if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if (sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyVideoMsgSenderViwHolder replyVideoMsgSenderViwHolder = (ReplyVideoMsgSenderViwHolder) holder;
                             replyVideoMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -503,7 +504,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     else if (msgType == BaseCodeClass.variableType.Music_.getValue()) {
 
                 if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if (sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyMusicMsgSenderViwHolder replyMusicMsgSenderViwHolder = (ReplyMusicMsgSenderViwHolder) holder;
                             replyMusicMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -3632,7 +3633,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private int generateViewType(String userSender,String recipientUser,String subSenderId,String replyMsg,int senderReply,int sender,int geterReply,int geter){
         if (userSender.equals(recipientUser)){
-            if (subSenderId.equals(BaseCodeClass.userID)){
+            if ( !StringUtils.textIsEmpty(subSenderId) && subSenderId.equals(BaseCodeClass.userID)){
                 if (!StringUtils.textIsEmpty(replyMsg)) {
                     return senderReply;
                 } else {
