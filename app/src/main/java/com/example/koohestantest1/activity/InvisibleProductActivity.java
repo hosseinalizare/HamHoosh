@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.koohestantest1.adapter.ProductRecyclerViewAdapterV2;
 import com.example.koohestantest1.databinding.ActivityInvisibleProductsBinding;
+import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.viewModel.ProductViewModel;
 
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
@@ -37,8 +38,8 @@ public class InvisibleProductActivity extends AppCompatActivity {
         });
 
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-
-        adapterV2 = new ProductRecyclerViewAdapterV2(this , true,getSupportFragmentManager());
+        DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+        adapterV2 = new ProductRecyclerViewAdapterV2(this , true,getSupportFragmentManager(),dbViewModel,this);
         binding.rvInvisibleProducts.setLayoutManager(new LinearLayoutManager(this));
         binding.rvInvisibleProducts.setAdapter(adapterV2);
 
@@ -53,7 +54,7 @@ public class InvisibleProductActivity extends AppCompatActivity {
 
         //listen for data
         productViewModel.getLiveInvisibleProducts().observe(this, sendProductClasses -> {
-            adapterV2.setData(sendProductClasses);
+            //adapterV2.setData(sendProductClasses);
             binding.pbInvisibleProducts.setVisibility(View.GONE);
 
         });

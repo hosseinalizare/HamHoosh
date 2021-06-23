@@ -19,7 +19,6 @@ import com.example.koohestantest1.activity.LoginActivity;
 import java.util.concurrent.TimeUnit;
 
 import com.example.koohestantest1.ApiDirectory.JsonApi;
-import com.example.koohestantest1.DB.DataBase;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetVerifySmsClass;
 import com.example.koohestantest1.classDirectory.HardwareIdsMobile;
@@ -50,14 +49,12 @@ public class MainActivity extends AppCompatActivity {
     TermsDialog termsDialog;
 
     BaseCodeClass baseCodeClass = new BaseCodeClass();
-    DataBase dataBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dataBase = new DataBase(this);
         hardwareIdsMobile = new HardwareIdsMobile(MainActivity.this);
         loadingDialog = new LoadingDialog(MainActivity.this);
         termsDialog = new TermsDialog(MainActivity.this);

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.koohestantest1.classDirectory.SendProduct;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 
@@ -200,9 +201,11 @@ public class FilterDialogFragment extends DialogFragment implements LoadProductA
     }
 
     @Override
-    public void recyclerViewCanUpdating() {
+    public void recyclerViewCanUpdating(List<Product> products) {
 
     }
+
+
 
     @Override
     public void imageAdapterCanUpdating(String imagePID) {

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.ViewProductActivity;
+import com.example.koohestantest1.local_db.entity.Product;
 
 import java.util.List;
 
@@ -30,15 +31,15 @@ public class ParticularProductRecyclerViewAdapter extends RecyclerView.Adapter<P
 //        this.PID = pid;
 //    }
 
-    List<AllProductData> producs;
+    List<Product> producs;
     BaseCodeClass baseCodeClass = new BaseCodeClass();
 
-    public ParticularProductRecyclerViewAdapter(Context context, List<AllProductData> ProductClass){
+    public ParticularProductRecyclerViewAdapter(Context context, List<Product> ProductClass) {
         producs = ProductClass;
         this.mContext = context;
     }
 
-    public void newDownloadImage(String pid, ViewHolder holder){
+    public void newDownloadImage(String pid, ViewHolder holder) {
         String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
         Glide.with(mContext).load(url).into(holder.image);
     }
@@ -54,20 +55,18 @@ public class ParticularProductRecyclerViewAdapter extends RecyclerView.Adapter<P
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         try {
             //holder.image.setImageBitmap(producs.get(position).getImage());
-            newDownloadImage(producs.get(position).getProductClass().getProductID(), holder);
+            newDownloadImage(producs.get(position).ProductID, holder);
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (baseCodeClass.loadSelectedProduct(producs.get(position).getProductClass().getProductID(), mContext)) {
-                        Intent intent = new Intent(mContext, ViewProductActivity.class);
-                        intent.putExtra("PID", producs.get(position).getProductClass().getProductID());
-                        mContext.startActivity(intent);
-                    } else {
-//                    toastMessage("خطای درون برنامه ای");
-                    }
+
+                    Intent intent = new Intent(mContext, ViewProductActivity.class);
+                    intent.putExtra("PID", producs.get(position).ProductID);
+                    mContext.startActivity(intent);
+
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             baseCodeClass.logMessage("particularAdapter > onBindViewHolder", mContext);
         }
     }
@@ -77,8 +76,9 @@ public class ParticularProductRecyclerViewAdapter extends RecyclerView.Adapter<P
         return producs.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 

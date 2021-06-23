@@ -21,7 +21,10 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,6 +35,8 @@ import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.ViewProductActivity;
 import com.example.koohestantest1.constants.FilterOption;
 import com.example.koohestantest1.fragments.bottomsheet.EditBottomSheet;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 import com.example.koohestantest1.viewModel.BadgeSharedViewModel;
@@ -43,7 +48,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
-import com.example.koohestantest1.DB.MyDataBase;
 import com.example.koohestantest1.ViewModels.BookMarkViewModel;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
 import com.example.koohestantest1.ViewModels.PostViewViewModel;
@@ -54,20 +58,18 @@ import retrofit2.Call;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.manageOrderClass;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.selectedProduct;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.sendOrderClass;
 import static com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirectory;
 
 class itemViewHolder extends RecyclerView.ViewHolder {
 
     public ImageView pImageView;
-    public TextView txtPName, txtDetail, txtPrice, cartQTY,txtPrice2;
+    public TextView txtPName, txtDetail, txtPrice, cartQTY, txtPrice2;
     public CardView cardView, addToCart, increaseCart;
-    public ImageView btnAddToCart, cartAdd, cartRemove, RaidIcon,imgEdit, imgDiscount;
+    public ImageView btnAddToCart, cartAdd, cartRemove, RaidIcon, imgEdit, imgDiscount;
     public ConstraintLayout layout;
     private boolean changePricePermission;
+
     public itemViewHolder(@NonNull View itemView) {
         super(itemView);
 
@@ -82,11 +84,11 @@ class itemViewHolder extends RecyclerView.ViewHolder {
         cartAdd = itemView.findViewById(R.id.cartAdd);
         cartRemove = itemView.findViewById(R.id.cartRemove);
         cartQTY = itemView.findViewById(R.id.cartQuantity);
-        txtPrice2=itemView.findViewById(R.id.txtProductFinalPrice);
+        txtPrice2 = itemView.findViewById(R.id.txtProductFinalPrice);
         layout = itemView.findViewById(R.id.addToCartBack);
         RaidIcon = itemView.findViewById(R.id.rialIcon);
         imgEdit = itemView.findViewById(R.id.img_productItem_edit);
-        imgDiscount =itemView.findViewById(R.id.img_priceDiscount);
+        imgDiscount = itemView.findViewById(R.id.img_priceDiscount);
     }
 
 }
@@ -102,13 +104,14 @@ class LoadingViewHolder extends RecyclerView.ViewHolder {
 
 public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable, LoadProductApi {
     private Context mContext;
-    List<AllProductData> productData;
-    public List<AllProductData> showProductData = new ArrayList<>();
-    public List<AllProductData> filteredProduct = new ArrayList<>();
+    List<Product> productData;
+    public List<Product> showProductData = new ArrayList<>();
+    public List<Product> filteredProduct = new ArrayList<>();
     private FilterOption filterOption = FilterOption.NON;
-
+    private DBViewModel dbViewModel;
     BaseCodeClass baseCodeClass = new BaseCodeClass();
-    MyDataBase mydb;
+
+    public static boolean isFinish = false;
 
     public final int VIEW_TYPE_ITEM = 0, VIEW_TYPE_LOADING = 1;
     public RecyclerLoadMore loadMoreInterFace;
@@ -120,6 +123,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private FragmentManager fragmentManager;
     private String TAG = ProductRecyclerViewAdapter.class.getSimpleName();
 
+    private LifecycleOwner lifecycleOwner;
+    private ManageOrderClass manageOrderClass;
 //    public ProductRecyclerViewAdapter(Context mContext, List<AllProductData> _productData,
 //                                      BadgeSharedViewModel badgeSharedViewModel, LocalCartViewModel localCartViewModel) {
 //        this.mContext = mContext;
@@ -137,18 +142,21 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 //
 //    }
 
-    public ProductRecyclerViewAdapter(Context mContext, List<AllProductData> _productData,
-                                      BadgeSharedViewModel badgeSharedViewModel, LocalCartViewModel localCartViewModel, FragmentManager fragmentManager) {
+    public ProductRecyclerViewAdapter(Context mContext, List<Product> _productData,
+                                      BadgeSharedViewModel badgeSharedViewModel, LocalCartViewModel localCartViewModel, FragmentManager fragmentManager, DBViewModel dbViewModel, LifecycleOwner lifecycleOwner, Fragment fragment) {
         this.mContext = mContext;
         productData = _productData;
         this.fragmentManager = fragmentManager;
         this.badgeSharedViewModel = badgeSharedViewModel;
         this.localCartViewModel = localCartViewModel;
+        this.dbViewModel = dbViewModel;
+        this.lifecycleOwner = lifecycleOwner;
+        manageOrderClass = new ManageOrderClass(fragment);
         try {
             this.filteredProduct.addAll(productData);
             load10Data();
 
-            mydb = new MyDataBase(mContext);
+            //mydb = new MyDataBase(mContext);
         } catch (Exception e) {
             logMessage("ProductAdapter 100 >> " + e.getMessage(), mContext);
         }
@@ -261,7 +269,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
 
-
     @Override
     public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
         return null;
@@ -278,9 +285,10 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public void recyclerViewCanUpdating() {
+    public void recyclerViewCanUpdating(List<Product> products) {
 
     }
+
 
     @Override
     public void imageAdapterCanUpdating(String imagePID) {
@@ -290,8 +298,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public Call<GetResualt> deleteProduct(DeleteProduct deleteProduct) {
         return null;
     }
-
-
 
 
     /**
@@ -307,7 +313,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             int i = 0;
             showProductData.clear();
             if (filteredProduct != null) {
-                for (AllProductData b : filteredProduct
+                for (Product b : filteredProduct
                 ) {
                     this.showProductData.add(b);
                     i++;
@@ -347,7 +353,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
+        isFinish = false;
         if (holder instanceof itemViewHolder) {
             loadProduct(holder, position);
         } else if (holder instanceof LoadingViewHolder) {
@@ -370,7 +376,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         isLoading = false;
     }
 
-    @Override
+/*    @Override
     public Filter getFilter() {
         try {
             Filter filter = new Filter() {
@@ -378,12 +384,12 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 @SuppressWarnings("unchecked")
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
-                    filteredProduct = (List<AllProductData>) results.values;
+                    filteredProduct = (List<Product>) results.values;
                     load10Data();
                     notifyDataSetChanged();
                 }
 
-                @Override
+               *//* @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults results = new FilterResults();
                     ArrayList<AllProductData> FilteredArrayNames = new ArrayList<>();
@@ -392,11 +398,11 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     char mode = value.charAt(0);
                     value = value.substring(1);
                     constraint=value;
-                    if (mode=='B')
+                    *//**//*if (mode=='B')
                     {
                         for (int i = 0; i < productData.size(); i++) {
                             String dataNames =null;
-                            for (ProductPropertisClass productPropertisClass : productData.get(i).getProductClass().getProductPropertis()) {
+                            for (ProductPropertisClass productPropertisClass : productData.get(i)) {
                                 if (productPropertisClass.getPropertisName().equals("برند")){
                                     dataNames = productPropertisClass.getPropertisValue();
                                     break;
@@ -416,7 +422,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         results.values = FilteredArrayNames;
 
                         return results;
-                    }
+                    }*//**//*
 
                     // perform your search here using the searchConstraint String.
 
@@ -436,7 +442,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     results.values = FilteredArrayNames;
 
                     return results;
-                }
+                }*//*
             };
 
             return filter;
@@ -444,7 +450,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             logMessage("ProductAdapter 300 >> " + e.getMessage(), mContext);
             return null;
         }
-    }
+    }*/
 
 
     public void toastMessage(String message) {
@@ -459,7 +465,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         try {
 
             holder = (itemViewHolder) mholder;
-            if (baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")){
+            if (baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")) {
                 holder.imgEdit.setVisibility(View.GONE);
             }
             if (showProductData.get(position) == null) {
@@ -468,75 +474,74 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
             holder.imgEdit.setOnClickListener(v -> {
-                showPopup(v,position);
+                showPopup(v, position);
             });
 
-            if (!showProductData.get(position).getProductClass().getStandardCost().getShowoffPrice().equals("0")){
+            if (!showProductData.get(position).ShowoffPrice.equals("0")) {
 
 
                 final int sdk = android.os.Build.VERSION.SDK_INT;
-                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    holder.txtPrice.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.red_line) );
+                if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    holder.txtPrice.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.red_line));
                 } else {
                     holder.txtPrice.setBackground(ContextCompat.getDrawable(context, R.drawable.red_line));
                 }
                 holder.imgDiscount.setVisibility(View.VISIBLE);
                 /*int firstPrice=showProductData.get(position).getProductClass().getStandardCost().getPrice();
                 int discountPrice=showProductData.get(position).getProductClass().getStandardCost().getOffPrice();*/
-                int finalPrice = showProductData.get(position).getProductClass().getStandardCost().getPrice();
+                int finalPrice = showProductData.get(position).StandardCost;
 
                 holder.txtPrice2.setText(StringUtils.getNumberWithoutDot(finalPrice));
                 holder.txtPrice2.setVisibility(View.VISIBLE);
-                BaseCodeClass.setMargins(holder.txtPrice,8,0,0,0);
-                holder.txtPrice.setPadding(0,0,0,0);
+                BaseCodeClass.setMargins(holder.txtPrice, 8, 0, 0, 0);
+                holder.txtPrice.setPadding(0, 0, 0, 0);
 
-            }else {
+            } else {
                 holder.imgDiscount.setVisibility(View.GONE);
 
             }
 
 
+            holder.txtPName.setText(showProductData.get(position).ProductName);
 
-            holder.txtPName.setText(showProductData.get(position).getProductClass().getProductName());
+            Log.d(TAG, "loadProduct: " + showProductData.get(position).ProductID);
+            newDownloadImage(showProductData.get(position).ProductID);
 
-            Log.d(TAG, "loadProduct: " + showProductData.get(position).getProductClass().getProductID());
-            newDownloadImage(showProductData.get(position).getProductClass().getProductID());
+            String color = showProductData.get(position).Spare1;
 
-            String color = showProductData.get(position).getProductClass().getSpare1();
-
-            if (!color.equals("null")){
+            if (!color.equals("null")) {
                 holder.pImageView.setBackgroundColor(Color.parseColor(color));
             }
 
-            String detail = showProductData.get(position).getProductClass().getDescription().replace("\n", " ");
+            String detail = showProductData.get(position).Description.replace("\n", " ");
             if (detail.length() >= 21) {
                 holder.txtDetail.setText(detail.substring(0, Math.min(detail.length(), 20)) + "...");
             } else {
                 holder.txtDetail.setText(detail);
             }
-            holder.txtPrice.setText(StringUtils.getNumberWithoutDot(showProductData.get(position).getProductClass().getStandardCost().getShowPrice()));
+            holder.txtPrice.setText(StringUtils.getNumberWithoutDot(showProductData.get(position).ShowPrice));
 
             if (!baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")) {
                 boolean changePricePermission = baseCodeClass.getPermissions().get(BaseCodeClass.EmploeeAccessLevel.EditeProductPrice.getValue()).isState();
                 holder.txtPrice.setOnLongClickListener(v -> {
-                    if(!changePricePermission){
+                    if (!changePricePermission) {
                         Toast.makeText(mContext, "اجازه ویرایش قیمت محصول را ندارید", Toast.LENGTH_SHORT).show();
                         return false;
-                    }else {
-                        String productId = showProductData.get(position).getProductClass().getProductID();
-                        EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, showProductData.get(position).getProductClass().getStandardCost().getShowPrice(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
+                    } else {
+                        String productId = showProductData.get(position).ProductID;
+                        EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, showProductData.get(position).ShowPrice, productId, BaseCodeClass.productFieldEnum.StandardCost, null);
                         editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         return true;
                     }
                 });
 
                 holder.RaidIcon.setOnLongClickListener(view -> {
-                    if(!changePricePermission){
+                    if (!changePricePermission) {
                         Toast.makeText(mContext, "اجازه ویرایش قیمت محصول را ندارید", Toast.LENGTH_SHORT).show();
                         return false;
-                    }else {
-                        String productId = showProductData.get(position).getProductClass().getProductID();
-                        EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, showProductData.get(position).getProductClass().getStandardCost().getShowPrice(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
+                    } else {
+                        String productId = showProductData.get(position).ProductID;
+                        EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, showProductData.get(position).ShowPrice, productId, BaseCodeClass.productFieldEnum.StandardCost, null);
                         editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         return true;
                     }
@@ -547,20 +552,28 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             holder.cardView.setOnClickListener(v -> {
                 try {
 //                selectedPID = PID.get(position);
-                    if (baseCodeClass.loadSelectedProduct(showProductData.get(position).getProductClass().getProductID(), mContext)) {
-                        Intent intent = new Intent(mContext, ViewProductActivity.class);
-                        intent.putExtra("PID", showProductData.get(position).getProductClass().getProductID());
-                        mContext.startActivity(intent);
-                    } else {
-//                    toastMessage("خطای درون برنامه ای");
-                    }
+                    dbViewModel.getSpecificProduct(showProductData.get(position).ProductID)
+                            .observe(lifecycleOwner, new Observer<Product>() {
+                                @Override
+                                public void onChanged(Product product) {
+                                    if (!isFinish) {
+                                        if (product != null) {
+                                            selectedProduct = product;
+                                            Intent intent = new Intent(mContext, ViewProductActivity.class);
+                                            intent.putExtra("PID", showProductData.get(position).ProductID);
+                                            mContext.startActivity(intent);
+                                        }
+                                    }
+                                }
+                            });
+
                 } catch (Exception e) {
                     logMessage("ProductAdapter 400 >> " + e.getMessage(), mContext);
                 }
 
             });
 
-            if (showProductData.get(position).isSelectedToCart()) {
+            if (showProductData.get(position).AddToCard) {
                 holder.btnAddToCart.setImageResource(R.drawable.ic_added_cart);
                 holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.okGreen));
             } else {
@@ -573,18 +586,20 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
              Modifies Number of Items to Cart
              */
             //TODO Show non exist message inside invisible
-            if (showProductData.get(position).getProductClass().getDiscontinued() == 0) {
+            if (showProductData.get(position).Discontinued == 0) {
                 holder.addToCart.setVisibility(View.INVISIBLE);
             } else holder.addToCart.setVisibility(View.VISIBLE);
 
             holder.addToCart.setOnClickListener(v -> {
                 try {
-                    String currentProductId = showProductData.get(position).getProductClass().getProductID();
-                    baseCodeClass.loadSelectedProduct(currentProductId, mContext);
-                    if (selectedProduct.isSelectedToCart()) {
+                    // baseCodeClass.loadSelectedProduct(currentProductId, mContext);
+                    if (showProductData.get(position).AddToCard) {
+                        //addedProducts.remove(position);
                         //removes Item in carts
-                        manageOrderClass.RemoveProductFromCart(showProductData.get(position).getProductClass().getProductID());
-                        productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(false);
+                        manageOrderClass.RemoveProductFromCart(showProductData.get(position).ProductID);
+                        //productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(false);
+                        showProductData.get(position).AddToCard = false;
+                        showProductData.get(position).CartItemCount = 0;
 
                         //handle view:
                         holder.btnAddToCart.setImageResource(R.drawable.ic_add_cart);
@@ -593,19 +608,24 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         badgeSharedViewModel.setCount(BadgeCounter.getCount() - 1);
 
                     } else {
-                        if (manageOrderClass.addProductToCart(selectedProduct.getProductClass())) {
-                            productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(true);
+                        holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.green900));
+                        /*if (manageOrderClass.addProductToCart(selectedProduct.getProductClass()))*/
 
-                            badgeSharedViewModel.setCount(sendOrderClass.Order_Details.size());
-
-
-                        } else {
-                            logMessage("productRec Adapter : 404", mContext);
-                        }
+                        //productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(true);
+                        showProductData.get(position).AddToCard = true;
+                        showProductData.get(position).CartItemCount = 1;
+                        //addedProducts.add(showProductData.get(position));
+                        dbViewModel.getCardItemCount().observe(lifecycleOwner, new Observer<Integer>() {
+                            @Override
+                            public void onChanged(Integer integer) {
+                                badgeSharedViewModel.setCount(integer);
+                            }
+                        });
 
                     }
-                    localCartViewModel.updateCartInfo(sendOrderClass);
-
+                    //localCartViewModel.updateCartInfo(sendOrderClass);
+                    dbViewModel.updateProduct(showProductData.get(position));
+                    //dbViewModel.updateCardItemCount(1,showProductData.get(position).ProductID);
                     notifyItemChanged(position);
 
                 } catch (Exception e) {
@@ -617,53 +637,53 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    private void showPopup(View v,int position) {
-        boolean showProduct = showProductData.get(position).getProductClass().getShow();
-        PopupMenu popupMenu = new PopupMenu(mContext,v);
+    private void showPopup(View v, int position) {
+        boolean showProduct = showProductData.get(position).Show;
+        PopupMenu popupMenu = new PopupMenu(mContext, v);
         MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.edit_product_menu,popupMenu.getMenu());
+        inflater.inflate(R.menu.edit_product_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 boolean changePricePermission = baseCodeClass.getPermissions().get(BaseCodeClass.EmploeeAccessLevel.EditeProductPrice.getValue()).isState();
-                boolean showProduct = showProductData.get(position).getProductClass().getShow();
+                boolean showProduct = showProductData.get(position).Show;
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.editProductName_menu:
-                        String productId = showProductData.get(position).getProductClass().getProductID();
+                        String productId = showProductData.get(position).ProductID;
                         EditBottomSheet editBottomSheet = EditBottomSheet.
-                                onNewInstance(0, showProductData.get(position).getProductClass().getProductName(), productId,BaseCodeClass.productFieldEnum.ProductName,null);
+                                onNewInstance(0, showProductData.get(position).ProductName, productId, BaseCodeClass.productFieldEnum.ProductName, null);
                         editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         //Toast.makeText(mContext, "Product name", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.editProductCount_menu:
-                        productId = showProductData.get(position).getProductClass().getProductID();
+                        productId = showProductData.get(position).ProductID;
                         editBottomSheet = EditBottomSheet.
-                                onNewInstance(0, showProductData.get(position).getProductClass().getDiscontinued()+"", productId,BaseCodeClass.productFieldEnum.Discontinued,null);
+                                onNewInstance(0, showProductData.get(position).Discontinued + "", productId, BaseCodeClass.productFieldEnum.Discontinued, null);
                         editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         break;
                     case R.id.editProductPrice_menu:
-                        if(!changePricePermission){
+                        if (!changePricePermission) {
                             Toast.makeText(mContext, "اجازه ویرایش قیمت محصول را ندارید", Toast.LENGTH_SHORT).show();
-                        }else {
-                            productId = showProductData.get(position).getProductClass().getProductID();
+                        } else {
+                            productId = showProductData.get(position).ProductID;
                             editBottomSheet = EditBottomSheet.
-                                    onNewInstance(0, showProductData.get(position).getProductClass().getStandardCost().getShowPrice(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
+                                    onNewInstance(0, showProductData.get(position).ShowPrice, productId, BaseCodeClass.productFieldEnum.StandardCost, null);
                             editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         }
                         break;
                     case R.id.manageShowProduct:
-                        productId = showProductData.get(position).getProductClass().getProductID();
+                        productId = showProductData.get(position).ProductID;
                         editBottomSheet = EditBottomSheet
-                                .onNewInstance(0,String.valueOf(showProductData.get(position).getProductClass().getShow()),productId,BaseCodeClass.productFieldEnum.Show,null);
-                        editBottomSheet.show(fragmentManager,"EDIT_SHOW_PRODUCT");
+                                .onNewInstance(0, String.valueOf(showProductData.get(position).Show), productId, BaseCodeClass.productFieldEnum.Show, null);
+                        editBottomSheet.show(fragmentManager, "EDIT_SHOW_PRODUCT");
                         break;
                     case R.id.deleteProduct_menu:
-                        productId = showProductData.get(position).getProductClass().getProductID();
-                        AllProductData productData = showProductData.get(position);
+                        productId = showProductData.get(position).ProductID;
+                        Product productData = showProductData.get(position);
                         editBottomSheet = EditBottomSheet.
-                                onNewInstance(0,null,productId, BaseCodeClass.productFieldEnum.Deleted,productData);
-                        editBottomSheet.show(fragmentManager,"DELETE_PRODUCT");
+                                onNewInstance(0, null, productId, BaseCodeClass.productFieldEnum.Deleted, productData);
+                        editBottomSheet.show(fragmentManager, "DELETE_PRODUCT");
 
                 }
                 return false;
@@ -677,8 +697,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void sortCheapData() {
         Collections.sort(filteredProduct, (o1, o2) -> {
 
-            String itemPrice1 = o1.getProductClass().getStandardCost().getShowPrice();
-            String itemPrice2 = o2.getProductClass().getStandardCost().getShowPrice();
+            String itemPrice1 = o1.ShowPrice;
+            String itemPrice2 = o2.ShowPrice;
             if (isFieldEmpty(itemPrice1, itemPrice2))
                 return 1;
 
@@ -716,8 +736,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void sortExpensiveData() {
         Collections.sort(filteredProduct, (o1, o2) -> {
 
-            String itemPrice1 = o1.getProductClass().getStandardCost().getShowPrice();
-            String itemPrice2 = o2.getProductClass().getStandardCost().getShowPrice();
+            String itemPrice1 = o1.ShowPrice;
+            String itemPrice2 = o2.ShowPrice;
             if (isFieldEmpty(itemPrice1, itemPrice2))
                 return 0;
 
@@ -734,14 +754,12 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
 
-
-
-    public void sortByNewProduct(){
+    public void sortByNewProduct() {
         Collections.sort(filteredProduct, (o1, o2) -> {
-           long d1 = o1.getProductClass().getUpdateDate();
-           long d2 = o2.getProductClass().getUpdateDate();
+            long d1 = o1.UpdateDate;
+            long d2 = o2.UpdateDate;
 
-                return Long.compare(d1,d2);
+            return Long.compare(d1, d2);
 
 
         });
@@ -753,8 +771,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     }
 
-    private Date fromDotNetTicks(long ticks)
-    {
+    private Date fromDotNetTicks(long ticks) {
         // Rebase to Jan 1st 1970, the Unix epoch
         ticks -= 621355968000000000L;
         long millis = ticks / 10000;
@@ -763,8 +780,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public void sortMostSell() {
         Collections.sort(filteredProduct, (o1, o2) -> {
-            int sellCount1 = o1.getProductClass().getSellCount();
-            int sellCount2 = o2.getProductClass().getSellCount();
+            int sellCount1 = o1.SellCount;
+            int sellCount2 = o2.SellCount;
             return Integer.compare(sellCount1, sellCount2);
         });
         load10Data();
@@ -772,8 +789,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     public void sortMostView() {
-        Collections.sort(filteredProduct, (o1, o2) -> Integer.compare(o2.getProductClass().getViewedCount(),
-                o1.getProductClass().getViewedCount()));
+        Collections.sort(filteredProduct, (o1, o2) -> Integer.compare(o2.ViewedCount,
+                o1.ViewedCount));
         load10Data();
         notifyDataSetChanged();
     }
@@ -785,5 +802,10 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return true;
 
         return false;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return null;
     }
 }

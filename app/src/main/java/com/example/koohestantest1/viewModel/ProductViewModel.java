@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.EditBodyRequest;
 import com.example.koohestantest1.model.repository.ProductRepository;
 import com.example.koohestantest1.model.repository.callback.InvisibleProductCallBack;

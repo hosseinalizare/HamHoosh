@@ -145,13 +145,13 @@ public class CompanySettingDetailsRecyclerAdapter extends RecyclerView.Adapter<C
             if (settingList.get(getAdapterPosition()).getValueType() != SettingValueTypes.location)
                 return;
 
-            String[] location = settingList.get(getAdapterPosition()).getValue().split(":");
+            /*String[] location = settingList.get(getAdapterPosition()).getValue().split(":");
             // Add a marker for this item and set the camera
 
             LatLng latLng = new LatLng(Double.parseDouble(location[0]), Double.parseDouble(location[1]));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
             map.addMarker(new MarkerOptions().position(latLng));
-            map.getUiSettings().setAllGesturesEnabled(false);
+            map.getUiSettings().setAllGesturesEnabled(false);*/
 
         }
 

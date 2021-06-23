@@ -26,13 +26,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.koohestantest1.Utils.SharedPreferenceUtils;
 import com.example.koohestantest1.Utils.StringUtils;
+import com.example.koohestantest1.ViewModels.Order_DetailsViewModels;
 import com.example.koohestantest1.adapter.recyclerinterface.ICartEvents;
+import com.example.koohestantest1.classDirectory.ProductPropertisClass;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
+import com.example.koohestantest1.local_db.entity.Properties;
 import com.example.koohestantest1.model.DiscountModel;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.BadgeSharedViewModel;
@@ -45,8 +51,7 @@ import java.util.List;
 import com.example.koohestantest1.ApiDirectory.AddressApi;
 import com.example.koohestantest1.ApiDirectory.CartApi;
 import com.example.koohestantest1.ApiDirectory.JsonApi;
-import com.example.koohestantest1.DB.DataBase;
-import com.example.koohestantest1.DB.MyDataBase;
+
 import com.example.koohestantest1.InfoDirectory.MangeAddressClass;
 import com.example.koohestantest1.classDirectory.AddressViewModel;
 import com.example.koohestantest1.classDirectory.AllProductData;
@@ -57,6 +62,7 @@ import com.example.koohestantest1.classDirectory.HowToPay;
 import com.example.koohestantest1.classDirectory.PayType;
 import com.example.koohestantest1.classDirectory.PaymentTypeRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,37 +72,36 @@ import static com.example.koohestantest1.classDirectory.BaseCodeClass.CompanyID;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.PageShow;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.allAddress;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.selectedAddress;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.sendOrderClass;
 
 public class CartFragment extends Fragment implements AddressApi, ICartEvents {
     private SharedPreferenceUtils sharedPreferenceUtils;
     private String TAG = CartFragment.class.getSimpleName() + "Debug";
     private Context mContext;
-    private DataBase dataBase;
+
     private Cursor data;
     BaseCodeClass baseCodeClass;
     CartApi cartApi;
     double sum = 0;
     ViewFlipper vf;
     RecyclerView cartListRecyclerView;
-    Button btnAddCart, btnCopy,btnDiscount;
+    Button btnAddCart, btnCopy, btnDiscount;
     EditText edtDiscount;
-    MyDataBase myDataBase;
+
     RelativeLayout cashLayout;
     RadioGroup radioGroup;
     CardView company;
     private AlertDialog alertDialogAddAddress;
     int receiveChecked = 1;
-
+    String testPrice = "", testOff = "", testTotal = "";
+    private DBViewModel dbViewModel;
     View view;
 
     CartProductRecyclerViewAdapter adapter;
     CardView addressCard;
 
-    TextView cartSumPrice, cartSumDiscount, cartSumP,deliveryPrice;
-
+    TextView cartSumPrice, cartSumDiscount, cartSumP, deliveryPrice;
+    private SendOrderClass sendOrderClass = new SendOrderClass();
     Date currentTime;
 
     private ArrayList<String> mNames = new ArrayList<>();
@@ -122,6 +127,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         badgeSharedViewModel = new ViewModelProvider(requireActivity()).get(BadgeSharedViewModel.class);
         localCartViewModel = new ViewModelProvider(requireActivity()).get(LocalCartViewModel.class);
         sharedPreferenceUtils = new SharedPreferenceUtils(requireContext());
+        dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
     }
 
     @Nullable
@@ -142,19 +148,8 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         radioGroup = view.findViewById(R.id.radioGroup);
         btnDiscount = view.findViewById(R.id.btn_discountCode);
         edtDiscount = view.findViewById(R.id.edt_discountCode);
-        /*radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            switch (checkedId) {
-                case R.id.personalReceive:
-                    getImages(2);
-                    receiveChecked = 1;
-                    break;
-                case R.id.sheepReceive:
-                    //getImages(1);
-                    receiveChecked = 2;
-                    break;
-            }
-        });*/
-        getPayInformation(CompanyID);
+
+
         company = view.findViewById(R.id.company);
 
         company.setOnClickListener(v -> startActivity(new Intent(mContext, ShowStoreActivity.class)));
@@ -174,6 +169,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                 logMessage("CartFragment 100 >> " + e.getMessage(), mContext);
             }
         });
+
         bankAccount = view.findViewById(R.id.bankAccount);
         if (BaseCodeClass.companyProfile != null)
             bankAccount.setText(BaseCodeClass.companyProfile.getSpare1());
@@ -203,12 +199,11 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                     startActivity(intent);
                 }
             } catch (Exception e) {
-                Log.d("Error",e.getMessage());
+                Log.d("Error", e.getMessage());
             }
         });
 
-        dataBase = new DataBase(mContext);
-        myDataBase = new MyDataBase(mContext);
+
         baseCodeClass.LoadBaseData(mContext);
 
         final Retrofit retrofit = RetrofitInstance.getRetrofit();
@@ -225,7 +220,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
             generatePaymentButtonSabegh();
         });
 
-        btnDiscount.setOnClickListener(v ->{
+        btnDiscount.setOnClickListener(v -> {
             checkDiscount();
         });
 
@@ -234,7 +229,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
     private void handleViewFlipper() {
         Log.d(TAG, "handleViewFlipper: ");
-        if (isCartEmpty()) {
+        if (sendOrderClass.getOrder_Details() == null || sendOrderClass.getOrder_Details().size() == 0) {
             vf.setDisplayedChild(0);
         } else {
             vf.setDisplayedChild(1);
@@ -247,41 +242,126 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        dbViewModel.getAddedToCard().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            @Override
+            public void onChanged(List<Product> products) {
+                int sumPrice = 0;
+                int sumOff = 0;
+                sendOrderClass.getOrder_Details().clear();
+                for (Product product : products) {
+                    sumPrice = sumPrice + (product.Price * product.CartItemCount);
+                    sumOff = sumOff + product.offPrice;
+                    Order_DetailsViewModels order = new Order_DetailsViewModels();
+                    order.setProductID(product.ProductID);
+                    order.setProductName(product.ProductName);
+                    order.setQuantity(product.CartItemCount);
+                    order.setID(String.valueOf(product.id));
+                    order.setUnitPrice(product.Price + "");
+                    order.setSumPrice(sumPrice);
 
-        localCartViewModel.getCartData().observe(getViewLifecycleOwner(), cartWithProducts -> {
 
-            //handles SCENARIO 1: user adds item, comes to this page and comes back to main and remove that item
-            if (adapter == null) {
+//                    order.setCompanyID(product.CompanyID);
+//                    order.setCompanyName(product.CompanyName);
+//                    order.setSupplierID(product.SupplierID);
+//                    order.setShowStandardCost(product.ShowStandardCost);
+//                    order.setShowoffPrice(product.ShowoffPrice);
+//                    order.setShowPrice(product.ShowPrice);
+//                    order.setParticular(product.IsParticular);
+//                    order.setBulletin(product.IsBulletin);
+//                    order.setAddToCard(product.AddToCard);
+//                    order.setBrand(product.Brand);
+//                    order.setMainCategory(product.MainCategory);
+//                    order.setSubCat1(product.SubCat1);
+//                    order.setSubCat2(product.SubCat2);
+//                    order.setCartItemCount(product.CartItemCount);
+//                    order.setDescription(product.Description);
+//                    order.setStandardCost(product.StandardCost);
+//                    order.setReorderLevel(product.ReorderLevel);
+//                    order.setTargetLevel(product.TargetLevel);
+//                    order.setUnit(product.Unit);
+//                    order.setQuantityPerUnit(product.QuantityPerUnit);
+//                    order.setDiscontinued(product.Discontinued);
+//                    order.setMinimumReorderQuantity(product.MinimumReorderQuantity);
+//                    order.setCategory(product.Category);
+//                    order.setShow(product.Show);
+//                    order.setUpdateDate(product.UpdateDate);
+//                    order.setDeleted(product.Deleted);
+//                    order.setDeleted1(product.Deleted1);
+//                    order.setViewedCount(product.ViewedCount);
+//                    order.setLikeCount(product.LikeCount);
+//                    order.setSaveCount(product.SaveCount);
+//                    order.setLikeit(product.Likeit);
+//                    order.setSaveit(product.Saveit);
+//                    order.setSellCount(product.SellCount);
+//                    order.setSpare1(product.Spare1);
+//                    order.setSpare2(product.Spare2);
+//                    order.setSpare3(product.Spare3);
+//                    order.setProductType(product.ProductType);
+//                    order.setActiveLike(product.ActiveLike);
+//                    order.setActiveComment(product.ActiveComment);
+//                    order.setActiveSave(product.ActiveSave);
+//                    order.setCreatorUserID(product.CreatorUserID);
+//                    order.setLinkOut(product.LinkOut);
+//                    order.setLinkToInstagram(product.LinkToInstagram);
+//                    order.setChatWhitCreator(product.ChatWhitCreator);
+//                    order.setOffPrice(product.offPrice);
+//                    order.setPrice(product.Price);
+                    dbViewModel.getSpecificProperties(product.ProductID).observe(getViewLifecycleOwner(), new Observer<List<Properties>>() {
+                        @Override
+                        public void onChanged(List<Properties> propertiesList) {
+                            List<ProductPropertisClass> propertisClassList = new ArrayList<>();
+                            for(Properties properties:propertiesList){
+                                ProductPropertisClass propertisClass = new ProductPropertisClass(
+                                        properties.ProductID,
+                                        properties.PropertiesGroup,
+                                        properties.PropertiesName,
+                                        properties.PropertiesValue,
+                                        properties.UpdateTime
+                                );
+                                propertisClassList.add(propertisClass);
+                            }
+                            order.setPropertisViewModels(propertisClassList);
+
+                        }
+                    });
+
+                    sendOrderClass.getOrder_Details().add(order);
+                }
+
+                sendOrderClass.setSumPrice(String.valueOf(sumPrice));
+                sendOrderClass.setDiscountAmount(sumOff);
+                sendOrderClass.setCompanyID(CompanyID);
+                sendOrderClass.setCustomerID(BaseCodeClass.userID);
+                //adapter.notifyDataSetChanged();
                 handleViewFlipper();
             }
-
-            if (cartWithProducts.size() > 0) {
-                //keep update main2fragment changes with cart fragment
-                if (adapter != null) {
-                    //update items in cart
-                    adapter.notifyDataSetChanged();
-                    Log.d(TAG, "onViewCreated: 2");
-                    //update prices
-                    calcPrice();
-                }
-            }
-
-            //if all items removed by user, we should reset view
-            handleViewFlipper();
-
         });
     }
 
     private void calcPrice() {
         try {
-
+            if (sendOrderClass.Order_Details != null && sendOrderClass.getSumPrice().equals("0")) {
+                int sumPrice = 0;
+                int sumOff = 0;
+                for (Order_DetailsViewModels order : sendOrderClass.Order_Details) {
+                    sumPrice = sumPrice + order.getSumPrice();
+                    sumOff = sumOff + order.getSumOff();
+                }
+                sendOrderClass.setSumPrice(String.valueOf(sumPrice));
+                sendOrderClass.setDiscountAmount(sumOff);
+                int total = sumPrice - sumOff;
+                sendOrderClass.setSumTotal(String.valueOf(total));
+            }
+            testPrice = sendOrderClass.getSumPrice();
+            testOff = sendOrderClass.getSumDisCount();
+            testTotal = sendOrderClass.getSumTotal();
             cartSumPrice.setText("قیمت کالاها : " + sendOrderClass.getSumPrice() + " تومان");
             cartSumDiscount.setText("جمع تخفیف ها : " + sendOrderClass.getSumDisCount() + " تومان");
-            cartSumP.setText("مبلغ قابل پرداخت : " +sendOrderClass.getSumTotal()   + " تومان");
+            cartSumP.setText("مبلغ قابل پرداخت : " + sendOrderClass.getSumTotal() + " تومان");
 
 
         } catch (Exception e) {
-            Log.d("Error",e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
@@ -350,20 +430,20 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         try {
             LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
             cartListRecyclerView.setLayoutManager(layoutManager);
-            adapter = new CartProductRecyclerViewAdapter(mContext, sendOrderClass, this, false, badgeSharedViewModel, localCartViewModel, this::calcPrice);
+            adapter = new CartProductRecyclerViewAdapter(mContext, sendOrderClass, this, false, badgeSharedViewModel, localCartViewModel, this::calcPrice, getViewLifecycleOwner(), dbViewModel, this);
             cartListRecyclerView.setNestedScrollingEnabled(false);
             cartListRecyclerView.setAdapter(adapter);
             cartListRecyclerView.setVisibility(View.VISIBLE);
+            getPayInformation(CompanyID);
         } catch (Exception e) {
-            Log.d("Error",e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
 
-
-    public void initPaymentRecyclerView(List<PayType> payTypes,int deliveryPrice,TextView txtDeliveryPrice) {
+    public void initPaymentRecyclerView(List<PayType> payTypes, int deliveryPrice, TextView txtDeliveryPrice) {
         try {
-            if(deliveryPrice == 0)
+            if (deliveryPrice == 0)
                 txtDeliveryPrice.setText("هزینه حمل و نقل : رایگان");
             else
                 txtDeliveryPrice.setText("هزینه حمل و نقل : " + deliveryPrice + " تومان");
@@ -371,7 +451,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
             layoutManager.setReverseLayout(true);
             RecyclerView recyclerView = view.findViewById(R.id.paymentTypeRecyclerView);
             recyclerView.setLayoutManager(layoutManager);
-            PaymentTypeRecyclerViewAdapter adapter = new PaymentTypeRecyclerViewAdapter(mContext,payTypes,this);
+            PaymentTypeRecyclerViewAdapter adapter = new PaymentTypeRecyclerViewAdapter(mContext, payTypes, this);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             logMessage("CartFragment 300 >> " + e.getMessage(), mContext);
@@ -490,12 +570,20 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                 addressInCart.setText(ss);
             }
         } catch (Exception e) {
-            Log.d("Error",e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
     private boolean isCartEmpty() {
-        return sendOrderClass.getOrder_Details().size() == 0;
+        final boolean[] result = new boolean[1];
+        dbViewModel.getCardItemCount().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+
+            @Override
+            public void onChanged(Integer integer) {
+                result[0] = integer > 0;
+            }
+        });
+        return result[0];
     }
 
     private void getPayInformation(String companyId) {
@@ -508,18 +596,18 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                 List<String> imageUrls = new ArrayList<>();
                 List<String> payTypeNames = new ArrayList<>();
                 List<String> radioButtonNames = new ArrayList<>();
-                for(HowToPay hp:response.body()){
+                for (HowToPay hp : response.body()) {
                     radioButtonNames.add(hp.getTitle());
                 }
-                setTextRadio(radioGroup,radioButtonNames);
+                setTextRadio(radioGroup, radioButtonNames);
 
 
                 radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
                     RadioButton rb = view.findViewById(checkedId);
-                    for(HowToPay hp:response.body()){
-                        if(hp.getTitle().equals(rb.getText())){
+                    for (HowToPay hp : response.body()) {
+                        if (hp.getTitle().equals(rb.getText())) {
                             int deliveryCount = hp.getCarierPay();
-                            initPaymentRecyclerView(hp.getPayType(),deliveryCount,deliveryPrice);
+                            initPaymentRecyclerView(hp.getPayType(), deliveryCount, deliveryPrice);
                             break;
                         }
                     }
@@ -560,26 +648,26 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         //return payInformation;
     }
 
-    public  void getRadio(RadioGroup Rg,String text) {
+    public void getRadio(RadioGroup Rg, String text) {
         for (int i = 0; i < 10; i++) {
-            View o = Rg.getChildAt (i);
+            View o = Rg.getChildAt(i);
             if (o instanceof RadioButton) {
-                if (((RadioButton) o).getText ( ).equals (text)) {
-                    ((RadioButton) o).setChecked (true);
+                if (((RadioButton) o).getText().equals(text)) {
+                    ((RadioButton) o).setChecked(true);
                     break;
                 }
             }
         }
     }
 
-    public  void setTextRadio(RadioGroup Rg,List<String> texts) {
+    public void setTextRadio(RadioGroup Rg, List<String> texts) {
         int j = 0;
         for (int i = 0; i < Rg.getChildCount(); i++) {
-            View o = Rg.getChildAt (i);
+            View o = Rg.getChildAt(i);
             if (o instanceof RadioButton) {
                 ((RadioButton) o).setText(texts.get(j++));
                 o.setVisibility(View.VISIBLE);
-                if(j >= texts.size())
+                if (j >= texts.size())
                     break;
             }
         }
@@ -634,6 +722,13 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                     } else {
                         codePaygir = "";
                     }
+                    sendOrderClass.setToken(baseCodeClass.getToken());
+                    sendOrderClass.setUserID(baseCodeClass.getUserID());
+                    sendOrderClass.setCompanyID(baseCodeClass.getCompanyID());
+                    sendOrderClass.setEmployeeID(baseCodeClass.EmployeeID);
+                    String costumerID = baseCodeClass.getCompanyID();
+                    costumerID += sendOrderClass.getUserID();
+                    sendOrderClass.setCustomerID(costumerID);
 
                     sendOrderClass.setShipAddress(selectedAddress.getId());
                     sendOrderClass.setShipCountryRegion(selectedAddress.getCountry());
@@ -684,29 +779,34 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                                 sharedPreferenceUtils.resetCartNote();
 
 
-
-
-
-                                if (paymentType ==4) {
+                                if (paymentType == 4) {
                                     String res = response.body().getMsg();
                                     long cell = Long.parseLong(BaseCodeClass.userProfile.getMobilePhone());
-                                    long amount =(long) StringUtils.getNumberFromStringV2(sendOrderClass.getSumTotal())*10;
+                                    long amount = (long) StringUtils.getNumberFromStringV2(sendOrderClass.getSumTotal()) * 10;
 
                                     String payUrl = "http://hamyarnoandish.ir/Payment/Pay?amount=" + amount + "&cellNumber=" + cell + "&resNum=" + res;
 
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(payUrl));
                                     startActivity(intent);
 
-                                }else{
+                                } else {
                                     toastMessage("سفارش شما با موفقیت ثبت شد");
                                 }
 
                                 sendOrderClass = new SendOrderClass();
 
                                 vf.setDisplayedChild(0);
-                                for (AllProductData a : productDataList) {
-                                    a.setSelectedToCart(false);
-                                }
+                                dbViewModel.getAddedToCard().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                                    @Override
+                                    public void onChanged(List<Product> products) {
+                                        for (Product a : products) {
+                                            a.AddToCard = false;
+                                            a.CartItemCount = 0;
+                                            dbViewModel.updateProduct(a);
+                                        }
+                                    }
+                                });
+
                                 localCartViewModel.deleteAllData();
                             } else {
                                 toastMessage(response.body().getMsg());
@@ -717,7 +817,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
                         @Override
                         public void onFailure(Call<GetResualt> call, Throwable t) {
-                            Log.d("Error",t.getMessage());
+                            Log.d("Error", t.getMessage());
                             //btnAddCart.setEnabled(true);
                         }
                     });
@@ -729,13 +829,13 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
             }
             btnAddCart.setEnabled(true);
         } catch (Exception e) {
-            Log.d("Error",e.getMessage());
+            Log.d("Error", e.getMessage());
             btnAddCart.setEnabled(true);
         }
     }
 
-    private void checkDiscount(){
-        if(edtDiscount.getText().toString().isEmpty())
+    private void checkDiscount() {
+        if (edtDiscount.getText().toString().isEmpty())
             Toast.makeText(mContext, "لطفا کد تخفیف خود را وارد کنید", Toast.LENGTH_SHORT).show();
         else {
             DiscountModel discountModel = new DiscountModel();
@@ -778,26 +878,24 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
             call.enqueue(new Callback<GetResualt>() {
                 @Override
                 public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
-                    if(response.body().getResualt().equals("100")) {
+                    if (response.body().getResualt().equals("100")) {
                         int discountPrice = Integer.parseInt(response.body().getMsg());
 
                         sendOrderClass.setDiscountAmount(sendOrderClass.TotalPrice - discountPrice);
                         calcPrice();
                         btnDiscount.setEnabled(false);
                         edtDiscount.setEnabled(false);
-                    }else
+                    } else
                         Toast.makeText(getContext(), response.body().getMsg(), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(Call<GetResualt> call, Throwable t) {
-                    Log.d("Error",t.getMessage());
+                    Log.d("Error", t.getMessage());
                 }
             });
         }
     }
-
-
 
 
 }

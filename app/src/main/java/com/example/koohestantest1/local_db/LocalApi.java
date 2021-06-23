@@ -20,7 +20,7 @@ import io.reactivex.Single;
 
 @Dao
 public interface LocalApi {
-    @Query("SELECT * FROM products")
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0")
     Flowable<List<Product>> getProducts();
 
     @Query("SELECT * FROM products WHERE product_id=:product_id")
@@ -86,4 +86,111 @@ public interface LocalApi {
 
     @Delete
     Completable deleteNewsLetter(NewsLetter newsLetter);
+
+    @Query("SELECT * FROM products WHERE is_bulletin=:isBulletin AND deleted <> 1 AND deleted1 <> 1 AND show <> 0")
+    Flowable<List<Product>> getBulletinProduct(boolean isBulletin);
+
+    @Update
+    Completable addToCard(Product product);
+
+    @Query("SELECT * FROM products WHERE is_particular=:isParticular AND deleted <> 1 AND deleted1 <> 1 AND show <> 0")
+    Flowable<List<Product>> getParticularProduct(boolean isParticular);
+
+    @Query("SELECT * FROM products WHERE card_item_count > 0 AND deleted <> 1 AND deleted1 <> 1 AND show <> 0")
+    Flowable<List<Product>> getAddedToCard();
+
+    @Query("SELECT * FROM products WHERE sub_cat1 LIKE :subCat1 AND deleted <> 1 AND deleted1 <> 1 AND show <> 0")
+    Flowable<List<Product>> getSubCat1Product(String subCat1);
+
+    @Query("SELECT * FROM products WHERE sub_cat2 LIKE :subCat2 AND deleted <> 1 AND deleted1 <> 1 AND show <> 0")
+    Flowable<List<Product>> getSubCat2Product(String subCat2);
+
+    @Query("SELECT * FROM products WHERE brand LIKE :brand AND deleted <> 1 AND deleted1 <> 1 AND show <> 0")
+    Flowable<List<Product>> getBrandProduct(String brand);
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 ORDER BY sell_count DESC")
+    Flowable<List<Product>> getProductOrderBySell();
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 ORDER BY viewed_count DESC")
+    Flowable<List<Product>> getProductOrderByViewCount();
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 ORDER BY price DESC")
+    Flowable<List<Product>> getProductOrderByPriceDESC();
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 ORDER BY price ASC")
+    Flowable<List<Product>> getProductOrderByPriceASC();
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 ORDER BY update_date DESC")
+    Flowable<List<Product>> getProductOrderByNewest();
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND save_it <> 0")
+    Flowable<List<Product>> getBookmarkedProduct();
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND off_price <> 0")
+    Flowable<List<Product>> getOffProduct();
+
+
+
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND sub_cat2 LIKE :value ORDER BY sell_count DESC")
+    Flowable<List<Product>> getProductOrderBySell(String value);
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND sub_cat2 LIKE :value ORDER BY viewed_count DESC")
+    Flowable<List<Product>> getProductOrderByViewCount(String value);
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND sub_cat2 LIKE :value ORDER BY price DESC")
+    Flowable<List<Product>> getProductOrderByPriceDESC(String value);
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND sub_cat2 LIKE :value ORDER BY price ASC")
+    Flowable<List<Product>> getProductOrderByPriceASC(String value);
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND sub_cat2 LIKE :value ORDER BY update_date DESC")
+    Flowable<List<Product>> getProductOrderByNewest(String value);
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND sub_cat2 LIKE :value AND save_it <> 0")
+    Flowable<List<Product>> getBookmarkedProduct(String value);
+
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND sub_cat2 LIKE :value AND off_price <> 0")
+    Flowable<List<Product>> getOffProduct(String value);
+
+    @Query("SELECT MAX(update_date) from products")
+    Flowable<Long> getProductUpdateDate();
+
+    @Query("SELECT COUNT(*) FROM products WHERE card_item_count > 0 AND deleted <> 1 AND deleted1 <> 1 AND show <> 0")
+        Flowable<Integer> getCardItemCount();
+
+    @Query("UPDATE products SET card_item_count=0,add_to_card=0 WHERE product_id=:pid")
+    Completable updateCardItem(String pid);
+
+    @Query("UPDATE products SET card_item_count=:qy WHERE product_id=:pid")
+    Completable updateCardItemCount(int qy,String pid);
+
+    @Query("SELECT card_item_count FROM products WHERE product_id=:pid")
+    Flowable<Integer> getSpecificCardItemCount(String pid);
+
+    @Query("UPDATE products SET discontinued=:qy WHERE product_id=:pid")
+    Completable updateProductDiscontinued(int qy,String pid);
+
+    @Query("UPDATE products SET product_name=:pname WHERE product_id=:pid")
+    Completable updateProductName(String pname,String pid);
+
+    @Query("UPDATE products SET standard_cost = :standardCost,price=:standardCost,show_standard_cost=:showStandardCost" +
+            ",show_price=:showStandardCost WHERE product_id=:pid")
+    Completable updateProductPrice(int standardCost,String showStandardCost,String pid);
+
+    @Query("DELETE FROM products WHERE product_id=:pid")
+    Completable deleteProduct(String pid);
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

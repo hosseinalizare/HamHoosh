@@ -4,6 +4,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,12 +28,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.CompanyEmployeesClass;
 import com.example.koohestantest1.classDirectory.MyStoreProductRecyclerViewAdapter;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
 
 import java.util.List;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.companyProfile;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
 
 public class ShowStoreActivity extends AppCompatActivity {
 
@@ -123,14 +126,21 @@ public class ShowStoreActivity extends AppCompatActivity {
 
     public void initRecyclerView() {
         try {
-            if (productDataList.size() > 0) {
-                GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
-                gridRecyclerView.setLayoutManager(layoutManager);
-                gridRecyclerView.setNestedScrollingEnabled(true);
-                gridRecyclerView.setFocusable(false);
-                adapter = new MyStoreProductRecyclerViewAdapter(mContext, productDataList, false);
-                gridRecyclerView.setAdapter(adapter);
-            }
+            DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+            dbViewModel.getAllProducts().observe(this, new Observer<List<Product>>() {
+                @Override
+                public void onChanged(List<Product> products) {
+                    if (products.size() > 0) {
+                        GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
+                        gridRecyclerView.setLayoutManager(layoutManager);
+                        gridRecyclerView.setNestedScrollingEnabled(true);
+                        gridRecyclerView.setFocusable(false);
+                        adapter = new MyStoreProductRecyclerViewAdapter(mContext, products, false);
+                        gridRecyclerView.setAdapter(adapter);
+                    }
+                }
+            });
+
 
         } catch (Exception e) {
             logMessage("ShowStore 200 >> " + e.getMessage(), mContext);

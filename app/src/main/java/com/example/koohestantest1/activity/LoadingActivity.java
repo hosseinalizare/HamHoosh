@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
@@ -31,8 +32,7 @@ import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.LogOutVewModel;
 
 import com.example.koohestantest1.ApiDirectory.CheckAccessApi;
-import com.example.koohestantest1.DB.DataBase;
-import com.example.koohestantest1.DB.MyDataBase;
+
 import com.example.koohestantest1.InfoDirectory.GetOnlineInformationClass;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.DownloadPrudoctThread;
@@ -49,8 +49,7 @@ import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage
 public class LoadingActivity extends AppCompatActivity {
 
     BaseCodeClass baseCodeClass;
-    DataBase dataBase;
-    MyDataBase myDB;
+
     private Handler mHandler = new Handler();
     CheckAccessApi checkAccessApi;
     Cursor data;
@@ -96,11 +95,11 @@ public class LoadingActivity extends AppCompatActivity {
 
         try {
             getOnlineInformationClass = new GetOnlineInformationClass(LoadingActivity.this);
-            dataBase = new DataBase(this);
-            myDB = new MyDataBase(this);
+//            dataBase = new DataBase(this);
+//            myDB = new MyDataBase(this);
             baseCodeClass = new BaseCodeClass();
             baseCodeClass.LoadBaseData(this);
-            data = dataBase.getAllData(DataBase.BASE_TABLE);
+            //data = dataBase.getAllData(DataBase.BASE_TABLE);
             logOutVewModel = new ViewModelProvider(this).get(LogOutVewModel.class);
             final Retrofit retrofit = RetrofitInstance.getRetrofit();
             checkAccessApi = retrofit.create(CheckAccessApi.class);
@@ -151,13 +150,21 @@ public class LoadingActivity extends AppCompatActivity {
             toastMessage("200 >> " + e.getMessage());
         }
 
-        logOutVewModel.getLiveDataLogoutResult().observe(this, s -> {
+        //SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("baseInfo",MODE_PRIVATE);
+        //sharedPreferences.edit().clear().commit();
+        /*if(sharedPreferences.getString("token",null) == null && sharedPreferences.getString("username",null) == null){
+            startActivity(new Intent(LoadingActivity.this, MainActivity.class));
+            finish();
+        }else{
+            Toast.makeText(getApplicationContext(), "امکان خروج وجود ندارد", Toast.LENGTH_SHORT).show();
+        }*/
+
+        /*logOutVewModel.getLiveDataLogoutResult().observe(this, s -> {
             if (s.equals("ok")) {
-                startActivity(new Intent(LoadingActivity.this, MainActivity.class));
-                finish();
+
             } else
                 Toast.makeText(this, "خطایی رخ داد", Toast.LENGTH_SHORT).show();
-        });
+        });*/
 
 
     }/// end onCreate
@@ -195,7 +202,12 @@ public class LoadingActivity extends AppCompatActivity {
 
                             Log.d(TAG, "onResponseCheckAccess: TOKEN: \n" + getCheckAccess.getMsg());
 
-                            dataBase.updateToken(getCheckAccess.getMsg());
+                            //dataBase.updateToken(getCheckAccess.getMsg());
+                            //TODO Save Token into DB or SP
+                            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("baseInfo",MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("token",getCheckAccess.getMsg());
+                            editor.apply();
                             baseCodeClass.setToken(getCheckAccess.getMsg());
                             try {
                                 Log.d(TAG, "onResponseCheckAccess: " + baseCodeClass.getCompanyID());
@@ -208,17 +220,19 @@ public class LoadingActivity extends AppCompatActivity {
                                  */
                                 DownloadPrudoctThread p = new DownloadPrudoctThread(null, LoadingActivity.this);
                                 p.start();
-                                SendOrderClass orderClass = myDB.GetDefualtOrder(LoadingActivity.this);
+                                //TODO if ADD to Card is exists in DB create new order and show it
+                                /*SendOrderClass orderClass = myDB.GetDefualtOrder(LoadingActivity.this);
                                 if (orderClass != null) {
                                     //baseCodeClass.manageOrderClass = new ManageOrderClass(orderClass, LoadingActivity.this);
                                     //toastMessage("dsfdfsdfs");
-                                }
+                                }*/
                                 // end of disused codes
 
                             } catch (Exception e) {
                                 toastMessage(e.getMessage());
                             }
                             //toastMessage("token update");
+                            Toast.makeText(getApplicationContext(), "خوش آمدید", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(LoadingActivity.this, Main2Activity.class);
 
 
@@ -272,26 +286,37 @@ public class LoadingActivity extends AppCompatActivity {
      */
     public boolean checkLogin() {
         try {
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("baseInfo", MODE_PRIVATE);
+            String token = sharedPreferences.getString("token", null);
+            String deviceModel = sharedPreferences.getString("deviceModel", null);
+            String userId = sharedPreferences.getString("userId", null);
+            String IMEI = sharedPreferences.getString("imei", null);
+            String username = sharedPreferences.getString("username", null);
+            String password = sharedPreferences.getString("password", null);
             //Cursor data = dataBase.getAllData(dataBase.BASE_TABLE);
-            if (data == null) {
+            if (token == null) {
                 //toastMessage("1");
                 return false;
+            }else{
+                baseCodeClass.setUserID(userId);
+                baseCodeClass.setToken(token);
+                BaseCodeClass.setDeviceModel(deviceModel);
+                baseCodeClass.setIMEI(IMEI);
+                baseCodeClass.setUserName(username);
+                baseCodeClass.setPassword(password);
             }
-            if (data.moveToFirst()) {
+
+
+            /*if (data.moveToFirst()) {
                 while (data.moveToNext()) {
-                    baseCodeClass.setUserID(data.getString(data.getColumnIndex("UserId")));
-                    baseCodeClass.setToken(data.getString(data.getColumnIndex("token")));
-                    BaseCodeClass.setDeviceModel(data.getString(data.getColumnIndex("deviceModel")));
-                    baseCodeClass.setIMEI(data.getString(data.getColumnIndex("imei")));
-                    baseCodeClass.setUserName(data.getString(data.getColumnIndex("userName")));
-                    baseCodeClass.setPassword(data.getString(data.getColumnIndex("password")));
-                }
+
+                }*/
 
                 return true;
-            } else {
+//            } else {
                 //toastMessage("2");
-                return false;
-            }
+                //return false;
+            //}
         }//try
         catch (Exception e) {
             String m = e.getMessage();
@@ -305,11 +330,26 @@ public class LoadingActivity extends AppCompatActivity {
      */
     public void checkAccess(final CheckAccessApi callBack) {
         try {
-            data = dataBase.getAllData(DataBase.BASE_TABLE);
+            //TODO Read data from DB or SP and fill SendCheckAccess
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("baseInfo", MODE_PRIVATE);
+            String token = sharedPreferences.getString("token", null);
+            String deviceModel = sharedPreferences.getString("deviceModel", null);
+            String userId = sharedPreferences.getString("userId", null);
+            String IMEI = sharedPreferences.getString("imei", null);
+
+            SendCheckAccess sendCheckAccess = new SendCheckAccess(userId,
+                    token,
+                    IMEI,
+                    deviceModel);
+
+            /*data = dataBase.getAllData(DataBase.BASE_TABLE);
             data.moveToFirst();
-            SendCheckAccess sendCheckAccess = new SendCheckAccess(data.getString(data.getColumnIndex(DataBase.getUserId())),
-                    data.getString(data.getColumnIndex(DataBase.getTOKEN())), data.getString(data.getColumnIndex(DataBase.getIMEI())),
-                    data.getString(data.getColumnIndex(DataBase.getDeviceModel())));
+            SendCheckAccess sendCheckAccess = new SendCheckAccess(
+            data.getString(data.getColumnIndex(DataBase.getUserId())),
+                    data.getString(data.getColumnIndex(DataBase.getTOKEN())),
+                    data.getString(data.getColumnIndex(DataBase.getIMEI())),
+                    data.getString(data.getColumnIndex(DataBase.getDeviceModel())));*/
+            //
             Call<GetCheckAccess> call = checkAccessApi.getCheckAccess(sendCheckAccess);
 
             Log.d(TAG, "checkAccess: " + sendCheckAccess.toString());

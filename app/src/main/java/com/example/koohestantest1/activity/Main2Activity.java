@@ -3,6 +3,7 @@ package com.example.koohestantest1.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
@@ -23,10 +24,13 @@ import com.example.koohestantest1.Main2Fragment;
 import com.example.koohestantest1.MyStoreFragment;
 import com.example.koohestantest1.ProfileFragment;
 import com.example.koohestantest1.R;
+import com.example.koohestantest1.ViewModels.Order_DetailsViewModels;
 import com.example.koohestantest1.classDirectory.AppService;
 import com.example.koohestantest1.constants.CurrentCartId;
 import com.example.koohestantest1.constants.IntentKeys;
 import com.example.koohestantest1.fragments.transinterface.CartTransitionInterface;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.entity.CartInformation;
 import com.example.koohestantest1.viewModel.BadgeSharedViewModel;
 import com.example.koohestantest1.viewModel.LocalCartViewModel;
@@ -36,6 +40,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.PageShow;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.badge;
@@ -61,7 +68,9 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     private CartFragment cartFragment = null;// = new CartFragment();
     private ProfileFragment profileFragment = null;// = new ProfileFragment();
     private final FragmentManager fm = getSupportFragmentManager();
+    private  DBViewModel dbViewModel;
     Fragment selectedFragment = main2Fragment;
+
 
     int anInt = 0;
 
@@ -79,12 +88,12 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
+        dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         ///// start service ////
-        if (myServiceIntent ==null){
+        if (myServiceIntent == null) {
             myServiceIntent = new Intent(this, AppService.class);
             startService(myServiceIntent);
-        }else {
+        } else {
             startService(myServiceIntent);
         }
 
@@ -109,14 +118,12 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
         badge = bottomNavigationView.getOrCreateBadge(R.id.ic_cart);
 
 
-
 //        attachKeyboardListeners();
 
 //        getFireBaseToken();
 
 
-
-        localCartViewModel.getProductCount().observe(this, count -> {
+        /*localCartViewModel.getProductCount().observe(this, count -> {
             if (count == 0)
                 badge.setVisible(false);
             else {
@@ -124,6 +131,18 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                 badge.setNumber(count);
             }
 
+        });*/
+
+        dbViewModel.getCardItemCount().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer count) {
+                if (count == 0)
+                    badge.setVisible(false);
+                else {
+                    badge.setVisible(true);
+                    badge.setNumber(count);
+                }
+            }
         });
 
 
@@ -157,17 +176,34 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     }*/
 
 
-
-
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         try {
-            hideCurrentFragment();
-            switch (item.getItemId()) {
+            Fragment fragment = new Fragment();
+            switch (item.getItemId()){
+                case R.id.ic_shoppingCenter:
+                    fragment = new Main2Fragment();
+                    break;
+                case R.id.ic_search:
+                    fragment = new ExplorerFragment();
+                    break;
+                case R.id.ic_myStore:
+                    fragment = new MyStoreFragment();
+                    break;
+                case R.id.ic_cart:
+                    fragment = new CartFragment();
+                    break;
+                case R.id.ic_profile:
+                    fragment = new ProfileFragment();
+                    break;
+            }
+            fm.beginTransaction().replace(R.id.main2Container,fragment).commit();
+            //hideCurrentFragment();
+            /*switch (item.getItemId()) {
                 case R.id.ic_shoppingCenter:
                     fm.beginTransaction().show(main2Fragment).commit();
                     selectedFragment = main2Fragment;
                     PageShow = ShoppCenter;
-                    BaseCodeClass.hashtagsValue=null;
+                    BaseCodeClass.hashtagsValue = null;
                     break;
                 case R.id.ic_search:
                     if (explorerFragment == null) {
@@ -190,6 +226,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     //         PageShow = myStor;
                     break;
                 case R.id.ic_cart:
+
                     showCartFragment();
                     break;
                 case R.id.ic_profile:
@@ -201,7 +238,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     selectedFragment = profileFragment;
                     PageShow = myProfile;
                     break;
-            }
+            }*/
             return true;
         } catch (Exception e) {
             toastMessage("onNavigationItemSelected :" + e.getMessage());
@@ -245,13 +282,24 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     }
 
     private void showCartFragment() {
+
         if (cartFragment == null) {
             cartFragment = new CartFragment();
             fm.beginTransaction().add(R.id.main2Container, cartFragment).commit();
         }
-        fm.beginTransaction().show(cartFragment).detach(cartFragment).attach(cartFragment).commit();
+        fm.beginTransaction().
+
+                show(cartFragment).
+
+                detach(cartFragment).
+
+                attach(cartFragment).
+
+                commit();
+
         selectedFragment = cartFragment;
         PageShow = cartpage;
+
     }
 
     @Override
@@ -260,7 +308,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
         Log.d(TAG, "onResume: ");
 
         String hashtagWord = BaseCodeClass.hashtagsValue;
-        if (hashtagWord !=null){
+        if (hashtagWord != null) {
             bottomNavigationView.setSelectedItemId(R.id.ic_search);
         }
 
@@ -279,16 +327,16 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
         }
     }
 
-    private void appHelp(){
+    private void appHelp() {
 
-        SharedPreferences sharedPreferences = this.getSharedPreferences("appHelp",Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("appHelp", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        boolean hasSeen = sharedPreferences.getBoolean("help1",false);
-        if(!hasSeen){
+        boolean hasSeen = sharedPreferences.getBoolean("help1", false);
+        if (!hasSeen) {
             TapTargetSequence sequence = new TapTargetSequence(this);
 
-            TapTarget shoppingCenterTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_shoppingCenter),"دکمه مرکز خرید","از طریق این دکمه می توانید به صفحه مرکز خرید دسترسی داشته باشید")
+            TapTarget shoppingCenterTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_shoppingCenter), "دکمه مرکز خرید", "از طریق این دکمه می توانید به صفحه مرکز خرید دسترسی داشته باشید")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -303,23 +351,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .textColor(android.R.color.holo_blue_bright)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
-            TapTarget searchTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_search),"دکمه جستجو","از طریق این دکمه می توانید محصول موردنظر خود را جستجو کنید")
-                    .cancelable(false)
-                    .drawShadow(true)
-                    .dimColor(android.R.color.tab_indicator_text)
-                    .outerCircleColor(android.R.color.holo_blue_dark)
-                    .targetCircleColor(android.R.color.holo_green_dark)
-                    .transparentTarget(true)
-                    .targetRadius(32)
-                    .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
-                    .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
-                    .titleTextColor(android.R.color.white)
-                    .tintTarget(false);
-
-            TapTarget myStoreTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_myStore),"دکمه فروشگاه من","از طریق این دکمه می توانید فروشگاه خود را ایجاد یا وارد آن شوید")
+            TapTarget searchTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_search), "دکمه جستجو", "از طریق این دکمه می توانید محصول موردنظر خود را جستجو کنید")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -335,7 +367,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-            TapTarget basketTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_cart),"دکمه سبد خرید","از طریق این دکمه می توانید هزینه خرید خود را پرداخت کنید")
+            TapTarget myStoreTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_myStore), "دکمه فروشگاه من", "از طریق این دکمه می توانید فروشگاه خود را ایجاد یا وارد آن شوید")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -351,7 +383,23 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-            TapTarget profileTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_profile),"دکمه دهکده من","از طریق این دکمه می توانید پروفایل شخصی خود را ایجاد یا ویرایش کنید")
+            TapTarget basketTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_cart), "دکمه سبد خرید", "از طریق این دکمه می توانید هزینه خرید خود را پرداخت کنید")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+
+            TapTarget profileTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_profile), "دکمه دهکده من", "از طریق این دکمه می توانید پروفایل شخصی خود را ایجاد یا ویرایش کنید")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -368,11 +416,11 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .tintTarget(false);
 
 
-            sequence.targets(shoppingCenterTarget,searchTarget,myStoreTarget,basketTarget,profileTarget);
+            sequence.targets(shoppingCenterTarget, searchTarget, myStoreTarget, basketTarget, profileTarget);
             sequence.listener(new TapTargetSequence.Listener() {
                 @Override
                 public void onSequenceFinish() {
-                    editor.putBoolean("help1",true);
+                    editor.putBoolean("help1", true);
                     editor.apply();
 
                     main2Fragment.appHelp();

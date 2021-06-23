@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -16,13 +17,19 @@ import android.view.ViewGroup;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.adapter.ProductRecyclerViewAdapterV2;
 import com.example.koohestantest1.databinding.FragmentFavouriteBinding;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.viewModel.EventsViewModel;
+
+import java.util.List;
 
 public class FavouriteFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
 
     private String mParam1;
+
+    private DBViewModel dbViewModel;
 
     private FragmentFavouriteBinding favouriteBinding;
 
@@ -43,11 +50,13 @@ public class FavouriteFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        eventsViewModel = new ViewModelProvider(requireActivity()).get(EventsViewModel.class);
+        //eventsViewModel = new ViewModelProvider(requireActivity()).get(EventsViewModel.class);
+        dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
-        adapterV2 = new ProductRecyclerViewAdapterV2(requireContext() , false,getChildFragmentManager());
+        DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+        //adapterV2 = new ProductRecyclerViewAdapterV2(requireContext() , false,getChildFragmentManager(),dbViewModel,getActivity());
     }
 
     @Override
@@ -64,7 +73,11 @@ public class FavouriteFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        eventsViewModel.getLiveFavs().observe(getViewLifecycleOwner(), sendProductClasses -> {
+        /**
+         * check here
+         */
+
+        /*eventsViewModel.getLiveFavs().observe(getViewLifecycleOwner(), sendProductClasses -> {
             Log.d(TAG, "onViewCreated: " + sendProductClasses.size());
             adapterV2.setData(sendProductClasses);
             setViewUpView();
@@ -72,6 +85,14 @@ public class FavouriteFragment extends Fragment {
         eventsViewModel.getErrorFav().observe(getViewLifecycleOwner(), s -> {
             Log.d(TAG, "onViewCreated: " + s);
             setViewUpView();
+        });*/
+
+        dbViewModel.getBookmarkedProduct().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            @Override
+            public void onChanged(List<Product> products) {
+                adapterV2.setData(products);
+                setViewUpView();
+            }
         });
     }
 

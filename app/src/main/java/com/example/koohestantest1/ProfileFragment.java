@@ -3,6 +3,7 @@ package com.example.koohestantest1;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -48,7 +49,6 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 
 import com.example.koohestantest1.ApiDirectory.SignUpApi;
-import com.example.koohestantest1.DB.DataBase;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetSignUp;
 import com.example.koohestantest1.classDirectory.ProfileRecyclerViewAdapter;
@@ -59,6 +59,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.selectedProfileField;
 
@@ -68,7 +69,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
     private static final int ACTIVITY_NU = 4;
 
     BaseCodeClass baseCodeClass;
-    DataBase dataBase;
+
     Cursor data;
     SignUpApi signUpApi;
 
@@ -141,7 +142,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
         tvPhoneNumber = view.findViewById(R.id.txtPhoneNumber);
         drawerMenuBtn = view.findViewById(R.id.btnDrawerMenu);
         drawerLayout = view.findViewById(R.id.profileDrawerLayout);
-        dataBase = new DataBase(mContext);
+        //dataBase = new DataBase(mContext);
         baseCodeClass = new BaseCodeClass();
         baseCodeClass.LoadBaseData(mContext);
         ivProfile = view.findViewById(R.id.imageViewProfile);
@@ -210,7 +211,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
         tvRules.setTypeface(wYekan);
 
         //baseCodeClass = new BaseCodeClass();
-        data = dataBase.getAllData(DataBase.BASE_TABLE);
+        //data = dataBase.getAllData(DataBase.BASE_TABLE);
 
         final Retrofit retrofit = RetrofitInstance.getRetrofit();
 
@@ -263,9 +264,16 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
                             final ProgressButton progressButton = new ProgressButton(mContext, view_);
                             progressButton.buttonActivated("در حال ایجاد حساب کاربری");
 
-                            dataBase.updateToken(token);
+                            //TODO Save token,Username and Password into DB or SP
+                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("baseInfo",MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("token",token);
+                            editor.putString("username",userName);
+                            editor.putString("password",password);
+                            editor.apply();
+                            //dataBase.updateToken(token);
                             baseCodeClass.setToken(token);
-                            dataBase.updateUserPass(userName, password);
+                            //dataBase.updateUserPass(userName, password);
                             Handler handler = new Handler();
                             handler.postDelayed(() -> {
                                 progressButton.buttonFinished("حساب کاربری با موفقیت ایجاد شد");
@@ -292,7 +300,19 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
     }// end public void btnSignUpClick
 
     public boolean signUp() {
-        try {
+        //TODO Get data from DB or SP and set them into baseCodeClass
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("baseInfo", MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", null);
+        String deviceModel = sharedPreferences.getString("deviceModel", null);
+        String userId = sharedPreferences.getString("userId", null);
+        String IMEI = sharedPreferences.getString("imei", null);
+        String mobileNumber = sharedPreferences.getString("mobileNumber", null);
+        baseCodeClass.setUserID(userId);
+        baseCodeClass.setToken(token);
+        BaseCodeClass.setMobileNumber(mobileNumber);
+        BaseCodeClass.setDeviceModel(deviceModel);
+        baseCodeClass.setIMEI(IMEI);
+        /*try {
             if (data == null) {
                 return false;
             }
@@ -311,7 +331,8 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
         }//try
         catch (Exception e) {
             return false;
-        }
+        }*/
+        return false;
     }// end public boolean signUp
 
     public void checkSignUp(final SignUpApi callBack) {

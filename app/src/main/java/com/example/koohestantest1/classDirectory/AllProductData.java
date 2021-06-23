@@ -18,7 +18,7 @@ public class AllProductData {
     private int viewCount;
 
     public boolean imageDled = false;
-
+    private ReceiveProductClass productClass;
     List<String> listCategory;
 
     public List<String> getListCategory() {
@@ -29,8 +29,8 @@ public class AllProductData {
         this.listCategory = listCategory;
     }
 
-    private ReceiveProductClass productClass;
-    BaseCodeClass baseCodeClass = new BaseCodeClass();
+
+
 
 
     public AllProductData(Context mContext, String companyName, boolean selectedToCart, boolean like,

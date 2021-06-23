@@ -47,6 +47,7 @@ import com.example.koohestantest1.Utils.Cache;
 import com.example.koohestantest1.Utils.NumberTextChanger;
 import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.classDirectory.StandardPrice;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 import com.example.koohestantest1.model.network.RetrofitInstance;
@@ -60,7 +61,6 @@ import java.util.List;
 import java.util.Locale;
 
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
-import com.example.koohestantest1.DB.DataBase;
 import com.example.koohestantest1.ViewModels.BookMarkViewModel;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
 import com.example.koohestantest1.ViewModels.PostViewViewModel;
@@ -114,7 +114,6 @@ public class AddProductActivity extends AppCompatActivity {
     LoadProductApi loadProductApi;
     LoadProductApi callBack;
     BaseCodeClass baseCodeClass;
-    DataBase dataBase;
 
     ImageView imageView;
 
@@ -151,7 +150,7 @@ public class AddProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
         try {
-            dataBase = new DataBase(mContext);
+            //dataBase = new DataBase(mContext);
             baseCodeClass = new BaseCodeClass();
             baseCodeClass.LoadBaseData(mContext);
 
@@ -336,11 +335,11 @@ public class AddProductActivity extends AppCompatActivity {
                     MainCat.setAdapter(adapter);
                     mMainCat = cat;
                     if (loadEdit) {
-                        String[] category = selectedProduct.getProductClass().getCategory().split("\\.");
+                        String[] category = selectedProduct.Category.split("\\.");
                         if (category.length > 0) {
                             MainCat.setSelection(mMainCat.indexOf((String) category[0]));
                         } else {
-                            logMessage(selectedProduct.getProductClass().getCategory(), mContext);
+                            logMessage(selectedProduct.Category, mContext);
                         }
                     }
                 }
@@ -358,11 +357,11 @@ public class AddProductActivity extends AppCompatActivity {
                     Cat1.setAdapter(adapter);
 
                     if (loadEdit) {
-                        String[] category = selectedProduct.getProductClass().getCategory().split("\\.");
+                        String[] category = selectedProduct.Category.split("\\.");
                         if (category.length > 0) {
                             Cat1.setSelection(subCat1.indexOf((String) category[1]));
                         } else {
-                            baseCodeClass.logMessage(selectedProduct.getProductClass().getCategory(), mContext);
+                            baseCodeClass.logMessage(selectedProduct.Category, mContext);
                         }
                     }
                 }
@@ -427,9 +426,11 @@ public class AddProductActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void recyclerViewCanUpdating() {
+                public void recyclerViewCanUpdating(List<Product> products) {
 
                 }
+
+
 
                 @Override
                 public void imageAdapterCanUpdating(String imagePID) {
@@ -554,35 +555,37 @@ public class AddProductActivity extends AppCompatActivity {
             if (loadEdit) {
                 try {
                     productID = pid;
-                    EdProductName.setText(selectedProduct.getProductClass().getProductName());
-                    EdProductPrice.setText(selectedProduct.getProductClass().getStandardCost().getShowPrice());
-                    EdProductDescription.setText(selectedProduct.getProductClass().getDescription());
-                    EdDiscount.setText(selectedProduct.getProductClass().getStandardCost().getShowoffPrice());
-                    EdInventory.setText(String.valueOf(selectedProduct.getProductClass().getDiscontinued()));
+                    EdProductName.setText(selectedProduct.ProductName);
+                    EdProductPrice.setText(selectedProduct.ShowPrice);
+                    EdProductDescription.setText(selectedProduct.Description);
+                    EdDiscount.setText(selectedProduct.ShowoffPrice);
+                    EdInventory.setText(String.valueOf(selectedProduct.Discontinued));
 
-                    String showTik = String.valueOf(selectedProduct.getProductClass().getShow());
+                    String showTik = String.valueOf(selectedProduct.Show);
                     if (showTik != null && showTik.equals("false"))
                         cbShowToUser.setChecked(false);
 
                     for (int i = 0; i < unit.length; i++) {
-                        if (unit[i] == selectedProduct.getProductClass().getUnit()) {
+                        if (unit[i].equals(selectedProduct.Unit)) {
                             Unit.setSelection(i);
                             break;
                         }
                     }
-                    for (ProductPropertisClass pp : selectedProduct.getProductClass().getProductPropertis()
-                    ) {
+                    /**
+                     * Check the loop statement
+                     */
+                    /*for (ProductPropertisClass pp : selectedProduct.getProductClass().getProductPropertis()) {
                         mProperties.add(pp.getPropertisName());
                         mPropertyValues.add(pp.getPropertisValue());
                         productPropertisClasses.add(new ProductPropertisClass(pid, "مشخصات اصلی", pp.getPropertisName(),
                                 pp.getPropertisValue(), null));
-                    }
+                    }*/
                     initRecyclerView();
 
-                    cbStory.setChecked(ISParticular(String.valueOf(selectedProduct.getProductClass().getReorderLevel())));
-                    cbBulletin.setChecked(ISBulletin(String.valueOf(selectedProduct.getProductClass().getReorderLevel())));
+                    cbStory.setChecked(ISParticular(String.valueOf(selectedProduct.ReorderLevel)));
+                    cbBulletin.setChecked(ISBulletin(String.valueOf(selectedProduct.ReorderLevel)));
 
-                    newDownloadImage(selectedProduct.getProductClass().getProductID(), imageView);
+                    newDownloadImage(selectedProduct.ProductID, imageView);
 
                     btnAdd.setText("ثبت تغییرات");
                 } catch (Exception e) {

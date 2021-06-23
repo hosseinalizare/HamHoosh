@@ -46,6 +46,15 @@ public class ReceiveProductClass {
     private String LinkOut;
     private String LinkToInstagram;
     private boolean ChatWhitCreator;
+    private String SubCat1;
+    private String SubCat2;
+    private boolean IsParticular;
+    private boolean IsBulletin;
+    private boolean AddToCard;
+    private String Brand;
+    private String MainCategory;
+    private String companyName;
+
     private List<ProductPropertisClass> productPropertis;
 
     private boolean Likeit;
@@ -137,6 +146,70 @@ public class ReceiveProductClass {
         CreatorUserID = creatorUserID;
         ChatWhitCreator = chatWhitCreator;
         this.productPropertis = productPropertis;
+    }
+
+    public String getSubCat1() {
+        return SubCat1;
+    }
+
+    public void setSubCat1(String subCat1) {
+        SubCat1 = subCat1;
+    }
+
+    public String getSubCat2() {
+        return SubCat2;
+    }
+
+    public void setSubCat2(String subCat2) {
+        SubCat2 = subCat2;
+    }
+
+    public boolean isParticular() {
+        return IsParticular;
+    }
+
+    public void setParticular(boolean particular) {
+        IsParticular = particular;
+    }
+
+    public boolean isBulletin() {
+        return IsBulletin;
+    }
+
+    public void setBulletin(boolean bulletin) {
+        IsBulletin = bulletin;
+    }
+
+    public boolean isAddToCard() {
+        return AddToCard;
+    }
+
+    public void setAddToCard(boolean addToCard) {
+        AddToCard = addToCard;
+    }
+
+    public String getBrand() {
+        return Brand;
+    }
+
+    public void setBrand(String brand) {
+        Brand = brand;
+    }
+
+    public String getMainCategory() {
+        return MainCategory;
+    }
+
+    public void setMainCategory(String mainCategory) {
+        MainCategory = mainCategory;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     public StandardPrice getStandardCost() {

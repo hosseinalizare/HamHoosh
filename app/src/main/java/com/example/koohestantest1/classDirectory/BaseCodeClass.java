@@ -5,6 +5,7 @@ package com.example.koohestantest1.classDirectory;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.Utils.SharedPreferenceUtils;
@@ -39,13 +42,14 @@ import static com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirec
 
 
 public class BaseCodeClass extends Application {
-    public static  Context context =null;
+    public static Context context = null;
 
     public static long appId = 0;
     private static List<Permission> permissions = new ArrayList<>();
 
     public static String appName = "";
-    public static void setMargins (View v, int l, int t, int r, int b) {
+
+    public static void setMargins(View v, int l, int t, int r, int b) {
         if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
             p.setMargins(l, t, r, b);
@@ -85,9 +89,9 @@ public class BaseCodeClass extends Application {
     public static String userID;
 
     public static Product localProduct = new Product();
-    public static List<Product> localProducts = new ArrayList<>();
-    public static Properties localProperties = new Properties();
-    public static List<Properties> localPropertiesList = new ArrayList<>();
+    // public static List<Product> localProducts = new ArrayList<>();
+    // public static Properties localProperties = new Properties();
+    //   public static List<Properties> localPropertiesList = new ArrayList<>();
     //  public static int bottomNavClick = 0;
 
     //Chrbnihukva
@@ -111,8 +115,9 @@ public class BaseCodeClass extends Application {
     /**
      * order
      */
-    public static SendOrderClass sendOrderClass = new SendOrderClass();
-    public static AllProductData selectedProduct;
+//    public static SendOrderClass sendOrderClass = new SendOrderClass();
+    public static Product selectedProduct;
+
     public static SendOrderClass myStoreSelectedOrder;
     public static List<SendOrderClass> orderClassList = new ArrayList<>();
     public static List<SendOrderClass> userOrder = new ArrayList<>();
@@ -120,19 +125,19 @@ public class BaseCodeClass extends Application {
 
     public static BadgeDrawable badge;
 
-    public static AddProductImageRecyclerViewAdapter addProductImageRecyclerViewAdapter;
+    //    public static AddProductImageRecyclerViewAdapter addProductImageRecyclerViewAdapter;
     public static BulletinRecyclerViewAdapter bulletinRecyclerViewAdapter;
-    public static CartProductRecyclerViewAdapter cartProductRecyclerViewAdapter;
+    //    public static CartProductRecyclerViewAdapter cartProductRecyclerViewAdapter;
     public static CategoryRecyclerViewAdapter categoryRecyclerViewAdapter;
-    public static CompanyRecyclerViewAdapter companyRecyclerViewAdapter;
-    public static EditProfileRecyclerViewAdapter editProfileRecyclerViewAdapter;
-    public static MyStoreProductRecyclerViewAdapter myStoreProductRecyclerViewAdapter;
-    public static ParticularProductRecyclerViewAdapter particularProductRecyclerViewAdapter;
-    public static ProducrtGridRecyclerViewAdapter producrtGridRecyclerViewAdapter;
-    public static ProductPropertiesRecyclerViewAdapter productPropertiesRecyclerViewAdapter;
-    public static ProductRecyclerViewAdapter productRecyclerViewAdapter;
-    public static ProfileRecyclerViewAdapter profileRecyclerViewAdapter;
-    public static ProfileSettingRecyclerViewAdapter profileSettingRecyclerViewAdapter;
+//    public static CompanyRecyclerViewAdapter companyRecyclerViewAdapter;
+//    public static EditProfileRecyclerViewAdapter editProfileRecyclerViewAdapter;
+//    public static MyStoreProductRecyclerViewAdapter myStoreProductRecyclerViewAdapter;
+//    public static ParticularProductRecyclerViewAdapter particularProductRecyclerViewAdapter;
+//    public static ProducrtGridRecyclerViewAdapter producrtGridRecyclerViewAdapter;
+//    public static ProductPropertiesRecyclerViewAdapter productPropertiesRecyclerViewAdapter;
+    //public static ProductRecyclerViewAdapter productRecyclerViewAdapter;
+//    public static ProfileRecyclerViewAdapter profileRecyclerViewAdapter;
+//    public static ProfileSettingRecyclerViewAdapter profileSettingRecyclerViewAdapter;
 
     public Intent myServiceIntent = null;
 
@@ -176,21 +181,26 @@ public class BaseCodeClass extends Application {
     public static String hashtagsValue = null;
 
 
+
 //// call onCreate for start service
 
     @Override
     public void onCreate() {
         super.onCreate();
-        if (context ==null){
+        if (context == null) {
             context = getApplicationContext();
         }
 
+
+        if (myServiceIntent == null) {
+            myServiceIntent = new Intent(this, AppService.class);
       /*  if (myServiceIntent ==null){
             myServiceIntent = new Intent(this,AppService.class);
             startService(myServiceIntent);
-        }else {
+        } else {
             startService(myServiceIntent);
         }*/
+        }
     }
 
 
@@ -237,8 +247,7 @@ public class BaseCodeClass extends Application {
     }
 
 
-    enum AppEvent
-    {
+    enum AppEvent {
         UserMSG(0),
         CompanyMSG(1),
         CompanyOrder(2),
@@ -394,85 +403,6 @@ public class BaseCodeClass extends Application {
         ActiveOnPublicHolidays,
         DeliveryOnHolidays,
     }
-//anddroid to change data
-//    public class EditProfileFieldViewModels
-//    {
-//        public string UserID { get; set; }
-//        public string Token { get; set; }
-//        public string ObjectID { get; set; }
-//        public String Value { get; set; }
-//        public CompanyEnum Cenum { get; set; }
-    //
-//    }
-
-//    public class CompanySettingViewModels
-//    {
-//        public string CompanyOwnerID { get; set; }
-//        public Nullable<System.DateTime> ExpiredTime { get; set; }
-//        public Nullable<bool> ActiveInvoice { get; set; }
-//        public Nullable<bool> ActiveNewsletters { get; set; }
-//        public Nullable<bool> ActivNotification { get; set; }
-//        public Nullable<bool> ActiveEmployee { get; set; }
-//        public Nullable<bool> ActiveChatMessage { get; set; }
-//        public Nullable<bool> ActivePublicMessages { get; set; }
-//        public Nullable<bool> ActiveFilterMenu { get; set; }
-//        public Nullable<bool> ActiveSpecialProducts { get; set; }
-//        public Nullable<bool> ActiveSortMenu { get; set; }
-//        public Nullable<bool> ActiveCart { get; set; }
-//        public Nullable<bool> ActiveAdvancedSearch { get; set; }
-//        public string WorkTime1 { get; set; }
-//        public string WorkTime2 { get; set; }
-//        public string WorkTime3 { get; set; }
-//        public string WorkTime4 { get; set; }
-//        public string WorkTime5 { get; set; }
-//        public string WorkTime6 { get; set; }
-//        public string WorkTime7 { get; set; }
-//        public Nullable<bool> ActiveProduct { get; set; }
-//        public Nullable<bool> OnlyForDefenition { get; set; }
-//        public Nullable<bool> ShowInDefinePane { get; set; }
-//        public Nullable<bool> CreateReleaseQueue { get; set; }
-//        public string ParentProductId { get; set; }
-//        public Nullable<bool> Editedqueue { get; set; }
-//        public string DELEVERYTime1 { get; set; }
-//        public string DELEVERYime2 { get; set; }
-//        public string DELEVERYime3 { get; set; }
-//        public string DELEVERYime4 { get; set; }
-//        public string DELEVERYime5 { get; set; }
-//        public string DELEVERYTime6 { get; set; }
-//        public string DELEVERYTime7 { get; set; }
-//        public Nullable<int> MaxProductNumber { get; set; }
-//        public string FirstMessageToCustomer { get; set; }
-//        public string FirstMessageToEmployee { get; set; }
-//        /// <summary>
-//        /// ///////////////last data
-//        /// </summary>
-//        public string CompanyID { get; set; }
-//        public string CompanyName { get; set; }
-//        public string Bio { get; set; }
-//        public string EmailAddress { get; set; }
-//        public string MobilePhone { get; set; }
-//        public string BusinessPhone { get; set; }
-//        public string FaxNumber { get; set; }
-//        public string NationalCode { get; set; }
-//        public string RegistrationNumber { get; set; }
-//        public Nullable<System.DateTime> DateOfRegistration { get; set; }
-//        public string EconomicaNumber { get; set; }
-//        public Nullable<System.DateTime> CreationDate { get; set; }
-//        public string WebPage { get; set; }
-//        public string Referredby { get; set; }
-//        public string Privasy { get; set; }
-//        public string Union { get; set; }
-//        public string ObjectID { get; set; }
-//        public string Country { get; set; }
-//        public string City { get; set; }
-//        public string State { get; set; }
-//        public string PostalCode { get; set; }
-//        public string Area { get; set; }
-//        public string Location { get; set; }
-//        public string Neighborhood { get; set; }
-//        public string Address { get; set; }
-//
-//    }
 
 
     public enum productFieldEnum {
@@ -590,12 +520,12 @@ public class BaseCodeClass extends Application {
     public static EditProfileField selectedProfileField = new EditProfileField();
 
 
-    public static ManageOrderClass manageOrderClass = new ManageOrderClass();
+    //public static ManageOrderClass manageOrderClass;
 
     //    public static List<SendProductClass> productClasses = new ArrayList<>();
     public static List<AllProductData> particularProduct = new ArrayList<>();
     public static List<AllProductData> bulletinProduct = new ArrayList<>();
-    public static List<AllProductData> productDataList = new ArrayList<>();
+    public static List<Product> productDataList = new ArrayList<>();
 
 
     public static List<String> statList = new ArrayList<>();
@@ -636,7 +566,16 @@ public class BaseCodeClass extends Application {
     public void setCompanyID(String companyID) {
 
         CompanyID = companyID;
-        dataBase.updateCompanyID(CompanyID);
+        //dataBase.updateCompanyID(CompanyID);
+        //TODO
+        /**
+         * Save company Id into DB or Shared preferences
+         */
+
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("baseInfo", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("companyId", CompanyID);
+        editor.apply();
     }
 
     public enum myAppPage {none, ShoppCenter, Search, myStor, cartpage, myProfile, addressPage, saveAddress, DeleteAddressPg, ExitThread}
@@ -649,9 +588,9 @@ public class BaseCodeClass extends Application {
      */
     public boolean loadSelectedProduct(String pid, Context context) {
         try {
-            for (AllProductData s : productDataList
+            for (Product s : productDataList
             ) {
-                if (s.getProductClass().getProductID().equals(pid)) {
+                if (s.ProductID.equals(pid)) {
                     selectedProduct = s;
                     return true;
                 }
@@ -691,7 +630,12 @@ public class BaseCodeClass extends Application {
                 public void onResponseCheckAccess(GetCheckAccess getCheckAccess) {
                     String result = getCheckAccess.getResualt();
                     if (result.equals("111")) {
-                        dataBase.updateToken(getCheckAccess.getMsg());
+                        //dataBase.updateToken(getCheckAccess.getMsg());
+                        //TODO Save token into DB or SP
+                        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("baseInfo", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("token", getCheckAccess.getMsg());
+                        editor.apply();
                         setToken(getCheckAccess.getMsg());
                         //toastMessage("token update");
                     } else if (result.equals("113")) {
@@ -707,12 +651,21 @@ public class BaseCodeClass extends Application {
 
     public void checkAccess(final CheckAccessApi callBack) {
         try {
-            data = dataBase.getAllData(dataBase.BASE_TABLE);
-            data.moveToFirst();
-            SendCheckAccess sendCheckAccess = new SendCheckAccess(data.getString(data.getColumnIndex(dataBase.getUserId())),
-                    data.getString(data.getColumnIndex(dataBase.getTOKEN())), data.getString(data.getColumnIndex(dataBase.getIMEI())),
-                    data.getString(data.getColumnIndex(dataBase.getDeviceModel())));
-//            setUserID(data.getString(data.getColumnIndex(dataBase.getUserId())));
+            //TODO Read data from DB or SP and pass them to Retrofit
+            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("baseInfo", MODE_PRIVATE);
+            String token = sharedPreferences.getString("token", null);
+            String deviceModel = sharedPreferences.getString("deviceModel", null);
+            String userId = sharedPreferences.getString("userId", null);
+            String IMEI = sharedPreferences.getString("imei", null);
+
+            /*data = dataBase.getAllData(dataBase.BASE_TABLE);
+            data.moveToFirst();*/
+            SendCheckAccess sendCheckAccess = new SendCheckAccess(userId,
+                    token,
+                    IMEI,
+                    deviceModel);
+            setUserID(userId);
+//
             retrofit2.Call<GetCheckAccess> call = checkAccessApi.getCheckAccess(sendCheckAccess);
             call.enqueue(new Callback<GetCheckAccess>() {
                 @Override
@@ -731,9 +684,8 @@ public class BaseCodeClass extends Application {
     }//end public void checkAccess(final CheckAccessApi callBack)
 
 
-   public String BASE_URL = "https://serverv2.nokhbgan.ir/api/";
+    public String BASE_URL = "https://serverv2.nokhbgan.ir/api/";
 
-    DataBase dataBase;
     Cursor data;
 
     public BaseCodeClass() {
@@ -742,7 +694,19 @@ public class BaseCodeClass extends Application {
     }
 
     public boolean LoadBaseData(Context context) {
-        try {
+
+        //TODO
+        /**
+         * Read information from DB or Shared Preferences
+         */
+        SharedPreferences sharedPreferences = context.getSharedPreferences("baseInfo", MODE_PRIVATE);
+        token = sharedPreferences.getString("token", null);
+        deviceModel = sharedPreferences.getString("deviceModel", null);
+        userID = sharedPreferences.getString("userId", null);
+        IMEI = sharedPreferences.getString("imei", null);
+        password = sharedPreferences.getString("password",null);
+        userName = sharedPreferences.getString("username",null);
+        /*try {
             dataBase = new DataBase(context);
             data = dataBase.getAllData(dataBase.BASE_TABLE);
             data.moveToFirst();//moveToLast();//Position(data.getColumnIndex("ID"));//ToFirst();
@@ -768,7 +732,8 @@ public class BaseCodeClass extends Application {
         }//try
         catch (Exception e) {
             return false;
-        }
+        }*/
+        return false;
     }// end public boolean signUp
 
 

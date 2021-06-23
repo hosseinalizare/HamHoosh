@@ -70,7 +70,7 @@ public class DBViewModel extends AndroidViewModel {
     }
 
     public LiveData<Product> getSpecificProduct(String productId){
-        return LiveDataReactiveStreams.fromPublisher(repository.getSpecificProduct(productId));
+        return  LiveDataReactiveStreams.fromPublisher(repository.getSpecificProduct(productId));
     }
 
     public LiveData<List<Properties>> getAllProperties(){
@@ -208,5 +208,97 @@ public class DBViewModel extends AndroidViewModel {
 
     public void deleteAllNews(){
         repository.deleteAllNews();
+    }
+
+    public LiveData<List<Product>> getBulletinProduct(boolean isBulletin){
+        return LiveDataReactiveStreams.fromPublisher(repository.getBulletinProduct(isBulletin));
+    }
+
+    public void addToCard(Product product){
+        repository.addToCard(product);
+    }
+
+    public LiveData<List<Product>> getParticularProduct(boolean isParticular){
+        return LiveDataReactiveStreams.fromPublisher(repository.getParticularProduct(isParticular));
+    }
+
+    public LiveData<List<Product>> getAddedToCard(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getAddedToCard());
+    }
+
+    public LiveData<List<Product>> getSubCat1Product(String cat1){
+        return LiveDataReactiveStreams.fromPublisher(repository.getSubCat1Product(cat1));
+    }
+
+    public LiveData<List<Product>> getSubCat2Product(String cat2){
+        return LiveDataReactiveStreams.fromPublisher(repository.getSubCat2Product(cat2));
+    }
+
+    public LiveData<List<Product>> getBrandProduct(String brand){
+        return LiveDataReactiveStreams.fromPublisher(repository.getBrandProduct(brand));
+    }
+
+    public LiveData<List<Product>> getProductOrderBySell(String value){
+        return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderBySell(value));
+    }
+
+    public LiveData<List<Product>> getProductOrderByViewCount(String value){
+        return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderByViewCount(value));
+    }
+
+    public LiveData<List<Product>> getProductOrderByPriceDESC(String value){
+        return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderByPriceDESC(value));
+    }
+
+    public LiveData<List<Product>> getProductOrderByPriceASC(String value){
+        return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderByPriceASC(value));
+    }
+
+    public LiveData<List<Product>> getProductOrderByNewest(String value){
+        return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderByNewest(value));
+    }
+
+    public LiveData<List<Product>> getBookmarkedProduct(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getBookmarkedProduct());
+    }
+
+    public LiveData<List<Product>> getOffProduct(String value){
+        return LiveDataReactiveStreams.fromPublisher(repository.getOffProduct(value));
+    }
+
+    public LiveData<Long> getProductUpdateDate(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getProductUpdateDate());
+    }
+
+    public LiveData<Integer> getCardItemCount(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getCardItemCount());
+    }
+
+    public void removeCartItem(String pid){
+        repository.updateCardItem(pid);
+    }
+
+    public void updateCardItemCount(int qy,String pid){
+        repository.updateCardItemCount(qy,pid);
+    }
+
+    public LiveData<Integer> getSpecificCardItemCount(String pid){
+        return LiveDataReactiveStreams.fromPublisher(repository.getSpecificCardItemCount(pid));
+    }
+
+    public void updateProductDiscontinued(int qy,String pid){
+        repository.updateProductDiscontinued(qy, pid);
+    }
+
+    public void updateProductName(String pname,String pid){
+        repository.updateProductName(pname, pid);
+    }
+
+    public void updateProductPrice(int standardCost,String showStandardCost,String pid){
+        repository.updateProductPrice(standardCost,showStandardCost,pid);
+    }
+
+    public void deleteProduct(String pid){
+        repository.deleteProduct(pid);
     }
 }

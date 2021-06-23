@@ -10,14 +10,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.koohestantest1.DB.DataBase;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.UserProfile;
 
 public class EditProfileDetailActivity extends AppCompatActivity {
 
     BaseCodeClass baseCodeClass;
-    DataBase dataBase;
     UserProfile usProfile;
 
     TextView Name;
@@ -29,7 +27,6 @@ public class EditProfileDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile_detail);
 
-        dataBase = new DataBase(this);
         baseCodeClass = new BaseCodeClass();
         baseCodeClass.LoadBaseData(this);
 

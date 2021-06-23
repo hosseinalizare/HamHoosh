@@ -20,6 +20,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -55,6 +56,8 @@ import com.example.koohestantest1.activity.InvisibleProductActivity;
 import com.example.koohestantest1.activity.NotInStockActivity;
 import com.example.koohestantest1.adapter.ProfileViewPagerAdapter;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.fragments.FragmentTabsProfile;
 import com.example.koohestantest1.model.CountsDetail;
 import com.example.koohestantest1.model.DeleteMessageM;
@@ -351,11 +354,16 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
                 storeName.setText(companyName);
         }
 
-        dataBase = new DataBase(mContext);
+        //dataBase = new DataBase(mContext);
         baseCodeClass.LoadBaseData(mContext);
+        /**
+         * SharedPreferences
+         */
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("baseInfo",Context.MODE_PRIVATE);
+        String userId = sharedPreferences.getString("userId",null);
 
         Log.d(TAG, "onCreateView: UserId " + baseCodeClass.getUserID());
-        if (baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")) {
+        if (baseCodeClass.getEmployeeID(/*baseCodeClass.getUserID()*/userId).equals("false")) {
             //regular user
             vf.setDisplayedChild(0);
 
@@ -540,8 +548,12 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
                             startActivity(notInStock);
                             break;
                         case R.id.SettingStore:
-                            Intent companySettingIntent = new Intent(requireContext(), CompanySettingActivity.class);
-                            startActivity(companySettingIntent);
+                            if(baseCodeClass.getPermissions().get(14).isState()) {
+                                Intent companySettingIntent = new Intent(requireContext(), CompanySettingActivity.class);
+                                startActivity(companySettingIntent);
+                            }else{
+                                Toast.makeText(mContext, "اجازه تغییر تنظیمات فروشگاه را ندارید", Toast.LENGTH_SHORT).show();
+                            }
                             break;
                     }
                     if (report != 0) {
@@ -571,7 +583,7 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
             loadProductApi = retrofit.create(LoadProductApi.class);
 
 
-            adapter = new MyStoreProductRecyclerViewAdapter(mContext, productDataList, true);
+
             initRecyclerView();
             countsViewModel.getCount().observe(getViewLifecycleOwner(), count -> {
 
@@ -710,15 +722,23 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
 
 
     public void initRecyclerView() {
-        try {
-            GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
-            gridRecyclerView.setLayoutManager(layoutManager);
+        DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+        dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            @Override
+            public void onChanged(List<Product> products) {
+                try {
+                    adapter = new MyStoreProductRecyclerViewAdapter(mContext, products, true);
+                    GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
+                    gridRecyclerView.setLayoutManager(layoutManager);
 //            gridRecyclerView.setNestedScrollingEnabled(false);
-            gridRecyclerView.setFocusable(false);
-            gridRecyclerView.setAdapter(adapter);
-        } catch (Exception e) {
-            logMessage("MyStoreFragment 400 >> " + e.getMessage(), mContext);
-        }
+                    gridRecyclerView.setFocusable(false);
+                    gridRecyclerView.setAdapter(adapter);
+                } catch (Exception e) {
+                    logMessage("MyStoreFragment 400 >> " + e.getMessage(), mContext);
+                }
+            }
+        });
+
     }
 
     public void toastMessage(String message) {

@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.koohestantest1.AddProductActivity;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.ViewProductActivity;
+import com.example.koohestantest1.local_db.entity.Product;
 
 import java.util.List;
 
@@ -37,8 +38,8 @@ class MainViewHolder extends RecyclerView.ViewHolder {
 public class MyStoreProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
-    List<AllProductData> productData;
-    List<AllProductData> allProduct;
+    List<Product> productData;
+    List<Product> allProduct;
     LayoutInflater inflater;
     boolean myStore;
 
@@ -54,7 +55,7 @@ public class MyStoreProductRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     BaseCodeClass baseCodeClass = new BaseCodeClass();
 
 
-    public MyStoreProductRecyclerViewAdapter(Context context, List<AllProductData> allProductData, boolean isMyStore) {
+    public MyStoreProductRecyclerViewAdapter(Context context, List<Product> allProductData, boolean isMyStore) {
         this.context = context;
         this.allProduct = allProductData;
         this.myStore = isMyStore;
@@ -96,12 +97,12 @@ public class MyStoreProductRecyclerViewAdapter extends RecyclerView.Adapter<Recy
     public void loadProduct(MainViewHolder holder, final int position) {
         try {
             if (productData.get(position) != null) {
-                newDownloadImage(productData.get(position).getProductClass().getProductID(), holder);
-                String color = productData.get(position).getProductClass().getSpare2();
-                if (!color.equals("null")){
+                newDownloadImage(productData.get(position).ProductID, holder);
+                String color = productData.get(position).Spare2;
+                if (!color.equals("null")) {
                     holder.imageView.setBackgroundColor(Color.parseColor(color));
                 }
-                holder.name.setText(productData.get(position).getProductClass().getProductName());
+                holder.name.setText(productData.get(position).ProductName);
 
                 holder.imageView.setOnClickListener(v -> {
                     if (myStore) {
@@ -109,14 +110,14 @@ public class MyStoreProductRecyclerViewAdapter extends RecyclerView.Adapter<Recy
                             startEditProduct(position);
                         } else {
                             //employee has not permission to edit product
-                            if (baseCodeClass.loadSelectedProduct(productData.get(position).getProductClass().getProductID(), context)) {
-                                startViewProduct(position);
-                            }
+
+                            startViewProduct(position);
+
                         }
                     } else {
-                        if (baseCodeClass.loadSelectedProduct(productData.get(position).getProductClass().getProductID(), context)) {
-                            startViewProduct(position);
-                        }
+
+                        startViewProduct(position);
+
 
                     }
                 });
@@ -129,14 +130,14 @@ public class MyStoreProductRecyclerViewAdapter extends RecyclerView.Adapter<Recy
 
     public void startViewProduct(int position) {
         Intent intent = new Intent(context, ViewProductActivity.class);
-        intent.putExtra("PID", productData.get(position).getProductClass().getProductID());
+        intent.putExtra("PID", productData.get(position).ProductID);
         context.startActivity(intent);
     }
 
     public void startEditProduct(int position) {
         Intent intent = new Intent(context, AddProductActivity.class);
-        intent.putExtra("PID", productData.get(position).getProductClass().getProductID());
-        if (baseCodeClass.loadSelectedProduct(productData.get(position).getProductClass().getProductID(), context))
+        intent.putExtra("PID", productData.get(position).ProductID);
+
             context.startActivity(intent);
     }
 

@@ -2,7 +2,10 @@ package com.example.koohestantest1.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -14,6 +17,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.example.koohestantest1.DB.DataBase;
 import com.example.koohestantest1.ForgotPasswordActivity;
 import com.example.koohestantest1.MainActivity;
 import com.example.koohestantest1.R;
@@ -26,7 +32,7 @@ import com.example.koohestantest1.model.network.RetrofitInstance;
 import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.JsonApi;
-import com.example.koohestantest1.DB.DataBase;
+
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.CheckVerification;
 import com.example.koohestantest1.classDirectory.GetLoginDetail;
@@ -49,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     JsonApi jsonApi;
 
     BaseCodeClass baseCodeClass;
-    DataBase dataBase;
+
     EditText edUserName;
     EditText edPassword;
 
@@ -59,14 +65,16 @@ public class LoginActivity extends AppCompatActivity {
     String deviceModel;
     String IMEI;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        dataBase = new DataBase(this);
+        //dataBase = new DataBase(this);
         baseCodeClass = new BaseCodeClass();
-        baseCodeClass.LoadBaseData(this);
+//        baseCodeClass.LoadBaseData(this);
 
         TextView tvWelcome = (TextView) findViewById(R.id.tvWelcomeSignUp);
         EditText EdPhoneNo = (EditText) findViewById(R.id.EdUserNameSignUp);
@@ -162,6 +170,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void btnLoginCLick(View view) {
 
+        YoYo.with(Techniques.Shake).duration(700).repeat(1).playOn(findViewById(R.id.btnSignUp));
+        findViewById(R.id.btnSignUp).setEnabled(false);
         getMobileConfig();
         userName = edUserName.getText().toString();
         password = edPassword.getText().toString();
@@ -189,6 +199,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponseLogin(GetLoginDetail getLoginDetail) {
+                findViewById(R.id.btnSignUp).setEnabled(true);
                 String msg = getLoginDetail.getMsg();
                 if (msg.equals("ok")) {
 
@@ -197,15 +208,36 @@ public class LoginActivity extends AppCompatActivity {
                     baseCodeClass.setUserID(getLoginDetail.getUserID());
                     baseCodeClass.setUserName(edUserName.getText().toString());
                     baseCodeClass.setPassword(edPassword.getText().toString());
-                    String[] item = {baseCodeClass.getUserID(), baseCodeClass.getToken(), baseCodeClass.getDeviceModel(),
-                            baseCodeClass.getIMEI(), baseCodeClass.getMobileNumber(), baseCodeClass.getUserName(), BaseCodeClass.getPassword()};
-                    AddData(item, DataBase.BASE_TABLE, DataBase.BaseTableField);
+                    String a = baseCodeClass.getUserID();
+                    String b = baseCodeClass.getToken();
+                    String c = baseCodeClass.getDeviceModel();
+                    String d = BaseCodeClass.getIMEI();
+                    String e = baseCodeClass.getMobileNumber();
+                    String f = baseCodeClass.getUserName();
+                    String g = BaseCodeClass.getPassword();
+                    String h = baseCodeClass.getEmployeeID(a);
+                    String i = "";
+
+
+
+
+
+                    SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("baseInfo",MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("userId",a);
+                    editor.putString("token",b);
+                    editor.putString("deviceModel",c);
+                    editor.putString("imei", d);
+                    editor.putString("mobileNumber", e);
+                    editor.putString("username", f);
+                    editor.putString("password", g);
+                    editor.apply();
 
                     Call<GetResualt> call = jsonApi.setCostumerID(baseCodeClass.getCompanyID(), baseCodeClass.getUserID(), baseCodeClass.getCompanyID() + baseCodeClass.getUserID());
                     call.enqueue(new Callback<GetResualt>() {
                         @Override
                         public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
-                            Toast.makeText(getApplicationContext(), "خوش آمدید", Toast.LENGTH_LONG).show();
+
                             Intent intent = new Intent(LoginActivity.this, LoadingActivity.class);
                             startActivity(intent);
                             finish();
@@ -213,7 +245,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<GetResualt> call, Throwable t) {
-
+                            //TODO make a decision for onFailure
                         }
                     });
 
@@ -292,12 +324,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void AddData(String[] item, String tableName, String[] newEntry) {
-        boolean insertData = dataBase.addData(item, tableName, newEntry);
+        //TODO Save data into DB or SP
+        /*boolean insertData = dataBase.addData(item, tableName, newEntry);
         if (insertData) {
             //toastMessage("Data Successfully Inserted");
         } else {
             toastMessage("Something went wrong");
-        }
+        }*/
     }// end public void AddData
 
     public void toastMessage(String message) {

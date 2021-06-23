@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.example.koohestantest1.model.repository.callback.LogOutCallBacks;
 
-import com.example.koohestantest1.DB.DataBase;
+
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -13,10 +13,10 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class LogOutRepository {
-    private DataBase dataBase;
+
     private LogOutCallBacks callBacks;
     public LogOutRepository(Context context , LogOutCallBacks logOutCallBacks) {
-        dataBase = new DataBase(context);
+
         callBacks = logOutCallBacks;
     }
 
@@ -24,7 +24,7 @@ public class LogOutRepository {
 
         Observable observable = Observable.create(emitter -> {
             try {
-                dataBase.deleteAllData();
+                //dataBase.deleteAllData();
                 emitter.onComplete();
             } catch (Exception e) {
                 emitter.onError(e);

@@ -104,9 +104,13 @@ public class CompanySettingHeaderFragment extends Fragment implements ICompanySe
 
         binding.tvChangeCompanyProfile.setOnClickListener(v -> {
             //its callback will call in CompanySettingActivity
-            CropImage.activity()
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .start(requireActivity());
+            if(baseCodeClass.getPermissions().get(13).isState()) {
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(requireActivity());
+            }else{
+                Toast.makeText(getContext(), "شما اجازه تغییر عکس پروفایل را ندارید", Toast.LENGTH_SHORT).show();
+            }
         });
 
         binding.tvPageTitleSettings.setOnLongClickListener(v -> {

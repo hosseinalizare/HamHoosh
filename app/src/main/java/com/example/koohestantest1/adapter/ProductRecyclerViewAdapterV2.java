@@ -1,5 +1,6 @@
 package com.example.koohestantest1.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -14,40 +15,45 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.koohestantest1.AddProductActivity;
 import com.example.koohestantest1.R;
+import com.example.koohestantest1.Utils.BadgeCounter;
 import com.example.koohestantest1.ViewProductActivity;
 
 import java.util.List;
 
-import com.example.koohestantest1.DB.MyDataBase;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
+import com.example.koohestantest1.classDirectory.ManageOrderClass;
 import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import com.example.koohestantest1.fragments.bottomsheet.EditBottomSheet;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.badge;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.manageOrderClass;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.selectedProduct;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.sendOrderClass;
+
 import static com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirectory;
 
 
 public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRecyclerViewAdapterV2.MyViewHolder> {
     private Context mContext;
-    public List<ReceiveProductClass> showProductData;
+    public List<Product> showProductData;
     private final String TAG = ProductRecyclerViewAdapterV2.class.getSimpleName();
     BaseCodeClass baseCodeClass = new BaseCodeClass();
-    MyDataBase mydb;
+
     private boolean editMode;
+    private DBViewModel dbViewModel;
     private FragmentManager fragmentManager;
+
+    private ManageOrderClass manageOrderClass;
 
 
  /*   public ProductRecyclerViewAdapterV2(Context mContext, boolean editMode) {
@@ -55,13 +61,16 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
         this.editMode = editMode;
     }*/
 
-    public ProductRecyclerViewAdapterV2(Context mContext, boolean editMode, FragmentManager fragmentManager) {
+    public ProductRecyclerViewAdapterV2(Context mContext, boolean editMode, FragmentManager fragmentManager, DBViewModel dbViewModel, AppCompatActivity fragment) {
         this.mContext = mContext;
         this.editMode = editMode;
         this.fragmentManager = fragmentManager;
+        this.dbViewModel = dbViewModel;
+
+        manageOrderClass = new ManageOrderClass(fragment);
     }
 
-    public void setData(List<ReceiveProductClass> _productData) {
+    public void setData(List<Product> _productData) {
         showProductData = _productData;
         notifyDataSetChanged();
     }
@@ -86,7 +95,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
         holder.imgSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopup(v,position);
+                showPopup(v, position);
             }
         });
 
@@ -108,14 +117,14 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
             if (showProductData.get(position) == null) {
                 return;
             }
-            mholder.txtPName.setText(showProductData.get(position).getProductName());
-            String pid = showProductData.get(position).getProductID();
+            mholder.txtPName.setText(showProductData.get(position).ProductName);
+            String pid = showProductData.get(position).ProductID;
             String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
             Glide.with(mContext).load(url).into(mholder.pImageView);
 
-            String detail = showProductData.get(position).getDescription().replace("\n", " ");
+            String detail = showProductData.get(position).Description.replace("\n", " ");
             mholder.txtDetail.setText(detail);
-            String dirtyPrice = showProductData.get(position).getStandardCost().getShowPrice();
+            String dirtyPrice = showProductData.get(position).ShowStandardCost;
             float floatPrice = Float.parseFloat(dirtyPrice);
             int intPrice = (int) floatPrice;
             Log.d(TAG, "loadProduct: " + intPrice);
@@ -131,10 +140,10 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
             });*/
             mholder.cardView.setOnClickListener(v -> {
                 if (editMode) {
-                    startEditProduct(showProductData.get(position).getProductID());
-                } else if (baseCodeClass.loadSelectedProduct(showProductData.get(position).getProductID(), mContext)) {
+                    startEditProduct(showProductData.get(position).ProductID);
+                } else {
                     Intent intent = new Intent(mContext, ViewProductActivity.class);
-                    intent.putExtra("PID", showProductData.get(position).getProductID());
+                    intent.putExtra("PID", showProductData.get(position).ProductID);
                     mContext.startActivity(intent);
                 }
             });
@@ -154,32 +163,29 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
 
             mholder.addToCart.setOnClickListener(v -> {
                 try {
-                    baseCodeClass.loadSelectedProduct(showProductData.get(position).getProductID(), mContext);
-                    if (selectedProduct.isSelectedToCart()) {
+                    // baseCodeClass.loadSelectedProduct(currentProductId, mContext);
+                    if (showProductData.get(position).AddToCard) {
                         //removes Item in carts
-                        manageOrderClass.RemoveProductFromCart(showProductData.get(position).getProductID());
-                        productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(false);
+                        manageOrderClass.RemoveProductFromCart(showProductData.get(position).ProductID);
+                        //productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(false);
+                        showProductData.get(position).AddToCard = false;
+
+                        //handle view:
                         mholder.btnAddToCart.setImageResource(R.drawable.ic_add_cart);
                         mholder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.purple1));
-                        notifyDataSetChanged();
-                    } else {
-                        if (manageOrderClass.addProductToCart(selectedProduct.getProductClass())) {
-                            productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(true);
-//                            holder.btnAddToCart.setImageResource(R.drawable.delivery);
-                            badge.setVisible(true);
-                            badge.setNumber(sendOrderClass.Order_Details.size());
-                        } else {
-                            logMessage("productRec Adapter : 404", mContext);
-                        }
-                        if (mydb.insertOrder(mContext, sendOrderClass) == 1) {
-                            //logMessage("با موفقیت ذخیره شد", mContext);
-                            mholder.btnAddToCart.setImageResource(R.drawable.ic_added_cart);
-                            mholder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.okGreen));
-                        } else {
+                        notifyItemChanged(position);
+                        //badgeSharedViewModel.setCount(BadgeCounter.getCount() - 1);
 
-                        }
+                    } else {
+                        /*if (manageOrderClass.addProductToCart(selectedProduct.getProductClass()))*/
+
+                        //productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(true);
+                        showProductData.get(position).AddToCard = true;
+                        //badgeSharedViewModel.setCount(sendOrderClass.Order_Details.size());
                     }
-                    notifyDataSetChanged();
+
+                    dbViewModel.updateProduct(showProductData.get(position));
+                    notifyItemChanged(position);
 
                 } catch (Exception e) {
                     logMessage("productAdapter add to cart : " + e.getMessage(), mContext);
@@ -195,7 +201,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
         public ImageView pImageView;
         public TextView txtPName, txtDetail, txtPrice, cartQTY;
         public CardView cardView, addToCart, increaseCart;
-        public ImageView btnAddToCart, cartAdd, cartRemove,imgSetting;
+        public ImageView btnAddToCart, cartAdd, cartRemove, imgSetting;
         public ConstraintLayout layout;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -219,56 +225,56 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
         }
     }
 
-    private void showPopup(View v,int position) {
-        boolean showProduct = showProductData.get(position).getShow();
-        PopupMenu popupMenu = new PopupMenu(mContext,v);
+    private void showPopup(View v, int position) {
+        boolean showProduct = showProductData.get(position).Show;
+        PopupMenu popupMenu = new PopupMenu(mContext, v);
         MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.edit_product_menu,popupMenu.getMenu());
+        inflater.inflate(R.menu.edit_product_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 boolean changePricePermission = baseCodeClass.getPermissions().get(BaseCodeClass.EmploeeAccessLevel.EditeProductPrice.getValue()).isState();
-                boolean showProduct = showProductData.get(position).getShow();
+                boolean showProduct = showProductData.get(position).Show;
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.editProductName_menu:
-                        String productId = showProductData.get(position).getProductID();
+                        String productId = showProductData.get(position).ProductID;
                         EditBottomSheet editBottomSheet = EditBottomSheet.
-                                onNewInstance(0, showProductData.get(position).getProductName(), productId,BaseCodeClass.productFieldEnum.ProductName,null);
+                                onNewInstance(0, showProductData.get(position).ProductName, productId, BaseCodeClass.productFieldEnum.ProductName, null);
                         editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         //Toast.makeText(mContext, "Product name", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.editProductCount_menu:
-                        productId = showProductData.get(position).getProductID();
+                        productId = showProductData.get(position).ProductID;
                         editBottomSheet = EditBottomSheet.
-                                onNewInstance(0, showProductData.get(position).getDiscontinued()+"", productId,BaseCodeClass.productFieldEnum.Discontinued,null);
+                                onNewInstance(0, showProductData.get(position).Discontinued + "", productId, BaseCodeClass.productFieldEnum.Discontinued, null);
                         editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         break;
                     case R.id.editProductPrice_menu:
-                        if(!changePricePermission){
+                        if (!changePricePermission) {
                             Toast.makeText(mContext, "اجازه ویرایش قیمت محصول را ندارید", Toast.LENGTH_SHORT).show();
-                        }else {
-                            productId = showProductData.get(position).getProductID();
+                        } else {
+                            productId = showProductData.get(position).ProductID;
                             editBottomSheet = EditBottomSheet.
-                                    onNewInstance(0, showProductData.get(position).getStandardCost().getShowPrice(), productId, BaseCodeClass.productFieldEnum.StandardCost,null);
+                                    onNewInstance(0, showProductData.get(position).ShowPrice, productId, BaseCodeClass.productFieldEnum.StandardCost, null);
                             editBottomSheet.show(fragmentManager, "EDIT_PRICE_TAG");
                         }
                         break;
                     case R.id.manageShowProduct:
-                        productId = showProductData.get(position).getProductID();
+                        productId = showProductData.get(position).ProductID;
                         editBottomSheet = EditBottomSheet
-                                .onNewInstance(0,String.valueOf(showProductData.get(position).getShow()),productId,BaseCodeClass.productFieldEnum.Show,null);
-                        editBottomSheet.show(fragmentManager,"EDIT_SHOW_PRODUCT");
+                                .onNewInstance(0, String.valueOf(showProductData.get(position).Show), productId, BaseCodeClass.productFieldEnum.Show, null);
+                        editBottomSheet.show(fragmentManager, "EDIT_SHOW_PRODUCT");
                         break;
                     case R.id.deleteProduct_menu:
-                        productId = showProductData.get(position).getProductID();
+                        productId = showProductData.get(position).ProductID;
 /*
                         AllProductData productData = showProductData.get(position);
 */
-                        ReceiveProductClass productData = showProductData.get(position);
+                        // ReceiveProductClass productData = showProductData.get(position);
                         editBottomSheet = EditBottomSheet.
-                                onNewInstance2(0,null,productId, BaseCodeClass.productFieldEnum.Deleted,productData);
-                        editBottomSheet.show(fragmentManager,"DELETE_PRODUCT");
+                                onNewInstance2(0, null, productId, BaseCodeClass.productFieldEnum.Deleted, showProductData.get(position));
+                        editBottomSheet.show(fragmentManager, "DELETE_PRODUCT");
 
                 }
                 return false;
@@ -282,7 +288,7 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
     public void startEditProduct(String id) {
         Intent intent = new Intent(mContext, AddProductActivity.class);
         intent.putExtra("PID", id);
-        if (baseCodeClass.loadSelectedProduct(id, mContext))
-            mContext.startActivity(intent);
+
+        mContext.startActivity(intent);
     }
 }

@@ -3,7 +3,10 @@ package com.example.koohestantest1.local_db.entity;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import java.util.List;
 
 @Entity(tableName = "products")
 public class Product {
@@ -13,16 +16,14 @@ public class Product {
     @ColumnInfo(name = "product_id")
     public String ProductID;
 
-
-
-
-
     @ColumnInfo(name = "company_id")
     public String CompanyID;
 
+    @ColumnInfo(name = "company_name")
+    public String CompanyName;
+
     @ColumnInfo(name = "supplier_id")
     public String SupplierID;
-
 
     @ColumnInfo(name = "product_name")
     public String ProductName;
@@ -32,8 +33,6 @@ public class Product {
 
     @ColumnInfo(name = "standard_cost")
     public int StandardCost;
-
-
 
     @ColumnInfo(name = "reorder_level")
     public int ReorderLevel;
@@ -136,5 +135,32 @@ public class Product {
 
     @ColumnInfo(name = "show_price")
     public String ShowPrice;
+
+    @ColumnInfo(name = "is_particular")
+    public boolean IsParticular;
+
+    @ColumnInfo(name = "is_bulletin")
+    public boolean IsBulletin;
+
+    @ColumnInfo(name = "add_to_card")
+    public boolean AddToCard;
+
+    @ColumnInfo(name = "brand")
+    public String Brand;
+
+    @ColumnInfo(name = "main_cat")
+    public String MainCategory;
+
+    @ColumnInfo(name = "sub_cat1")
+    public String SubCat1;
+
+    @ColumnInfo(name = "sub_cat2")
+    public String SubCat2;
+
+    @ColumnInfo(name = "card_item_count")
+    public int CartItemCount;
+
+    @Ignore
+    public List<Properties> propertiesList;
 
 }

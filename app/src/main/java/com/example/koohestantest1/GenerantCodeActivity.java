@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.example.koohestantest1.ApiDirectory.JsonApi;
-import com.example.koohestantest1.DB.DataBase;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.CheckVerification;
 import com.example.koohestantest1.classDirectory.GetLoginDetail;
@@ -59,7 +59,6 @@ public class GenerantCodeActivity extends AppCompatActivity {
     String userId, token, msg, msgDetail;
 
     BaseCodeClass baseCodeClass = new BaseCodeClass();
-    DataBase dataBase;
     HardwareIdsMobile hardwareIdsMobile;
     CountDownTimer downTimer;
 
@@ -68,7 +67,6 @@ public class GenerantCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generant_code);
         hardwareIdsMobile = new HardwareIdsMobile(this);
-        dataBase = new DataBase(this);
 
 
         TextView tvComment = findViewById(R.id.tvComment);
@@ -236,7 +234,7 @@ public class GenerantCodeActivity extends AppCompatActivity {
 
 
     public void AddData(String[] item, String tableName, String[] newEntry) {
-        boolean insertData = dataBase.addData(item, tableName, newEntry);
+        /*boolean insertData = dataBase.addData(item, tableName, newEntry);
 
         try {
             if (insertData) {
@@ -246,7 +244,7 @@ public class GenerantCodeActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             logMessage("GenerateCode 100 >> " + e.getMessage(), this);
-        }
+        }*/
     }// end public void AddData
 
     public void toastMessage(String message) {
@@ -323,7 +321,21 @@ public class GenerantCodeActivity extends AppCompatActivity {
                     String[] item = {baseCodeClass.getUserID(), baseCodeClass.getToken(), baseCodeClass.getDeviceModel(),
                             baseCodeClass.getIMEI(), baseCodeClass.getMobileNumber(), baseCodeClass.getUserName(), BaseCodeClass.getPassword()};
 
-                    AddData(item, DataBase.BASE_TABLE, DataBase.BaseTableField);
+                    //AddData(item, DataBase.BASE_TABLE, DataBase.BaseTableField);
+                    //TODO
+                    /**
+                     * Create new table or shared prefrences and add item's value into it
+                     */
+                    SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("baseInfo",MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("userId",baseCodeClass.getUserID());
+                    editor.putString("token",baseCodeClass.getToken());
+                    editor.putString("deviceModel",baseCodeClass.getDeviceModel());
+                    editor.putString("imei", BaseCodeClass.getIMEI());
+                    editor.putString("mobileNumber", baseCodeClass.getMobileNumber());
+                    editor.putString("username", baseCodeClass.getUserName());
+                    editor.putString("password", BaseCodeClass.getPassword());
+                    editor.apply();
                     setCostumerMethid(baseCodeClass.getCompanyID(), baseCodeClass.getUserID());
 
 

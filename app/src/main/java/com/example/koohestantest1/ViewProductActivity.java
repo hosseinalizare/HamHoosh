@@ -33,11 +33,14 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.example.koohestantest1.Utils.BadgeCounter;
 import com.example.koohestantest1.Utils.StringUtils;
 import com.example.koohestantest1.activity.Main2Activity;
+import com.example.koohestantest1.classDirectory.ManageOrderClass;
+import com.example.koohestantest1.classDirectory.ProductRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.constants.IntentKeys;
 import com.example.koohestantest1.fragments.bottomsheet.CommentsBottomSheet;
 import com.example.koohestantest1.fragments.bottomsheet.EditBottomSheet;
 import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.local_db.entity.Properties;
 import com.example.koohestantest1.model.entity.CartProduct;
 import com.example.koohestantest1.model.network.RetrofitInstance;
@@ -52,7 +55,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
-import com.example.koohestantest1.DB.MyDataBase;
 import com.example.koohestantest1.ViewModels.BookMarkViewModel;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
 import com.example.koohestantest1.ViewModels.PostViewViewModel;
@@ -61,15 +63,14 @@ import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.CategoryRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.ProductPropertiesRecyclerViewAdapter;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.manageOrderClass;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
+import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.selectedProduct;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.sendOrderClass;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.userID;
 
 public class ViewProductActivity extends AppCompatActivity {
@@ -79,19 +80,18 @@ public class ViewProductActivity extends AppCompatActivity {
     ArrayList<String> mPropertyName = new ArrayList<>();
     ArrayList<String> mPropertyValue = new ArrayList<>();
 
-    TextView txtPName, txtPPrice, txtPDescription,txtSeeMore;
-    ImageView PImage, like, bookmark,imgLoadMore;
+    TextView txtPName, txtPPrice, txtPDescription, txtSeeMore;
+    ImageView PImage, like, bookmark, imgLoadMore;
     Button btnAddToCart;
     LinearLayout linearLayoutSeeMore;
 
     private String selectedPid;
-    private MyDataBase mydb;
     BaseCodeClass baseCodeClass;
     LoadProductApi loadProductApi;
 
     private String TAG = ViewProductActivity.class.getSimpleName() + "Debug";
     private CardView cardViewController;
-    private TextView tvCounter, tvLikeCount,txtViewCount;
+    private TextView tvCounter, tvLikeCount, txtViewCount;
     private ImageView ivAdd, ivRemove;
     private BadgeSharedViewModel badgeSharedViewModel;
     private FrameLayout frameLayout;
@@ -104,12 +104,30 @@ public class ViewProductActivity extends AppCompatActivity {
     private ProductViewModel productViewModel;
     private ConstraintLayout contentContiner;
     private ExplorerFragment explorerFragment = null;
+    private String pId;
+    private DBViewModel dbViewModel;
 
+
+    private ManageOrderClass manageOrderClass;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_product);
+        dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         contentContiner = findViewById(R.id.activity_view_product_continer);
+        manageOrderClass = new ManageOrderClass(this);
+        Intent intent = getIntent();
+        if (intent.hasExtra("PID")) {
+            pId = intent.getStringExtra("PID");
+            dbViewModel.getSpecificProduct(pId).observe(this, new Observer<Product>() {
+                @Override
+                public void onChanged(Product product) {
+                    selectedProduct = product;
+                }
+            });
+        }
+        else
+            finish();
 
         badgeSharedViewModel = new ViewModelProvider(this).get(BadgeSharedViewModel.class);
         localCartViewModel = new ViewModelProvider(this).get(LocalCartViewModel.class);
@@ -155,16 +173,13 @@ public class ViewProductActivity extends AppCompatActivity {
 
 
         baseCodeClass = new BaseCodeClass();
-        mydb = new MyDataBase(this);
 
         selectedPid = getIntent().getStringExtra("PID");
 
 
-
-
         Log.d(TAG, "onCreate: " + selectedPid);
-        Log.d(TAG, "onCreate: " + selectedProduct.getProductClass().getProductName());
-        int stock = selectedProduct.getProductClass().getDiscontinued();
+        Log.d(TAG, "onCreate: " + selectedProduct.ProductName);
+        int stock = selectedProduct.Discontinued;
         if (stock == 0) {
             btnAddToCart.setVisibility(View.GONE);
             cardNoItem.setVisibility(View.VISIBLE);
@@ -172,8 +187,8 @@ public class ViewProductActivity extends AppCompatActivity {
         initCategoryRecyclerView();
 
 
-        tvLikeCount.setText(String.valueOf(selectedProduct.getProductClass().getLikeCount()));
-        txtViewCount.setText(StringUtils.showProductViewCount(selectedProduct.getProductClass().getViewedCount()));
+        tvLikeCount.setText(String.valueOf(selectedProduct.LikeCount));
+        txtViewCount.setText(StringUtils.showProductViewCount(selectedProduct.ViewedCount));
 
 
         loadingProduct();
@@ -185,10 +200,10 @@ public class ViewProductActivity extends AppCompatActivity {
         //init bookmark
         initBookmarkView();
 
-        Log.d(TAG, "onCreate: isliked " + selectedProduct.isLike());
-        Log.d(TAG, "onCreate: " + selectedProduct.getProductClass().isLikeit());
+        Log.d(TAG, "onCreate: isliked " + selectedProduct.Likeit);
+        Log.d(TAG, "onCreate: " + selectedProduct.Likeit);
 
-        if (selectedProduct.isSelectedToCart()) {
+        if (selectedProduct.AddToCard) {
             showController();
         }
 
@@ -206,7 +221,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
         bookmark.setOnClickListener(v -> {
             try {
-                if (selectedProduct.isBookMark()) {
+                if (selectedProduct.Saveit) {
                     bookmarked(selectedPid, userID, false);
                     bookmark.setImageResource(R.drawable.ic_bookmark);
                 } else {
@@ -217,7 +232,7 @@ public class ViewProductActivity extends AppCompatActivity {
                 YoYo.with(Techniques.RubberBand)
                         .playOn(bookmark);
             } catch (Exception e) {
-                Log.d("Error" , e.getMessage());
+                Log.d("Error", e.getMessage());
             }
         });
 
@@ -230,14 +245,15 @@ public class ViewProductActivity extends AppCompatActivity {
         });
 
         ivCartIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(this, Main2Activity.class);
-            intent.putExtra(IntentKeys.INTENT_CART_PRODUCT_TO_MAIN, true);
-            startActivity(intent);
+            //TODO
+           /* Intent intent1 = new Intent(this, Main2Activity.class);
+            intent1.putExtra(IntentKeys.INTENT_CART_PRODUCT_TO_MAIN, true);
+            startActivity(intent1);*/
             finish();
         });
 
         ivComment.setOnClickListener(v -> {
-            CommentsBottomSheet commentsBottomSheet = new CommentsBottomSheet(selectedPid, userID,BaseCodeClass.token,BaseCodeClass.CompanyID);
+            CommentsBottomSheet commentsBottomSheet = new CommentsBottomSheet(selectedPid, userID, BaseCodeClass.token, BaseCodeClass.CompanyID);
             commentsBottomSheet.show(getSupportFragmentManager(), "TAG_COMMENT_SHEET");
         });
 
@@ -251,7 +267,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
         if (!baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")) {
             txtPPrice.setOnLongClickListener(v -> {
-                EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, txtPPrice.getText().toString(), selectedPid,BaseCodeClass.productFieldEnum.StandardCost,null);
+                EditBottomSheet editBottomSheet = EditBottomSheet.onNewInstance(0, txtPPrice.getText().toString(), selectedPid, BaseCodeClass.productFieldEnum.StandardCost, null);
                 editBottomSheet.show(getSupportFragmentManager(), "EDIT_PRICE_TAG");
                 return true;
             });
@@ -262,7 +278,10 @@ public class ViewProductActivity extends AppCompatActivity {
             StandardPrice standardPrice = new StandardPrice();
             standardPrice.setShowPrice(s);
             txtPPrice.setText(s);
-            selectedProduct.getProductClass().setStandardCost(standardPrice);
+            /**
+             * Check here
+             */
+            selectedProduct.StandardCost = standardPrice.getStandardCost();
         });
     }
 
@@ -281,21 +300,21 @@ public class ViewProductActivity extends AppCompatActivity {
     public void setUpLike() {
 
         try {
-            int likeCount = selectedProduct.getProductClass().getLikeCount();
-            Log.d(TAG, "setUpLike: bool " + selectedProduct.isLike());
+            int likeCount = selectedProduct.LikeCount;
+            Log.d(TAG, "setUpLike: bool " + selectedProduct.Likeit);
 
-            if (selectedProduct.isLike()) {
+            if (selectedProduct.Likeit) {
                 likePost(selectedPid, userID, false);
                 like.setImageResource(R.drawable.ic_like);
                 if (likeCount > 0)
-                    selectedProduct.getProductClass().setLikeCount(--likeCount);
+                    selectedProduct.LikeCount = --likeCount;
             } else {
                 likePost(selectedPid, userID, true);
                 like.setImageResource(R.drawable.ic_liked);
-                selectedProduct.getProductClass().setLikeCount(++likeCount);
+                selectedProduct.LikeCount = ++likeCount;
             }
 
-            tvLikeCount.setText(String.valueOf(selectedProduct.getProductClass().getLikeCount()));
+            tvLikeCount.setText(String.valueOf(selectedProduct.LikeCount));
 
             YoYo.with(Techniques.Bounce)
                     .duration(500)
@@ -307,7 +326,7 @@ public class ViewProductActivity extends AppCompatActivity {
     }
 
     public void handleLikeView() {
-        if (selectedProduct.isLike()) {
+        if (selectedProduct.Likeit) {
             like.setImageResource(R.drawable.ic_liked);
         } else {
             like.setImageResource(R.drawable.ic_like);
@@ -321,8 +340,8 @@ public class ViewProductActivity extends AppCompatActivity {
 
     public void initBookmarkView() {
 
-        Log.d(TAG, "initBookmarkView: " + selectedProduct.isBookMark());
-        if (selectedProduct.isBookMark()) {
+        Log.d(TAG, "initBookmarkView: " + selectedProduct.Saveit);
+        if (selectedProduct.Saveit) {
             bookmark.setImageResource(R.drawable.ic_bookmarked);
         } else {
             bookmark.setImageResource(R.drawable.ic_bookmark);
@@ -344,7 +363,7 @@ public class ViewProductActivity extends AppCompatActivity {
             CategoryRecyclerViewAdapter adapter = new CategoryRecyclerViewAdapter(ViewProductActivity.this, mCategory);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
-            Log.d("Error" , e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
@@ -357,17 +376,17 @@ public class ViewProductActivity extends AppCompatActivity {
             ProductPropertiesRecyclerViewAdapter adapter = new ProductPropertiesRecyclerViewAdapter(this, mPropertyName, mPropertyValue, 1);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
-            Log.d("Error" , e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
     private void loadingProduct() {
         try {
-            txtPName.setText(selectedProduct.getProductClass().getProductName());
+            txtPName.setText(selectedProduct.ProductName);
 
             /// generate click for hashtags word
 
-            String description = selectedProduct.getProductClass().getDescription();
+            String description = selectedProduct.Description;
             SpannableString spannableString = new SpannableString(description);
             String[] words2 = spannableString.toString().split("\\s+|\n,\\s*|\\.\\s*");
             for (final String word : words2) {
@@ -375,7 +394,7 @@ public class ViewProductActivity extends AppCompatActivity {
                     ClickableSpan clickableSpan = new ClickableSpan() {
                         @Override
                         public void onClick(@NonNull View widget) {
-                            BaseCodeClass.hashtagsValue=word;
+                            BaseCodeClass.hashtagsValue = word;
                             finish();
                         }
                     };
@@ -396,7 +415,7 @@ public class ViewProductActivity extends AppCompatActivity {
                         txtPDescription.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         linearLayoutSeeMore.setVisibility(View.VISIBLE);
 
-                    }else {
+                    } else {
                         linearLayoutSeeMore.setVisibility(View.GONE);
 
                     }
@@ -404,7 +423,7 @@ public class ViewProductActivity extends AppCompatActivity {
                     linearLayoutSeeMore.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (imgLoadMore.getContentDescription().equals("befor")){
+                            if (imgLoadMore.getContentDescription().equals("befor")) {
                                 txtPDescription.setMaxLines(lineCount);
                                 imgLoadMore.setImageResource(R.drawable.ic_un_more_load);
                                 imgLoadMore.setContentDescription("after");
@@ -412,7 +431,7 @@ public class ViewProductActivity extends AppCompatActivity {
                                 YoYo.with(Techniques.Bounce)
                                         .duration(700)
                                         .playOn(linearLayoutSeeMore);
-                            }else {
+                            } else {
                                 txtPDescription.setMaxLines(3);
                                 imgLoadMore.setImageResource(R.drawable.ic_more_details);
                                 imgLoadMore.setContentDescription("befor");
@@ -430,9 +449,8 @@ public class ViewProductActivity extends AppCompatActivity {
             });
 
 
-
-            txtPPrice.setText(selectedProduct.getProductClass().getStandardCost().getShowPrice());
-            String category = selectedProduct.getProductClass().getCategory();
+            txtPPrice.setText(selectedProduct.ShowPrice);
+            String category = selectedProduct.Category;
             Log.d(TAG, "loadingProduct: " + category);
             if (category != null && !category.isEmpty()) {
                 String[] aCategory = category.split("\\.");
@@ -443,9 +461,9 @@ public class ViewProductActivity extends AppCompatActivity {
                 }
             }
             newDownloadImage(selectedPid, PImage);
-            PImage.setBackgroundColor(Color.parseColor(selectedProduct.getProductClass().getSpare1()));
+            PImage.setBackgroundColor(Color.parseColor(selectedProduct.Spare1));
         } catch (Exception e) {
-            Log.d("Error" , e.getMessage());
+            Log.d("Error", e.getMessage());
         }
 
     }
@@ -480,7 +498,7 @@ public class ViewProductActivity extends AppCompatActivity {
             dbViewModel.getSpecificProperties(selectedPid).observe(this, new Observer<List<Properties>>() {
                 @Override
                 public void onChanged(List<Properties> propertiesList) {
-                    for(Properties properties:propertiesList){
+                    for (Properties properties : propertiesList) {
                         mPropertyName.add(properties.PropertiesName);
                         mPropertyValue.add(properties.PropertiesValue);
                     }
@@ -489,7 +507,7 @@ public class ViewProductActivity extends AppCompatActivity {
             });
 
         } catch (Exception ex) {
-            Log.d("Error",ex.getMessage());
+            Log.d("Error", ex.getMessage());
         }
     }
 
@@ -499,17 +517,39 @@ public class ViewProductActivity extends AppCompatActivity {
     }
 
     public void btnCancelClick(View view) {
+        ProductRecyclerViewAdapter.isFinish = true;
         finish();
     }
 
     public void btnAddtoCart(View view) {
-        try {
+        selectedProduct.CartItemCount = 1;
+        selectedProduct.AddToCard = true;
+        dbViewModel.updateProduct(selectedProduct);
+        dbViewModel.getSpecificProduct(selectedProduct.ProductID).observe(this, new Observer<Product>() {
+            @Override
+            public void onChanged(Product product) {
+                if(product != null){
+                    Toast.makeText(getApplicationContext(), "محصول با موفقیت به سبد خرید اضافه شد", Toast.LENGTH_SHORT).show();
+                    btnAddToCart.setEnabled(false);
+                }else{
+                    Toast.makeText(getApplicationContext(), "لطفا دوباره تلاش کنید", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        /*try {
 
-            if (selectedProduct.isSelectedToCart()) {
-                addItemInCart();
+
+
+            if (selectedProduct.AddToCard) {
+
+               // addItemInCart();
             } else {
-                if (manageOrderClass.addProductToCart(selectedProduct.getProductClass())) {
-                    productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(true);
+                *//**
+                 * Check the condition statement
+                 *//*
+
+                if (manageOrderClass.addProductToCart(selectedProduct)) {
+
                     showController();
 
                     badgeSharedViewModel.setCount(BadgeCounter.getCount() + 1);
@@ -517,12 +557,14 @@ public class ViewProductActivity extends AppCompatActivity {
                 } else {
                     toastMessage("", 404);
                 }
+
+                dbViewModel.updateProduct(selectedProduct);
             }
 
-            localCartViewModel.updateCartInfo(sendOrderClass);
+            //localCartViewModel.updateCartInfo(sendOrderClass);
         } catch (Exception e) {
-            Log.d("Error",e.getMessage());
-        }
+            Log.d("Error", e.getMessage());
+        }*/
     }
 
     public void counterViewPost(String pid, String uid, String viewCount) {
@@ -541,7 +583,7 @@ public class ViewProductActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e) {
-            Log.d("Error" , e.getMessage());
+            Log.d("Error", e.getMessage());
         }
 
     }
@@ -559,13 +601,14 @@ public class ViewProductActivity extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + response.body().toString());
 
                     if (response.body().getResualt().equals("100")) {
-                        selectedProduct.setLike(viewCount);
-                        for (AllProductData allProductData :
+                        selectedProduct.Likeit = viewCount;
+                        dbViewModel.updateProduct(selectedProduct);
+                        /*for (Product allProductData :
                                 productDataList) {
-                            if (allProductData.getProductClass().getProductID().equals(selectedProduct.getProductClass().getProductID())) {
-                                allProductData.setLike(viewCount);
+                            if (allProductData.ProductID.equals(selectedProduct.ProductID)) {
+                                allProductData.Likeit = viewCount;
                             }
-                        }
+                        }*/
                     }
                 }
 
@@ -576,7 +619,7 @@ public class ViewProductActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e) {
-            Log.d("Error" , e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
@@ -593,13 +636,14 @@ public class ViewProductActivity extends AppCompatActivity {
 
                         Log.d(TAG, "onResponse: ok" + viewCount);
 
-                        selectedProduct.setBookMark(viewCount);
-                        for (AllProductData allProductData :
-                                productDataList) {
-                            if (allProductData.getProductClass().getProductID().equals(selectedProduct.getProductClass().getProductID())) {
-                                allProductData.setBookMark(viewCount);
+                        selectedProduct.Saveit = viewCount;
+                        /*for (Product allProductData : productDataList) {
+                            if (allProductData.ProductID.equals(selectedProduct.ProductID)) {
+                                allProductData.Saveit = viewCount;
                             }
-                        }
+                        }*/
+                        dbViewModel.updateProduct(selectedProduct);
+
                     }
                 }
 
@@ -609,21 +653,22 @@ public class ViewProductActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e) {
-            Log.d("Error" , e.getMessage());
+            Log.d("Error", e.getMessage());
         }
     }
 
     public void addItemInCart() {
 
-        manageOrderClass.setProductQTY(selectedProduct.getProductClass().getProductID(),
-                manageOrderClass.getProductQTY(selectedProduct.getProductClass().getProductID()) + 1);
-        int currentCount = manageOrderClass.getProductQTY(selectedProduct.getProductClass().getProductID());
+        manageOrderClass.setProductQTY(selectedProduct.ProductID,
+                manageOrderClass.getProductQTY(selectedProduct.ProductID) + 1);
+        int currentCount = manageOrderClass.getProductQTY(selectedProduct.ProductID);
         tvCounter.setText(String.valueOf(currentCount));
+
     }
 
     public void removeItemFromCart() {
-        String productId = selectedProduct.getProductClass().getProductID();
-        int count = manageOrderClass.getProductQTY(selectedProduct.getProductClass().getProductID());
+        String productId = selectedProduct.ProductID;
+        int count = manageOrderClass.getProductQTY(selectedProduct.ProductID);
 
         int currentCount = count - 1;
         manageOrderClass.setProductQTY(productId, currentCount);
@@ -640,19 +685,29 @@ public class ViewProductActivity extends AppCompatActivity {
 
     public void deleteProductFromCart(String pId) {
         manageOrderClass.RemoveProductFromCart(pId);
-        for (AllProductData allProductData :
-                productDataList) {
-            if (allProductData.getProductClass().getProductID().equals(pId)) {
-                allProductData.setSelectedToCart(false);
+        /*for (Product allProductData : selectedProduct) {
+            if (allProductData.ProductID.equals(pId)) {
+                allProductData.AddToCard = false;
             }
-        }
+        }*/
+
+        dbViewModel.getSpecificProduct(pId).observe(this, new Observer<Product>() {
+            @Override
+            public void onChanged(Product product) {
+                if (product != null) {
+                    product.AddToCard = false;
+                    dbViewModel.updateProduct(product);
+                }
+            }
+        });
+
         Toast.makeText(this, "از سبد حذف شد", Toast.LENGTH_SHORT).show();
     }
 
     public void showController() {
         btnAddToCart.setVisibility(View.GONE);
         cardViewController.setVisibility(View.VISIBLE);
-        int currentCount = manageOrderClass.getProductQTY(selectedProduct.getProductClass().getProductID());
+        int currentCount = manageOrderClass.getProductQTY(selectedProduct.ProductID);
         tvCounter.setText(String.valueOf(currentCount));
     }
 }

@@ -2,8 +2,10 @@ package com.example.koohestantest1.fragments.bottomsheet;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.service.autofill.RegexValidator;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.koohestantest1.Utils.NumberTextChanger;
@@ -20,6 +23,8 @@ import com.example.koohestantest1.Utils.StringUtils;
 import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.databinding.BottomSheetEditBinding;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.EditBodyRequest;
 import com.example.koohestantest1.model.network.RetrofitInstance;
@@ -38,6 +43,7 @@ import com.example.koohestantest1.ViewModels.CompanyProfileFieldViewModel;
 import com.example.koohestantest1.classDirectory.AllProductData;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
+
 import ir.hamsaa.persiandatepicker.Listener;
 import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
 import ir.hamsaa.persiandatepicker.util.PersianCalendar;
@@ -73,8 +79,9 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
     private boolean shouldRefresh = false;
     private static BaseCodeClass.productFieldEnum mode = null;
     private static String value = null;
-    private static AllProductData productData;
-    private static ReceiveProductClass productData2;
+    private static Product productData;
+    private static Product productData2;
+    private DBViewModel dbViewModel;
    /* public static EditBottomSheet onNewInstance(int state, String price, String productId) {
         EditBottomSheet editBottomSheet = new EditBottomSheet();
         Bundle bundle = new Bundle();
@@ -86,7 +93,7 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
         return editBottomSheet;
     }*/
 
-    public static EditBottomSheet onNewInstance(int state, String myValue, String productId, BaseCodeClass.productFieldEnum myMode, AllProductData allProductData) {
+    public static EditBottomSheet onNewInstance(int state, String myValue, String productId, BaseCodeClass.productFieldEnum myMode, Product allProductData) {
         mode = myMode;
         value = myValue;
         productData = allProductData;
@@ -101,8 +108,7 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
     }
 
 
-
-    public static EditBottomSheet onNewInstance2(int state, String myValue, String productId, BaseCodeClass.productFieldEnum myMode, ReceiveProductClass receiveProductClass) {
+    public static EditBottomSheet onNewInstance2(int state, String myValue, String productId, BaseCodeClass.productFieldEnum myMode, Product receiveProductClass) {
         mode = myMode;
         value = myValue;
         productData2 = receiveProductClass;
@@ -117,7 +123,6 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
     }
 
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -128,6 +133,7 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         retrofit = RetrofitInstance.getRetrofit();
+        dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         baseCodeClass = new BaseCodeClass();
         companyApi = retrofit.create(CompanyApi.class);
         userProfileApi = retrofit.create(UserProfileApi.class);
@@ -377,11 +383,18 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
                     Log.d(TAG, "onViewCreated: " + value);
                     if (mode == BaseCodeClass.productFieldEnum.StandardCost) {
                         int price = (int) StringUtils.getNumberFromStringV2(binding.etEdit.getText().toString());
+                        String show = binding.etEdit.getText().toString();
                         value = String.valueOf(price);
+                        dbViewModel.updateProductPrice(price,show,pid);
                     } else if (mode == BaseCodeClass.productFieldEnum.ProductName) {
-                        value = StringUtils.getNumberFromStringV3(binding.etEdit.getText().toString());
+                        if (TextUtils.isDigitsOnly(binding.etEdit.getText()))
+                            value = StringUtils.getNumberFromStringV3(binding.etEdit.getText().toString());
+                        else
+                            value = binding.etEdit.getText().toString();
+                        dbViewModel.updateProductName(value,pid);
                     } else if (mode == BaseCodeClass.productFieldEnum.Discontinued) {
                         value = StringUtils.getNumberFromStringV3(binding.etEdit.getText().toString());
+                        dbViewModel.updateProductDiscontinued(Integer.parseInt(value),pid);
                     } else if (mode == BaseCodeClass.productFieldEnum.Deleted) {
                         if (productData == null)
                             Toast.makeText(getContext(), "این محصول قبلا حذف شده است", Toast.LENGTH_SHORT).show();
@@ -397,6 +410,8 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
                     }
                     productViewModel.callForEditingProduct(new EditBodyRequest(baseCodeClass.getToken(), baseCodeClass.getUserID(), baseCodeClass.getCompanyID(), pid
                             , String.valueOf(mode), value));
+
+
                 } else {
                     shouldRefresh = true;
                     // user comes from updating prices
@@ -413,12 +428,12 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
         });
     }
 
-    private void deleteProduct(AllProductData productData){
+    private void deleteProduct(Product productData) {
         LoadProductApi loadProductApi;
         loadProductApi = retrofit.create(LoadProductApi.class);
         DeleteProduct deleteProduct = new DeleteProduct();
         deleteProduct.setCompanyID(BaseCodeClass.CompanyID);
-        deleteProduct.setProductID(productData.getProductClass().getProductID());
+        deleteProduct.setProductID(productData.ProductID);
         deleteProduct.setToken(BaseCodeClass.token);
         deleteProduct.setUserID(BaseCodeClass.userID);
         Call<GetResualt> call = loadProductApi.deleteProduct(deleteProduct);
@@ -428,6 +443,7 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
                 String result = response.body().getResualt();
                 String msg = response.body().getMsg();
                 if (result.equals("100")) {
+                    dbViewModel.deleteProduct(pid);
                     Toast.makeText(getContext(), "محصول با موفقیت حذف شد", Toast.LENGTH_SHORT).show();
                     dismiss();
 
@@ -445,63 +461,71 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
 
     private void editSuccess(BaseCodeClass.productFieldEnum mode) {
         String newValue = binding.etEdit.getText().toString();
-        baseCodeClass.loadSelectedProduct(pid, requireContext());
-        //productViewModel.setEditedValue(newValue);
-        Toast.makeText(requireContext(), "با موفقیت ذخیره شد", Toast.LENGTH_SHORT).show();
-        switch (mode) {
-            case ProductName:
 
-                selectedProduct.getProductClass().setProductName(newValue);
-                break;
-            case CompanyID:
-                Log.d("Temporary", "CompanyID");
-                break;
-            case SupplierID:
-                Log.d("Temporary", "SupplierID");
-                break;
-            case ProductID:
-                Log.d("Temporary", "ProductID");
-                break;
-            case Description:
-                Log.d("Temporary", "Description");
-                break;
-            case StandardCost:
-                StandardPrice standardPrice = new StandardPrice();
-                standardPrice.setShowPrice(newValue);
-                selectedProduct.getProductClass().setStandardCost(standardPrice);
-                productViewModel.setEditedValue(newValue);
-                break;
-            case ListPrice:
-                Log.d("Temporary", "ListPrice");
-                break;
-            case ReorderLevel:
-                Log.d("Temporary", "ReorderLevel");
-                break;
-            case TargetLevel:
-                Log.d("Temporary", "TargetLevel");
-                break;
-            case Unit:
-                Log.d("Temporary", "Unit");
-                break;
-            case QuantityPerUnit:
-                Log.d("Temporary", "QuantityPerUnit");
-                break;
-            case Discontinued:
-                selectedProduct.getProductClass().setDiscontinued(Integer.valueOf(newValue));
-                break;
-            case MinimumReorderQuantity:
-                Log.d("Temporary", "MinimumReorderQuantity");
-                break;
-            case Category:
-                Log.d("Temporary", "Category");
-                break;
-            case Show:
-                Log.d("Temporary", "Show");
-                break;
-            case Deleted:
-                Log.d("Temporary", "Deleted");
-                break;
-        }
+
+        dbViewModel.getSpecificProduct(pid).observe(getViewLifecycleOwner(), new Observer<Product>() {
+            @Override
+            public void onChanged(Product product) {
+                selectedProduct = product;
+                Toast.makeText(requireContext(), "با موفقیت ذخیره شد", Toast.LENGTH_SHORT).show();
+                switch (mode) {
+                    case ProductName:
+
+                        selectedProduct.ProductName = newValue;
+                        break;
+                    case CompanyID:
+                        Log.d("Temporary", "CompanyID");
+                        break;
+                    case SupplierID:
+                        Log.d("Temporary", "SupplierID");
+                        break;
+                    case ProductID:
+                        Log.d("Temporary", "ProductID");
+                        break;
+                    case Description:
+                        Log.d("Temporary", "Description");
+                        break;
+                    case StandardCost:
+                        StandardPrice standardPrice = new StandardPrice();
+                        standardPrice.setShowPrice(newValue);
+                        selectedProduct.StandardCost = standardPrice.getStandardCost();
+                        productViewModel.setEditedValue(newValue);
+                        break;
+                    case ListPrice:
+                        Log.d("Temporary", "ListPrice");
+                        break;
+                    case ReorderLevel:
+                        Log.d("Temporary", "ReorderLevel");
+                        break;
+                    case TargetLevel:
+                        Log.d("Temporary", "TargetLevel");
+                        break;
+                    case Unit:
+                        Log.d("Temporary", "Unit");
+                        break;
+                    case QuantityPerUnit:
+                        Log.d("Temporary", "QuantityPerUnit");
+                        break;
+                    case Discontinued:
+                        selectedProduct.Discontinued = Integer.parseInt(newValue);
+                        break;
+                    case MinimumReorderQuantity:
+                        Log.d("Temporary", "MinimumReorderQuantity");
+                        break;
+                    case Category:
+                        Log.d("Temporary", "Category");
+                        break;
+                    case Show:
+                        Log.d("Temporary", "Show");
+                        break;
+                    case Deleted:
+                        Log.d("Temporary", "Deleted");
+                        break;
+                }
+            }
+        });
+        //productViewModel.setEditedValue(newValue);
+
     }
 
 

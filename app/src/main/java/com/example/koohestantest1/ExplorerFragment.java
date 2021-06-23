@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.koohestantest1.activity.ActivityProfile;
 import com.example.koohestantest1.classDirectory.SendProduct;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 
@@ -34,7 +35,6 @@ import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.ExplorerApi;
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
-import com.example.koohestantest1.DB.DataBase;
 import com.example.koohestantest1.ViewModels.BookMarkViewModel;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
 import com.example.koohestantest1.ViewModels.PostViewViewModel;
@@ -71,7 +71,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
     ExplorerApi explorerApi;
     LoadProductApi loadProductApi;
 
-    DataBase dataBase;
+
     BaseCodeClass baseCodeClass;
 
     private String TAG = ExplorerFragment.class.getSimpleName();
@@ -85,7 +85,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
     private ArrayList<Integer> mCompanyLogo = new ArrayList<>();
     private ImageView ivLogo;
     View view;
-    private String hashtagWord ;
+    private String hashtagWord;
 
     public ExplorerFragment() {
     }
@@ -115,7 +115,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
             }
         });
 
-        dataBase = new DataBase(mContext);
+        //dataBase = new DataBase(mContext);
         baseCodeClass = new BaseCodeClass();
         baseCodeClass.LoadBaseData(mContext);
         String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
@@ -151,8 +151,8 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()==0){
-                    BaseCodeClass.hashtagsValue=null;
+                if (s.length() == 0) {
+                    BaseCodeClass.hashtagsValue = null;
                 }
 //                textChange(edSearch.getText().toString());
                 Log.d(TAG, "onTextChanged: " + s);
@@ -175,7 +175,8 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
         try {
             if (edSearch.getText().toString().equals("")) {
 
-                adapter.clearList();
+                if (adapter != null)
+                    adapter.clearList();
                 company.setVisibility(View.VISIBLE);
                 record.setVisibility(View.GONE);
 
@@ -209,7 +210,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
 
                     @Override
                     public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
-                        Log.d("Error",t.getMessage());
+                        Log.d("Error", t.getMessage());
                     }
                 });
             } else {
@@ -222,7 +223,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
 
                     @Override
                     public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
-                        Log.d("Error",t.getMessage());
+                        Log.d("Error", t.getMessage());
                     }
                 });
             }
@@ -246,7 +247,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
 
                     @Override
                     public void onFailure(Call<List<ReceiveProductClass>> call, Throwable t) {
-                        Log.d("Error",t.getMessage());
+                        Log.d("Error", t.getMessage());
                     }
                 });
             } else {
@@ -277,7 +278,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
                 mCategory.add("همه");
                 for (ReceiveProductClass spc : productClasses
                 ) {
-                    if (spc.getCompanyID() !=null){
+                    if (spc.getCompanyID() != null) {
                         if (!spc.getCompanyID().equals(baseCodeClass.getCompanyID())) {
                             productClasses.remove(spc);
                         }
@@ -313,7 +314,8 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
             adapter = new ExplorerRecyclerViewAdapter(mContext, receiveProductClasses, this);
             recyclerView.setAdapter(adapter);
             if (edSearch.getText().length() == 0) {
-                adapter.clearList();
+                if (adapter != null)
+                    adapter.clearList();
             }
         } catch (Exception e) {
             logMessage("ExplorerFragment 500 >> " + e.getMessage(), mContext);
@@ -338,7 +340,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
 
                 @Override
                 public void onFailure(Call<List<String>> call, Throwable t) {
-                    Log.d("Error",t.getMessage());
+                    Log.d("Error", t.getMessage());
                 }
             });
         } catch (Exception e) {
@@ -365,7 +367,6 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
     public void toastMessage(String message) {
         Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
     }
-
 
 
     @Override
@@ -474,7 +475,6 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
     }
 
 
-
     @Override
     public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
         return null;
@@ -491,9 +491,10 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
     }
 
     @Override
-    public void recyclerViewCanUpdating() {
+    public void recyclerViewCanUpdating(List<Product> products) {
         record.setText("تعداد : " + String.valueOf(adapter.getItemCount()));
     }
+
 
     @Override
     public void imageAdapterCanUpdating(String imagePID) {
@@ -506,7 +507,6 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
     }
 
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -517,8 +517,8 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
     @Override
     public void onResume() {
         super.onResume();
-        hashtagWord =BaseCodeClass.hashtagsValue;
-        if (hashtagWord!=null){
+        hashtagWord = BaseCodeClass.hashtagsValue;
+        if (hashtagWord != null) {
             edSearch.setText(hashtagWord);
         }
     }

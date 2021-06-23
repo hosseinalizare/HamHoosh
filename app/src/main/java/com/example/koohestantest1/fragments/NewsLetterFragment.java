@@ -55,6 +55,7 @@ public class NewsLetterFragment extends Fragment {
     private BaseCodeClass baseCodeClass;
     List<Uri> imageUriList;
     List<String> partNames;
+    boolean isGet = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,6 +72,7 @@ public class NewsLetterFragment extends Fragment {
             fbtnAdd.setVisibility(View.VISIBLE);
         }
         //*************************Fetching received data from Gallery*****************************/
+
         ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -145,15 +147,17 @@ public class NewsLetterFragment extends Fragment {
         dbViewModel.getAllNews().observe(getViewLifecycleOwner(), new Observer<List<NewsLetter>>() {
             @Override
             public void onChanged(List<NewsLetter> newsLetters) {
-                if (newsLetters.isEmpty() || newsLetters.size() == 0)
-                    getAllNews(BaseCodeClass.CompanyID, 1345618537869L);
-                else {
+                if (!isGet) {
+                    if (newsLetters.isEmpty() || newsLetters.size() == 0)
+                        getAllNews(BaseCodeClass.CompanyID, 1345618537869L);
+                    else {
 
-                    adapter = new NewsLetterAdapter(newsLetters,getContext(),getActivity().getSupportFragmentManager(),dbViewModel);
-                   // adapter.notifyDataSetChanged();
-                    rvNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-                    rvNews.setAdapter(adapter);
-
+                        adapter = new NewsLetterAdapter(newsLetters, getContext(), getActivity().getSupportFragmentManager(), dbViewModel);
+                        // adapter.notifyDataSetChanged();
+                        rvNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                        rvNews.setAdapter(adapter);
+                        isGet = true;
+                    }
                 }
             }
         });

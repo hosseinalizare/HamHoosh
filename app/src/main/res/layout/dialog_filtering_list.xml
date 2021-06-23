@@ -59,4 +59,16 @@
         android:text="جدید ترین"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_filter_off"
+        android:layout_margin="4dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"
+        android:fontFamily="@font/koodak"
+        android:text="تخفیف دار ها"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:drawableEnd="@drawable/ic_star"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

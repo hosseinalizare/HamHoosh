@@ -193,7 +193,7 @@ public class AddProductMainActivity extends AppCompatActivity {
         //*****************************************************************************************/
 
         /**
-         * Here second page's methods finished
+         * Here first page's methods finished
          * These methods are for second page
          */
         //*************************initialize unit spinner and set value of selected Item**********/

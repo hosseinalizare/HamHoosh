@@ -22,6 +22,7 @@ import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendDeleteProduct;
 import com.example.koohestantest1.classDirectory.ReceiveProductClass;
 import com.example.koohestantest1.classDirectory.SendProduct;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 
@@ -197,9 +198,11 @@ public class BrandFilterDialogFragment extends DialogFragment implements LoadPro
     }
 
     @Override
-    public void recyclerViewCanUpdating() {
+    public void recyclerViewCanUpdating(List<Product> products) {
 
     }
+
+   
 
     @Override
     public void imageAdapterCanUpdating(String imagePID) {

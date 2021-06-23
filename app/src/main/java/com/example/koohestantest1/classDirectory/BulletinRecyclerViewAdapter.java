@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.koohestantest1.R;
+import com.example.koohestantest1.local_db.entity.Product;
 
 import java.util.List;
 
@@ -17,9 +18,9 @@ public class BulletinRecyclerViewAdapter extends RecyclerView.Adapter<BulletinRe
 
     private Context mContext;
 
-    List<AllProductData> productData;
+    List<Product> productData;
 
-    public BulletinRecyclerViewAdapter(Context context, List<AllProductData> allProductData){
+    public BulletinRecyclerViewAdapter(Context context, List<Product> allProductData){
         this.productData = allProductData;
         this.mContext = context;
     }
@@ -34,8 +35,8 @@ public class BulletinRecyclerViewAdapter extends RecyclerView.Adapter<BulletinRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtName.setText(productData.get(position).getProductClass().getProductName());
-        holder.txtPrice.setText(productData.get(position).getProductClass().getStandardCost().getShowoffPrice());
+        holder.txtName.setText(productData.get(position).ProductName);
+        holder.txtPrice.setText(productData.get(position).ShowoffPrice);
     }
 
     @Override

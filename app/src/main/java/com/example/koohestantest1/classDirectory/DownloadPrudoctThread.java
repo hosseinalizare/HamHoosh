@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 
@@ -22,7 +23,6 @@ import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.AddressApi;
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
-import com.example.koohestantest1.DB.MyDataBase;
 import com.example.koohestantest1.ViewModels.BookMarkViewModel;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
 import com.example.koohestantest1.ViewModels.PostViewViewModel;
@@ -63,7 +63,6 @@ public class DownloadPrudoctThread extends Thread {
     int indexDownloading = 0;
     private android.os.Handler mHandler = new Handler();
     Context context;
-    MyDataBase mydb;
 
     AddressApi addressApi;
     AddressApi callBackAddress;
@@ -88,7 +87,7 @@ public class DownloadPrudoctThread extends Thread {
             myDir.mkdirs();
             baseCodeClass = new BaseCodeClass();
 
-            mydb = new MyDataBase(context);
+
 
             final Retrofit retrofit = RetrofitInstance.getRetrofit();
                     /* new Retrofit.Builder()
@@ -218,7 +217,7 @@ public class DownloadPrudoctThread extends Thread {
                 public void onResponseLoadProduct(List<ReceiveProductClass> receiveProductClasses) {
                     NetProduct.clear();
                     NetProduct = receiveProductClasses;
-                    SycronizProductTable_();
+                    //SycronizProductTable_();
                     // ProductIDList.clear();
 //                    for (SendProductClass productClass : sendProductClasses
 //                    ) {
@@ -323,9 +322,11 @@ public class DownloadPrudoctThread extends Thread {
                 }
 
                 @Override
-                public void recyclerViewCanUpdating() {
+                public void recyclerViewCanUpdating(List<Product> products) {
 
                 }
+
+
 
                 @Override
                 public void imageAdapterCanUpdating(String imagePID) {
@@ -500,66 +501,7 @@ public class DownloadPrudoctThread extends Thread {
     }
 
 
-    public void SycronizProductTable_() {
-        try {
-            setText("SycronizProductTable_" + NetProduct.size());
-            SavedProduct = 0;
-            ProductIDList.clear();
-            mydb.SetAllProductEnable(context, baseCodeClass.getCompanyID());
-            for (ReceiveProductClass productClass : NetProduct
-            ) {
-                if (mydb.insertProduct(context, productClass.getCategory(),
-                        productClass.getDeleted(), "false",
-                        productClass.getDescription(), String.valueOf(productClass.getDiscontinued()),
-                        "", productClass.getStandardCost().getShowoffPrice(), productClass.getMinimumReorderQuantity(),
-                        productClass.getProductID(),
-                        productClass.getProductName(), productClass.getQuantityPerUnit(),
-                        productClass.getReorderLevel(), productClass.getShow(), productClass.getSpare1(),
-                        productClass.getSpare2(), productClass.getSpare3(), productClass.getStandardCost().getShowPrice(),
-                        productClass.getSupplierID(), productClass.getTargetLevel(), productClass.getUnit(),
-                        productClass.getUpdateDate(), productClass.isLikeit(), productClass.getSaveit(), productClass.getSellCount()) != -2) {
-                    ProductIDList.add(productClass.getProductID());
-                } else {
-                    String fname = myDir + "/" + productClass.getProductID() + ".jpg";
-                    File file = new File(fname);
-                    if (!file.exists()) {
-                        ProductIDList.add(productClass.getProductID());
-                    }
-                }
-                for (ProductPropertisClass propertisClass : productClass.getProductPropertis()
-                ) {
 
-                    Single<Long> single = mydb.insertProductPropertiesAsync(context, "false", "", propertisClass.getProductID(),
-                            propertisClass.getPropertisGroup(), propertisClass.getPropertisName(),
-                            propertisClass.getPropertisValue(), "", "", "", propertisClass.getUpdatTime());
-                    single.subscribe(new SingleObserver<Long>() {
-                        @Override
-                        public void onSubscribe(@NonNull Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onSuccess(@NonNull Long aLong) {
-                            if (aLong == -1)
-                                Toast.makeText(context, "خطایی رخ داد هنگام وارد کردن دیتا", Toast.LENGTH_SHORT).show();
-
-                            Log.d(TAG, "onSuccess: " + aLong);
-                        }
-
-                        @Override
-                        public void onError(@NonNull Throwable e) {
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-            }
-            mydb.DeletNotExsistProduct(context);
-        } catch (Exception ex) {
-
-        }
-        LoadProductComplet = true;
-    }
 
 //    public void SycronizProductTable()
 //    {

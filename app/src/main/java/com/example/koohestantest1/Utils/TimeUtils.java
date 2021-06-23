@@ -144,10 +144,23 @@ public class TimeUtils {
     }
 
     public static String getStringFromDate(Date date){
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         String strDate = dateFormat.format(date);
 
         return strDate;
+    }
+
+    public static Date fromDotNetTicks(long ticks)
+    {
+        // Rebase to Jan 1st 1970, the Unix epoch
+        ticks -= 621355968000000000L;
+        long millis = ticks / 10000;
+        return new Date(millis);
+    }
+
+    public static String longToDateConvertor(Long date){
+
+        return getStringFromDate(fromDotNetTicks(date));
     }
 }
 

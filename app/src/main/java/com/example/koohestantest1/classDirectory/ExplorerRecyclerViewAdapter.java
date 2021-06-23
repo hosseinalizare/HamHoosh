@@ -77,13 +77,11 @@ public class ExplorerRecyclerViewAdapter extends RecyclerView.Adapter<ExplorerRe
             newDownloadImage(showProductData.get(position).getProductID(), holder);
 
             holder.cardView.setOnClickListener(v -> {
-                if (baseCodeClass.loadSelectedProduct(showProductData.get(position).getProductID(), mContext)) {
+
                     Intent intent = new Intent(mContext, ViewProductActivity.class);
                     intent.putExtra("PID", showProductData.get(position).getProductID());
                     mContext.startActivity(intent);
-                } else {
-//                    toastMessage("خطای درون برنامه ای");
-                }
+
             });
         } catch (Exception e) {
             baseCodeClass.logMessage("ExplorerAdapter onBinding : " + e.getMessage(), mContext);
@@ -105,7 +103,8 @@ public class ExplorerRecyclerViewAdapter extends RecyclerView.Adapter<ExplorerRe
                 protected void publishResults(CharSequence constraint, FilterResults results) {
                     showProductData = (List<ReceiveProductClass>) results.values;
                     //load10Data();
-                    loadProductApi.recyclerViewCanUpdating();
+
+                    loadProductApi.recyclerViewCanUpdating(null);
                     notifyDataSetChanged();
                 }
 

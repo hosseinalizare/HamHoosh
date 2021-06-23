@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -16,7 +17,11 @@ import android.view.ViewGroup;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.adapter.ProductRecyclerViewAdapterV2;
 import com.example.koohestantest1.databinding.FragmentBookmarkBinding;
+import com.example.koohestantest1.local_db.DBViewModel;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.viewModel.EventsViewModel;
+
+import java.util.List;
 
 
 public class BookmarkFragment extends Fragment {
@@ -32,6 +37,8 @@ public class BookmarkFragment extends Fragment {
     private ProductRecyclerViewAdapterV2 adapterV2;
 
     private String TAG = BookmarkFragment.class.getSimpleName();
+
+    private DBViewModel dbViewModel;
 
     public BookmarkFragment() {
         // Required empty public constructor
@@ -53,7 +60,10 @@ public class BookmarkFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
-        adapterV2 = new ProductRecyclerViewAdapterV2(requireContext() , false,getChildFragmentManager());
+        DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+
+        //TODO Fix adapter 2
+        //adapterV2 = new ProductRecyclerViewAdapterV2(requireContext() , false,getChildFragmentManager(),dbViewModel,);
     }
 
     @Override
@@ -70,11 +80,19 @@ public class BookmarkFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        eventsViewModel.getLiveBookmarks().observe(getViewLifecycleOwner(), sendProductClasses -> {
+        dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+        /*eventsViewModel.getLiveBookmarks().observe(getViewLifecycleOwner(), sendProductClasses -> {
             Log.d(TAG, "onViewCreated: " + sendProductClasses.size());
             adapterV2.setData(sendProductClasses);
             setUpView();
+        });*/
+
+        dbViewModel.getBookmarkedProduct().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            @Override
+            public void onChanged(List<Product> products) {
+                adapterV2.setData(products);
+                setUpView();
+            }
         });
 
         eventsViewModel.getErrorBookmark().observe(getViewLifecycleOwner(), s -> {

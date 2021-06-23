@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.koohestantest1.Utils.TimeUtils;
 import com.example.koohestantest1.constants.PaymentTypeConstants;
 import com.example.koohestantest1.fragments.bottomsheet.CancelOrdersBottomSheet;
+import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.OrderDetailSharedViewModel;
 
@@ -175,7 +176,8 @@ public class MyStoreOrderDetail extends AppCompatActivity implements AddressApi 
         try {
             LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
             cartListRecyclerView.setLayoutManager(layoutManager);
-            CartProductRecyclerViewAdapter adapter = new CartProductRecyclerViewAdapter(mContext, myStoreSelectedOrder, this, true);
+            DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+            CartProductRecyclerViewAdapter adapter = new CartProductRecyclerViewAdapter(mContext, myStoreSelectedOrder, this, true,dbViewModel);
             cartListRecyclerView.setAdapter(adapter);
             cartListRecyclerView.setVisibility(View.VISIBLE);
         } catch (Exception e) {

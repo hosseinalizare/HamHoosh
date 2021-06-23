@@ -16,7 +16,6 @@ import android.widget.Toast;
 import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.AddressApi;
-import com.example.koohestantest1.DB.DataBase;
 import com.example.koohestantest1.InfoDirectory.MangeAddressClass;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
@@ -26,7 +25,6 @@ import retrofit2.Call;
 
 public class AddAddressActivity extends AppCompatActivity implements AddressApi {
 
-    DataBase dataBase;
     BaseCodeClass baseCodeClass;
 
     ImageButton ibBack;
@@ -40,7 +38,7 @@ public class AddAddressActivity extends AppCompatActivity implements AddressApi 
         setContentView(R.layout.activity_add_address);
 
         ibBack = findViewById(R.id.ib_add_address_back);
-        dataBase = new DataBase(this);
+
         baseCodeClass = new BaseCodeClass();
 
 

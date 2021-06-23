@@ -3,6 +3,7 @@ package com.example.koohestantest1.ApiDirectory;
 import android.view.View;
 
 import com.example.koohestantest1.classDirectory.SendProduct;
+import com.example.koohestantest1.local_db.entity.Product;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 
@@ -88,7 +89,7 @@ public interface LoadProductApi {
 
      void recyclerViewListClicked(View v, String value, boolean notify);
      void brandRecyclerViewListClicked(View v, String value, boolean notify);
-     void recyclerViewCanUpdating();
+     void recyclerViewCanUpdating(List<Product> products);
      void imageAdapterCanUpdating(String imagePID);
 
      @POST("Products/Deletproduct")

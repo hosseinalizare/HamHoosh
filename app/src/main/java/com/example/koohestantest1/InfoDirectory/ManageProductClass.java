@@ -31,7 +31,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
-import com.example.koohestantest1.DB.MyDataBase;
 import com.example.koohestantest1.classDirectory.AllProductData;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.ProductPropertisClass;
@@ -48,7 +47,6 @@ import retrofit2.Retrofit;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.bulletinProduct;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.particularProduct;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
 import static com.nostra13.universalimageloader.utils.StorageUtils.getCacheDirectory;
 
 public class ManageProductClass extends AsyncTask<String, Integer, String> {
@@ -65,7 +63,6 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
     static final List<String> ProductIDList = new ArrayList<>();
     static String root = Environment.getExternalStorageDirectory().toString();
     static File myDir;
-    static MyDataBase mydb;
     final String CompanyID;
     //    static Boolean EndOfList = false;
     private String Error;
@@ -78,7 +75,6 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         myDir.mkdirs();
         baseCodeClass = new BaseCodeClass();
 
-        mydb = new MyDataBase(context);
         CompanyID = CompanyId;
 
         callBackproductApi = api;
@@ -98,7 +94,6 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         myDir.mkdirs();
         baseCodeClass = new BaseCodeClass();
 
-        mydb = new MyDataBase(context);
         CompanyID = CompanyId;
 
 //        pdLoading = new ProgressDialog(mContext);
@@ -166,29 +161,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         return false;
     }
 
-    List<ProductPropertisClass> loadProperty(String Pid) {
-        try {
-            List<ProductPropertisClass> lppc = new ArrayList<>();
 
-            Cursor cursor = mydb.GetProductProperties(mContext, Pid);
-            List<String> s = new ArrayList<>();
-            s.add(Pid);
-            if (cursor.moveToFirst()) {
-                do {
-                    ProductPropertisClass ppc = new ProductPropertisClass(cursor.getString(cursor.getColumnIndex(mydb.ProductID)), cursor.getString(cursor.getColumnIndex(mydb.PropertisGroup)),
-                            cursor.getString(cursor.getColumnIndex(mydb.PropertisName)), cursor.getString(cursor.getColumnIndex(mydb.PropertisValue)),
-                            cursor.getString(cursor.getColumnIndex(mydb.UpdateTime)));
-                    s.add(cursor.getString(cursor.getColumnIndex(mydb.PropertisName)));
-                    lppc.add(ppc);
-                } while (cursor.moveToNext());
-                return lppc;
-            }
-        } catch (Exception e) {
-            // toastMessage(e.getMessage(), 3000);
-            return null;
-        }
-        return null;
-    }
 
     private Date convertStrToDate(String dateTime) {
         try {
@@ -221,7 +194,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                 if (products == null || products.size() == 0)
                     Log.d("Error","false");
                 else {
-                    productDataList.clear();
+                    //productDataList.clear();
                     particularProduct.clear();
                     bulletinProduct.clear();
                     for (Product product : products) {
@@ -259,15 +232,20 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                             LPrice = (aPrice[0]);
 
                         }
+                        /**
+                         * Check here
+                         */
                         AllProductData allProductData = new AllProductData(mContext, null, false, product.Likeit,
                                 null, product.Saveit, product.LikeCount, product.ViewedCount, category, spc);
+
                         if (ISParticular(String.valueOf(product.ReorderLevel))) {
                             particularProduct.add(allProductData);
                         }
                         if (ISBulletin(String.valueOf(product.ReorderLevel))) {
                             bulletinProduct.add((allProductData));
                         }
-                        productDataList.add(allProductData);
+                        //productDataList.add(allProductData);
+                        //productDataList.add(product);
                         temp = convertStrToDate(String.valueOf(product.UpdateDate));
                         if (temp.after(lastUpdateTime)) {
                             lastUpdateTime = temp;
@@ -285,109 +263,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
 
     }
 
-    private boolean loadProductFromDB() {
-        Log.d(TAG, "loadProductFromDB: ##thread " + Thread.currentThread().getName());
-        int count = 0;
-        updateTime = "2005-01-01T00:00:00.000";
-        lastUpdateTime = convertStrToDate(updateTime);
-        Log.d(TAG, "loadProductFromDB: ");
 
-        Date temp;
-        try {
-            Cursor cursor = mydb.GetAllRawOfTable(mContext, "Product");
-
-            if (cursor.moveToFirst()) {
-                productDataList.clear();
-                particularProduct.clear();
-                bulletinProduct.clear();
-
-                do {
-                    if (cursor.getString(cursor.getColumnIndex(MyDataBase.Deleted)).equals("true") ||
-                            cursor.getString(cursor.getColumnIndex(MyDataBase.Deleted)).equals("True"))
-                        continue;
-
-                    List<String> category = new ArrayList<>();
-                    String cat = cursor.getString(cursor.getColumnIndex(MyDataBase.Category));
-                    if (cat != null && !cat.isEmpty()) {
-                        String[] aCategory = cat.split("\\.");
-                        for (String s : aCategory) {
-                            if (s != null && !s.isEmpty() && !s.equals("null")) {
-                                category.add(s);
-                            }
-                        }
-                    }
-                    NumberFormat formatter = new DecimalFormat("#,###");
-                    String nPrice = cursor.getString(cursor.getColumnIndex(MyDataBase.StandardCost));
-                    if (nPrice != null && !nPrice.isEmpty()) {
-                        String[] aPrice = nPrice.split("\\.");
-                        nPrice = (aPrice[0]);
-                        nPrice = formatter.format(Integer.parseInt(nPrice));
-                    }
-
-                    String LPrice = cursor.getString(cursor.getColumnIndex(MyDataBase.ListPrice));
-                    if (LPrice != null && !LPrice.isEmpty()) {
-                        String[] aPrice = LPrice.split("\\.");
-                        LPrice = (aPrice[0]);
-
-                    }
-
-                    String[] like = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare2)).split("&");
-                    String[] bookmark = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare3)).split("&");
-
-                    String pid = cursor.getString(cursor.getColumnIndex(MyDataBase.ProductID));
-                    /*SendProductClass spc = new SendProductClass(baseCodeClass.getToken(), baseCodeClass.getUserID(), cursor.getString(cursor.getColumnIndex(MyDataBase.SupplierID)),
-                            cursor.getString(cursor.getColumnIndex(MyDataBase.SupplierID)), pid,
-                            cursor.getString(cursor.getColumnIndex(MyDataBase.ProductName)), cursor.getString(cursor.getColumnIndex(MyDataBase.Description)),
-                            nPrice, cursor.getString(cursor.getColumnIndex(MyDataBase.ListPrice)),
-                            cursor.getInt(cursor.getColumnIndex(MyDataBase.ReorderLevel)), cursor.getInt(cursor.getColumnIndex(MyDataBase.TargetLevel)),
-                            cursor.getString(cursor.getColumnIndex(MyDataBase.Unit)), cursor.getString(cursor.getColumnIndex(MyDataBase.QuantityPerUnit)),
-                            cursor.getInt(cursor.getColumnIndex(MyDataBase.Discontinued)), cursor.getInt(cursor.getColumnIndex(MyDataBase.MinimumReorderQuantity)),
-                            cursor.getString(cursor.getColumnIndex(MyDataBase.Category)), Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(MyDataBase.Show))),
-                            cursor.getInt(cursor.getColumnIndex(MyDataBase.UpdateDate)), Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(MyDataBase.Deleted))),
-                            cursor.getString(cursor.getColumnIndex(MyDataBase.Spare1)), like[0], bookmark[0],
-                            like[1], bookmark[1], loadProperty(pid));*/
-                    //TODO After save Sellcount to db can use line below to get sell count
-                    //spc.setSellCount(cursor.getInt(cursor.getColumnIndex(MyDataBase.SellCount)));
-                    AllProductData allProductData = new AllProductData(mContext, null, false, Boolean.parseBoolean(like[1]),
-                            null, Boolean.parseBoolean(bookmark[1]), 0, 0, category,null /*spc*/);
-                    if (ISParticular(cursor.getString(cursor.getColumnIndex(MyDataBase.ReorderLevel)))) {
-                        particularProduct.add(allProductData);
-                    }
-                    if (ISBulletin(cursor.getString(cursor.getColumnIndex(MyDataBase.ReorderLevel)))) {
-                        bulletinProduct.add((allProductData));
-                    }
-                    productDataList.add(allProductData);
-                    temp = convertStrToDate(cursor.getString(cursor.getColumnIndex(MyDataBase.UpdateDate)));
-                    if (temp.after(lastUpdateTime)) {
-                        lastUpdateTime = temp;
-                        updateTime = cursor.getString(cursor.getColumnIndex(MyDataBase.UpdateDate));
-                    }
-                    count++;
-                } while (cursor.moveToNext());
-
-                Log.d(TAG, "loadProductFromDB: end time " + lastUpdateTime.getTime());
-                Log.d(TAG, "loadProductFromDB: " + lastUpdateTime.toString());
-                Log.d(TAG, "loadProductFromDB: update : " + updateTime);
-
-
-                Log.d(TAG, "****loadProductFromDB****: Bulletin " + bulletinProduct.size());
-                Log.d(TAG, "****loadProductFromDB****: Particular " + particularProduct.size());
-
-            } else {
-                Error = "Return False in else";
-                return false;
-            }
-
-        } catch (Exception ex) {
-            Error = ex.getMessage();
-            return false;
-        }
-        if (count != 0)
-            return true;
-
-        Error = "Return False in else2";
-        return false;
-    }
 
 
     private Boolean synchronizeProductTableVer2(List<ReceiveProductClass> NetProduct, boolean updateMode) {
@@ -506,54 +382,9 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         }
     }
 
-    private Single<Boolean> synchronizeProductTable(List<ReceiveProductClass> NetProduct, boolean updateMode) {
-        if (!updateMode) {
-            Log.d(TAG, "synchronizeProductTable: " + Thread.currentThread().getName());
-            ProductIDList.clear();
-            return mydb.setAllProductEnabledAsync(baseCodeClass.getCompanyID())
-                    .flatMap(integer -> insertDataToDb(NetProduct));
-        }
 
-        return insertDataToDb(NetProduct);
-    }
 
-    private Single<Boolean> insertDataToDb(List<ReceiveProductClass> netProduct) {
-        return Single.create((SingleOnSubscribe<Boolean>) emitter -> {
-            for (ReceiveProductClass productClass : netProduct
-            ) {
-                /*if (mydb.insertProduct(mContext, productClass.getCategory(),
-                        productClass.getDeleted(), "false",
-                        productClass.getDescription(), String.valueOf(productClass.getDiscontinued()),
-                        "", productClass.getListPrice(), productClass.getMinimumReorderQuantity(),
-                        productClass.getProductID(),
-                        productClass.getProductName(), productClass.getQuantityPerUnit(),
-                        productClass.getReorderLevel(), productClass.getShow(), productClass.getLikeCount(),
-                        productClass.getViewedCount(), productClass.getSaveCount(), productClass.getStandardCost(),
-                        productClass.getSupplierID(), productClass.getTargetLevel(), productClass.getUnit(),
-                        productClass.getUpdateDate(), productClass.isLikeit(), productClass.getSaveit(), productClass.getSellCount()) != -2) {
-                    ProductIDList.add(productClass.getProductID());
-                } else {
-                    String fname = myDir + "/" + productClass.getProductID() + ".jpg";
-                    File file = new File(fname);
-                    if (!file.exists()) {
-                        ProductIDList.add(productClass.getProductID());
-                    }
-                }*/
 
-                for (ProductPropertisClass propertisClass : productClass.getProductPropertis()
-                ) {
-                    mydb.insertProductProperties(mContext, "false", "", propertisClass.getProductID(),
-                            propertisClass.getPropertisGroup(), propertisClass.getPropertisName(),
-                            propertisClass.getPropertisValue(), "", "", "", propertisClass.getUpdatTime());
-                }
-
-            }
-            mydb.DeletNotExsistProduct(mContext);
-            //            this.EndOfList = true;
-        }).subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread());
-
-    }
 
     /**
      * !
@@ -779,7 +610,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
         super.onPostExecute(result);
         try {
             if (result.equals(baseCodeClass.DownloadParam)) {
-                callBackproductApi.recyclerViewCanUpdating();
+                callBackproductApi.recyclerViewCanUpdating(null);
             } else {
                 callBackproductApi.imageAdapterCanUpdating(null);
             }

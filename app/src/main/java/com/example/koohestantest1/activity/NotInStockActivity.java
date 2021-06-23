@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.koohestantest1.adapter.ProductRecyclerViewAdapterV2;
 import com.example.koohestantest1.databinding.ActivityNotInStockBinding;
+import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.viewModel.ProductViewModel;
 
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
@@ -32,7 +33,8 @@ public class NotInStockActivity extends AppCompatActivity {
 
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
-        adapterV2 = new ProductRecyclerViewAdapterV2(this , true,getSupportFragmentManager());
+        DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+        adapterV2 = new ProductRecyclerViewAdapterV2(this , true,getSupportFragmentManager(),dbViewModel,this);
         binding.rvNotInStockProducts.setAdapter(adapterV2);
         binding.rvNotInStockProducts.setLayoutManager(new LinearLayoutManager(this));
 
@@ -44,9 +46,9 @@ public class NotInStockActivity extends AppCompatActivity {
             binding.pbNotInStockProducts.setVisibility(View.GONE);
         });
 
-        productViewModel.getLiveStockProducts().observe(this, sendProductClasses -> {
+        /*productViewModel.getLiveStockProducts().observe(this, sendProductClasses -> {
             adapterV2.setData(sendProductClasses);
             binding.pbNotInStockProducts.setVisibility(View.GONE);
-        });
+        });*/
     }
 }

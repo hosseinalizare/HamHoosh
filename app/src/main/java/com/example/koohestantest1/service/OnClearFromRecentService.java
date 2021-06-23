@@ -33,7 +33,7 @@ public class OnClearFromRecentService extends Service {
         Log.e("ClearFromRecentService", "END");
         //Code here
         LocalCartRepository localCartRepository = new LocalCartRepository(getApplication());
-        localCartRepository.updateCartInformation(BaseCodeClass.sendOrderClass);
+        //localCartRepository.updateCartInformation(BaseCodeClass.sendOrderClass);
         stopSelf();
     }
 }

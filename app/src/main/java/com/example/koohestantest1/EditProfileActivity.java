@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Timer;
 
 import com.example.koohestantest1.ApiDirectory.UserProfileApi;
-import com.example.koohestantest1.DB.DataBase;
 import com.example.koohestantest1.InfoDirectory.GetOnlineInformationClass;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.EditProfileField;
@@ -61,7 +60,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private ActivityEditProfileBinding binding;
     private BaseCodeClass baseCodeClass;
-    private DataBase dataBase;
     private UserProfileApi userProfileApi;
     private CompanyEnum companyField;
     private UserProfile userView;
@@ -95,7 +93,7 @@ public class EditProfileActivity extends AppCompatActivity {
         binding = ActivityEditProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         profileSharedViewModel = new ViewModelProvider(this).get(ProfileSharedViewModel.class);
-        dataBase = new DataBase(this);
+        //dataBase = new DataBase(this);
         baseCodeClass = new BaseCodeClass();
         baseCodeClass.LoadBaseData(this);
         userView = baseCodeClass.userProfile;

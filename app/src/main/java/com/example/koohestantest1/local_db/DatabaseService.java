@@ -56,11 +56,11 @@ public class DatabaseService {
         });
     }
 
-    public List<Product> getProducts(){
+  /*  public List<Product> getProducts(){
         BaseCodeClass.localProducts.clear();
         DBExecutor.getInstance().diskIO().execute(() ->  localDatabase.localApi().getProducts());
         return BaseCodeClass.localProducts;
-    }
+    }*/
 
 
     public Product getOneProduct(String productId){
@@ -68,7 +68,7 @@ public class DatabaseService {
         return BaseCodeClass.localProduct;
     }
 
-    public List<Properties> getPropertiesOfProduct(String productId){
+    /*public List<Properties> getPropertiesOfProduct(String productId){
         BaseCodeClass.localPropertiesList.clear();
         DBExecutor.getInstance().diskIO().execute(() ->  localDatabase.localApi().getPropertiesOfProduct(productId));
 
@@ -85,7 +85,7 @@ public class DatabaseService {
         });
 
         return BaseCodeClass.localPropertiesList;
-    }
+    }*/
 
     public void updateProduct(Product product){
         DBExecutor.getInstance().diskIO().execute(() -> localDatabase.localApi().updateProduct(product));
