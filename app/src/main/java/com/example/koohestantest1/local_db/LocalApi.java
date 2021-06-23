@@ -181,16 +181,6 @@ public interface LocalApi {
     @Query("DELETE FROM products WHERE product_id=:pid")
     Completable deleteProduct(String pid);
 
-
-
-
-
-
-
-
-
-
-
-
-
+    @Query("SELECT * FROM products WHERE discontinued=0")
+    Flowable<List<Product>> getDiscontinuedProduct();
 }

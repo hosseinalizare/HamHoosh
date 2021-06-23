@@ -263,4 +263,8 @@ public class DBRepository {
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
+
+    public Flowable<List<Product>> getDiscontinuedProduct(){
+        return localApi.getDiscontinuedProduct();
+    }
 }

@@ -301,4 +301,8 @@ public class DBViewModel extends AndroidViewModel {
     public void deleteProduct(String pid){
         repository.deleteProduct(pid);
     }
+
+    public LiveData<List<Product>> getDiscontinuedProduct(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getDiscontinuedProduct());
+    }
 }

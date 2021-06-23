@@ -70,6 +70,15 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
         manageOrderClass = new ManageOrderClass(fragment);
     }
 
+    public ProductRecyclerViewAdapterV2(Context mContext, boolean editMode, FragmentManager fragmentManager, DBViewModel dbViewModel, Fragment fragment) {
+        this.mContext = mContext;
+        this.editMode = editMode;
+        this.fragmentManager = fragmentManager;
+        this.dbViewModel = dbViewModel;
+
+        manageOrderClass = new ManageOrderClass(fragment);
+    }
+
     public void setData(List<Product> _productData) {
         showProductData = _productData;
         notifyDataSetChanged();

@@ -63,7 +63,7 @@ public class BookmarkFragment extends Fragment {
         DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
 
         //TODO Fix adapter 2
-        //adapterV2 = new ProductRecyclerViewAdapterV2(requireContext() , false,getChildFragmentManager(),dbViewModel,);
+        adapterV2 = new ProductRecyclerViewAdapterV2(requireContext() , false,getChildFragmentManager(),dbViewModel,this);
     }
 
     @Override

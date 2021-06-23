@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,6 +36,8 @@ public class FavouriteFragment extends Fragment {
 
     private EventsViewModel eventsViewModel;
 
+
+
     private String TAG = FavouriteFragment.class.getSimpleName();
 
     private ProductRecyclerViewAdapterV2 adapterV2;
@@ -55,8 +58,10 @@ public class FavouriteFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
+
+
         DBViewModel dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
-        //adapterV2 = new ProductRecyclerViewAdapterV2(requireContext() , false,getChildFragmentManager(),dbViewModel,getActivity());
+        adapterV2 = new ProductRecyclerViewAdapterV2(requireContext() , false,getChildFragmentManager(),dbViewModel,this);
     }
 
     @Override

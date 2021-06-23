@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -152,6 +153,26 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         this.dbViewModel = dbViewModel;
         this.lifecycleOwner = lifecycleOwner;
         manageOrderClass = new ManageOrderClass(fragment);
+        try {
+            this.filteredProduct.addAll(productData);
+            load10Data();
+
+            //mydb = new MyDataBase(mContext);
+        } catch (Exception e) {
+            logMessage("ProductAdapter 100 >> " + e.getMessage(), mContext);
+        }
+    }
+
+    public ProductRecyclerViewAdapter(Context mContext, List<Product> _productData,
+                                      BadgeSharedViewModel badgeSharedViewModel, LocalCartViewModel localCartViewModel, FragmentManager fragmentManager, DBViewModel dbViewModel, LifecycleOwner lifecycleOwner, AppCompatActivity activity) {
+        this.mContext = mContext;
+        productData = _productData;
+        this.fragmentManager = fragmentManager;
+        this.badgeSharedViewModel = badgeSharedViewModel;
+        this.localCartViewModel = localCartViewModel;
+        this.dbViewModel = dbViewModel;
+        this.lifecycleOwner = lifecycleOwner;
+        manageOrderClass = new ManageOrderClass(activity);
         try {
             this.filteredProduct.addAll(productData);
             load10Data();
