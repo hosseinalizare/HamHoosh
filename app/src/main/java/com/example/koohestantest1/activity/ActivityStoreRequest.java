@@ -19,6 +19,7 @@ import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.model.DeleteMessageM;
+import com.example.koohestantest1.model.ForwardMsgM;
 
 import java.util.List;
 
@@ -91,6 +92,11 @@ public class ActivityStoreRequest extends AppCompatActivity implements MessageAp
 
     @Override
     public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
+        return null;
+    }
+
+    @Override
+    public Single<GetResualt> forwardMessage(ForwardMsgM forwardMsgM) {
         return null;
     }
 

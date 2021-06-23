@@ -57,7 +57,7 @@ public class AdapterContactList extends RecyclerView.Adapter<AdapterContactList.
                 .placeholder(R.drawable.ic_profile).into(holder.imgProfile);
 
         holder.root.setOnClickListener(v -> {
-            onItemClickContactList.onContactClicked(holder.imgChecked,contactListViewModel.getObjectName());
+            onItemClickContactList.onContactClicked(holder.imgChecked,contactListViewModel.getObjectName(),contactListViewModel.getObjectID());
         });
 
     }
@@ -84,7 +84,7 @@ public class AdapterContactList extends RecyclerView.Adapter<AdapterContactList.
 
 
     public interface OnItemClickContactList{
-        void onContactClicked(ImageView imageView,String contactName);
+        void onContactClicked(ImageView imageView,String contactName,String contactId);
     }
 
     public void searchInList(String word) {

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,41 +15,49 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.koohestantest1.MessageActivity;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.ViewModels.ContactListViewModel;
 import com.example.koohestantest1.adapter.AdapterContactList;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
+import com.example.koohestantest1.classDirectory.GetResualt;
+import com.example.koohestantest1.model.ForwardMsgM;
 import com.example.koohestantest1.viewModel.ContactVM;
+import com.example.koohestantest1.viewModel.SendMessageVM;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityShowContact extends AppCompatActivity implements AdapterContactList.OnItemClickContactList{
+public class ActivityShowContact extends AppCompatActivity implements AdapterContactList.OnItemClickContactList {
     private RecyclerView recyclerView;
     private ImageView imgBack;
     private BaseCodeClass baseCodeClass;
     private AdapterContactList adapter;
-    private int countSelect =0;
+    private int countSelect = 0;
     private LinearLayout linearForwarders;
     private TextView txtContactForwarderName;
-   private FloatingActionButton fbForward;
-   private List<String> forwardersName;
+    private FloatingActionButton fbForward;
+    private List<String> forwardersName;
+    private List<String> forwardersId;
     private List<ContactListViewModel> contactList = new ArrayList<>();
     private androidx.appcompat.widget.SearchView searchView;
+    private ForwardMsgM forwardMsgM;
+    private String msgId, senderMsgId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_contact);
         setupViews();
+        msgId = getIntent().getStringExtra("msgId");
+        senderMsgId = getIntent().getStringExtra("senderMsgId");
         imgBack.setOnClickListener(v -> {
             finish();
         });
         getContact();
-        fbForward.setOnClickListener(v -> {
-            Toast.makeText(ActivityShowContact.this, forwardersName.size()+"", Toast.LENGTH_SHORT).show();
-        });
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -59,7 +68,7 @@ public class ActivityShowContact extends AppCompatActivity implements AdapterCon
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapter.searchInList(newText);
-                if (newText.equals("")){
+                if (newText.equals("")) {
                     updateRecyclerView(contactList);
                 }
                 return false;
@@ -83,11 +92,11 @@ public class ActivityShowContact extends AppCompatActivity implements AdapterCon
 
     private void getContact() {
         ContactVM contactVM = new ViewModelProvider(this).get(ContactVM.class);
-        contactVM.getContact(baseCodeClass.getToken(), baseCodeClass.getUserID(),baseCodeClass.getUserID()).observe(this, new Observer<List<ContactListViewModel>>() {
+        contactVM.getContact(baseCodeClass.getToken(), baseCodeClass.getUserID(), baseCodeClass.getUserID()).observe(this, new Observer<List<ContactListViewModel>>() {
             @Override
             public void onChanged(List<ContactListViewModel> contactListViewModels) {
                 contactList = contactListViewModels;
-                adapter = new AdapterContactList(ActivityShowContact.this,contactListViewModels,baseCodeClass.getUserID(),ActivityShowContact.this::onContactClicked);
+                adapter = new AdapterContactList(ActivityShowContact.this, contactListViewModels, baseCodeClass.getUserID(), ActivityShowContact.this::onContactClicked);
                 recyclerView.setAdapter(adapter);
             }
         });
@@ -100,7 +109,8 @@ public class ActivityShowContact extends AppCompatActivity implements AdapterCon
         linearForwarders = findViewById(R.id.linear_showForwarders);
         txtContactForwarderName = findViewById(R.id.txt_activity_show_contact_txtContactName);
         fbForward = findViewById(R.id.fb_activityShowContact_fbMessage);
-        forwardersName =  new ArrayList<>();
+        forwardersName = new ArrayList<>();
+        forwardersId = new ArrayList<>();
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
         baseCodeClass = new BaseCodeClass();
@@ -113,42 +123,77 @@ public class ActivityShowContact extends AppCompatActivity implements AdapterCon
 
 
     @Override
-    public void onContactClicked(ImageView imageView,String contactName) {
-        if (countSelect <5){
-            if (imageView.getVisibility() == View.GONE){
+    public void onContactClicked(ImageView imageView, String contactName, String contactId) {
+        if (countSelect < 5) {
+            if (imageView.getVisibility() == View.GONE) {
                 imageView.setVisibility(View.VISIBLE);
                 countSelect++;
                 forwardersName.add(contactName);
+                forwardersId.add(contactId);
                 txtContactForwarderName.setText(forwardersName.toString());
-                if (linearForwarders.getVisibility() == View.GONE){
+                if (linearForwarders.getVisibility() == View.GONE) {
                     linearForwarders.setVisibility(View.VISIBLE);
                 }
-            }else {
+            } else {
                 imageView.setVisibility(View.GONE);
                 countSelect--;
                 forwardersName.remove(contactName);
+                forwardersId.remove(contactId);
                 txtContactForwarderName.setText(forwardersName.toString());
 
             }
-        }else {
-            if (imageView.getVisibility() == View.VISIBLE){
+        } else {
+            if (imageView.getVisibility() == View.VISIBLE) {
                 imageView.setVisibility(View.GONE);
                 countSelect--;
                 forwardersName.remove(contactName);
+                forwardersId.remove(contactId);
                 txtContactForwarderName.setText(forwardersName.toString());
 
-            }else {
+            } else {
                 Toast.makeText(ActivityShowContact.this, "تعداد افرادی که می توانید برای آن ها پیام ارسال کنید محدود است!", Toast.LENGTH_SHORT).show();
 
             }
 
         }
 
-        if (countSelect ==0){
+        if (countSelect == 0) {
             linearForwarders.setVisibility(View.GONE);
             forwardersName.clear();
+            forwardersId.clear();
             txtContactForwarderName.setText("");
         }
+
+
+        fbForward.setOnClickListener(v -> {
+            forwardMsgM = new ForwardMsgM(baseCodeClass.getToken(), baseCodeClass.getUserID(), msgId, senderMsgId, forwardersId);
+
+            SendMessageVM messageVM = new ViewModelProvider(this).get(SendMessageVM.class);
+            messageVM.forwardMessage(forwardMsgM).observe(this, new Observer<GetResualt>() {
+                @Override
+                public void onChanged(GetResualt getResualt) {
+                    if (getResualt.getResualt().equals("100")) {
+                        Toast.makeText(ActivityShowContact.this, "پیام ارسال شد", Toast.LENGTH_SHORT).show();
+                        if (forwardersId.size()==1){
+                            Intent intent = new Intent(ActivityShowContact.this, MessageActivity.class);
+                            intent.putExtra("getter", forwardersId.get(0));
+                            // sender = Ourselves
+                            intent.putExtra("sender", baseCodeClass.getUserID());
+                            startActivity(intent);
+                            finish();
+                        }else {
+                            finish();
+
+                        }
+                    }else {
+                        Toast.makeText(ActivityShowContact.this, "خطای ناشناخته!", Toast.LENGTH_SHORT).show();
+
+                    }
+
+
+                }
+            });
+        });
 
     }
 

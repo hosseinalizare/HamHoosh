@@ -20,6 +20,7 @@ import com.example.koohestantest1.classDirectory.HardwareIdsMobile;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.databinding.ActivityReportBinding;
 import com.example.koohestantest1.model.DeleteMessageM;
+import com.example.koohestantest1.model.ForwardMsgM;
 import com.example.koohestantest1.model.Report;
 import com.example.koohestantest1.viewModel.ReportViewModel;
 
@@ -96,6 +97,11 @@ public class ReportActivity extends AppCompatActivity implements MessageApi {
 
     @Override
     public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
+        return null;
+    }
+
+    @Override
+    public Single<GetResualt> forwardMessage(ForwardMsgM forwardMsgM) {
         return null;
     }
 

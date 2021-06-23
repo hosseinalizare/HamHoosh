@@ -58,6 +58,7 @@ import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.fragments.FragmentTabsProfile;
 import com.example.koohestantest1.model.CountsDetail;
 import com.example.koohestantest1.model.DeleteMessageM;
+import com.example.koohestantest1.model.ForwardMsgM;
 import com.example.koohestantest1.model.Item;
 import com.example.koohestantest1.model.ProfileModel;
 import com.example.koohestantest1.model.network.RetrofitInstance;
@@ -110,7 +111,6 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
     LoadProductApi loadProductApi;
     RecyclerView gridRecyclerView;
     Button btnAddProduct, btnSendRequest, btnSeeOrder, btnReports;
-    EditText message;
     ViewFlipper vf;
     View view;
 
@@ -125,7 +125,7 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
     MyStoreProductRecyclerViewAdapter adapter;
     MessageManagerClass messageManagerClass;
 
-    TextView storeName, storeBio, mobileNO, NoOfCustomer, NoOfSell, NoOfProduct;
+    TextView storeName, storeBio, NoOfCustomer, NoOfSell, NoOfProduct;
 
     private CountsViewModel countsViewModel;
     BadgeDrawable badgeDrawable;
@@ -200,9 +200,6 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
         NoOfCustomer = view.findViewById(R.id.NoOfCustomer1);
         NoOfSell = view.findViewById(R.id.NoOfSell1);
         NoOfProduct = view.findViewById(R.id.NoOfProduct1);
-        message = view.findViewById(R.id.edMessage);
-        mobileNO = view.findViewById(R.id.txtMobile);
-
         ivCompanyProfile = view.findViewById(R.id.imageViewCompany);
 
         drawerLayout = view.findViewById(R.id.myStore_drawer_layout);
@@ -361,19 +358,6 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
         if (baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")) {
             //regular user
             vf.setDisplayedChild(0);
-           /* Intent intent  = new Intent(getContext(), ActivityProfile.class);
-            startActivity(intent);*/
-
-            btnSendRequest.setOnClickListener(v -> {
-                try {
-                    messageManagerClass.sendReport(new SendReportViewModel(baseCodeClass.getUserID(), baseCodeClass.getToken(), "8",
-                            message.getText().toString(), "1", baseCodeClass.getUserID(), "درخواست ثبت فروشگاه", "",
-                            "", mobileNO.getText().toString(), "", "1"));
-                    vf.setDisplayedChild(2);
-                } catch (Exception e) {
-                    logMessage("MyStoreFragment 300 >> " + e.getMessage(), mContext);
-                }
-            });
 
         } else {
             // employee
@@ -753,6 +737,11 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
 
     @Override
     public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
+        return null;
+    }
+
+    @Override
+    public Single<GetResualt> forwardMessage(ForwardMsgM forwardMsgM) {
         return null;
     }
 

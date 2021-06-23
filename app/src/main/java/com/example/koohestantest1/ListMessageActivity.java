@@ -27,6 +27,7 @@ import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.ListMessageRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.model.DeleteMessageM;
+import com.example.koohestantest1.model.ForwardMsgM;
 
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
@@ -167,6 +168,11 @@ public class ListMessageActivity extends AppCompatActivity implements MessageApi
 
     @Override
     public Single<GetResualt> sendAMessage(SendMessageViewModel sendMessage) {
+        return null;
+    }
+
+    @Override
+    public Single<GetResualt> forwardMessage(ForwardMsgM forwardMsgM) {
         return null;
     }
 

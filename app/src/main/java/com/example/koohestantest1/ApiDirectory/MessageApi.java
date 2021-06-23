@@ -8,6 +8,7 @@ import com.example.koohestantest1.ViewModels.SendReportViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.model.DeleteMessageM;
+import com.example.koohestantest1.model.ForwardMsgM;
 
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
@@ -28,6 +29,11 @@ public interface MessageApi {
 
     @POST("User/SendMessage")
     Single<GetResualt> sendAMessage(@Body SendMessageViewModel sendMessage);
+
+
+    @POST("User/SendForwardedMessage")
+    Single<GetResualt> forwardMessage(@Body ForwardMsgM forwardMsgM);
+
 
     @Multipart
     @POST("User/ChatFilesPost")

@@ -22,6 +22,72 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/rel_crm_forwarderInformation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_forward_msg_get"
+                android:layoutDirection="rtl"
+                android:padding="8dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RelativeLayout
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/relCrm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/img_ForwarderImage"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="10dp"
+                        android:layout_alignParentEnd="true"
+                        android:src="@drawable/ic_profile"
+                        app:civ_border_color="#2962FF"
+                        app:civ_border_width="1dp" />
+
+
+                    <TextView
+                        android:maxLength="20"
+                        android:id="@+id/txt_forwarderName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="2dp"
+                        android:layout_toStartOf="@+id/img_ForwarderImage"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/behdad"
+                        android:gravity="center"
+                        android:text="ابوالفضل تی جانی"
+                        android:textAlignment="center"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="#2962FF"
+                        android:textSize="12sp" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/txt_forwarderText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginRight="4dp"
+                    android:fontFamily="@font/behdad"
+                    android:text="ارسال شده"
+                    android:textColor="#2962FF"
+                    android:textSize="10sp" />
+
+
+
+
+            </RelativeLayout>
+
+
             <com.mikhaellopez.circularimageview.CircularImageView
                 android:contentDescription="befor"
                 android:id="@+id/img_layout_Doc_message_recived"
@@ -34,7 +100,7 @@
                 app:civ_border_color="#AC7402"
                 app:civ_border_width="2dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/rel_crm_forwarderInformation" />
 
             <TextView
                 android:ellipsize="end"
@@ -51,7 +117,7 @@
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/img_layout_Doc_message_recived"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rel_crm_forwarderInformation"
                 tools:text="Check recieved" />
 
             <TextView
@@ -97,19 +163,22 @@
                 app:layout_constraintTop_toBottomOf="@+id/prg_layout_Doc_message_recived"
                 tools:text="10:10 AM" />
 
-<!--
-            <ProgressBar
-                android:visibility="visible"
-                android:id="@+id/prg_layout_Doc_message_recived"
-                style="?android:attr/progressBarStyleLargeInverse"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_centerInParent="true"
-                app:layout_constraintBottom_toBottomOf="@+id/img_layout_Doc_message_recived"
-                app:layout_constraintEnd_toEndOf="@+id/img_layout_Doc_message_recived"
-                app:layout_constraintStart_toStartOf="@+id/img_layout_Doc_message_recived"
-                app:layout_constraintTop_toTopOf="@+id/img_layout_Doc_message_recived" />
--->
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/txtSenderMsgName"
+                android:layout_width="wrap_content"
+                android:padding="6dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/behdad"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/blue900"
+                android:textStyle="bold"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/prg_layout_Doc_message_recived"
+                tools:text="ابوالفضل تی جانی" />
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

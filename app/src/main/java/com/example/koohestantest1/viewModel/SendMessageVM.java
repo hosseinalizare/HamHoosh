@@ -1,5 +1,7 @@
 package com.example.koohestantest1.viewModel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,7 +11,10 @@ import com.example.koohestantest1.ViewModels.SendMessageViewModel;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.model.DeleteMessageM;
+import com.example.koohestantest1.model.ForwardMsgM;
 import com.example.koohestantest1.model.network.RetrofitInstance;
+
+import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -27,6 +32,7 @@ public class SendMessageVM extends ViewModel {
     private MutableLiveData<GetResualt> uploadImageMessageLiveData;
     private MutableLiveData<GetResualt> uploadDocMessageLiveData;
     private MutableLiveData<GetResualt> deleteMessageLiveData;
+    private MutableLiveData<GetResualt> forwardMessageLiveData;
     private MutableLiveData<SendOrderClass> orderDataLiveData;
   public   CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -140,6 +146,29 @@ public class SendMessageVM extends ViewModel {
 
         return orderDataLiveData;
 
+    }
+
+    public LiveData<GetResualt> forwardMessage(ForwardMsgM forwardMsgM){
+        if (forwardMessageLiveData == null){
+            forwardMessageLiveData = new MutableLiveData<>();
+            Single<GetResualt> resualtSingle = RetrofitInstance.getRetrofit().create(MessageApi.class).forwardMessage(forwardMsgM);
+            compositeDisposable.add(resualtSingle.subscribeOn(Schedulers.newThread())
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableSingleObserver<GetResualt>() {
+                        @Override
+                        public void onSuccess(@NotNull GetResualt getResualt) {
+                            forwardMessageLiveData.postValue(getResualt);
+                        }
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            Log.i("LOG","SendMessageVM>>> : forwardMessage>>>>>   "+e.getMessage());
+                        }
+                    })
+
+            );
+        }
+        return forwardMessageLiveData;
     }
 
 

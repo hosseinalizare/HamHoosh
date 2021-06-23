@@ -113,6 +113,23 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_messageReply_replyValue"
                 tools:text="10:10 AM" />
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/txtSenderMsgName"
+                android:layout_width="wrap_content"
+                android:padding="6dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/behdad"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/blue900"
+                android:textStyle="bold"
+                android:textSize="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_messageReply_replyValue"
+                tools:text="ابوالفضل تی جانی" />
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

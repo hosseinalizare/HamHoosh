@@ -18,6 +18,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,6 +50,7 @@ import com.example.koohestantest1.classDirectory.SendOrderClass;
 import com.example.koohestantest1.constants.EmployeeStatus;
 import com.example.koohestantest1.model.DeleteMessageM;
 import com.example.koohestantest1.model.EmployeeAdding;
+import com.example.koohestantest1.model.ForwardMsgM;
 import com.example.koohestantest1.viewModel.CompanyViewModel;
 import com.example.koohestantest1.viewModel.SendMessageVM;
 import com.example.koohestantest1.viewModel.UserProfileViewModel;
@@ -151,8 +153,8 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     private String messageId;
     private int replyMessageType;
     private SendOrderClass sendOrderClassData;
-    private String lastUpdateTime ="2020-05-17T10:54:33.037";
-    private Date dateTime;
+    private   String lastUpdateTime = "2020-05-17T10:54:33.037";
+    private   Date dateTime;
 
 
     @Override
@@ -191,15 +193,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             txtValueReplyMessage = findViewById(R.id.txt_activityMessage_txtMessageValueReplay);
             rootToolbarProfile = findViewById(R.id.root_profileToolbar);
             setSupportActionBar(toolbar);
-//
-//            menuButton.setOnClickListener(v -> {
-//                PopupMenu popupMenu = new PopupMenu(MessageActivity.this, menuButton);
-//                popupMenu.getMenuInflater().inflate(R.menu.chat_menu, popupMenu.getMenu());
-//
-//                popupMenu.setOnMenuItemClickListener(item -> false);
-//
-//                popupMenu.show();
-//            });
 
             messageActivity = this;
 
@@ -209,6 +202,8 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             senderUser = getIntent().getStringExtra("sender");
             //another user Id(Friend)
             getterUser = getIntent().getStringExtra("getter");
+
+
 
             String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + getterUser + "&fileNumber=" + 1;
             Glide.with(this).load(url)
@@ -225,11 +220,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 senderId = getterUser;
             } else
                 Toast.makeText(this, "خطایی رخ داده", Toast.LENGTH_SHORT).show();
-            imgForwardMessage.setOnClickListener(v -> {
-                Intent intent = new Intent(mContext, ActivityShowContact.class);
-                startActivity(intent);
 
-            });
 
             btnSend.setOnClickListener(v -> {
                 if (!isReplyMode) {
@@ -262,17 +253,17 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
 
             imgSendFile.setOnClickListener(v -> {
-                if (EasyPermissions.hasPermissions(this, permission,permission2)) {
+                if (EasyPermissions.hasPermissions(this, permission, permission2)) {
                     showBottomSheetFilePicker();
                 } else {
 
-                    EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission,permission2);
+                    EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
 
                 }
 
 
             });
-            new MessageManagerClass(mContext, this).getMessage(senderUser, getterUser,lastUpdateTime);
+            new MessageManagerClass(mContext, this).getMessage(senderUser, getterUser, lastUpdateTime);
 
             userProfileViewModel.getUserProfileLiveData().observe(this, userProfile -> {
                 if (userProfile != null) {
@@ -320,7 +311,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext);
         View viewBottomSheetDialog = getLayoutInflater().from(mContext).inflate(R.layout.layout_bottom_sheet_filepicker, null, false);
-        RelativeLayout relPicture, relAudio, relFile,relVideo;
+        RelativeLayout relPicture, relAudio, relFile, relVideo;
         relPicture = viewBottomSheetDialog.findViewById(R.id.rel_layoutBottomSheetFilePicker_Picture);
         relFile = viewBottomSheetDialog.findViewById(R.id.rel_layoutBottomSheetFilePicker_File);
         relAudio = viewBottomSheetDialog.findViewById(R.id.rel_layoutBottomSheetFilePicker_Audio);
@@ -425,6 +416,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     }
 
     @Override
+    public Single<GetResualt> forwardMessage(ForwardMsgM forwardMsgM) {
+        return null;
+    }
+
+    @Override
     public Single<GetResualt> uploadMessageImage(int MsgId, MultipartBody.Part file) {
         return null;
     }
@@ -453,34 +449,31 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     @Override
     public void onResponseGetMessage(List<SendMessageViewModel> sendMessageViewModelss) {
         try {
-            dateTime =TimeUtils.convertStrToDate(lastUpdateTime);
-            Date date=dateTime;
+            dateTime = TimeUtils.convertStrToDate(lastUpdateTime);
+            Date date = dateTime;
 
             for (SendMessageViewModel model :
                     sendMessageViewModelss) {
-               try {
-                   date=TimeUtils.convertStrToDate(model.getDateSend());
-                   if (date.getTime()>dateTime.getTime()){
-                       dateTime =date;
-                   }
+                try {
+                    date = TimeUtils.convertStrToDate(model.getDateSend());
+                    if (date.getTime() > dateTime.getTime()) {
+                        dateTime = date;
+                    }
 
-               }catch (Exception e){
+                } catch (Exception e) {
 
-               }
+                }
             }
-            if (dateTime!=null){
-                lastUpdateTime =TimeUtils.getStringFromDate(dateTime);
+            if (dateTime != null) {
+                lastUpdateTime = TimeUtils.getStringFromDate(dateTime);
             }
 
 
             if (adapter == null) {
                 sendMessageViewModels = sendMessageViewModelss;
                 initMessageRecyclerView();
-//            baseCodeClass.logMessage("onRes >> " + sendMessageViewModelss.size() , mContext);
             } else {
-/*
-                sendMessageViewModels.addAll(sendMessageViewModelss) ;
-*/
+
                 adapter.updateMessage(sendMessageViewModelss);
 
 
@@ -498,14 +491,10 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 @Override
                 public void run() {
                     if (isLoading) {
-                        new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser,lastUpdateTime);
+                        new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser, lastUpdateTime);
                     }
                 }
             }, 700);
-
-/*
-                handler.postDelayed(() -> new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser), 700);
-*/
 
 
         } catch (Exception e) {
@@ -626,7 +615,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 sendMessageVM.deleteMessage(deleteMessageM).observe(this, new Observer<GetResualt>() {
                     @Override
                     public void onChanged(GetResualt getResualt) {
-                        if (getResualt.getResualt().equals("100")){
+                        if (getResualt.getResualt().equals("100")) {
                             adapter.messageViewModels.clear();
                             adapter.notifyDataSetChanged();
                         }
@@ -840,9 +829,9 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
                         isLoading = true;
                         adapter.messageViewModels.remove(adapter.imgWaitPosition);
-                        adapter. notifyItemRemoved(adapter.imgWaitPosition);
-                        adapter. notifyItemRangeChanged(adapter.imgWaitPosition, adapter.messageViewModels.size());
-                        new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser,"");
+                        adapter.notifyItemRemoved(adapter.imgWaitPosition);
+                        adapter.notifyItemRangeChanged(adapter.imgWaitPosition, adapter.messageViewModels.size());
+                        new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser, "");
 
                     } else {
                         Toast.makeText(mContext, "خطای نا شناخته", Toast.LENGTH_SHORT).show();
@@ -857,7 +846,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
     }
 
-    private void uploadFile(File file, Uri fileUri, final int msgId,String type) {
+    private void uploadFile(File file, Uri fileUri, final int msgId, String type) {
 
         /*RequestBody requestBody = RequestBody.create(file, MediaType.parse(getContentResolver().getType(fileUri)));*/
         RequestBody requestBody = RequestBody.create(file, MediaType.parse("*/*"));
@@ -866,20 +855,20 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
             if (getResualt.getResualt().equals("100")) {
                 isLoading = true;
-                if (type.equals("doc")){
+                if (type.equals("doc")) {
                     adapter.messageViewModels.remove(adapter.docWaitPosition);
-                    adapter. notifyItemRemoved(adapter.docWaitPosition);
-                    adapter. notifyItemRangeChanged(adapter.docWaitPosition, adapter.messageViewModels.size());
-                }else if (type.equals("music")){
+                    adapter.notifyItemRemoved(adapter.docWaitPosition);
+                    adapter.notifyItemRangeChanged(adapter.docWaitPosition, adapter.messageViewModels.size());
+                } else if (type.equals("music")) {
                     adapter.messageViewModels.remove(adapter.musicWaitPosition);
-                    adapter. notifyItemRemoved(adapter.musicWaitPosition);
-                    adapter. notifyItemRangeChanged(adapter.musicWaitPosition, adapter.messageViewModels.size());
-                }else if (type.equals("video")){
+                    adapter.notifyItemRemoved(adapter.musicWaitPosition);
+                    adapter.notifyItemRangeChanged(adapter.musicWaitPosition, adapter.messageViewModels.size());
+                } else if (type.equals("video")) {
                     adapter.messageViewModels.remove(adapter.videoWaitPosition);
-                    adapter. notifyItemRemoved(adapter.videoWaitPosition);
-                    adapter. notifyItemRangeChanged(adapter.videoWaitPosition, adapter.messageViewModels.size());
+                    adapter.notifyItemRemoved(adapter.videoWaitPosition);
+                    adapter.notifyItemRangeChanged(adapter.videoWaitPosition, adapter.messageViewModels.size());
                 }
-                new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser,"");
+                new MessageManagerClass(mContext, messageActivity).getMessage(senderUser, getterUser, "");
                 Toast.makeText(mContext, "فایل با موفقیت آپلود شد", Toast.LENGTH_SHORT).show();
 
             } else {
@@ -888,7 +877,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         });
 
     }
-
 
 
     @Override
@@ -921,11 +909,12 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
             if (getResualt.getResualt().equals("100")) {
-                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()),"doc");
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()), "doc");
             }
         });
 
     }
+
     private void sendMusicMessage(String MusicName, File file, Uri fileUri) {
         isLoading = false;
         SendMessageViewModel sendMessageViewModel2 = new SendMessageViewModel(senderUser, 444);
@@ -937,11 +926,12 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
             if (getResualt.getResualt().equals("100")) {
-                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()),"music");
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()), "music");
             }
         });
 
     }
+
     private void sendVideoMessage(String videoName, File file, Uri fileUri) {
         isLoading = false;
         SendMessageViewModel sendMessageViewModel2 = new SendMessageViewModel(senderUser, 555);
@@ -953,7 +943,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
             if (getResualt.getResualt().equals("100")) {
-                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()),"video");
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()), "video");
             }
         });
     }
@@ -983,7 +973,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
 
     @Override
-    public void messageSelected(ConstraintLayout parent, String messageId, SendMessageViewModel messageData,int messageType,int position) {
+    public void messageSelected(ConstraintLayout parent, String messageId, SendMessageViewModel messageData, int messageType, int position, String senderMsgId) {
         imgForwardMessage.setVisibility(View.VISIBLE);
         imgDeleteMessage.setVisibility(View.VISIBLE);
         imgReplyMessage.setVisibility(View.VISIBLE);
@@ -1003,11 +993,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             sendMessageVM.deleteMessage(deleteMessageM).observe(this, new Observer<GetResualt>() {
                 @Override
                 public void onChanged(GetResualt getResualt) {
-                    if (getResualt.getResualt().equals("100")){
-                        for (int position:adapter.deletePositionList){
+                    if (getResualt.getResualt().equals("100")) {
+                        for (int position : adapter.deletePositionList) {
                             adapter.messageViewModels.remove(position);
-                            adapter. notifyItemRemoved(position);
-                            adapter. notifyItemRangeChanged(position, adapter.messageViewModels.size());
+                            adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, adapter.messageViewModels.size());
                         }
 
                         adapter.messageIdList.clear();
@@ -1027,7 +1017,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             public void onClick(View v) {
                 isReplyMode = true;
                 replyMessageId = messageData.getId();
-               replyMessageType = generateMsgType(messageType);
+                replyMessageType = generateMsgType(messageType);
                 relReplyMessage.setVisibility(View.VISIBLE);
                 txtUserNameReplyMessage.setText(messageData.getUserSender());
                 txtValueReplyMessage.setText(messageData.getMessage1());
@@ -1036,6 +1026,22 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         imgCloseReplyMessage.setOnClickListener(v -> {
             isReplyMode = false;
             relReplyMessage.setVisibility(View.GONE);
+        });
+
+        imgForwardMessage.setOnClickListener(v -> {
+            try {
+
+                Intent intent = new Intent(mContext, ActivityShowContact.class);
+                intent.putExtra("msgId", messageId);
+                intent.putExtra("senderMsgId", senderMsgId);
+                startActivity(intent);
+                finish();
+                messageUnSelected(messageId);
+                parent.setBackgroundColor(Color.TRANSPARENT);
+
+            } catch (Exception e) {
+                Toast.makeText(mContext, "MessageActivity forwardMessage >>>  " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
 
 
@@ -1073,10 +1079,21 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         messageRecycler.smoothScrollToPosition(position);
     }
 
-    private int generateMsgType(int msgType){
+    @Override
+    public void userForwarderClicked(String userId) {
+        Intent intent = getIntent();
+        // getter = Another user
+        intent.putExtra("getter", userId);
+        // sender = Ourselves
+        intent.putExtra("sender", baseCodeClass.getCompanyID());
+        startActivity(intent);
 
-        for (BaseCodeClass.variableType type : BaseCodeClass.variableType.values()){
-            if (type.getValue() == msgType){
+    }
+
+    private int generateMsgType(int msgType) {
+
+        for (BaseCodeClass.variableType type : BaseCodeClass.variableType.values()) {
+            if (type.getValue() == msgType) {
                 return type.getValue();
             }
         }
@@ -1086,5 +1103,19 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     }
 
 
+    @Override
+    protected void onPause() {
+        super.onPause();
 
+        try {
+            if (adapter.mediaPlayer != null) {
+                if (adapter.mediaPlayer.isPlaying())
+                    adapter.mediaPlayer.stop();
+                adapter.mediaPlayer.release();
+                adapter.mediaPlayer = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

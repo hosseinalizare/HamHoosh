@@ -75,4 +75,18 @@ public class FragmentTabsProfile extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            if (adapter.mediaPlayer != null) {
+                if (adapter.mediaPlayer.isPlaying())
+                    adapter.mediaPlayer.stop();
+                adapter.mediaPlayer.release();
+                adapter.mediaPlayer = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

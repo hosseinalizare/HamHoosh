@@ -17,7 +17,61 @@ public class SendMessageViewModel {
     private String AttachObjectID ;
     private int Page ;
     private int Len ;
+    private String subSenderName;
+    private String subSenderID;
+    private int ForwardedMsgID;
+    private String ForwardedUserID;
+    private String ForwardedName;
+    private String FileName;
 
+
+    public String getSubSenderName() {
+        return subSenderName;
+    }
+
+    public void setSubSenderName(String subSenderName) {
+        this.subSenderName = subSenderName;
+    }
+
+    public String getSubSenderID() {
+        return subSenderID;
+    }
+
+    public void setSubSenderID(String subSenderID) {
+        this.subSenderID = subSenderID;
+    }
+
+    public int getForwardedMsgID() {
+        return ForwardedMsgID;
+    }
+
+    public void setForwardedMsgID(int forwardedMsgID) {
+        ForwardedMsgID = forwardedMsgID;
+    }
+
+    public String getForwardedUserID() {
+        return ForwardedUserID;
+    }
+
+    public void setForwardedUserID(String forwardedUserID) {
+        ForwardedUserID = forwardedUserID;
+    }
+
+    public String getForwardedName() {
+        return ForwardedName;
+    }
+
+    public void setForwardedName(String forwardedName) {
+        ForwardedName = forwardedName;
+    }
+
+    public String getFileName() {
+        return FileName;
+    }
+
+    public void setFileName(String fileName) {
+        FileName = fileName;
+    }
 
     public String getUserID() {
         return UserID;

@@ -24,19 +24,6 @@
             android:layout_width="match_parent"
             android:id="@+id/myStore"
             layout="@layout/layout_my_store" />
-
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:id="@+id/newStore"
-            layout="@layout/layout_new_store" />
-
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:id="@+id/requestAccepted"
-            layout="@layout/layout_request_accepted" />
-
     </ViewFlipper>
 
 

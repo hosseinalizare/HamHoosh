@@ -81,7 +81,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
     private BaseCodeClass baseCodeClass;
     public final static String STATE_MESSAGE_SENDER = "state_message_sender";
     public final static int REGULAR_USER = 0;
-    private MediaPlayer mediaPlayer;
+    public MediaPlayer mediaPlayer;
     private YoYo.YoYoString yoYoString;
     private Map<Integer, CircularImageView> cr_musics;
     private int playPosition = -1;
