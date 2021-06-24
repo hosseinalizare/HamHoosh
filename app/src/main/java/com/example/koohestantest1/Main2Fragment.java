@@ -1236,7 +1236,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     public void initBulletinRecyclerView() {
 
         try {
-            dbViewModel.getBulletinProduct(true).observe(getViewLifecycleOwner(), products -> {
+            dbViewModel.getBulletinProduct().observe(getViewLifecycleOwner(), products -> {
                 BulletinRecyclerViewAdapter adapter = new BulletinRecyclerViewAdapter(mContext, products);
                 GridLayoutManager layoutManager = new GridLayoutManager(mContext, 3, GridLayoutManager.VERTICAL, false);
                 bulletinRecyclerView.setLayoutManager(layoutManager);

@@ -126,6 +126,9 @@ public interface LocalApi {
     @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND save_it <> 0")
     Flowable<List<Product>> getBookmarkedProduct();
 
+    @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND like_it <> 0")
+    Flowable<List<Product>> getLikeProduct();
+
     @Query("SELECT * FROM products WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0 AND off_price <> 0")
     Flowable<List<Product>> getOffProduct();
 
@@ -183,4 +186,7 @@ public interface LocalApi {
 
     @Query("SELECT * FROM products WHERE discontinued=0")
     Flowable<List<Product>> getDiscontinuedProduct();
+
+    @Query("SELECT * FROM products WHERE reorder_level=200")
+    Flowable<List<Product>> getBulletinProduct();
 }

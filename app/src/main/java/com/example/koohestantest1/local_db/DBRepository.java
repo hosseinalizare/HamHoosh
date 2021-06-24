@@ -267,4 +267,12 @@ public class DBRepository {
     public Flowable<List<Product>> getDiscontinuedProduct(){
         return localApi.getDiscontinuedProduct();
     }
+
+    public Flowable<List<Product>> getBulletinProduct(){
+        return localApi.getBulletinProduct();
+    }
+
+    public Flowable<List<Product>> getLikeProduct(){
+        return localApi.getLikeProduct();
+    }
 }

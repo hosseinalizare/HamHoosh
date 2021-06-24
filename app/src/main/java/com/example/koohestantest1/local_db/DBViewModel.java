@@ -305,4 +305,12 @@ public class DBViewModel extends AndroidViewModel {
     public LiveData<List<Product>> getDiscontinuedProduct(){
         return LiveDataReactiveStreams.fromPublisher(repository.getDiscontinuedProduct());
     }
+
+    public LiveData<List<Product>> getBulletinProduct(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getBulletinProduct());
+    }
+
+    public LiveData<List<Product>> getLikeProduct(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getLikeProduct());
+    }
 }

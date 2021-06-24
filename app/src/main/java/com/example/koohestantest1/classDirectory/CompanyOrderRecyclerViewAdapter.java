@@ -40,6 +40,7 @@ public class CompanyOrderRecyclerViewAdapter extends RecyclerView.Adapter<Compan
     public List<SendOrderClass> sendOrderClasses;
     boolean Usermod = false;
     private TimeViewModel timeViewModel;
+    private int quantity = 0;
     BaseCodeClass baseCodeClass = new BaseCodeClass();
 
     private ActivityResultLauncher<String> resultLauncher;
@@ -98,8 +99,9 @@ public class CompanyOrderRecyclerViewAdapter extends RecyclerView.Adapter<Compan
         String price = sendOrderClasses.get(position).getSumPrice();
 
         holder.sumPrice.setText(price);
-        int quantity = sendOrderClasses.get(position).getOrder_Details().get(0).getQuantity();
-        String orderCount = "اقلام: "+ quantity;
+        if (sendOrderClasses.get(position).getOrder_Details() != null && sendOrderClasses.get(position).getOrder_Details().size() > 0)
+            quantity = sendOrderClasses.get(position).getOrder_Details().get(0).getQuantity();
+        String orderCount = "اقلام: " + quantity;
         /*String orderCount = "اقلام: "+ sendOrderClasses.get(position).Order_Details.size();*/
 
 
@@ -174,7 +176,7 @@ public class CompanyOrderRecyclerViewAdapter extends RecyclerView.Adapter<Compan
 
     public class ViewModel extends RecyclerView.ViewHolder {
 
-        TextView orderID, customerName, costumerAddress, sumPrice, detail, date,productCount;
+        TextView orderID, customerName, costumerAddress, sumPrice, detail, date, productCount;
         CardView cardView;
         ImageView productImage, CUSTOMERIM;
 

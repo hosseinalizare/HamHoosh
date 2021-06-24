@@ -123,6 +123,38 @@ public class ViewProductActivity extends AppCompatActivity {
                 @Override
                 public void onChanged(Product product) {
                     selectedProduct = product;
+                    selectedPid = getIntent().getStringExtra("PID");
+
+
+        /*Log.d(TAG, "onCreate: " + selectedPid);
+        Log.d(TAG, "onCreate: " + selectedProduct.ProductName);*/
+                    int stock = selectedProduct.Discontinued;
+                    if (stock == 0) {
+                        btnAddToCart.setVisibility(View.GONE);
+                        cardNoItem.setVisibility(View.VISIBLE);
+                    }
+                    initCategoryRecyclerView();
+
+
+                    tvLikeCount.setText(String.valueOf(selectedProduct.LikeCount));
+                    txtViewCount.setText(StringUtils.showProductViewCount(selectedProduct.ViewedCount));
+
+
+                    loadingProduct();
+                    loadProductProperties();
+
+                    //init like
+                    handleLikeView();
+
+                    //init bookmark
+                    initBookmarkView();
+
+                    Log.d(TAG, "onCreate: isliked " + selectedProduct.Likeit);
+                    Log.d(TAG, "onCreate: " + selectedProduct.Likeit);
+
+                    if (selectedProduct.AddToCard) {
+                        showController();
+                    }
                 }
             });
         }
@@ -174,11 +206,11 @@ public class ViewProductActivity extends AppCompatActivity {
 
         baseCodeClass = new BaseCodeClass();
 
-        selectedPid = getIntent().getStringExtra("PID");
+       /* selectedPid = getIntent().getStringExtra("PID");
 
 
-        Log.d(TAG, "onCreate: " + selectedPid);
-        Log.d(TAG, "onCreate: " + selectedProduct.ProductName);
+        *//*Log.d(TAG, "onCreate: " + selectedPid);
+        Log.d(TAG, "onCreate: " + selectedProduct.ProductName);*//*
         int stock = selectedProduct.Discontinued;
         if (stock == 0) {
             btnAddToCart.setVisibility(View.GONE);
@@ -205,7 +237,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
         if (selectedProduct.AddToCard) {
             showController();
-        }
+        }*/
 
         final Retrofit retrofit = RetrofitInstance.getRetrofit();
 

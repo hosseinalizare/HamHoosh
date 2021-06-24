@@ -92,7 +92,7 @@ public class FavouriteFragment extends Fragment {
             setViewUpView();
         });*/
 
-        dbViewModel.getBookmarkedProduct().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+        dbViewModel.getLikeProduct().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
                 adapterV2.setData(products);

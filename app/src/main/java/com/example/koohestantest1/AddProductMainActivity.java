@@ -40,6 +40,9 @@ import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
+import com.jaiselrahman.filepicker.activity.FilePickerActivity;
+import com.jaiselrahman.filepicker.config.Configurations;
+import com.jaiselrahman.filepicker.model.MediaFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -255,7 +258,7 @@ public class AddProductMainActivity extends AppCompatActivity {
         //*****************************************************************************************/
 
         //*************************Fetch data From Gallery and send them to server*****************/
-        ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(
+        /*ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
@@ -265,8 +268,8 @@ public class AddProductMainActivity extends AppCompatActivity {
                                 int currentItem = 0;
                                 while (currentItem < count) {
                                     Uri imageUri = result.getData().getClipData().getItemAt(currentItem).getUri();
-                                    Uri uri = CropImage.getPickImageResultUri(getApplicationContext(),result.getData().getClipData().getItemAt(currentItem).getIntent());
-                                    cropRequest(uri);
+                                    *//*Uri uri = CropImage.getPickImageResultUri(getApplicationContext(),result.getData().getClipData().getItemAt(currentItem).getIntent());
+                                    cropRequest(uri);*//*
                                     imageUriList.add(imageUri);
                                     partNames.add(currentItem + "");
                                     currentItem++;
@@ -288,6 +291,42 @@ public class AddProductMainActivity extends AppCompatActivity {
                         }
                     }
                 }
+        );*/
+        ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        List<Uri> finalFies = new ArrayList<>();
+                        List<String> fileNames = new ArrayList<>();
+                        if (result.getData() != null) {
+                            ArrayList<MediaFile> files = result.getData().getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
+                            Uri uri = files.get(0).getUri();
+                            File file = FileUtils.getFile(getApplicationContext(), uri);
+                            for(MediaFile mediaFile:files){
+                                String name = mediaFile.getName();
+                                Uri uri1 = mediaFile.getUri();
+                                imageUriList.add(uri1);
+                                partNames.add(name);
+                            }
+
+                            StandardPrice standardPrice = new StandardPrice();
+                            standardPrice.setShowStandardCost(price);
+                            standardPrice.setStandardCost(Integer.parseInt(price));
+                            if (!edtDiscount.getText().toString().equals("")) {
+                                standardPrice.setShowoffPrice(edtDiscount.getText().toString());
+                                standardPrice.setOffPrice(Integer.parseInt(edtDiscount.getText().toString()));
+                            }
+                            if (mainCat.equals(""))
+                                mainCat = edtProductMainCat.getText().toString();
+                            if (subCat.equals(""))
+                                subCat = edtProductSubCat.getText().toString();
+                            if (authorizeCurrentProduct())
+                                addProduct();
+
+
+                        }
+                    }
+                }
         );
         //*****************************************************************************************/
 
@@ -296,12 +335,24 @@ public class AddProductMainActivity extends AppCompatActivity {
                 new ActivityResultContracts.RequestPermission(),
                 result -> {
                     if (result) {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         intent.setType("image/*");
                         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                         intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        Intent chooserIntent = Intent.createChooser(intent, "Open Gallery");
-                        mLauncher.launch(chooserIntent);
+                        Intent chooserIntent = Intent.createChooser(intent, "Open Gallery");*/
+                        Intent intent = new Intent(this, FilePickerActivity.class);
+                        intent.putExtra(FilePickerActivity.CONFIGS, new Configurations.Builder()
+                                .setCheckPermission(true)
+                                .setMaxSelection(1)
+                                .setSkipZeroSizeFiles(true)
+                                .setShowImages(true)
+                                .setSingleChoiceMode(false)
+                                .setMaxSelection(3)
+                                .setShowAudios(false)
+                                .setShowVideos(false)
+                                .setShowFiles(false)
+                                .build());
+                        mLauncher.launch(intent);
                     }
                 }
         );

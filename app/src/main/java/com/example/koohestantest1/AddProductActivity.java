@@ -36,6 +36,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,7 +49,9 @@ import com.example.koohestantest1.Utils.Cache;
 import com.example.koohestantest1.Utils.NumberTextChanger;
 import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.classDirectory.StandardPrice;
+import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.local_db.entity.Product;
+import com.example.koohestantest1.local_db.entity.Properties;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
 import com.example.koohestantest1.model.network.RetrofitInstance;
@@ -120,6 +124,8 @@ public class AddProductActivity extends AppCompatActivity {
     String MainCategory;
     String SubCat1, SubCat2;
 
+    private DBViewModel dbViewModel;
+
     List<String> mMainCat = new ArrayList<>();
     boolean loadEdit = false;
 
@@ -149,6 +155,7 @@ public class AddProductActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
+        dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         try {
             //dataBase = new DataBase(mContext);
             baseCodeClass = new BaseCodeClass();
@@ -554,7 +561,48 @@ public class AddProductActivity extends AppCompatActivity {
 
             if (loadEdit) {
                 try {
-                    productID = pid;
+                    dbViewModel.getSpecificProduct(pid).observe(AddProductActivity.this, new Observer<Product>() {
+                        @Override
+                        public void onChanged(Product product) {
+                            selectedProduct = product;
+                            productID = pid;
+                            EdProductName.setText(selectedProduct.ProductName);
+                            EdProductPrice.setText(selectedProduct.ShowPrice);
+                            EdProductDescription.setText(selectedProduct.Description);
+                            EdDiscount.setText(selectedProduct.ShowoffPrice);
+                            EdInventory.setText(String.valueOf(selectedProduct.Discontinued));
+                            EdProduct.setText(selectedProduct.SubCat2);
+                            EdCategory.setText(selectedProduct.SubCat1);
+                            String showTik = String.valueOf(selectedProduct.Show);
+                            if (showTik != null && showTik.equals("false"))
+                                cbShowToUser.setChecked(false);
+
+                            for (int i = 0; i < unit.length; i++) {
+                                if (unit[i].equals(selectedProduct.Unit)) {
+                                    Unit.setSelection(i);
+                                    break;
+                                }
+                            }
+                            /**
+                             * Check the loop statement
+                             */
+                    /*for (ProductPropertisClass pp : selectedProduct.getProductClass().getProductPropertis()) {
+                        mProperties.add(pp.getPropertisName());
+                        mPropertyValues.add(pp.getPropertisValue());
+                        productPropertisClasses.add(new ProductPropertisClass(pid, "مشخصات اصلی", pp.getPropertisName(),
+                                pp.getPropertisValue(), null));
+                    }*/
+                            initRecyclerView();
+
+                            cbStory.setChecked(ISParticular(String.valueOf(selectedProduct.ReorderLevel)));
+                            cbBulletin.setChecked(ISBulletin(String.valueOf(selectedProduct.ReorderLevel)));
+
+                            newDownloadImage(selectedProduct.ProductID, imageView);
+
+                            btnAdd.setText("ثبت تغییرات");
+                        }
+                    });
+                    /*productID = pid;
                     EdProductName.setText(selectedProduct.ProductName);
                     EdProductPrice.setText(selectedProduct.ShowPrice);
                     EdProductDescription.setText(selectedProduct.Description);
@@ -571,15 +619,15 @@ public class AddProductActivity extends AppCompatActivity {
                             break;
                         }
                     }
-                    /**
+                    *//**
                      * Check the loop statement
-                     */
-                    /*for (ProductPropertisClass pp : selectedProduct.getProductClass().getProductPropertis()) {
+                     *//*
+                    *//*for (ProductPropertisClass pp : selectedProduct.getProductClass().getProductPropertis()) {
                         mProperties.add(pp.getPropertisName());
                         mPropertyValues.add(pp.getPropertisValue());
                         productPropertisClasses.add(new ProductPropertisClass(pid, "مشخصات اصلی", pp.getPropertisName(),
                                 pp.getPropertisValue(), null));
-                    }*/
+                    }*//*
                     initRecyclerView();
 
                     cbStory.setChecked(ISParticular(String.valueOf(selectedProduct.ReorderLevel)));
@@ -587,7 +635,7 @@ public class AddProductActivity extends AppCompatActivity {
 
                     newDownloadImage(selectedProduct.ProductID, imageView);
 
-                    btnAdd.setText("ثبت تغییرات");
+                    btnAdd.setText("ثبت تغییرات");*/
                 } catch (Exception e) {
                     logMessage("750 >> " + e.getMessage(), mContext);
                 }
@@ -941,6 +989,9 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void editProduct() {
         try {
+
+
+
 
             if (mainSendProductClass != null) {
                 Call<GetResualt> call = loadProductApi.editProductDetail(mainSendProductClass);
@@ -1345,12 +1396,30 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         try {
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            dbViewModel.getSpecificProperties(selectedProduct.ProductID).observe(AddProductActivity.this, new Observer<List<Properties>>() {
+                @Override
+                public void onChanged(List<Properties> propertiesList) {
+                    for(Properties properties:propertiesList){
+                        mProperties.add(properties.PropertiesName);
+                        mPropertyValues.add(properties.PropertiesValue);
+                        ProductPropertisClass propertisClass = new ProductPropertisClass(selectedProduct.ProductID,properties.PropertiesGroup,
+                                properties.PropertiesName,properties.PropertiesValue,properties.UpdateTime);
+                        productPropertisClasses.add(propertisClass);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+                        layoutManager.setReverseLayout(true);
+                        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.RecycleProductProperties);
+                        recyclerView.setLayoutManager(layoutManager);
+                        ProductPropertiesRecyclerViewAdapter adapter = new ProductPropertiesRecyclerViewAdapter(getApplicationContext(), mProperties, mPropertyValues, 2);
+                        recyclerView.setAdapter(adapter);
+                    }
+                }
+            });
+            /*LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             layoutManager.setReverseLayout(true);
             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.RecycleProductProperties);
             recyclerView.setLayoutManager(layoutManager);
             ProductPropertiesRecyclerViewAdapter adapter = new ProductPropertiesRecyclerViewAdapter(this, mProperties, mPropertyValues, 2);
-            recyclerView.setAdapter(adapter);
+            recyclerView.setAdapter(adapter);*/
         } catch (Exception e) {
             logMessage("AddProduct 400 >> " + e.getMessage(), this);
         }
