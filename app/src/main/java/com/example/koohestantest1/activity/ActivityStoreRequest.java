@@ -55,16 +55,15 @@ public class ActivityStoreRequest extends AppCompatActivity implements MessageAp
                 if (edtPhone.getText().toString().isEmpty() || edtMessage.getText().toString().isEmpty()){
                     Toast.makeText(ActivityStoreRequest.this, "پر کردن تمامی فیلدها الزامی است!", Toast.LENGTH_SHORT).show();
                 }else {
-                    if (!ValidationCheck.mobileValidation(edtPhone.getText().toString())) {
-                        if (!ValidationCheck.phoneValidation(edtPhone.getText().toString())) {
-                            Toast.makeText(this, "شماره تلفن نا معتبر است", Toast.LENGTH_LONG).show();
 
-                        }else {
-                            sendRequest();
-                        }
-                    }else {
+                    if (ValidationCheck.mobileValidation(edtPhone.getText().toString()) || ValidationCheck.phoneValidation(edtPhone.getText().toString()) ){
                         sendRequest();
+                    }else {
+                        Toast.makeText(this, "شماره تلفن نا معتبر است", Toast.LENGTH_LONG).show();
+
                     }
+
+
 
                 }
 

@@ -164,6 +164,11 @@ public class AddProductMainActivity extends AppCompatActivity {
         //*****************************************************************************************/
 
         //************************************MainCat spinner ItemSelectedListener*****************/
+
+
+
+
+
         spProductMainCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -304,12 +309,19 @@ public class AddProductMainActivity extends AppCompatActivity {
         //****************************add product's photo ClickListener****************************/
 
         btnAddPhoto.setOnClickListener(v -> {
-            if (!edtDescription.getText().toString().equals(""))
-                description = edtDescription.getText().toString();
-            if (edtInventory.getText().toString().equals(""))
-                inventory = edtInventory.getText().toString();
+            
+            if (propertyValueList.size() != 0){
+                if (!edtDescription.getText().toString().equals(""))
+                    description = edtDescription.getText().toString();
+                if (edtInventory.getText().toString().equals(""))
+                    inventory = edtInventory.getText().toString();
 
-            mPermissionResult.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+                mPermissionResult.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }else {
+                Toast.makeText(this, "حداقل یک ویژگی برای محصول ثبت کنید!", Toast.LENGTH_SHORT).show();
+            }
+            
+           
 
         });
 

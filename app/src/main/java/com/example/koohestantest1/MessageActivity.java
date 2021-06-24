@@ -1033,7 +1033,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
                 Intent intent = new Intent(mContext, ActivityShowContact.class);
                 intent.putExtra("msgId", messageId);
-                intent.putExtra("senderMsgId", senderMsgId);
+                intent.putExtra("senderMsgId", senderUser);
                 startActivity(intent);
                 finish();
                 messageUnSelected(messageId);

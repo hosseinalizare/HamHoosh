@@ -261,7 +261,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             imageView = itemView.findViewById(R.id.img_layout_profile_recycler_item_video_imgVideo);
             imgPlay = itemView.findViewById(R.id.img_layout_profile_recycler_item_video_imgVideoPlay);
             progressBar = itemView.findViewById(R.id.circularProgressBar);
-            txtPersent = itemView.findViewById(R.id.txtPersent);
+            txtPersent = itemView.findViewById(R.id.txt_video_persent);
         }
 
         void holder(FieldList fieldList) {
@@ -283,7 +283,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
                 @Override
                 public void onClick(View v) {
                     if (imgPlay.getContentDescription().equals("not_downloaded")) {
-                        downloadVideo(progressBar, imgPlay, txtPersent, fieldList.getValue(), generateUrl(Integer.parseInt(fieldList.getId())));
+                        downloadVideo(progressBar, imgPlay, txtPersent, fieldList.getValue(),generateUrl(Integer.parseInt(fieldList.getId())));
 
                     } else {
                         playVideo(file.getAbsolutePath());
@@ -846,8 +846,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         request.setTitle("در حال دانلود");
         request.setDescription("لطفا منتظر بمانید...");
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Dehkadeh/" + name);
-
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/"+childDirectory+"/" + name);
         final long id = downloadManager.enqueue(request);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
