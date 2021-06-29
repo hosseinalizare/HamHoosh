@@ -45,7 +45,6 @@ public class ActivityShowContact extends AppCompatActivity implements AdapterCon
     private ForwardMsgM forwardMsgM;
     private String msgId, senderMsgId;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +91,7 @@ public class ActivityShowContact extends AppCompatActivity implements AdapterCon
 
     private void getContact() {
         ContactVM contactVM = new ViewModelProvider(this).get(ContactVM.class);
-        contactVM.getContact(baseCodeClass.getToken(), baseCodeClass.getUserID(), baseCodeClass.getUserID()).observe(this, new Observer<List<ContactListViewModel>>() {
+        contactVM.getContact(baseCodeClass.getToken(), baseCodeClass.getUserID(), senderMsgId).observe(this, new Observer<List<ContactListViewModel>>() {
             @Override
             public void onChanged(List<ContactListViewModel> contactListViewModels) {
                 contactList = contactListViewModels;
@@ -169,29 +168,26 @@ public class ActivityShowContact extends AppCompatActivity implements AdapterCon
             forwardMsgM = new ForwardMsgM(baseCodeClass.getToken(), baseCodeClass.getUserID(), msgId, senderMsgId, forwardersId);
 
             SendMessageVM messageVM = new ViewModelProvider(this).get(SendMessageVM.class);
-            messageVM.forwardMessage(forwardMsgM).observe(this, new Observer<GetResualt>() {
-                @Override
-                public void onChanged(GetResualt getResualt) {
-                    if (getResualt.getResualt().equals("100")) {
-                        Toast.makeText(ActivityShowContact.this, "پیام ارسال شد", Toast.LENGTH_SHORT).show();
-                        if (forwardersId.size()==1){
-                            Intent intent = new Intent(ActivityShowContact.this, MessageActivity.class);
-                            intent.putExtra("getter", forwardersId.get(0));
-                            // sender = Ourselves
-                            intent.putExtra("sender", baseCodeClass.getUserID());
-                            startActivity(intent);
-                            finish();
-                        }else {
-                            finish();
-
-                        }
+            messageVM.forwardMessage(forwardMsgM).observe(this, getResualt -> {
+                if (getResualt.getResualt().equals("100")) {
+                    Toast.makeText(ActivityShowContact.this, "پیام ارسال شد", Toast.LENGTH_SHORT).show();
+                    if (forwardersId.size()==1){
+                        Intent intent = new Intent(ActivityShowContact.this, MessageActivity.class);
+                        intent.putExtra("getter", forwardersId.get(0));
+                        // sender = Ourselves
+                        intent.putExtra("sender", senderMsgId);
+                        startActivity(intent);
+                        finish();
                     }else {
-                        Toast.makeText(ActivityShowContact.this, "خطای ناشناخته!", Toast.LENGTH_SHORT).show();
+                        finish();
 
                     }
-
+                }else {
+                    Toast.makeText(ActivityShowContact.this, "خطای ناشناخته!", Toast.LENGTH_SHORT).show();
 
                 }
+
+
             });
         });
 

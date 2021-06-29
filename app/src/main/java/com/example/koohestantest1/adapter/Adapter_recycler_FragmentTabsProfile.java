@@ -87,7 +87,7 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
     private int playPosition = -1;
     private boolean play = false;
     private boolean play2 = false;
-    private boolean myStore = true;
+    private boolean myStore = false;
     private String childDirectory;
 
 
@@ -610,22 +610,26 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
                 Glide.with(context).load(generateUrlProductPicture(fieldList.getValue())).placeholder(R.drawable.image_placeholder).into(imageView);
 
                 imageView.setOnClickListener(v -> {
+
+
                     if (myStore) {
                         if (baseCodeClass.getPermissions() != null) {
                             if (baseCodeClass.getPermissions().get(6).isState()) {
                                 startEditProduct(fieldList.getValue());
                             } else {
+                                startViewProduct(fieldList.getValue());
                                 //employee has not permission to edit product
-                                if (baseCodeClass.loadSelectedProduct(fieldList.getValue(), context)) {
+                              /*  if (baseCodeClass.loadSelectedProduct(fieldList.getValue(), context)) {
                                     startViewProduct(fieldList.getValue());
-                                }
+                                }*/
                             }
                         }
-
                     } else {
-                        if (baseCodeClass.loadSelectedProduct(fieldList.getValue(), context)) {
+                        startViewProduct(fieldList.getValue());
+
+                      /*  if (baseCodeClass.loadSelectedProduct(fieldList.getValue(), context)) {
                             startViewProduct(fieldList.getValue());
-                        }
+                        }*/
                     }
                 });
 

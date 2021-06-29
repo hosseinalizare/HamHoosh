@@ -232,7 +232,6 @@ public class ShowStoreActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case 100:
                         Intent intent2 = new Intent(mContext,ListMessageActivity.class);
-                       String mIdddd = baseCodeClass.getUserID();
                         intent2.putExtra("id", baseCodeClass.getUserID());
                         startActivity(intent2);
                         break;

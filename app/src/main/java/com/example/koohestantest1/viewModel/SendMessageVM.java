@@ -33,7 +33,9 @@ public class SendMessageVM extends ViewModel {
     private MutableLiveData<GetResualt> uploadDocMessageLiveData;
     private MutableLiveData<GetResualt> deleteMessageLiveData;
     private MutableLiveData<GetResualt> forwardMessageLiveData;
+    private MutableLiveData<GetResualt> thumbnailLiveData;
     private MutableLiveData<SendOrderClass> orderDataLiveData;
+
   public   CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public LiveData<GetResualt> sendMessage(SendMessageViewModel sendMessageViewModel){
@@ -170,6 +172,29 @@ public class SendMessageVM extends ViewModel {
         }
         return forwardMessageLiveData;
     }
+
+    public LiveData<GetResualt> sendThumbnail(int msgId, MultipartBody.Part body){
+        thumbnailLiveData = new MutableLiveData<>();
+        Single<GetResualt> resualtSingle = RetrofitInstance.getRetrofit().create(MessageApi.class).sendThumbnail(msgId,body);
+        compositeDisposable.add(resualtSingle.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<GetResualt>(){
+
+                    @Override
+                    public void onSuccess(@NonNull GetResualt getResualt) {
+                        thumbnailLiveData.setValue(getResualt);
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+                })
+        );
+        return thumbnailLiveData;
+    }
+
 
 
 

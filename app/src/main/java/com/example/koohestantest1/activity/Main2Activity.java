@@ -24,6 +24,7 @@ import com.example.koohestantest1.Main2Fragment;
 import com.example.koohestantest1.MyStoreFragment;
 import com.example.koohestantest1.ProfileFragment;
 import com.example.koohestantest1.R;
+import com.example.koohestantest1.Utils.SharedPreferenceUtils;
 import com.example.koohestantest1.ViewModels.Order_DetailsViewModels;
 import com.example.koohestantest1.classDirectory.AppService;
 import com.example.koohestantest1.constants.CurrentCartId;
@@ -88,15 +89,17 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        ////// save userId into sharedPrefrence
+      String uId =  SharedPreferenceUtils.getUserId(this);
+      if (uId ==null){
+          SharedPreferenceUtils.saveUserId(this,BaseCodeClass.userID);
+
+      }
+
         dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         ///// start service ////
-        if (myServiceIntent == null) {
-            myServiceIntent = new Intent(this, AppService.class);
-            startService(myServiceIntent);
-        } else {
-            startService(myServiceIntent);
-        }
-
+        myServiceIntent = new Intent(this, AppService.class);
+        startService(myServiceIntent);
 
 //
         Log.d(TAG, "onCreate: ");

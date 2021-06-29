@@ -105,6 +105,7 @@ public class MyStoreProductRecyclerViewAdapter extends RecyclerView.Adapter<Recy
                 holder.name.setText(productData.get(position).ProductName);
 
                 holder.imageView.setOnClickListener(v -> {
+
                     if (myStore) {
                         if (baseCodeClass.getPermissions().get(6).isState()) {
                             startEditProduct(position);

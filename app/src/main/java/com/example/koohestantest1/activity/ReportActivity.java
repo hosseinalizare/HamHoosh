@@ -111,6 +111,11 @@ public class ReportActivity extends AppCompatActivity implements MessageApi {
     }
 
     @Override
+    public Single<GetResualt> sendThumbnail(int MsgId, MultipartBody.Part file) {
+        return null;
+    }
+
+    @Override
     public Single<GetResualt> deleteMessage(DeleteMessageM deleteMessageM) {
         return null;
     }

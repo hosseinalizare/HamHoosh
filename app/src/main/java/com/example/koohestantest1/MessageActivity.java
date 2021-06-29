@@ -19,8 +19,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -58,6 +60,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -153,8 +159,9 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     private String messageId;
     private int replyMessageType;
     private SendOrderClass sendOrderClassData;
-    private   String lastUpdateTime = "2020-05-17T10:54:33.037";
-    private   Date dateTime;
+    private String lastUpdateTime = "2020-05-17T10:54:33.037";
+    private Date dateTime;
+    private String childDirectory;
 
 
     @Override
@@ -196,6 +203,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
             messageActivity = this;
 
+
             mContext = MessageActivity.this;
             baseCodeClass = new BaseCodeClass();
             //current user (me)
@@ -203,6 +211,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             //another user Id(Friend)
             getterUser = getIntent().getStringExtra("getter");
 
+            childDirectory = mContext.getResources().getString(R.string.app_name);
 
 
             String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + getterUser + "&fileNumber=" + 1;
@@ -346,11 +355,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             startActivityForResult(intent, CHOSE_DOC_REQUEST_CODE);
 
 
-
-          /*  FilePickerBuilder.getInstance()
-                        .setMaxCount(1)
-                        .setActivityTheme(R.style.AppTheme)
-                        .pickFile(MessageActivity.this,CHOSE_DOC_REQUEST_CODE);*/
         });
         relAudio.setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
@@ -422,6 +426,11 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
     @Override
     public Single<GetResualt> uploadMessageImage(int MsgId, MultipartBody.Part file) {
+        return null;
+    }
+
+    @Override
+    public Single<GetResualt> sendThumbnail(int MsgId, MultipartBody.Part file) {
         return null;
     }
 
@@ -846,14 +855,57 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
     }
 
-    private void uploadFile(File file, Uri fileUri, final int msgId, String type) {
+    private void uploadFile(File file, Uri fileUri, final int msgId, String type, Bitmap thumbnail) {
+        if (type.equals("video") && thumbnail != null) {
 
-        /*RequestBody requestBody = RequestBody.create(file, MediaType.parse(getContentResolver().getType(fileUri)));*/
+            Cache cache = new Cache(mContext);
+            File thumbnailFile = cache.saveToCacheAndGetFile(thumbnail, msgId + "");
+
+            RequestBody requestBody = RequestBody.create(thumbnailFile, MediaType.parse("multipart/form-data"));
+            MultipartBody.Part body = MultipartBody.Part.createFormData("file", thumbnailFile.getName(), requestBody);
+
+            sendMessageVM.sendThumbnail(msgId, body).observe(this, new Observer<GetResualt>() {
+                @Override
+                public void onChanged(GetResualt getResualt) {
+                    if (getResualt.getResualt().equals("100")) {
+                        sendToServer(file, msgId, type, thumbnail);
+                    }
+
+                }
+            });
+
+        } else {
+            sendToServer(file, msgId, type, thumbnail);
+
+        }
+    }
+
+    private void sendToServer(File file, int msgId, String type, Bitmap thumbnail) {
         RequestBody requestBody = RequestBody.create(file, MediaType.parse("*/*"));
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
         sendMessageVM.sendDocMessage(msgId, body).observe(this, getResualt -> {
 
             if (getResualt.getResualt().equals("100")) {
+
+                //////// copy file in directory after upload
+
+                String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + childDirectory + "/";
+                File dir = new File(path);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+                String fullName = path + file.getName();
+                File file1 = new File(fullName);
+
+                try {
+                    copySingleFile(file, file1);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
                 isLoading = true;
                 if (type.equals("doc")) {
                     adapter.messageViewModels.remove(adapter.docWaitPosition);
@@ -875,7 +927,6 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                 Toast.makeText(mContext, "خطای نا شناخته", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
 
@@ -909,7 +960,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
             if (getResualt.getResualt().equals("100")) {
-                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()), "doc");
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()), "doc", null);
             }
         });
 
@@ -926,7 +977,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
             if (getResualt.getResualt().equals("100")) {
-                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()), "music");
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()), "music", null);
             }
         });
 
@@ -934,16 +985,19 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
     private void sendVideoMessage(String videoName, File file, Uri fileUri) {
         isLoading = false;
+        ///// create video thumbnail
+        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(file.getAbsolutePath(), MediaStore.Images.Thumbnails.MINI_KIND);
+
         SendMessageViewModel sendMessageViewModel2 = new SendMessageViewModel(senderUser, 555);
         adapter.messageViewModels.add(sendMessageViewModel2);
-        adapter.initWaitValueVideo(videoName, sendMessageVM);
+        adapter.initWaitValueVideo(thumb, videoName, sendMessageVM);
         messageRecycler.setAdapter(adapter);
         SendMessageViewModel sendMessageViewModel = new SendMessageViewModel(baseCodeClass.getToken(), baseCodeClass.getUserID(), "", senderUser, getterUser,
                 videoName, "", "", "", BaseCodeClass.variableType.Video_.getValue(), "", 1, 100);
         LiveData<GetResualt> resualtLiveData = sendMessageVM.sendMessage(sendMessageViewModel);
         resualtLiveData.observe(this, getResualt -> {
             if (getResualt.getResualt().equals("100")) {
-                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()), "video");
+                uploadFile(file, fileUri, Integer.parseInt(getResualt.getMsg()), "video", thumb);
             }
         });
     }
@@ -1033,6 +1087,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
                 Intent intent = new Intent(mContext, ActivityShowContact.class);
                 intent.putExtra("msgId", messageId);
+                /*intent.putExtra("senderMsgId", senderUser);*/
                 intent.putExtra("senderMsgId", senderUser);
                 startActivity(intent);
                 finish();
@@ -1116,6 +1171,34 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void copySingleFile(File sourceFile, File destFile)
+            throws IOException {
+        if (!destFile.exists()) {
+            try {
+                destFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        FileChannel sourceChannel = null;
+        FileChannel destChannel = null;
+
+        try {
+            sourceChannel = new FileInputStream(sourceFile).getChannel();
+            destChannel = new FileOutputStream(destFile).getChannel();
+            sourceChannel.transferTo(0, sourceChannel.size(), destChannel);
+        } finally {
+            if (sourceChannel != null) {
+                sourceChannel.close();
+            }
+            if (destChannel != null) {
+                destChannel.close();
+            }
         }
     }
 }

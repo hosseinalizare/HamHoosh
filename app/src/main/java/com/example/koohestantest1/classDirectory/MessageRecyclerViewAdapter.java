@@ -77,6 +77,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private String TAG = MessageRecyclerViewAdapter.class.getSimpleName();
     BaseCodeClass baseCodeClass = new BaseCodeClass();
     private Bitmap bitmap;
+    private Bitmap thumbnailsVideo;
     private String caption;
     private SendMessageVM sendMessageVM;
     private String docName;
@@ -265,11 +266,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             int msgType = sendMessageViewModel.getMsgType();
             String userSender = sendMessageViewModel.getUserSender();
-            String subSenderId =sendMessageViewModel.getSubSenderID();
+            String subSenderId = sendMessageViewModel.getSubSenderID();
             ////// generate textMsg
             if (msgType == BaseCodeClass.variableType.string_.getValue() || msgType == BaseCodeClass.variableType.int_.getValue()) {
-                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if ( !StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())) {
+                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)) {
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyMsgSenderViwHolder replyMsgSenderViwHolder = (ReplyMsgSenderViwHolder) holder;
                             replyMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -279,8 +280,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
 
-
-                    }else {
+                    } else {
 
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyMsgGetterViwHolder replyMsgGetterViwHolder = (ReplyMsgGetterViwHolder) holder;
@@ -292,7 +292,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
                     }
-                }else {
+                } else {
 
                     if (userSender.equals(MessageActivity.senderId)) {
 
@@ -318,10 +318,10 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             }
 
             ///////////////// generate imgMsg
-    else if (msgType == BaseCodeClass.variableType.Image_.getValue()) {
+            else if (msgType == BaseCodeClass.variableType.Image_.getValue()) {
 
-                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())) {
+                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)) {
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyImgMsgSenderViwHolder replyImgMsgSenderViwHolder = (ReplyImgMsgSenderViwHolder) holder;
                             replyImgMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -331,8 +331,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
 
-
-                    }else {
+                    } else {
 
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyImgMsgGetterViwHolder replyImgMsgGetterViwHolder = (ReplyImgMsgGetterViwHolder) holder;
@@ -344,7 +343,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
                     }
-                }else {
+                } else {
 
                     if (userSender.equals(MessageActivity.senderId)) {
 
@@ -370,12 +369,12 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             }
 
-    ////////////// generate docMsg
+            ////////////// generate docMsg
 
-    else if (msgType == BaseCodeClass.variableType.File_.getValue()) {
+            else if (msgType == BaseCodeClass.variableType.File_.getValue()) {
 
-                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if ( !StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())) {
+                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)) {
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyDocMsgSenderViwHolder replyDocMsgSenderViwHolder = (ReplyDocMsgSenderViwHolder) holder;
                             replyDocMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -385,8 +384,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
 
-
-                    }else {
+                    } else {
 
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyDocMsgGetterViwHolder replyDocMsgGetterViwHolder = (ReplyDocMsgGetterViwHolder) holder;
@@ -398,7 +396,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
                     }
-                }else {
+                } else {
 
                     if (userSender.equals(MessageActivity.senderId)) {
 
@@ -424,11 +422,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 }
             }
 
-    /////////// generate videoMsg
+            /////////// generate videoMsg
 
-    else if (msgType == BaseCodeClass.variableType.Video_.getValue()) {
-                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+            else if (msgType == BaseCodeClass.variableType.Video_.getValue()) {
+                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())) {
+                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)) {
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyVideoMsgSenderViwHolder replyVideoMsgSenderViwHolder = (ReplyVideoMsgSenderViwHolder) holder;
                             replyVideoMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -438,8 +436,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
 
-
-                    }else {
+                    } else {
 
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyVideoMsgGetterViwHolder replyVideoMsgGetterViwHolder = (ReplyVideoMsgGetterViwHolder) holder;
@@ -451,7 +448,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
                     }
-                }else {
+                } else {
 
                     if (userSender.equals(MessageActivity.senderId)) {
 
@@ -477,9 +474,9 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 }
             }
 
-    ///////// generate orderMsg
+            ///////// generate orderMsg
 
-    else if (msgType == BaseCodeClass.variableType.Order_.getValue()) {
+            else if (msgType == BaseCodeClass.variableType.Order_.getValue()) {
                 if (userSender.equals(MessageActivity.senderId)) {
 
                     OrderGetterViewHolder orderGetterViewHolder = (OrderGetterViewHolder) holder;
@@ -491,12 +488,12 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 }
             }
 
-    ////////// generate musicMsg
+            ////////// generate musicMsg
 
-    else if (msgType == BaseCodeClass.variableType.Music_.getValue()) {
+            else if (msgType == BaseCodeClass.variableType.Music_.getValue()) {
 
-                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())){
-                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)){
+                if (sendMessageViewModel.getUserSender().equals(sendMessageViewModel.getRecipientUser())) {
+                    if (!StringUtils.textIsEmpty(subSenderId) && sendMessageViewModel.getSubSenderID().equals(BaseCodeClass.userID)) {
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyMusicMsgSenderViwHolder replyMusicMsgSenderViwHolder = (ReplyMusicMsgSenderViwHolder) holder;
                             replyMusicMsgSenderViwHolder.holder(sendMessageViewModel, position);
@@ -506,8 +503,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
 
-
-                    }else {
+                    } else {
 
                         if (!StringUtils.textIsEmpty(messageViewModels.get(position).getReplyMsg())) {
                             ReplyMusicMsgGetterViwHolder replyMusicMsgGetterViwHolder = (ReplyMusicMsgGetterViwHolder) holder;
@@ -519,7 +515,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         }
 
                     }
-                }else {
+                } else {
 
                     if (userSender.equals(MessageActivity.senderId)) {
 
@@ -547,14 +543,14 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             ////////// generate timeMsg
 
-    else if (msgType == BaseCodeClass.variableType.time.getValue()) {
+            else if (msgType == BaseCodeClass.variableType.time.getValue()) {
                 DateHolder dateHolder = (DateHolder) holder;
                 dateHolder.txtTime.setText(messageViewModels.get(position).getMessage1());
             }
 
-    ////// generate waitUploadImage
+            ////// generate waitUploadImage
 
-    else if (msgType == 222) {
+            else if (msgType == 222) {
                 WaitForUploadImageHolder waitForUploadImageHolder = (WaitForUploadImageHolder) holder;
                 waitForUploadImageHolder.holder(bitmap, caption, position);
 
@@ -612,27 +608,27 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         SendMessageViewModel sendMessageViewModel = messageViewModels.get(position);
         int msgType = sendMessageViewModel.getMsgType();
         String userSender = sendMessageViewModel.getUserSender();
-        String recipientUser= sendMessageViewModel.getRecipientUser();
-        String subSenderID= sendMessageViewModel.getSubSenderID();
-        String replyMsg= sendMessageViewModel.getReplyMsg();
+        String recipientUser = sendMessageViewModel.getRecipientUser();
+        String subSenderID = sendMessageViewModel.getSubSenderID();
+        String replyMsg = sendMessageViewModel.getReplyMsg();
 
 
         if (msgType == BaseCodeClass.variableType.string_.getValue() || msgType == BaseCodeClass.variableType.int_.getValue()) {
 
-           int type = generateViewType(userSender,recipientUser,subSenderID,replyMsg,MSG_SENDER_REPLY,SENDER,MSG_GETTER_REPLY,GETTER);
-           return type;
+            int type = generateViewType(userSender, recipientUser, subSenderID, replyMsg, MSG_SENDER_REPLY, SENDER, MSG_GETTER_REPLY, GETTER);
+            return type;
 
 
         } else if (msgType == BaseCodeClass.variableType.Image_.getValue()) {
 
-            int type = generateViewType(userSender,recipientUser,subSenderID,replyMsg,IMG_MSG_SENDER_REPLY,IMAGE_SENDER,IMG_MSG_GETTER_REPLY,IMAGE_GETTER);
+            int type = generateViewType(userSender, recipientUser, subSenderID, replyMsg, IMG_MSG_SENDER_REPLY, IMAGE_SENDER, IMG_MSG_GETTER_REPLY, IMAGE_GETTER);
             return type;
         } else if (msgType == BaseCodeClass.variableType.File_.getValue()) {
-            int type = generateViewType(userSender,recipientUser,subSenderID,replyMsg,DOC_SENDER_REPLY,DOC_SENDER,DOC_GETTER_REPLY,DOC_GETTER);
+            int type = generateViewType(userSender, recipientUser, subSenderID, replyMsg, DOC_SENDER_REPLY, DOC_SENDER, DOC_GETTER_REPLY, DOC_GETTER);
             return type;
         } else if (msgType == BaseCodeClass.variableType.Video_.getValue()) {
 
-            int type = generateViewType(userSender,recipientUser,subSenderID,replyMsg,VIDEO_SENDER_REPLY,VIDEO_SENDER,VIDEO_GETTER_REPLY,VIDEO_GETTER);
+            int type = generateViewType(userSender, recipientUser, subSenderID, replyMsg, VIDEO_SENDER_REPLY, VIDEO_SENDER, VIDEO_GETTER_REPLY, VIDEO_GETTER);
             return type;
 
         } else if (msgType == BaseCodeClass.variableType.Order_.getValue()) {
@@ -645,7 +641,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         } else if (msgType == BaseCodeClass.variableType.Music_.getValue()) {
 
-            int type = generateViewType(userSender,recipientUser,subSenderID,replyMsg,MUSIC_SENDER_REPLY,MUSIC_SENDER,MUSIC_GETTER_REPLY,MUSIC_GETTER);
+            int type = generateViewType(userSender, recipientUser, subSenderID, replyMsg, MUSIC_SENDER_REPLY, MUSIC_SENDER, MUSIC_GETTER_REPLY, MUSIC_GETTER);
             return type;
 
         } else if (msgType == BaseCodeClass.variableType.time.getValue()) {
@@ -704,7 +700,6 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         TextView txtPosition;
 
 
-
         public GetterViewHolder(@NonNull View itemView) {
             super(itemView);
             textReceived = itemView.findViewById(R.id.messageTextIn);
@@ -718,7 +713,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             generateForwardInfo(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, null);
 
@@ -784,7 +779,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             generateForwardInfo(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, imgMessageRecived);
             txtImageMessageRecived.setText(messageData.getMessage1());
@@ -852,7 +847,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
         void holder(SendMessageViewModel messageData, int position) {
 
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             generateForwardInfo(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, null);
 
@@ -934,7 +929,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             generateForwardInfo(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, imgMessageSend);
 
@@ -1020,7 +1015,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
 
             txtDocName.setText(messageData.getMessage1());
@@ -1055,7 +1050,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 img.setContentDescription("not_downloaded");
             }
 
-            generateForwardInfoForDoc(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, img, prg, txtPersent, file, messageData.getMessage1(),"doc_sender");
+            generateForwardInfoForDoc(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, img, prg, txtPersent, file, messageData.getMessage1(), "doc_sender");
 
 
             parent.setOnLongClickListener(new View.OnLongClickListener() {
@@ -1113,11 +1108,10 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtPosition = itemView.findViewById(R.id.txtSenderMsgName);
 
 
-
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             txtDocName.setText(messageData.getMessage1());
             String time = TimeUtils.getCleanHourAndMinByStringV2(messageData.getDateSend());
@@ -1142,8 +1136,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 prg.setVisibility(View.GONE);
             }*/
 
-            generateForwardInfoForDoc(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, imgDownload, prg, txtPersent, file, messageData.getMessage1(),"doc_geter");
-
+            generateForwardInfoForDoc(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, imgDownload, prg, txtPersent, file, messageData.getMessage1(), "doc_geter");
 
 
             if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
@@ -1300,7 +1293,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             cr_send = imageView;
             cr_sendMap.put(position, imageView);
@@ -1347,7 +1340,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             }
 
-            generateForwardInfoForMusicSender(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, imageView, prg, txtPersent, file, messageData.getMessage1(), position,"music_sender","music_geter");
+            generateForwardInfoForMusicSender(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, imageView, prg, txtPersent, file, messageData.getMessage1(), position, "music_sender", "music_geter");
 
             parent.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -1404,11 +1397,10 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             txtPosition = itemView.findViewById(R.id.txtSenderMsgName);
 
 
-
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             cr_get = imgDownload;
             cr_getMap.put(position, imgDownload);
@@ -1438,8 +1430,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             }
 
 
-
-            generateForwardInfoForMusicGeter(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, imgDownload, prg, txtPersent, file, messageData.getMessage1(), position,"music_geter","music_sender");
+            generateForwardInfoForMusicGeter(messageData.getId(), messageData.getForwardedMsgID(), messageData.getForwardedName(), messageData.getForwardedUserID(), relForwardInfo, txtForwarderName, imgForwarderImage, imgDownload, prg, txtPersent, file, messageData.getMessage1(), position, "music_geter", "music_sender");
 
 
             if (isSelecetedMessage(Integer.parseInt(messageData.getId()))) {
@@ -1503,7 +1494,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             imgCancel.setVisibility(View.GONE);
             imgPlay.setVisibility(View.VISIBLE);
@@ -1591,6 +1582,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         TextView txtForwarderName;
         CircleImageView imgForwarderImage;
         TextView txtPosition;
+
         public VideoGetterViewHolder(@NonNull View itemView) {
             super(itemView);
             imgTumb = itemView.findViewById(R.id.img_layout_imageMessageSent);
@@ -1609,7 +1601,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
             imgCancel.setVisibility(View.GONE);
             imgPlay.setVisibility(View.VISIBLE);
             txtTimeSend.setVisibility(View.VISIBLE);
@@ -1701,7 +1693,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
@@ -1784,7 +1776,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
@@ -1869,7 +1861,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
@@ -1951,7 +1943,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
@@ -2035,7 +2027,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -2118,7 +2110,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
@@ -2173,6 +2165,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         ConstraintLayout parent;
         LinearLayout oldMessage;
         TextView txtPosition;
+
         public ReplyImgMsgGetterViwHolder(@NonNull View itemView) {
             super(itemView);
             txtUserName = itemView.findViewById(R.id.tv_messageReply_nameUser);
@@ -2187,7 +2180,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
@@ -2258,7 +2251,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
 
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
@@ -2312,6 +2305,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         ConstraintLayout parent;
         LinearLayout oldMessage;
         TextView txtPosition;
+
         public ReplyMusicMsgGetterViwHolder(@NonNull View itemView) {
             super(itemView);
             txtUserName = itemView.findViewById(R.id.tv_messageReply_nameUser);
@@ -2325,7 +2319,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -2395,7 +2389,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void holder(SendMessageViewModel messageData, int position) {
-            generatePositionNameInGroupChat(txtPosition,messageData.getSubSenderName(),messageData.getSubSenderID());
+            generatePositionNameInGroupChat(txtPosition, messageData.getSubSenderName(), messageData.getSubSenderID());
             txtUserName.setText(messageData.getSubSenderName());
             txtNewMsg.setText(messageData.getMessage1());
             txtOldMsg.setText(getOldMessage(messageData.getReplyMsg()));
@@ -2540,10 +2534,10 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             circularProgressBar.setVisibility(View.GONE);
 
             videoWaitPosition = position;
-          /*  Glide.with(mContext).load(bitmap)
+            Glide.with(mContext).load(thumbnailsVideo)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
-                    .into(imgMessageSend);*/
+                    .into(imgTumb);
 
 
             txtVideoName.setText(caption);
@@ -2626,7 +2620,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     public void updateMessage(List<SendMessageViewModel> _messageViewModels) {
 
-        try{
+        try {
             if (_messageViewModels == null) {
                 return;
             }
@@ -2637,36 +2631,36 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             List<SendMessageViewModel> myList = new ArrayList<>();
 
 
-            String today =null;
-            String lastForwardedMsg=null;
-           for (int i =0;i<messageViewModels.size();i++){
-               if (messageViewModels.get(i).getMsgType() ==BaseCodeClass.variableType.time.getValue()){
-               today = messageViewModels.get(i).getMessage1();
-               }
+            String today = null;
+            String lastForwardedMsg = null;
+            for (int i = 0; i < messageViewModels.size(); i++) {
+                if (messageViewModels.get(i).getMsgType() == BaseCodeClass.variableType.time.getValue()) {
+                    today = messageViewModels.get(i).getMessage1();
+                }
 
-           }
+            }
 
-                    for (SendMessageViewModel item2:_messageViewModels){
-                        if (today !=null)
-                        if (item2.getMsgType() == BaseCodeClass.variableType.time.getValue() && item2.getMessage1().equals(today)){
-                            continue;
-                        }
-
-                        if (item2.getForwardedMsgID()!=0){
-                            continue;
-                        }
-                        if (item2.getMsgType() == BaseCodeClass.variableType.time.getValue()){
-                            continue;
-                        }
-
-                        myList.add(item2);
+            for (SendMessageViewModel item2 : _messageViewModels) {
+                if (today != null)
+                    if (item2.getMsgType() == BaseCodeClass.variableType.time.getValue() && item2.getMessage1().equals(today)) {
+                        continue;
                     }
+
+                if (item2.getForwardedMsgID() != 0) {
+                    continue;
+                }
+                if (item2.getMsgType() == BaseCodeClass.variableType.time.getValue()) {
+                    continue;
+                }
+
+                myList.add(item2);
+            }
 
 
             messageViewModels.addAll(myList);
             notifyDataSetChanged();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -2709,9 +2703,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         this.sendMessageVM = sendMessageVM;
     }
 
-    public void initWaitValueVideo(String videoName, SendMessageVM sendMessageVM) {
+    public void initWaitValueVideo(Bitmap thumbnailsVideo,String videoName, SendMessageVM sendMessageVM) {
         this.videoName = videoName;
         this.sendMessageVM = sendMessageVM;
+        this.thumbnailsVideo = thumbnailsVideo;
+
     }
 
     private void downloadFile(ProgressBar progressBar, CircularImageView imageView, TextView txtPersent, String name, String link, String type) {
@@ -2730,12 +2726,17 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void download(ProgressBar progressBar, CircularImageView imageView, TextView txtPersent, String name, String link, String type) {
         progressBar.setVisibility(View.VISIBLE);
         txtPersent.setVisibility(View.VISIBLE);
+        imageView.setClickable(false);
         Uri uri = Uri.parse(link);
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setTitle("در حال دانلود");
-        request.setDescription("لطفا منتظر بمانید...");
+        request.setTitle(name);
+        request.setDescription("Downloading " + name);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        request.setAllowedOverRoaming(false);
+        request.setVisibleInDownloadsUi(false);
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/" + childDirectory + "/" + name);
 
 
@@ -2778,15 +2779,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                                     imageView.setImageResource(R.drawable.ic_play_music_green);
                                 }
 
-                         /*       for (int item : downloadList) {
-                                    if (Integer.parseInt(messageData.getId()) == item) {
-                                        imageView.setImageResource(R.drawable.ic_doc3);
-                                        imageView.setContentDescription("after");
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                }*/
-
-
+                                imageView.setClickable(true);
                             }
                         }
                     });
@@ -2814,21 +2807,20 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void download2(CircularProgressBar progressBar, ImageView imageView, TextView txtPersent, String name, String link) {
         progressBar.setVisibility(View.VISIBLE);
         txtPersent.setVisibility(View.VISIBLE);
+        imageView.setClickable(false);
         Uri uri = Uri.parse(link);
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setTitle("در حال دانلود");
-        request.setDescription("لطفا منتظر بمانید...");
+        request.setTitle(name);
+        request.setDescription("Downloading " + name);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
 
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/" + childDirectory + "/" + name);
-/*
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/Dehkadeh/" + name);
-*/
+        request.setAllowedOverRoaming(false);
+        request.setVisibleInDownloadsUi(false);
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-/*
-       request.setDestinationInExternalFilesDir(mContext, root, name);
-*/
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/" + childDirectory + "/" + name);
 
         final long id = downloadManager.enqueue(request);
         Timer timer = new Timer();
@@ -2857,15 +2849,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                                 progressBar.setVisibility(View.GONE);
                                 txtPersent.setVisibility(View.GONE);
                                 imageView.setImageResource(R.drawable.ic_play_icon);
-
-
-                         /*       for (int item : downloadList) {
-                                    if (Integer.parseInt(messageData.getId()) == item) {
-                                        imageView.setImageResource(R.drawable.ic_doc3);
-                                        imageView.setContentDescription("after");
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                }*/
+                                imageView.setClickable(true);
 
 
                             }
@@ -3245,11 +3229,17 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 name.setSpan(new UnderlineSpan(), 0, name.length(), 0);
                 txtForwarderName.setText(name);
 
+
                 String url = baseCodeClass.BASE_URL + "User/DownloadFile?UserID=" + forwardedUserId + "&fileNumber=" + 1;
                 Glide.with(mContext).load(url)
                         .placeholder(R.drawable.ic_profile).into(imgForwarderImage);
                 if (imgMessageSend != null) {
-                    Glide.with(mContext).load(generateUrl(Integer.parseInt(msgId))).placeholder(R.drawable.image_placeholder).into(imgMessageSend);
+/*
+                    Glide.with(mContext).load(generateThumNailUrl(Integer.parseInt(msgId))).into(imgMessageSend);
+*/
+                    Glide.with(mContext).load(generateUrl(Integer.parseInt(msgId)))
+                            .thumbnail(0.1f)
+                            .into(imgMessageSend);
 
                 }
 
@@ -3262,8 +3252,12 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         } else {
             relForwardInfo.setVisibility(View.GONE);
             if (imgMessageSend != null) {
-                Glide.with(mContext).load(generateUrl(Integer.parseInt(msgId))).placeholder(R.drawable.image_placeholder).into(imgMessageSend);
-
+/*
+                Glide.with(mContext).load(generateThumNailUrl(Integer.parseInt(msgId))).into(imgMessageSend);
+*/
+                Glide.with(mContext).load(generateUrl(Integer.parseInt(msgId)))
+                        .thumbnail(0.1f)
+                        .into(imgMessageSend);
             }
 
 
@@ -3274,7 +3268,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         });
     }
 
-    private void generateForwardInfoForDoc(String msgId, int forwardedMsgId, String forwardedName, String forwardedUserId, RelativeLayout relForwardInfo, TextView txtForwarderName, CircleImageView imgForwarderImage, CircularImageView img, ProgressBar prg, TextView txtPersent, File file, String fName,String type) {
+    private void generateForwardInfoForDoc(String msgId, int forwardedMsgId, String forwardedName, String forwardedUserId, RelativeLayout relForwardInfo, TextView txtForwarderName, CircleImageView imgForwarderImage, CircularImageView img, ProgressBar prg, TextView txtPersent, File file, String fName, String type) {
         if (forwardedMsgId != 0) {
             try {
 
@@ -3419,7 +3413,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             onClickMessage.userForwarderClicked(forwardedUserId);
         });
     }
-    private void generateForwardInfoForMusicGeter(String msgId, int forwardedMsgId, String forwardedName, String forwardedUserId, RelativeLayout relForwardInfo, TextView txtForwarderName, CircleImageView imgForwarderImage, CircularImageView imageView, ProgressBar prg, TextView txtPersent, File file, String fName, int position,String typ1,String type2) {
+
+    private void generateForwardInfoForMusicGeter(String msgId, int forwardedMsgId, String forwardedName, String forwardedUserId, RelativeLayout relForwardInfo, TextView txtForwarderName, CircleImageView imgForwarderImage, CircularImageView imageView, ProgressBar prg, TextView txtPersent, File file, String fName, int position, String typ1, String type2) {
         if (forwardedMsgId != 0) {
             try {
 
@@ -3546,7 +3541,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             imgPlay.setOnClickListener(v -> {
                 if (imgPlay.getContentDescription().equals("not_downloaded")) {
                     downloadList.add(Integer.parseInt(msgId));
-                    downloadVideo(circularProgressBar, imgPlay, txtPersent,fName, generateUrl(Integer.parseInt(msgId)));
+                    downloadVideo(circularProgressBar, imgPlay, txtPersent, fName, generateUrl(Integer.parseInt(msgId)));
 
                 } else {
                     playVideo(file.getAbsolutePath());
@@ -3566,18 +3561,18 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     private void
-    generatePositionNameInGroupChat(TextView txtPosition,String positionName,String subSenderId){
-        if (!StringUtils.textIsEmpty(subSenderId)){
+    generatePositionNameInGroupChat(TextView txtPosition, String positionName, String subSenderId) {
+        if (!StringUtils.textIsEmpty(subSenderId)) {
             txtPosition.setVisibility(View.VISIBLE);
             String title;
             if (positionName.length() >= 20) {
-                title = positionName.substring(0, 20)+ "...";
+                title = positionName.substring(0, 20) + "...";
             } else {
 
-                title =positionName;
+                title = positionName;
             }
             txtPosition.setText(title);
-        }else {
+        } else {
             txtPosition.setVisibility(View.GONE);
         }
 
@@ -3586,22 +3581,22 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         });
     }
 
-    private int generateViewType(String userSender,String recipientUser,String subSenderId,String replyMsg,int senderReply,int sender,int geterReply,int geter){
-        if (userSender.equals(recipientUser)){
-            if ( !StringUtils.textIsEmpty(subSenderId) && subSenderId.equals(BaseCodeClass.userID)){
+    private int generateViewType(String userSender, String recipientUser, String subSenderId, String replyMsg, int senderReply, int sender, int geterReply, int geter) {
+        if (userSender.equals(recipientUser)) {
+            if (!StringUtils.textIsEmpty(subSenderId) && subSenderId.equals(BaseCodeClass.userID)) {
                 if (!StringUtils.textIsEmpty(replyMsg)) {
                     return senderReply;
                 } else {
                     return sender;
                 }
-            }else {
+            } else {
                 if (!StringUtils.textIsEmpty(replyMsg)) {
                     return geterReply;
                 } else {
                     return geter;
                 }
             }
-        }else {
+        } else {
             if (userSender.equals(MessageActivity.senderId)) {
 
                 if (!StringUtils.textIsEmpty(replyMsg)) {

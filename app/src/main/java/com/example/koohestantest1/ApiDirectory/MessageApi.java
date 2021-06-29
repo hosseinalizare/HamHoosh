@@ -39,6 +39,10 @@ public interface MessageApi {
     @POST("User/ChatFilesPost")
     Single<GetResualt> uploadMessageImage(@Query("MsgId") int MsgId, @Part MultipartBody.Part file);
 
+    @Multipart
+    @POST("User/thumbnail")
+    Single<GetResualt> sendThumbnail(@Query("MsgId") int MsgId, @Part MultipartBody.Part file);
+
         @POST("User/Deletemessage")
     Single<GetResualt> deleteMessage(@Body DeleteMessageM deleteMessageM);
 

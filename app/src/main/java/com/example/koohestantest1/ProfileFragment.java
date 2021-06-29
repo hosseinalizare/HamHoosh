@@ -178,6 +178,8 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
                                 Toast.makeText(getContext(),"با موفقیت ثبت شد" , Toast.LENGTH_SHORT).show();
                                 linearIdentifierCode.setVisibility(View.GONE);
 
+                            }else {
+                                Toast.makeText(getContext(), response.body().getMsg().toString(), Toast.LENGTH_SHORT).show();
                             }
                         }
 

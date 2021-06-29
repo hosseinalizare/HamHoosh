@@ -58,6 +58,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.koohestantest1.Utils.IconUtils;
 import com.example.koohestantest1.Utils.SharedPreferenceUtils;
 import com.example.koohestantest1.Utils.TimeUtils;
+import com.example.koohestantest1.activity.ActivityProfile;
 import com.example.koohestantest1.activity.Main2Activity;
 import com.example.koohestantest1.activity.NewsLetterActivity;
 import com.example.koohestantest1.classDirectory.AppService;
@@ -142,7 +143,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private Main2Fragment main2Fragment;
     private MyDataBase mydb;
     private CardView cardViewFilter;
-    private ImageView companyLogo;
+    private ImageView companyLogo, imgChatList;
     private ScrollView scrollView;
     private DBViewModel dbViewModel;
     private RelativeLayout mainLayout;
@@ -159,6 +160,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private ProductViewModel productViewModel;
     private boolean isLoad = false;
     private ProductRecyclerViewAdapter productRecyclerViewAdapter;
+    private BadgeDrawable badgeChatCount;
     private FilterRecyclerViewAdapter filterAdapter;
 
 
@@ -497,7 +499,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         badgeSharedViewModel = new ViewModelProvider(requireActivity()).get(BadgeSharedViewModel.class);
         countsViewModel = new ViewModelProvider(this).get(CountsViewModel.class);
         localCartViewModel = new ViewModelProvider(requireActivity()).get(LocalCartViewModel.class);
@@ -516,6 +517,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         frameLayout = view.findViewById(R.id.frame_cart_icon);
         frmNewsLetter = view.findViewById(R.id.newsLetter);
+        imgChatList = view.findViewById(R.id.chatList);
         ivCartIcon = view.findViewById(R.id.iv_cart);
         recyclerView_ = view.findViewById(R.id.productrc);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);
@@ -528,6 +530,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         btnSort = view.findViewById(R.id.btnSort);
         scrollView = view.findViewById(R.id.scrollViewMain2);
         scrollView.setSmoothScrollingEnabled(false);
+
+        badgeChatCount = BadgeDrawable.create(getContext());
 
 
         updateTime = "2020-01-01T00:00:00.000";
@@ -545,7 +549,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         baseCodeClass.LoadBaseData(mContext);
         // baseCodeClass = new BaseCodeClass();
         //appHelp();
-
         BadgeDrawable badgeDrawable = BadgeDrawable.create(requireContext());
         badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
         badgeDrawable.setVerticalOffset(25);
@@ -558,19 +561,15 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             BadgeUtils.attachBadgeDrawable(badgeDrawable, ivCartIcon, frameLayout);
         });
 
-        BadgeDrawable badgeDrawableUserChat = BadgeDrawable.create(requireContext());
-        badgeDrawableUserChat.setBadgeGravity(BadgeDrawable.TOP_END);
-        badgeDrawableUserChat.setVerticalOffset(15);
-        badgeDrawableUserChat.setHorizontalOffset(20);
-
-        frameUserChat.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-
-            //either of the following two lines of code  work
-            //badgeDrawable.updateBadgeCoordinates(imageView, frameLayout);
-            BadgeUtils.attachBadgeDrawable(badgeDrawableUserChat, companyLogo, frameUserChat);
+        companyLogo.setOnClickListener(v -> {
+            startActivity(new Intent(mContext, ActivityProfile.class));
+        });
+        imgChatList.setOnClickListener(v -> {
+            Intent intent2 = new Intent(mContext, ListMessageActivity.class);
+            intent2.putExtra("id", baseCodeClass.getUserID());
+            startActivity(intent2);
         });
 
-        companyLogo.setOnClickListener(v -> startActivity(new Intent(mContext, ShowStoreActivity.class)));
 
         frmNewsLetter.setOnClickListener(v -> {
             dbViewModel.getAllProducts().removeObservers(getViewLifecycleOwner());
@@ -647,17 +646,19 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         initRecyclerView();
         countsViewModel.getCount().observe(getViewLifecycleOwner(), count -> {
             if (count.getUserDetails().getNewMsg() == 0)
-                badgeDrawableUserChat.setVisible(false);
+                badgeChatCount.setVisible(false);
             else {
-                badgeDrawableUserChat.setVisible(true);
-                badgeDrawableUserChat.setNumber(count.getUserDetails().getNewMsg());
+                badgeChatCount.setNumber(count.getUserDetails().getNewMsg());
+                badgeChatCount.setVisible(true);
+                BadgeUtils.attachBadgeDrawable(badgeChatCount, imgChatList);
             }
         });
 
         dbViewModel.getCardItemCount().observe(getViewLifecycleOwner(), count -> {
             if (count == 0)
                 badgeDrawable.setVisible(false);
-            else {
+
+            else{
                 badgeDrawable.setVisible(true);
                 badgeDrawable.setNumber(count);
             }
@@ -672,8 +673,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         //appHelp();
 
         /*localCartViewModel.getCartData().observe(getViewLifecycleOwner(), cartWithProducts -> {
@@ -850,6 +849,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
     private void analyzeReceiveProduct(List<Product> products, List<Properties> propertiesList) {
+
 
 
         particularProduct.clear();
@@ -1221,7 +1221,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         }
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -1233,8 +1232,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 productRecyclerViewAdapter.getFilter().filter(filterValue);
 
         }*/
-
-
         //TODO
 
         /* dbViewModel.getSubCat2Product(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
@@ -1283,7 +1280,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
 
-/*    List<ProductPropertisClass> loadProperty(String Pid) {
+    /*    List<ProductPropertisClass> loadProperty(String Pid) {
         try {
             List<ProductPropertisClass> lppc = new ArrayList<>();
 
