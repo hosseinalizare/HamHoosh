@@ -29,12 +29,15 @@ public class FilterRecyclerViewAdapter extends RecyclerView.Adapter<FilterRecycl
     private static LoadProductApi filterRecyclerViewAdapter;
     private static ViewHolder lastHolder;
 
+    public RelativeLayout defaultLayout;
+
     public FilterRecyclerViewAdapter(Context mContext, List<String> mName, ArrayList<Integer> mImage, String s, LoadProductApi itemListener) {
         this.mContext = mContext;
         this.mName = mName;
         this.mImage = mImage;
         this.selectedFilter = s;
         this.filterRecyclerViewAdapter = itemListener;
+
     }
 
     @NonNull
@@ -47,6 +50,7 @@ public class FilterRecyclerViewAdapter extends RecyclerView.Adapter<FilterRecycl
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        defaultLayout = getRelativeLayout(mName,holder.layout);
 
         try {
             holder.tvName.setText(mName.get(position));
@@ -90,6 +94,21 @@ public class FilterRecyclerViewAdapter extends RecyclerView.Adapter<FilterRecycl
     public int getItemCount() {
         return mName.size();
     }
+
+    public interface SetDefault{
+        RelativeLayout setDefault();
+    }
+
+    public RelativeLayout getRelativeLayout(List<String> names,RelativeLayout relativeLayout){
+        RelativeLayout rel = new RelativeLayout(mContext);
+        for(String name:names){
+            if(name.equals("همه")){
+                rel =  relativeLayout;
+            }
+        }
+        return rel;
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

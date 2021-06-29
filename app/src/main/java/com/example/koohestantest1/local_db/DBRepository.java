@@ -275,4 +275,28 @@ public class DBRepository {
     public Flowable<List<Product>> getLikeProduct(){
         return localApi.getLikeProduct();
     }
+
+    public void deletePropertiesOneProduct(String pid){
+        localApi.deletePropertiesOneProduct(pid)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public void updateLocalProduct(String productName,String description,int standardCost,int orderLevel,
+                                   int targetLevel,String unit,String quantityPerUnit,int discontinued,
+                                   int mrq,String category,boolean show,long updateDate,String spare1,
+                                   String spare2,String spare3,int offPrice,int price,String ssc,
+                                   String sop,String sp,boolean ip,boolean ib,boolean atc,String brand,
+                                   String mainCat,String subCat1,String subCat2,String pid){
+        localApi.updateLocalProduct(productName, description, standardCost, orderLevel, targetLevel,
+                unit, quantityPerUnit, discontinued, mrq, category, show, updateDate, spare1, spare2,
+                spare3, offPrice, price, ssc, sop, sp, ip, ib, atc, brand, mainCat, subCat1, subCat2,
+                pid)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public Flowable<String> getProductImages(String pid){
+        return localApi.getProductImages(pid);
+    }
 }

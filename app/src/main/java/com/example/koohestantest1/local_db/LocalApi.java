@@ -189,4 +189,24 @@ public interface LocalApi {
 
     @Query("SELECT * FROM products WHERE reorder_level=200")
     Flowable<List<Product>> getBulletinProduct();
+
+    @Query("DELETE FROM properties WHERE product_id=:pid")
+    Completable deletePropertiesOneProduct(String pid);
+
+    @Query("UPDATE products SET product_name=:productName,description=:description,standard_cost=:standardCost," +
+            "reorder_level=:orderLevel,target_level=:targetLevel,unit=:unit,quantity_per_unit=:quantityPerUnit," +
+            "discontinued=:discontinued,minimum_reorder_quantity=:mrq,category=:category,show=:show," +
+            "update_date=:updateDate,spare1=:spare1,spare2=:spare2,spare3=:spare3,off_price=:offPrice," +
+            "price=:price,show_standard_cost=:ssc,show_off_price=:sop,show_price=:sp,is_particular=:ip," +
+            "is_bulletin=:ib,add_to_card=:atc,brand=:brand,main_cat=:mainCat,sub_cat1=:subCat1,sub_cat2=:subCat2" +
+            " WHERE product_id=:pid")
+    Completable updateLocalProduct(String productName,String description,int standardCost,int orderLevel,
+                                   int targetLevel,String unit,String quantityPerUnit,int discontinued,
+                                   int mrq,String category,boolean show,long updateDate,String spare1,
+                                   String spare2,String spare3,int offPrice,int price,String ssc,
+                                   String sop,String sp,boolean ip,boolean ib,boolean atc,String brand,
+                                   String mainCat,String subCat1,String subCat2,String pid);
+
+    @Query("SELECT image_src FROM products WHERE product_id=:pid")
+    Flowable<String> getProductImages(String pid);
 }

@@ -31,65 +31,66 @@ public class DBViewModel extends AndroidViewModel {
     private DBRepository repository;
     private MutableLiveData<Long> insertedProduct = new MutableLiveData<>();
     private MutableLiveData<Long> insertedProperties = new MutableLiveData<>();
+
     public DBViewModel(@NonNull Application application) {
         super(application);
         repository = new DBRepository(application);
     }
 
-    public void insertProduct(Product product){
+    public void insertProduct(Product product) {
         repository.insertProduct(product).subscribe();
     }
 
-    public void insertProperties(Properties properties){
+    public void insertProperties(Properties properties) {
         repository.insertProperties(properties).subscribe();
     }
 
 
-    public void deleteAllProducts(){
+    public void deleteAllProducts() {
         repository.deleteAllProducts();
     }
 
-    public void deleteAllProperties(){
+    public void deleteAllProperties() {
         repository.deleteAllProperties();
     }
 
-    public void deleteOneProduct(Product product){
+    public void deleteOneProduct(Product product) {
         repository.deleteOneProduct(product);
     }
 
-    public void deleteOneProperty(Properties properties){
+    public void deleteOneProperty(Properties properties) {
         repository.deleteOneProperty(properties);
     }
 
-    public LiveData<List<Product>> getAllProducts(){
+    public LiveData<List<Product>> getAllProducts() {
         return LiveDataReactiveStreams.fromPublisher(repository.getAllProducts());
     }
 
-    public LiveData<String> getLastUpdate(){
+    public LiveData<String> getLastUpdate() {
         return LiveDataReactiveStreams.fromPublisher(repository.getLastUpdate());
     }
 
-    public LiveData<Product> getSpecificProduct(String productId){
-        return  LiveDataReactiveStreams.fromPublisher(repository.getSpecificProduct(productId));
+    public LiveData<Product> getSpecificProduct(String productId) {
+        return LiveDataReactiveStreams.fromPublisher(repository.getSpecificProduct(productId));
     }
 
-    public LiveData<List<Properties>> getAllProperties(){
+    public LiveData<List<Properties>> getAllProperties() {
         return LiveDataReactiveStreams.fromPublisher(repository.getAllProperties());
     }
 
-    public LiveData<Integer> getOneProduct(String productId){
+    public LiveData<Integer> getOneProduct(String productId) {
         return LiveDataReactiveStreams.fromPublisher(repository.getProduct(productId));
     }
 
-    public LiveData<List<Properties>> getSpecificProperties(String productId){
+    public LiveData<List<Properties>> getSpecificProperties(String productId) {
         return LiveDataReactiveStreams.fromPublisher(repository.getSpecificProperties(productId));
     }
 
-    public void updateProduct(Product product){
+    public void updateProduct(Product product) {
         repository.updateProduct(product);
     }
 
-    public void updateProperty(Properties properties){
+    public void updateProperty(Properties properties) {
         repository.updateProperties(properties);
     }
 
@@ -175,7 +176,7 @@ public class DBViewModel extends AndroidViewModel {
         }*/
     }
 
-    public void deleteOneNewsLetter(NewsLetter newsLetter){
+    public void deleteOneNewsLetter(NewsLetter newsLetter) {
         repository.deleteOneNews(newsLetter);
     }
 
@@ -190,127 +191,147 @@ public class DBViewModel extends AndroidViewModel {
 
     }*/
 
-    public void updateNewsLikeValue(boolean likeIt,String newsId){
+    public void updateNewsLikeValue(boolean likeIt, String newsId) {
         repository.updateNewsLikeValue(likeIt, newsId);
     }
 
-    public void updateNewsLetter(NewsLetter newsLetter){
+    public void updateNewsLetter(NewsLetter newsLetter) {
         repository.updateNewsLetter(newsLetter);
     }
 
-    public LiveData<List<NewsLetter>> getAllNews(){
-        return  LiveDataReactiveStreams.fromPublisher(repository.getAllNews());
+    public LiveData<List<NewsLetter>> getAllNews() {
+        return LiveDataReactiveStreams.fromPublisher(repository.getAllNews());
     }
 
-    public LiveData<List<String>> getNewsImage(String newsId){
+    public LiveData<List<String>> getNewsImage(String newsId) {
         return LiveDataReactiveStreams.fromPublisher(repository.getNewsImage(newsId));
     }
 
-    public void deleteAllNews(){
+    public void deleteAllNews() {
         repository.deleteAllNews();
     }
 
-    public LiveData<List<Product>> getBulletinProduct(boolean isBulletin){
+    public LiveData<List<Product>> getBulletinProduct(boolean isBulletin) {
         return LiveDataReactiveStreams.fromPublisher(repository.getBulletinProduct(isBulletin));
     }
 
-    public void addToCard(Product product){
+    public void addToCard(Product product) {
         repository.addToCard(product);
     }
 
-    public LiveData<List<Product>> getParticularProduct(boolean isParticular){
+    public LiveData<List<Product>> getParticularProduct(boolean isParticular) {
         return LiveDataReactiveStreams.fromPublisher(repository.getParticularProduct(isParticular));
     }
 
-    public LiveData<List<Product>> getAddedToCard(){
+    public LiveData<List<Product>> getAddedToCard() {
         return LiveDataReactiveStreams.fromPublisher(repository.getAddedToCard());
     }
 
-    public LiveData<List<Product>> getSubCat1Product(String cat1){
+    public LiveData<List<Product>> getSubCat1Product(String cat1) {
         return LiveDataReactiveStreams.fromPublisher(repository.getSubCat1Product(cat1));
     }
 
-    public LiveData<List<Product>> getSubCat2Product(String cat2){
+    public LiveData<List<Product>> getSubCat2Product(String cat2) {
         return LiveDataReactiveStreams.fromPublisher(repository.getSubCat2Product(cat2));
     }
 
-    public LiveData<List<Product>> getBrandProduct(String brand){
+    public LiveData<List<Product>> getBrandProduct(String brand) {
         return LiveDataReactiveStreams.fromPublisher(repository.getBrandProduct(brand));
     }
 
-    public LiveData<List<Product>> getProductOrderBySell(String value){
+    public LiveData<List<Product>> getProductOrderBySell(String value) {
         return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderBySell(value));
     }
 
-    public LiveData<List<Product>> getProductOrderByViewCount(String value){
+    public LiveData<List<Product>> getProductOrderByViewCount(String value) {
         return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderByViewCount(value));
     }
 
-    public LiveData<List<Product>> getProductOrderByPriceDESC(String value){
+    public LiveData<List<Product>> getProductOrderByPriceDESC(String value) {
         return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderByPriceDESC(value));
     }
 
-    public LiveData<List<Product>> getProductOrderByPriceASC(String value){
+    public LiveData<List<Product>> getProductOrderByPriceASC(String value) {
         return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderByPriceASC(value));
     }
 
-    public LiveData<List<Product>> getProductOrderByNewest(String value){
+    public LiveData<List<Product>> getProductOrderByNewest(String value) {
         return LiveDataReactiveStreams.fromPublisher(repository.getProductOrderByNewest(value));
     }
 
-    public LiveData<List<Product>> getBookmarkedProduct(){
+    public LiveData<List<Product>> getBookmarkedProduct() {
         return LiveDataReactiveStreams.fromPublisher(repository.getBookmarkedProduct());
     }
 
-    public LiveData<List<Product>> getOffProduct(String value){
+    public LiveData<List<Product>> getOffProduct(String value) {
         return LiveDataReactiveStreams.fromPublisher(repository.getOffProduct(value));
     }
 
-    public LiveData<Long> getProductUpdateDate(){
+    public LiveData<Long> getProductUpdateDate() {
         return LiveDataReactiveStreams.fromPublisher(repository.getProductUpdateDate());
     }
 
-    public LiveData<Integer> getCardItemCount(){
+    public LiveData<Integer> getCardItemCount() {
         return LiveDataReactiveStreams.fromPublisher(repository.getCardItemCount());
     }
 
-    public void removeCartItem(String pid){
+    public void removeCartItem(String pid) {
         repository.updateCardItem(pid);
     }
 
-    public void updateCardItemCount(int qy,String pid){
-        repository.updateCardItemCount(qy,pid);
+    public void updateCardItemCount(int qy, String pid) {
+        repository.updateCardItemCount(qy, pid);
     }
 
-    public LiveData<Integer> getSpecificCardItemCount(String pid){
+    public LiveData<Integer> getSpecificCardItemCount(String pid) {
         return LiveDataReactiveStreams.fromPublisher(repository.getSpecificCardItemCount(pid));
     }
 
-    public void updateProductDiscontinued(int qy,String pid){
+    public void updateProductDiscontinued(int qy, String pid) {
         repository.updateProductDiscontinued(qy, pid);
     }
 
-    public void updateProductName(String pname,String pid){
+    public void updateProductName(String pname, String pid) {
         repository.updateProductName(pname, pid);
     }
 
-    public void updateProductPrice(int standardCost,String showStandardCost,String pid){
-        repository.updateProductPrice(standardCost,showStandardCost,pid);
+    public void updateProductPrice(int standardCost, String showStandardCost, String pid) {
+        repository.updateProductPrice(standardCost, showStandardCost, pid);
     }
 
-    public void deleteProduct(String pid){
+    public void deleteProduct(String pid) {
         repository.deleteProduct(pid);
     }
 
-    public LiveData<List<Product>> getDiscontinuedProduct(){
+    public LiveData<List<Product>> getDiscontinuedProduct() {
         return LiveDataReactiveStreams.fromPublisher(repository.getDiscontinuedProduct());
     }
 
-    public LiveData<List<Product>> getBulletinProduct(){
+    public LiveData<List<Product>> getBulletinProduct() {
         return LiveDataReactiveStreams.fromPublisher(repository.getBulletinProduct());
     }
 
-    public LiveData<List<Product>> getLikeProduct(){
+    public LiveData<List<Product>> getLikeProduct() {
         return LiveDataReactiveStreams.fromPublisher(repository.getLikeProduct());
+    }
+
+    public void deletePropertiesOneProduct(String pid) {
+        repository.deletePropertiesOneProduct(pid);
+    }
+
+    public void updateLocalProduct(String productName, String description, int standardCost, int orderLevel,
+                                   int targetLevel, String unit, String quantityPerUnit, int discontinued,
+                                   int mrq, String category, boolean show, long updateDate, String spare1,
+                                   String spare2, String spare3, int offPrice, int price, String ssc,
+                                   String sop, String sp, boolean ip, boolean ib, boolean atc, String brand,
+                                   String mainCat, String subCat1, String subCat2, String pid) {
+
+        repository.updateLocalProduct(productName, description, standardCost, orderLevel, targetLevel,
+                unit, quantityPerUnit, discontinued, mrq, category, show, updateDate, spare1, spare2,
+                spare3, offPrice, price, ssc, sop, sp, ip, ib, atc, brand, mainCat, subCat1, subCat2, pid);
+    }
+
+    public LiveData<String> getProductImages(String pid){
+        return LiveDataReactiveStreams.fromPublisher(repository.getProductImages(pid));
     }
 }

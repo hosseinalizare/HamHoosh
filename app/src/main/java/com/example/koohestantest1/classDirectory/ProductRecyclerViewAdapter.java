@@ -374,7 +374,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        isFinish = false;
+
         if (holder instanceof itemViewHolder) {
             loadProduct(holder, position);
         } else if (holder instanceof LoadingViewHolder) {
@@ -570,23 +570,25 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
             }
 
+            dbViewModel.getSpecificProduct(showProductData.get(position).ProductID)
+                    .observe(lifecycleOwner, new Observer<Product>() {
+                        @Override
+                        public void onChanged(Product product) {
+
+                            if (product != null) {
+                                selectedProduct = product;
+                            }
+
+                        }
+                    });
+
             holder.cardView.setOnClickListener(v -> {
                 try {
+                    Intent intent = new Intent(mContext, ViewProductActivity.class);
+                    intent.putExtra("PID", showProductData.get(position).ProductID);
+                    mContext.startActivity(intent);
 //                selectedPID = PID.get(position);
-                    dbViewModel.getSpecificProduct(showProductData.get(position).ProductID)
-                            .observe(lifecycleOwner, new Observer<Product>() {
-                                @Override
-                                public void onChanged(Product product) {
-                                    if (!isFinish) {
-                                        if (product != null) {
-                                            selectedProduct = product;
-                                            Intent intent = new Intent(mContext, ViewProductActivity.class);
-                                            intent.putExtra("PID", showProductData.get(position).ProductID);
-                                            mContext.startActivity(intent);
-                                        }
-                                    }
-                                }
-                            });
+
 
                 } catch (Exception e) {
                     logMessage("ProductAdapter 400 >> " + e.getMessage(), mContext);

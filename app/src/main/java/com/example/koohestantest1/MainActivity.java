@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.koohestantest1.activity.LoginActivity;
 
 import java.util.concurrent.TimeUnit;
@@ -157,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void btnGetCodeClick(View view) {
+        YoYo.with(Techniques.Shake).repeat(1).duration(700).playOn(findViewById(R.id.btnGetCode));
+        findViewById(R.id.btnGetCode).setEnabled(false);
         if(chkTerms.isChecked()) {
             try {
                 BaseCodeClass.mobileNumber = baseCodeClass.CheckMobileNumber(EdPhoneNo.getText().toString());
@@ -170,10 +174,12 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } catch (Exception e) {
+                findViewById(R.id.btnGetCode).setEnabled(true);
                 if (baseCodeClass.debug)
                     Toast.makeText(getApplicationContext(), e.getMessage().toString(), Toast.LENGTH_LONG).show();
             }
         }else{
+            findViewById(R.id.btnGetCode).setEnabled(true);
             Toast.makeText(getApplicationContext(), "برای ورود به برنامه باید با قوانین و مقررات موافقت کنید", Toast.LENGTH_SHORT).show();
         }
     }// end btnGetCodeClick

@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+
 import com.example.koohestantest1.Utils.BadgeCounter;
 import com.example.koohestantest1.Utils.StringUtils;
 import com.example.koohestantest1.activity.Main2Activity;
@@ -47,6 +48,11 @@ import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.BadgeSharedViewModel;
 import com.example.koohestantest1.viewModel.LocalCartViewModel;
 import com.example.koohestantest1.viewModel.ProductViewModel;
+import com.glide.slider.library.SliderAdapter;
+import com.glide.slider.library.SliderLayout;
+import com.glide.slider.library.slidertypes.BaseSliderView;
+import com.glide.slider.library.slidertypes.DefaultSliderView;
+import com.glide.slider.library.slidertypes.TextSliderView;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
 
@@ -63,6 +69,9 @@ import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.CategoryRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.classDirectory.ProductPropertiesRecyclerViewAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -81,7 +90,8 @@ public class ViewProductActivity extends AppCompatActivity {
     ArrayList<String> mPropertyValue = new ArrayList<>();
 
     TextView txtPName, txtPPrice, txtPDescription, txtSeeMore;
-    ImageView PImage, like, bookmark, imgLoadMore;
+    ImageView like, bookmark, imgLoadMore;
+    SliderLayout PImage;
     Button btnAddToCart;
     LinearLayout linearLayoutSeeMore;
 
@@ -109,6 +119,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
 
     private ManageOrderClass manageOrderClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,8 +168,7 @@ public class ViewProductActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
-        else
+        } else
             finish();
 
         badgeSharedViewModel = new ViewModelProvider(this).get(BadgeSharedViewModel.class);
@@ -206,10 +216,10 @@ public class ViewProductActivity extends AppCompatActivity {
 
         baseCodeClass = new BaseCodeClass();
 
-       /* selectedPid = getIntent().getStringExtra("PID");
+        /* selectedPid = getIntent().getStringExtra("PID");
 
 
-        *//*Log.d(TAG, "onCreate: " + selectedPid);
+         *//*Log.d(TAG, "onCreate: " + selectedPid);
         Log.d(TAG, "onCreate: " + selectedProduct.ProductName);*//*
         int stock = selectedProduct.Discontinued;
         if (stock == 0) {
@@ -501,13 +511,31 @@ public class ViewProductActivity extends AppCompatActivity {
     }
 
 
-    public void newDownloadImage(String pid, ImageView _imageView) {
-        try {
-            String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
-            Glide.with(this).load(url).into(_imageView);
-        } catch (Exception e) {
-            baseCodeClass.logMessage("ViewProduct glide :" + e.getMessage(), this);
-        }
+    public void newDownloadImage(String pid, SliderLayout _imageView) {
+
+            /*String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+            Glide.with(this).load(url).into(_imageView);*/
+        dbViewModel.getProductImages(pid).observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String imageUrls) {
+
+                JSONArray imageArray = null;
+                try {
+                    imageArray = new JSONArray(imageUrls);
+                    for (int i = 0; i < imageArray.length(); i++) {
+                        String imageUrl = null;
+                        imageUrl = imageArray.getString(i);
+                        DefaultSliderView textSliderView = new DefaultSliderView(getApplicationContext());
+                        textSliderView.image(imageUrl);
+                        PImage.addSlider(textSliderView);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
 
@@ -549,7 +577,7 @@ public class ViewProductActivity extends AppCompatActivity {
     }
 
     public void btnCancelClick(View view) {
-        ProductRecyclerViewAdapter.isFinish = true;
+
         finish();
     }
 
@@ -560,10 +588,10 @@ public class ViewProductActivity extends AppCompatActivity {
         dbViewModel.getSpecificProduct(selectedProduct.ProductID).observe(this, new Observer<Product>() {
             @Override
             public void onChanged(Product product) {
-                if(product != null){
+                if (product != null) {
                     Toast.makeText(getApplicationContext(), "محصول با موفقیت به سبد خرید اضافه شد", Toast.LENGTH_SHORT).show();
                     btnAddToCart.setEnabled(false);
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "لطفا دوباره تلاش کنید", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -577,8 +605,8 @@ public class ViewProductActivity extends AppCompatActivity {
                // addItemInCart();
             } else {
                 *//**
-                 * Check the condition statement
-                 *//*
+         * Check the condition statement
+         *//*
 
                 if (manageOrderClass.addProductToCart(selectedProduct)) {
 

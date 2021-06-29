@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.databinding.FragmentAuthorizeCodeBinding;
 import com.example.koohestantest1.model.BodyVerifiedCode;
@@ -88,35 +90,45 @@ public class AuthorizeCodeFragment extends Fragment {
         });
 
         binding.btnDoneAuth.setOnClickListener(v -> {
+            YoYo.with(Techniques.Shake).repeat(1).duration(700).playOn(binding.btnDoneAuth);
+            binding.btnDoneAuth.setEnabled(false);
             if (binding.edtCode1.getText().toString().equals("")) {
+                binding.btnDoneAuth.setEnabled(true);
                 Toast.makeText(requireContext(), "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (binding.edtCode2.getText().toString().equals("")) {
+                binding.btnDoneAuth.setEnabled(true);
                 Toast.makeText(requireContext(), "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (binding.edtCode3.getText().toString().equals("")) {
+                binding.btnDoneAuth.setEnabled(true);
                 Toast.makeText(requireContext(), "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (binding.edtCode4.getText().toString().equals("")) {
+                binding.btnDoneAuth.setEnabled(true);
                 Toast.makeText(requireContext(), "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (binding.edtCode5.getText().toString().equals("")) {
+                binding.btnDoneAuth.setEnabled(true);
                 Toast.makeText(requireContext(), "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (binding.edtCode6.getText().toString().equals("")) {
+                binding.btnDoneAuth.setEnabled(true);
                 Toast.makeText(requireContext(), "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (binding.edtCode7.getText().toString().equals("")) {
+                binding.btnDoneAuth.setEnabled(true);
                 Toast.makeText(requireContext(), "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (binding.edtCode8.getText().toString().equals("")) {
+                binding.btnDoneAuth.setEnabled(true);
                 Toast.makeText(requireContext(), "فیلدی نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
                 return;
             }

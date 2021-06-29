@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddProductInfoActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_addProductInfoActivity_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:cardElevation="1dp"
+            app:cardMaxElevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/imgbtn_addProductInfoActivity_cancel"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:src="@drawable/ic_close" />
+
+                <ImageButton
+                    android:id="@+id/imgbtn_addProductInfoActivity_done"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="10dp"
+                    android:background="@color/white"
+                    android:src="@drawable/ic_check" />
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/cv_addProductInfoActivity_toolbar">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <LinearLayout
+                    android:id="@+id/lin_addProductInfoActivity_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_addProductInfoActivity_images"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="horizontal" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:padding="2dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="1dp"
+                        app:cardMaxElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="نام محصول"
+                                app:boxBackgroundColor="@android:color/transparent">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/edt_addProductInfoActivity_productName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="15dp"
+                                    android:fontFamily="@font/koodak"
+                                    android:maxLines="1"
+                                    android:nextFocusDown="@id/AddProductPrice"
+                                    android:singleLine="true"
+                                    android:textAlignment="textStart" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layoutDirection="rtl"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:hint="تخفیف"
+                                    android:layoutDirection="ltr"
+                                    app:boxBackgroundColor="@android:color/transparent"
+                                    app:startIconDrawable="@drawable/toman">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_addProductInfoActivity_productOff"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="15dp"
+                                        android:fontFamily="@font/koodak"
+                                        android:inputType="number"
+                                        android:textAlignment="textStart" />
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:hint="قیمت محصول"
+                                    android:layoutDirection="ltr"
+                                    app:boxBackgroundColor="@android:color/transparent"
+                                    app:startIconDrawable="@drawable/toman">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/edt_addProductInfoActivity_price"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="15dp"
+                                        android:fontFamily="@font/koodak"
+                                        android:inputType="number"
+                                        android:nextFocusDown="@id/AddProductDiscount"
+                                        android:textAlignment="textStart" />
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="15dp"
+                        android:fontFamily="@font/koodak"
+                        android:text="دسته بندی محصول :"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:padding="2dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="1dp"
+                        app:cardMaxElevation="2dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layoutDirection="rtl"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+
+
+                            <Spinner
+                                android:id="@+id/sp_addProductInfoActivity_cat1"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="@font/koodak"
+                                android:visibility="invisible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/sp_addProductInfoActivity_mainCat"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <Spinner
+                                android:id="@+id/sp_addProductInfoActivity_mainCat"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="@font/koodak"
+                                android:spinnerMode="dropdown"
+                                android:visibility="invisible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/sp_addProductInfoActivity_cat1"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <EditText
+                                android:id="@+id/edt_addProductInfoActivity_cat1"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/koodak"
+                                android:gravity="right"
+                                android:hint="دسته بندی"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@id/edt_addProductInfoActivity_mainCat"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <EditText
+                                android:id="@+id/edt_addProductInfoActivity_mainCat"
+                                android:layout_width="0dp"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="8dp"
+                                android:fontFamily="@font/koodak"
+                                android:gravity="right"
+                                android:hint="گروه دسته بندی"
+                                android:spinnerMode="dropdown"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/edt_addProductInfoActivity_cat1"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/sm_addProductInfoActivity_category"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:checked="true"
+                                app:layout_constraintBottom_toBottomOf="@id/txt_addProductInfoActivity_category"
+                                app:layout_constraintEnd_toStartOf="@+id/txt_addProductInfoActivity_category"
+                                app:layout_constraintTop_toTopOf="@id/txt_addProductInfoActivity_category" />
+
+                            <TextView
+                                android:id="@+id/txt_addProductInfoActivity_category"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:text="خودم دسته بندی را وارد می کنم"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/sp_addProductInfoActivity_mainCat" />
+
+                            <Spinner
+                                android:id="@+id/sp_addProductInfoActivity_cat2"
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_marginStart="50dp"
+                                android:layout_marginTop="30dp"
+                                android:layout_marginEnd="50dp"
+                                android:fontFamily="@font/koodak"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:padding="2dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="1dp"
+                        app:cardMaxElevation="2dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/txtcb1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/koodak"
+                                android:text="ثبت در محصولات ویژه"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/chk_addProductInfoActivity_addToStory"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <CheckBox
+                                android:id="@+id/chk_addProductInfoActivity_addToStory"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/koodak"
+                                android:spinnerMode="dropdown"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/koodak"
+                                android:text="ثبت در تابلو قیمت ها"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/chk_addProductInfoActivity_addToBulletin"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+
+                            <CheckBox
+                                android:id="@+id/chk_addProductInfoActivity_addToBulletin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:fontFamily="@font/koodak"
+                                android:spinnerMode="dropdown"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/txtcb1"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <CheckBox
+                                android:id="@+id/chk_addProductInfoActivity_showToCustomers"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:layout_marginEnd="10dp"
+                                android:checked="true"
+                                android:fontFamily="@font/koodak"
+                                android:spinnerMode="dropdown"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/chk_addProductInfoActivity_addToStory" />
+
+                            <TextView
+                                android:id="@+id/txt_addProductInfoActivity_showToUser"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/koodak"
+                                android:text="نمایش به مشتری"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/chk_addProductInfoActivity_showToCustomers"
+                                app:layout_constraintTop_toBottomOf="@+id/chk_addProductInfoActivity_addToStory" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layoutDirection="rtl"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <Spinner
+                            android:id="@+id/sp_addProductInfoActivity_unit"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/koodak" />
+
+                        <TextView
+                            android:layout_width="250dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/koodak"
+                            android:text="واحد اندازه گیری :"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:fontFamily="@font/koodak"
+                        android:padding="2dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="1dp"
+                        app:cardMaxElevation="2dp">
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:fontFamily="@font/koodak"
+                        android:padding="2dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="1dp"
+                        app:cardMaxElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="توضیحات بیشتر"
+                                app:boxBackgroundColor="@android:color/transparent">
+
+                                <EditText
+                                    android:id="@+id/edt_addProductInfoActivity_description"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="15dp"
+                                    android:layout_marginTop="20dp"
+                                    android:fontFamily="@font/koodak"
+                                    android:text="تازه و مقوی"
+                                    android:textAlignment="textStart" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="موجودی کالا"
+                                app:boxBackgroundColor="@android:color/transparent">
+
+                                <EditText
+                                    android:id="@+id/edt_addProductInfoActivity_inventory"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="15dp"
+                                    android:layout_marginTop="20dp"
+                                    android:fontFamily="@font/koodak"
+                                    android:inputType="number"
+                                    android:text="100"
+                                    android:textAlignment="textStart" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginRight="0dp"
+                        android:fontFamily="@font/koodak"
+                        android:text="مشخصات اصلی کالا"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_addProductInfoActivity_properties"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/edt_addProductInfoActivity_propertyValue"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="15dp"
+                            android:fontFamily="@font/koodak"
+                            android:hint="مقدار ویژگی" />
+
+                        <AutoCompleteTextView
+                            android:id="@+id/edt_addProductInfoActivity_property"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="15dp"
+                            android:completionThreshold="1"
+                            android:dropDownWidth="wrap_content"
+                            android:dropDownHeight="200dp"
+                            android:fontFamily="@font/koodak"
+                            android:hint="نام ویژگی"
+                            android:text="برند" />
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/btn_addProductInfoActivity_addProperty"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="-35dp"
+                        android:background="@drawable/ic_add_btn" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/lin_addProductInfoActivity_layout"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_addProductInfoActivity_addProduct"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_weight="0.5"
+                        android:background="@drawable/radius_green_button"
+                        android:fontFamily="@font/koodak"
+                        android:text="ثبت محصول"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+        </ScrollView>
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -48,6 +48,7 @@ public class ReceiveProductClass {
     private boolean ChatWhitCreator;
     private String SubCat1;
     private String SubCat2;
+    private String Imagesrc;
     private boolean IsParticular;
     private boolean IsBulletin;
     private boolean AddToCard;
@@ -146,6 +147,14 @@ public class ReceiveProductClass {
         CreatorUserID = creatorUserID;
         ChatWhitCreator = chatWhitCreator;
         this.productPropertis = productPropertis;
+    }
+
+    public String getImagesrc() {
+        return Imagesrc;
+    }
+
+    public void setImagesrc(String imagesrc) {
+        Imagesrc = imagesrc;
     }
 
     public String getSubCat1() {

@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +47,7 @@ import com.jaiselrahman.filepicker.model.MediaFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,6 +90,7 @@ public class AddProductMainActivity extends AppCompatActivity {
             inventory = "";
     private List<Uri> imageUriList;
     private List<String> partNames;
+    private boolean isBulletin, isShow, isParticular;
     private SendProduct mainSendProductClass;
     private Retrofit retrofit;
     private LoadProductApi loadProductApi;
@@ -167,9 +170,6 @@ public class AddProductMainActivity extends AppCompatActivity {
         //*****************************************************************************************/
 
         //************************************MainCat spinner ItemSelectedListener*****************/
-
-
-
 
 
         spProductMainCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -302,7 +302,7 @@ public class AddProductMainActivity extends AppCompatActivity {
                             ArrayList<MediaFile> files = result.getData().getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
                             Uri uri = files.get(0).getUri();
                             File file = FileUtils.getFile(getApplicationContext(), uri);
-                            for(MediaFile mediaFile:files){
+                            for (MediaFile mediaFile : files) {
                                 String name = mediaFile.getName();
                                 Uri uri1 = mediaFile.getUri();
                                 imageUriList.add(uri1);
@@ -320,8 +320,25 @@ public class AddProductMainActivity extends AppCompatActivity {
                                 mainCat = edtProductMainCat.getText().toString();
                             if (subCat.equals(""))
                                 subCat = edtProductSubCat.getText().toString();
-                            if (authorizeCurrentProduct())
-                                addProduct();
+                            if (authorizeCurrentProduct()) {
+                                isBulletin = chkAddToBulletin.isChecked();
+                                isParticular = chkAddToStory.isChecked();
+                                isShow = chkShowToCustomer.isChecked();
+                                Intent intent = new Intent(AddProductMainActivity.this, AddProductInfoActivity.class);
+                                intent.putExtra("product", mainSendProductClass);
+                                intent.putExtra("propertiesList", (Serializable) propertiesClassList);
+                                //Bundle bundle = new Bundle();
+                                intent.putExtra("productName", (Serializable) partNames);
+                                intent.putExtra("uriList", (Serializable) imageUriList);
+                                intent.putExtra("isShow", isShow);
+                                intent.putExtra("isParticular", isParticular);
+                                intent.putExtra("isBulletin", isBulletin);
+                                //bundle.putSerializable("propertiesList", (Serializable) propertiesClassList);
+                                //intent.putExtra("bundle",bundle);
+                                startActivity(intent);
+                                finish();
+                            }
+                            //addProduct();
 
 
                         }
@@ -360,19 +377,26 @@ public class AddProductMainActivity extends AppCompatActivity {
         //****************************add product's photo ClickListener****************************/
 
         btnAddPhoto.setOnClickListener(v -> {
-            
-            if (propertyValueList.size() != 0){
+            boolean hasBrand = false;
+            for (String property : propertiesList) {
+                if (property.equals("برند")) {
+                    hasBrand = true;
+                    break;
+                }
+            }
+            if (!hasBrand)
+                Toast.makeText(this, "یک ویژگی با نام برند ثبت کنید", Toast.LENGTH_SHORT).show();
+            else if (propertyValueList.size() != 0) {
                 if (!edtDescription.getText().toString().equals(""))
                     description = edtDescription.getText().toString();
                 if (edtInventory.getText().toString().equals(""))
                     inventory = edtInventory.getText().toString();
 
                 mPermissionResult.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
-            }else {
+            } else {
                 Toast.makeText(this, "حداقل یک ویژگی برای محصول ثبت کنید!", Toast.LENGTH_SHORT).show();
             }
-            
-           
+
 
         });
 
@@ -469,7 +493,7 @@ public class AddProductMainActivity extends AppCompatActivity {
         StandardPrice standardCost = new StandardPrice();
         standardCost.setShowStandardCost(edtPrice.getText().toString());
         standardCost.setStandardCost(Integer.parseInt(edtPrice.getText().toString()));
-        if(!edtDiscount.getText().toString().equals(""))
+        if (!edtDiscount.getText().toString().equals(""))
             standardCost.setOffPrice(Integer.parseInt(edtDiscount.getText().toString()));
         if (checkEmptyString(edtPrice.getText().toString())) {
             Toast.makeText(this, "قیمت نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
@@ -532,27 +556,27 @@ public class AddProductMainActivity extends AppCompatActivity {
 
                         GetResualt getResualt = new GetResualt(response.body().getResualt(), response.body().getMsg());
                         String productId = getResualt.getMsg();
-                        if (imageUriList != null){
-                            files = convertUriToFIle(partNames,imageUriList,productId);
+                        if (imageUriList != null) {
+                            files = convertUriToFIle(partNames, imageUriList, productId);
                         }
-                            Call<GetResualt> uploadImageCall = loadProductApi.uploadMultiProductImage(
-                                    productId,
-                                    BaseCodeClass.CompanyID,
-                                    BaseCodeClass.userID,
-                                    BaseCodeClass.token, files);
+                        Call<GetResualt> uploadImageCall = loadProductApi.uploadMultiProductImage(
+                                productId,
+                                BaseCodeClass.CompanyID,
+                                BaseCodeClass.userID,
+                                BaseCodeClass.token, files);
                         uploadImageCall.enqueue(new Callback<GetResualt>() {
                             @Override
                             public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
-                                if(response.body().getResualt().equals("100"))
-                                Toast.makeText(getApplicationContext(), "ذخیره با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getApplicationContext(), "مشکل در ذخیره سازی", Toast.LENGTH_SHORT).show();
+                                if (response.body().getResualt().equals("100"))
+                                    Toast.makeText(getApplicationContext(), "ذخیره با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getApplicationContext(), "مشکل در ذخیره سازی", Toast.LENGTH_SHORT).show();
                             }
 
 
                             @Override
                             public void onFailure(Call<GetResualt> call, Throwable t) {
-                                Log.d("Error",t.getMessage());
+                                Log.d("Error", t.getMessage());
                             }
                         });
                         finish();

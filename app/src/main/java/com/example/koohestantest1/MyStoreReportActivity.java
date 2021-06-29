@@ -288,11 +288,8 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     public void initOrderRecyclerView(List<SendOrderClass> sendOrderClass) {
         if (sendOrderClass.size() == 0) {
             Toast.makeText(this, "سفارشی برای نمایش وجود ندارد", Toast.LENGTH_SHORT).show();
-            adapter.updateData(sendOrderClass);
-
-        } else {
-            adapter.updateData(sendOrderClass);
         }
+        adapter.updateData(sendOrderClass);
     }
 
     public void btnBakClick(View view) {
@@ -569,8 +566,8 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                 return;
             }
             List<SendOrderClass> list = new ArrayList<>();
-
-            for (SendOrderClass sendOrderClass : adapter.sendOrderClasses) {
+            int  a = orderList.size();
+            for (SendOrderClass sendOrderClass : orderList) {
 
                 Date orderDate = TimeUtils.convertStrToDate(sendOrderClass.getOrderDate());
                 if (orderDate.after(from) && orderDate.before(to) && !swShowReport.isChecked()) {

@@ -249,8 +249,10 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
     }
 
     public void btnSignUpClick() {
+        YoYo.with(Techniques.Shake).repeat(1).duration(700).playOn(view.findViewById(R.id.btnSignUp));
+        view.findViewById(R.id.btnSignUp).setEnabled(false);
         try {
-            if (signUp()) {
+            if (!signUp()) {
                 checkSignUp(new SignUpApi() {
                     @Override
                     public Call<GetSignUp> getSignUp(SendSignUp sendSignUp) {
@@ -290,13 +292,17 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
                             toastMessage(getSignUp.getMsg());
                         }
                     }
+
                 });
             } else {
                 //toastMessage("چیشد چیشد!!!!");
+                view.findViewById(R.id.btnSignUp).setEnabled(true);
             }
         } catch (Exception e) {
             logMessage("ProfileFragment 100 >> " + e.getMessage(), mContext);
+            view.findViewById(R.id.btnSignUp).setEnabled(true);
         }
+
     }// end public void btnSignUpClick
 
     public boolean signUp() {

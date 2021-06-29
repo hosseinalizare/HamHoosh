@@ -301,6 +301,9 @@ dependencies {
 //// circular progressBar
     implementation 'com.mikhaellopez:circularprogressbar:3.1.0'
 
+    ////Image slider
+    implementation "com.github.firdausmaulan:GlideSlider:1.5.1"
+
 
 
 

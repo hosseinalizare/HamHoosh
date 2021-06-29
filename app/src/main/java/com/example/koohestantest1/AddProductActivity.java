@@ -47,6 +47,7 @@ import com.canhub.cropper.CropImage;
 import com.canhub.cropper.CropImageView;
 import com.example.koohestantest1.Utils.Cache;
 import com.example.koohestantest1.Utils.NumberTextChanger;
+import com.example.koohestantest1.Utils.StringUtils;
 import com.example.koohestantest1.classDirectory.SendProduct;
 import com.example.koohestantest1.classDirectory.StandardPrice;
 import com.example.koohestantest1.local_db.DBViewModel;
@@ -60,7 +61,10 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -124,6 +128,8 @@ public class AddProductActivity extends AppCompatActivity {
     String MainCategory;
     String SubCat1, SubCat2;
 
+    private String reOrder = "0";
+
     private DBViewModel dbViewModel;
 
     List<String> mMainCat = new ArrayList<>();
@@ -148,7 +154,7 @@ public class AddProductActivity extends AppCompatActivity {
     private SendProduct mainSendProductClass;
 
     private Bitmap mainBitmap = null;
-    private static final int CHOOSE_IMAGE_CODE= 13784;
+    private static final int CHOOSE_IMAGE_CODE = 13784;
 
 
     @Override
@@ -156,6 +162,7 @@ public class AddProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
         dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+
         try {
             //dataBase = new DataBase(mContext);
             baseCodeClass = new BaseCodeClass();
@@ -267,6 +274,8 @@ public class AddProductActivity extends AppCompatActivity {
                                 productID = getResualt.getMsg();
                                 sendImageProduct(productID);
                             }
+                            updateLocalProduct();
+
                             finish();
                         } else {
                             toastMessage(getResualt.getMsg());
@@ -276,6 +285,92 @@ public class AddProductActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         Log.d("1500", e.getMessage());
                     }
+                }
+
+                private void updateLocalProduct() {
+                    Product product = new Product();
+                    product.AddToCard = selectedProduct.AddToCard;
+                    product.CartItemCount = selectedProduct.CartItemCount;
+                    product.CreatorUserID = selectedProduct.CreatorUserID;
+                    product.QuantityPerUnit = selectedProduct.QuantityPerUnit;
+                    if (!EdDiscount.getText().toString().equals("")) {
+                        product.offPrice = Integer.parseInt(StringUtils.getNumberFromStringV3(EdDiscount.getText().toString()));
+                        product.Discontinued = Integer.parseInt(EdDiscount.getText().toString());
+                    }
+                    product.Price = Integer.parseInt(StringUtils.getNumberFromStringV3(EdProductPrice.getText().toString()));
+                    product.ProductType = selectedProduct.ProductType;
+                    product.LinkToInstagram = selectedProduct.LinkToInstagram;
+                    product.LinkOut = selectedProduct.LinkOut;
+                    product.id = selectedProduct.id;
+                    product.Deleted1 = selectedProduct.Deleted1;
+                    product.ChatWhitCreator = selectedProduct.ChatWhitCreator;
+                    product.ActiveSave = selectedProduct.ActiveSave;
+                    product.ActiveLike = selectedProduct.ActiveLike;
+                    product.ActiveComment = selectedProduct.ActiveComment;
+                    product.Category = EdCategory.getText().toString() + "." + EdProduct.getText().toString();
+                    product.Description = EdProductDescription.getText().toString();
+
+                    product.MinimumReorderQuantity = selectedProduct.MinimumReorderQuantity;
+                    product.ReorderLevel = Integer.parseInt(reOrder);
+                    product.SaveCount = selectedProduct.SaveCount;
+                    product.SellCount = selectedProduct.SellCount;
+                    product.SupplierID = selectedProduct.SupplierID;
+                    product.TargetLevel = selectedProduct.TargetLevel;
+                    product.Unit = UnitValue;
+                    product.Saveit = selectedProduct.Saveit;
+                    product.Likeit = selectedProduct.Likeit;
+                    product.LikeCount = selectedProduct.LikeCount;
+                    product.StandardCost = Integer.parseInt(StringUtils.getNumberFromStringV3(EdProductPrice.getText().toString()));
+                    product.CompanyName = selectedProduct.CompanyName;
+                    product.ProductID = selectedProduct.ProductID;
+                    product.Brand = selectedProduct.Brand;
+                    product.MainCategory = selectedProduct.MainCategory;
+                    product.IsParticular = cbStory.isChecked();
+                    product.IsBulletin = cbBulletin.isChecked();
+                    if (MainCategory != null && !MainCategory.equals(""))
+                        product.SubCat1 = MainCategory;
+                    else
+                        product.SubCat1 = EdCategory.getText().toString();
+                    if (SubCat1 != null && !SubCat1.equals(""))
+                        product.SubCat2 = SubCat1;
+                    else
+                        product.SubCat2 = EdProduct.getText().toString();
+
+                    product.Spare3 = selectedProduct.Spare3;
+                    product.Spare2 = selectedProduct.Spare2;
+                    product.Spare1 = selectedProduct.Spare1;
+                    product.ShowPrice = EdProductPrice.getText().toString();
+                    product.ShowoffPrice = EdDiscount.getText().toString();
+                    product.ShowStandardCost = EdProductPrice.getText().toString();
+                    product.CompanyID = selectedProduct.CompanyID;
+                    product.ViewedCount = selectedProduct.ViewedCount;
+                    product.UpdateDate = selectedProduct.UpdateDate;
+                    product.ProductName = EdProductName.getText().toString();
+                    dbViewModel.updateProduct(product);
+
+                    dbViewModel.deletePropertiesOneProduct(pid);
+
+
+                    for (int i = 0; i < mProperties.size(); i++) {
+                        Properties properties = new Properties();
+                        properties.ProductID = pid;
+                        properties.PropertiesGroup = "مشخصات اصلی";
+                        properties.PropertiesName = mProperties.get(i);
+                        properties.PropertiesValue = mPropertyValues.get(i);
+                        properties.UpdateTime = getCurrentDate();
+                        dbViewModel.insertProperties(properties);
+                    }
+
+
+                }
+
+                private String getCurrentDate() {
+                    Date c = Calendar.getInstance().getTime();
+
+
+                    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                    String formattedDate = df.format(c);
+                    return formattedDate;
                 }
 
                 @Override
@@ -416,7 +511,6 @@ public class AddProductActivity extends AppCompatActivity {
                 }
 
 
-
                 @Override
                 public Call<List<ReceiveProductClass>> getUpdatedData(UpdatedProductBody updatedProductBody) {
                     return null;
@@ -436,7 +530,6 @@ public class AddProductActivity extends AppCompatActivity {
                 public void recyclerViewCanUpdating(List<Product> products) {
 
                 }
-
 
 
                 @Override
@@ -622,7 +715,7 @@ public class AddProductActivity extends AppCompatActivity {
                     *//**
                      * Check the loop statement
                      *//*
-                    *//*for (ProductPropertisClass pp : selectedProduct.getProductClass().getProductPropertis()) {
+                     *//*for (ProductPropertisClass pp : selectedProduct.getProductClass().getProductPropertis()) {
                         mProperties.add(pp.getPropertisName());
                         mPropertyValues.add(pp.getPropertisValue());
                         productPropertisClasses.add(new ProductPropertisClass(pid, "مشخصات اصلی", pp.getPropertisName(),
@@ -798,7 +891,7 @@ public class AddProductActivity extends AppCompatActivity {
         }
     }
 
-    private void manageChooseImageInOnResult1(int requestCode, int resultCode, Intent data){
+    private void manageChooseImageInOnResult1(int requestCode, int resultCode, Intent data) {
         if (requestCode == CHOOSE_IMAGE_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             //chosenPhotoUri is the Uri of the image the user has picked
@@ -911,7 +1004,7 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private boolean authorizeCurrentProduct() {
-        String reOrder = "0";
+
         boolean showToUser = cbShowToUser.isChecked();
 
         if (cbStory.isChecked() && cbBulletin.isChecked()) {
@@ -936,7 +1029,12 @@ public class AddProductActivity extends AppCompatActivity {
         }
 
         StandardPrice standardCost = new StandardPrice();
+        standardCost.setPrice(Integer.parseInt(StringUtils.getNumberFromStringV3(EdProductPrice.getText().toString())));
         standardCost.setShowStandardCost(EdProductPrice.getText().toString());
+        standardCost.setShowoffPrice(EdDiscount.getText().toString());
+        if (!EdDiscount.getText().toString().equals(""))
+            standardCost.setOffPrice(Integer.parseInt(StringUtils.getNumberFromStringV3(EdDiscount.getText().toString())));
+        standardCost.setStandardCost(Integer.parseInt(StringUtils.getNumberFromStringV3(EdProductPrice.getText().toString())));
         if (checkEmptyString(EdProductPrice.getText().toString())) {
             Toast.makeText(this, "قیمت نمی تواند خالی باشد", Toast.LENGTH_SHORT).show();
             return false;
@@ -969,13 +1067,13 @@ public class AddProductActivity extends AppCompatActivity {
             Toast.makeText(this, "به مشخصات اصلی کالا حداقل یک مورد اضافه کنید.", Toast.LENGTH_SHORT).show();
             return false;
         }
-        mainSendProductClass = new SendProduct(baseCodeClass.getToken(),baseCodeClass.getUserID(),
-                baseCodeClass.getCompanyID(),baseCodeClass.getCompanyID(),productID,productName,
-                description,standardCost.getStandardCost(),standardCost.getOffPrice(),Integer.parseInt(reOrder),
-                10,UnitValue,"1",Count,1,
-                MainCategory + "." + SubCat1 + "." + SubCat2,true,false,null,
-                null,null,0,false,false,false,
-                baseCodeClass.getUserID(),null,null,false,productPropertisClasses);
+        mainSendProductClass = new SendProduct(baseCodeClass.getToken(), baseCodeClass.getUserID(),
+                baseCodeClass.getCompanyID(), baseCodeClass.getCompanyID(), productID, productName,
+                description, standardCost.getStandardCost(), standardCost.getOffPrice(), Integer.parseInt(reOrder),
+                10, UnitValue, "1", Count, 1,
+                MainCategory + "." + SubCat1 + "." + SubCat2, true, false, null,
+                null, null, 0, false, false, false,
+                baseCodeClass.getUserID(), null, null, false, productPropertisClasses);
         /*mainSendProductClass = new SendProduct(
                 baseCodeClass.getCompanyID(),baseCodeClass.getCompanyID(),productID,productName,description,standardCost,
                 Integer.parseInt(reOrder),10,UnitValue,"1",Count,1,MainCategory + "." + SubCat1 + "." + SubCat2,showToUser,
@@ -989,10 +1087,7 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void editProduct() {
         try {
-
-
-
-
+            String a = selectedProduct.Brand;
             if (mainSendProductClass != null) {
                 Call<GetResualt> call = loadProductApi.editProductDetail(mainSendProductClass);
                 Log.d(TAG, "editProduct: " + mainSendProductClass.getCompanyID());
@@ -1399,11 +1494,11 @@ public class AddProductActivity extends AppCompatActivity {
             dbViewModel.getSpecificProperties(selectedProduct.ProductID).observe(AddProductActivity.this, new Observer<List<Properties>>() {
                 @Override
                 public void onChanged(List<Properties> propertiesList) {
-                    for(Properties properties:propertiesList){
+                    for (Properties properties : propertiesList) {
                         mProperties.add(properties.PropertiesName);
                         mPropertyValues.add(properties.PropertiesValue);
-                        ProductPropertisClass propertisClass = new ProductPropertisClass(selectedProduct.ProductID,properties.PropertiesGroup,
-                                properties.PropertiesName,properties.PropertiesValue,properties.UpdateTime);
+                        ProductPropertisClass propertisClass = new ProductPropertisClass(selectedProduct.ProductID, properties.PropertiesGroup,
+                                properties.PropertiesName, properties.PropertiesValue, properties.UpdateTime);
                         productPropertisClasses.add(propertisClass);
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
                         layoutManager.setReverseLayout(true);
@@ -1465,7 +1560,7 @@ public class AddProductActivity extends AppCompatActivity {
         src.getPixels(pixels, 0, 1 * width, 0, 0, width, height);
         for (int x = 0; x < pixels.length; ++x) {
             //    pixels[x] = ~(pixels[x] << 8 & 0xFF000000) & Color.BLACK;
-            if(pixels[x] == Color.BLACK) pixels[x] = 0;
+            if (pixels[x] == Color.BLACK) pixels[x] = 0;
         }
         return Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888);
     }

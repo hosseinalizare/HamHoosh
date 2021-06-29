@@ -675,8 +675,9 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
     @Override
     public void CartPaymentClickListener(int id) {
+
         paymentType = id;
-        if (id == 2) {
+        if (id == 2 && !bankAccount.getText().toString().equals("")) {
             cashLayout.setVisibility(View.VISIBLE);
         } else {
             cashLayout.setVisibility(View.GONE);

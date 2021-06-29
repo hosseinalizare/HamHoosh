@@ -30,6 +30,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -157,6 +159,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private ProductViewModel productViewModel;
     private boolean isLoad = false;
     private ProductRecyclerViewAdapter productRecyclerViewAdapter;
+    private FilterRecyclerViewAdapter filterAdapter;
+
 
     enum viewMode {allProduct, bulletin}
 
@@ -435,7 +439,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     if (!filterBrandName.contains(brand)) {
                         filterBrandName.add(brand);
                         /*filterBrandImage.add(GetImag(brand));*/
-        //filterBrandImage.add(IconUtils.GetImag(brand)); TODO check this line
+        //filterBrandImage.add(IconUtils.GetImag(brand));
         productList = products;
 
         initRecyclerView();
@@ -493,6 +497,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         badgeSharedViewModel = new ViewModelProvider(requireActivity()).get(BadgeSharedViewModel.class);
         countsViewModel = new ViewModelProvider(this).get(CountsViewModel.class);
         localCartViewModel = new ViewModelProvider(requireActivity()).get(LocalCartViewModel.class);
@@ -540,6 +545,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         baseCodeClass.LoadBaseData(mContext);
         // baseCodeClass = new BaseCodeClass();
         //appHelp();
+
         BadgeDrawable badgeDrawable = BadgeDrawable.create(requireContext());
         badgeDrawable.setBadgeGravity(BadgeDrawable.TOP_END);
         badgeDrawable.setVerticalOffset(25);
@@ -666,6 +672,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
         //appHelp();
 
         /*localCartViewModel.getCartData().observe(getViewLifecycleOwner(), cartWithProducts -> {
@@ -751,7 +759,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         boolean hasSeen = sharedPreferences.getBoolean("help2", false);
         if (!hasSeen) {
             TapTargetSequence sequence = new TapTargetSequence(getActivity());
-            TapTarget btnFilterTarget = TapTarget.forView(view.findViewById(R.id.btnFilter), "دکمه فیلتر محصول", "به کمک این دکمه می توانید محصول خود را فیلتر کنید")
+            TapTarget btnFilterTarget = TapTarget.forView(view.findViewById(R.id.btnFilter), "فیلتر محصول", "می تونی دسته بندی ها رو فیلتر کنی یا محصولات رو براساس برند انتخاب کنی")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -767,7 +775,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-            TapTarget btnSortTarget = TapTarget.forView(view.findViewById(R.id.btnSort), "دکمه مرتب سازی محصول", "به کمک این دکمه می توانید محصول خود را مرتب کنید کنید")
+            TapTarget btnSortTarget = TapTarget.forView(view.findViewById(R.id.btnSort), "مرتب سازی محصول", "تو این صفحه می تونی محصول خودت رو مرتب کنی")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -783,7 +791,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-            TapTarget btnGoProfileTarget = TapTarget.forView(view.findViewById(R.id.companyLogo), "دکمه پروفایل", "این دکمه شما را به صفحه پروفایل می برد")
+            TapTarget btnGoProfileTarget = TapTarget.forView(view.findViewById(R.id.companyLogo), "پروفایل", "این دکمه شما را به صفحه پروفایل می برد")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -799,7 +807,23 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-            sequence.targets(btnFilterTarget, btnSortTarget, btnGoProfileTarget);
+            TapTarget btnGoBasket = TapTarget.forView(view.findViewById(R.id.iv_cart), "سبد خرید", "هروقت محصولت رو به سبد خرید اضافه کردی، از اینجا می تونی سبدت رو ویرایش کنی")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+
+            sequence.targets(btnFilterTarget, btnSortTarget, btnGoProfileTarget, btnGoBasket);
             try {
                 sequence.listener(new TapTargetSequence.Listener() {
                     @Override
@@ -826,7 +850,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
     private void analyzeReceiveProduct(List<Product> products, List<Properties> propertiesList) {
-
 
 
         particularProduct.clear();
@@ -952,7 +975,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             @Override
             public void onResponse(Call<List<ReceiveProductClass>> call, Response<List<ReceiveProductClass>> response) {
 
-                    synchronizeProductTableVer2(response.body(), false, dbViewModel);
+                synchronizeProductTableVer2(response.body(), false, dbViewModel);
 
 
             }
@@ -969,12 +992,12 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private boolean synchronizeProductTableVer2(List<ReceiveProductClass> NetProduct, boolean updateMode, DBViewModel dbViewModel) {
         boolean result = true;
         try {
-            if(NetProduct == null)
+            if (NetProduct == null)
                 return false;
-            else{
+            else {
                 SharedPreferences sharedPreferences = mContext.getSharedPreferences("baseInfo", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("isFirstUse",false);
+                editor.putBoolean("isFirstUse", false);
                 editor.apply();
             }
             for (i = 0; i < NetProduct.size(); i++) {
@@ -1073,6 +1096,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 product.CompanyName = NetProduct.getCompanyName();
                 product.MainCategory = NetProduct.getMainCategory();
                 product.Brand = NetProduct.getBrand();
+                product.Imagesrc = NetProduct.getImagesrc();
                 if (NetProduct.getSpare1() == null || NetProduct.getSpare1().equals(""))
                     product.Spare1 = "#ffffff";
                 else
@@ -1142,6 +1166,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         product.CompanyName = productClass.getCompanyName();
         product.MainCategory = productClass.getMainCategory();
         product.Brand = productClass.getBrand();
+        product.Imagesrc = productClass.getImagesrc();
         if (productClass.getSpare1() == null || productClass.getSpare1().equals(""))
             product.Spare1 = "#ffffff";
         else
@@ -1196,26 +1221,34 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         }
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-        /*if (productRecyclerViewAdapter != null) {
+        filterValue = "همه";
+        filterAdapter.notifyDataSetChanged();
+       /*if (productRecyclerViewAdapter != null) {
             productRecyclerViewAdapter.notifyDataSetChanged();
-            productRecyclerViewAdapter.getFilter().filter(filterValue);
+            if (productRecyclerViewAdapter.getFilter() != null)
+                productRecyclerViewAdapter.getFilter().filter(filterValue);
+
         }*/
+
+
         //TODO
-        dbViewModel.getSubCat2Product(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+
+        /* dbViewModel.getSubCat2Product(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
                 productList = products;
                 if (productList == null || productList.size() == 0)
                     return;
-                productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                 //productRecyclerViewAdapter.notifyDataSetChanged();
                 initRecyclerView();
             }
         });
-        countsViewModel.callForCounts(baseCodeClass.getUserID(), baseCodeClass.getToken(), baseCodeClass.getCompanyID());
+        countsViewModel.callForCounts(baseCodeClass.getUserID(), baseCodeClass.getToken(), baseCodeClass.getCompanyID());*/
     }
 
     @Override
@@ -1286,7 +1319,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 productRecyclerView.setLayoutManager(layoutManager);
                 if ((productRecyclerViewAdapter == null || productList.size() > 1) ||
                         (productRecyclerViewAdapter != null && productList.size() > 0))
-                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                 productRecyclerView.setAdapter(productRecyclerViewAdapter);
                 productRecyclerView.setVisibility(View.VISIBLE);
 
@@ -1330,7 +1363,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                         logMessage("Main2Fragment 2999 >> " + e.getMessage(), mContext);
                     }
                 });
-            } else if(productRecyclerViewAdapter == null) {
+            } else if (productRecyclerViewAdapter == null) {
                 Toast.makeText(requireContext(), "در حال حاضر فروشگاه محصولی برای نمایش ندارد.", Toast.LENGTH_LONG).show();
             }
 
@@ -1356,9 +1389,13 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
             filterList.setLayoutManager(new GridLayoutManager(mContext, 4, GridLayoutManager.VERTICAL, false));
 
-            FilterRecyclerViewAdapter filterAdapter = new FilterRecyclerViewAdapter(mContext, filterName, filterImage, filterValue, this);
+            filterAdapter = new FilterRecyclerViewAdapter(mContext, filterName, filterImage, filterValue, this);
+
 
             filterList.setAdapter(filterAdapter);
+
+            if (filterAdapter != null && filterAdapter.defaultLayout != null)
+                filterAdapter.defaultLayout.setBackgroundColor(getContext().getResources().getColor(R.color.LighterBlue));
         } catch (Exception e) {
             logMessage("initFilter : " + e.getMessage(), mContext);
         }
@@ -1503,7 +1540,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     @Override
                     public void onChanged(List<Product> products) {
                         productList = products;
-                        productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                        productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                         //productRecyclerViewAdapter.notifyDataSetChanged();
                         initRecyclerView();
                     }
@@ -1513,7 +1550,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     @Override
                     public void onChanged(List<Product> products) {
                         productList = products;
-                        productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                        productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                         //productRecyclerViewAdapter.notifyDataSetChanged();
                         initRecyclerView();
                     }
@@ -1568,7 +1605,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 public void onChanged(List<Product> products) {
                     productList.clear();
                     productList = products;
-                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
@@ -1586,7 +1623,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 public void onChanged(List<Product> products) {
                     productList.clear();
                     productList = products;
-                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
@@ -1603,7 +1640,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 public void onChanged(List<Product> products) {
                     productList.clear();
                     productList = products;
-                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
@@ -1620,7 +1657,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 public void onChanged(List<Product> products) {
                     productList.clear();
                     productList = products;
-                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
@@ -1637,7 +1674,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 public void onChanged(List<Product> products) {
                     productList.clear();
                     productList = products;
-                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
@@ -1654,7 +1691,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 public void onChanged(List<Product> products) {
                     productList.clear();
                     productList = products;
-                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(),Main2Fragment.this);
+                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }

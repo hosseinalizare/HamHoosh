@@ -81,11 +81,11 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.glide.slider.library.SliderLayout
                     android:id="@+id/productImage"
                     android:layout_width="match_parent"
                     android:layout_height="400dp"
-                    android:src="@drawable/null_image" />
+                    app:auto_cycle="false"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

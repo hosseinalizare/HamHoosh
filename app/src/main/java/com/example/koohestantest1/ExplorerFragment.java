@@ -289,7 +289,7 @@ public class ExplorerFragment extends Fragment implements LoadProductApi {
                         if (!mCategory.contains(cat[0]))
                             mCategory.add(cat[0]);
                     } catch (Exception e) {
-
+                        Log.d("Error",e.getMessage());
                     }
                 }
                 initCategoryRecyclerView();

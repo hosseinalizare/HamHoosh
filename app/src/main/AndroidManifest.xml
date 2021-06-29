@@ -28,7 +28,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="UnusedAttribute"
         tools:replace="android:supportsRtl">
-        <activity android:name=".activity.ActivityShowContact"></activity>
+        <activity android:name=".AddProductInfoActivity"></activity>
+        <activity android:name=".activity.ActivityShowContact" />
         <activity android:name=".activity.ActivityStoreRequest" />
         <activity android:name=".AddProductMainActivity" />
         <activity android:name=".activity.ActivityVideoPlay" />

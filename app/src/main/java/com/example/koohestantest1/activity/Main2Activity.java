@@ -68,7 +68,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     private CartFragment cartFragment = null;// = new CartFragment();
     private ProfileFragment profileFragment = null;// = new ProfileFragment();
     private final FragmentManager fm = getSupportFragmentManager();
-    private  DBViewModel dbViewModel;
+    private DBViewModel dbViewModel;
     Fragment selectedFragment = main2Fragment;
 
 
@@ -179,9 +179,11 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         try {
             Fragment fragment = new Fragment();
-            switch (item.getItemId()){
+            switch (item.getItemId()) {
                 case R.id.ic_shoppingCenter:
                     fragment = new Main2Fragment();
+
+
                     break;
                 case R.id.ic_search:
                     fragment = new ExplorerFragment();
@@ -196,7 +198,8 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     fragment = new ProfileFragment();
                     break;
             }
-            fm.beginTransaction().replace(R.id.main2Container,fragment).commit();
+            
+            fm.beginTransaction().replace(R.id.main2Container, fragment).commit();
             //hideCurrentFragment();
             /*switch (item.getItemId()) {
                 case R.id.ic_shoppingCenter:
@@ -336,7 +339,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
         if (!hasSeen) {
             TapTargetSequence sequence = new TapTargetSequence(this);
 
-            TapTarget shoppingCenterTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_shoppingCenter), "دکمه مرکز خرید", "از طریق این دکمه می توانید به صفحه مرکز خرید دسترسی داشته باشید")
+            TapTarget shoppingCenterTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_shoppingCenter), "مرکز خرید", "از طریق این صفحه می تونی محصولاتت رو انتخاب کنی، فیلتر کنی و به سبد خریدت اضافه کنی")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -351,23 +354,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .textColor(android.R.color.holo_blue_bright)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
-            TapTarget searchTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_search), "دکمه جستجو", "از طریق این دکمه می توانید محصول موردنظر خود را جستجو کنید")
-                    .cancelable(false)
-                    .drawShadow(true)
-                    .dimColor(android.R.color.tab_indicator_text)
-                    .outerCircleColor(android.R.color.holo_blue_dark)
-                    .targetCircleColor(android.R.color.holo_green_dark)
-                    .transparentTarget(true)
-                    .targetRadius(32)
-                    .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
-                    .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
-                    .titleTextColor(android.R.color.white)
-                    .tintTarget(false);
-
-            TapTarget myStoreTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_myStore), "دکمه فروشگاه من", "از طریق این دکمه می توانید فروشگاه خود را ایجاد یا وارد آن شوید")
+            TapTarget searchTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_search), "جستجو", "از طریق این صفحه می تونی محصول موردنظر خودت رو جستجو کنی")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -383,7 +370,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-            TapTarget basketTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_cart), "دکمه سبد خرید", "از طریق این دکمه می توانید هزینه خرید خود را پرداخت کنید")
+            TapTarget myStoreTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_myStore), "فروشگاه من", "از اینجا می تونی پروفایل فرشگاه رو مشاهده کنی")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)
@@ -399,7 +386,23 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-            TapTarget profileTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_profile), "دکمه دهکده من", "از طریق این دکمه می توانید پروفایل شخصی خود را ایجاد یا ویرایش کنید")
+            TapTarget basketTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_cart), "سبد خرید", "هروقت محصولت رو به سبد خرید اضافه کردی، از اینجا می تونی سبدت رو ویرایش کنی")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+
+            TapTarget profileTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_profile), "پروفایل من", "از طریق این صفحه می تونی پروفایل شخصی خودت رو ایجاد یا ویرایش کنی")
                     .cancelable(false)
                     .drawShadow(true)
                     .dimColor(android.R.color.tab_indicator_text)

@@ -1,8 +1,11 @@
 package com.example.koohestantest1.classDirectory;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class SendProduct {
+public class SendProduct implements Parcelable{
     private String Token;
     private String UserID;
     private String CompanyID;
@@ -74,6 +77,50 @@ public class SendProduct {
         ChatWhitCreator = chatWhitCreator;
         this.productPropertis = productPropertis;
     }
+
+    protected SendProduct(Parcel in) {
+        Token = in.readString();
+        UserID = in.readString();
+        CompanyID = in.readString();
+        SupplierID = in.readString();
+        ProductID = in.readString();
+        ProductName = in.readString();
+        Description = in.readString();
+        StandardCost = in.readInt();
+        ListPrice = in.readInt();
+        ReorderLevel = in.readInt();
+        TargetLevel = in.readInt();
+        Unit = in.readString();
+        QuantityPerUnit = in.readString();
+        Discontinued = in.readInt();
+        MinimumReorderQuantity = in.readInt();
+        Category = in.readString();
+        Show = in.readByte() != 0;
+        Deleted = in.readByte() != 0;
+        Spare1 = in.readString();
+        Spare2 = in.readString();
+        Spare3 = in.readString();
+        ProductType = in.readInt();
+        ActiveLike = in.readByte() != 0;
+        ActiveComment = in.readByte() != 0;
+        ActiveSave = in.readByte() != 0;
+        CreatorUserID = in.readString();
+        LinkOut = in.readString();
+        LinkToInstagram = in.readString();
+        ChatWhitCreator = in.readByte() != 0;
+    }
+
+    public static final Creator<SendProduct> CREATOR = new Creator<SendProduct>() {
+        @Override
+        public SendProduct createFromParcel(Parcel in) {
+            return new SendProduct(in);
+        }
+
+        @Override
+        public SendProduct[] newArray(int size) {
+            return new SendProduct[size];
+        }
+    };
 
     public String getToken() {
         return Token;
@@ -313,5 +360,43 @@ public class SendProduct {
 
     public void setProductPropertis(List<ProductPropertisClass> productPropertis) {
         this.productPropertis = productPropertis;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(Token);
+        dest.writeString(UserID);
+        dest.writeString(CompanyID);
+        dest.writeString(SupplierID);
+        dest.writeString(ProductID);
+        dest.writeString(ProductName);
+        dest.writeString(Description);
+        dest.writeInt(StandardCost);
+        dest.writeInt(ListPrice);
+        dest.writeInt(ReorderLevel);
+        dest.writeInt(TargetLevel);
+        dest.writeString(Unit);
+        dest.writeString(QuantityPerUnit);
+        dest.writeInt(Discontinued);
+        dest.writeInt(MinimumReorderQuantity);
+        dest.writeString(Category);
+        dest.writeByte((byte) (Show ? 1 : 0));
+        dest.writeByte((byte) (Deleted ? 1 : 0));
+        dest.writeString(Spare1);
+        dest.writeString(Spare2);
+        dest.writeString(Spare3);
+        dest.writeInt(ProductType);
+        dest.writeByte((byte) (ActiveLike ? 1 : 0));
+        dest.writeByte((byte) (ActiveComment ? 1 : 0));
+        dest.writeByte((byte) (ActiveSave ? 1 : 0));
+        dest.writeString(CreatorUserID);
+        dest.writeString(LinkOut);
+        dest.writeString(LinkToInstagram);
+        dest.writeByte((byte) (ChatWhitCreator ? 1 : 0));
     }
 }

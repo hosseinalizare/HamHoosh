@@ -136,6 +136,9 @@ public class Product {
     @ColumnInfo(name = "show_price")
     public String ShowPrice;
 
+    @ColumnInfo(name = "image_src")
+    public String Imagesrc;
+
     @ColumnInfo(name = "is_particular")
     public boolean IsParticular;
 
