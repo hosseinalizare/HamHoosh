@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -52,7 +51,6 @@ import ir.hamsaa.persiandatepicker.PersianDatePickerDialog;
 import ir.hamsaa.persiandatepicker.util.PersianCalendar;
 import retrofit2.Call;
 
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.orderClassList;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.userOrder;
@@ -74,6 +72,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     String statusID = "1", filterId = "";
     Context mContext;
     List<SendOrderClass> orderList;
+    List<SendOrderClass> filterList;
 
     private TimeViewModel timeViewModel;
 
@@ -101,7 +100,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_store_report);
-
+        filterList = new ArrayList<>();
         currentOrders = new ArrayList<>();
         registerReceiver(downloadReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
@@ -162,6 +161,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
 
 
 
+
         /*setDefaultRelBackgroundColor(relToday);*/
 
 
@@ -196,6 +196,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                     }
                     if (currentOrders != null || !currentOrders.isEmpty()) {
                         initOrderRecyclerView(currentOrders);
+
                     }
                 } else if (statusID.equals("-1")) {
                     filterCancelOrder();
@@ -290,6 +291,8 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
             Toast.makeText(this, "سفارشی برای نمایش وجود ندارد", Toast.LENGTH_SHORT).show();
         }
         adapter.updateData(sendOrderClass);
+
+
     }
 
     public void btnBakClick(View view) {
@@ -315,10 +318,12 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     public void onResponseGetCompanyOrder(List<SendOrderClass> sendOrderClasses) {
 
         try {
+
             if (sendOrderClasses != null) {
                 receiveData = true;
             }
             orderList = sendOrderClasses;
+
             orderClassList = orderList;
 
             Log.d(TAG, "onResponseGetCompanyOrder: status: " + statusID);
@@ -533,12 +538,13 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
             if (!receiveData) {
                 return;
             }
-            List<SendOrderClass> list = new ArrayList<>();
+            filterList.clear();
             if (swShowReport.isChecked()) {
                 for (SendOrderClass soc : orderList) {
                     Log.d(TAG, "filterOrder: " + soc.toString());
                     if (soc.getStatusID().equals(status) && soc.getCompanyID().equals(BaseCodeClass.CompanyID)) {
-                        list.add(soc);
+                        filterList.add(soc);
+
                     }
                 }
             } else {
@@ -546,15 +552,18 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                  * Here we should change status value
                  * We should check status value
                  */
+
                 for (SendOrderClass soc : orderList) {
                     Log.d(TAG, "filterOrder: " + soc.toString());
                     if (soc.getStatusID().equals(status)) {
-                        list.add(soc);
+                        filterList.add(soc);
+
                     }
                 }
             }
             filterId = "";
-            initOrderRecyclerView(list);
+            adapter.updateData(filterList);
+            //initOrderRecyclerView(filterList);
         } catch (Exception e) {
             logMessage("MyStoreReport 400 >> " + e.getMessage(), mContext);
         }
@@ -566,8 +575,9 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                 return;
             }
             List<SendOrderClass> list = new ArrayList<>();
-            int  a = orderList.size();
-            for (SendOrderClass sendOrderClass : orderList) {
+
+
+            for (SendOrderClass sendOrderClass : filterList) {
 
                 Date orderDate = TimeUtils.convertStrToDate(sendOrderClass.getOrderDate());
                 if (orderDate.after(from) && orderDate.before(to) && !swShowReport.isChecked()) {
@@ -579,7 +589,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
 
             }
 
-            initOrderRecyclerView(list);
+            adapter.updateData(list);
         } catch (Exception e) {
             logMessage("MyStoreReport 400 >> " + e.getMessage(), mContext);
         }
@@ -597,19 +607,20 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                 return;
             }
             statusID = "-1";
-            List<SendOrderClass> list = new ArrayList<>();
 
+            filterList.clear();
             for (SendOrderClass soc : orderList) {
-                if ((soc.getStatusID().equals("5") || soc.getStatusID().equals("6") || soc.getStatusID().equals("7")
-                        || soc.getStatusID().equals("8") || soc.getStatusID().equals("9")) &&
-                        !swShowReport.isChecked()) {
-                    list.add(soc);
-                } else {
-                    if (soc.getCompanyID().equals(BaseCodeClass.CompanyID))
-                        list.add(soc);
+                if(soc.getCompanyID().equals(BaseCodeClass.CompanyID)) {
+
+                    if ((soc.getStatusID().equals("5") || soc.getStatusID().equals("6") || soc.getStatusID().equals("7")
+                            || soc.getStatusID().equals("8") || soc.getStatusID().equals("9")) &&
+                            !swShowReport.isChecked()) {
+                        filterList.add(soc);
+                    }
                 }
             }
-            initOrderRecyclerView(list);
+
+            adapter.updateData(filterList);
         } catch (Exception e) {
             logMessage("MyStoreReport 500 >> " + e.getMessage(), mContext);
         }
@@ -633,7 +644,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                         getOnlineInformationClass.readUserOrder(baseCodeClass.getUserID());
                         Log.d(TAG, "run: user order" + baseCodeClass.getUserID());
                     }
-                }, 100);
+                }, 1000);
             } else {
                 Handler aHandler = new Handler();
                 aHandler.postDelayed(new Runnable() {
@@ -643,7 +654,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                         Log.d(TAG, "run: company order" + baseCodeClass.getUserID());
 
                     }
-                }, 100);
+                }, 1000);
             }
         } catch (Exception e) {
             logMessage("MyStoreReport 100 >> " + e.getMessage(), mContext);

@@ -274,7 +274,7 @@ public class AddProductActivity extends AppCompatActivity {
                                 productID = getResualt.getMsg();
                                 sendImageProduct(productID);
                             }
-                            updateLocalProduct();
+                            //updateLocalProduct();
 
                             finish();
                         } else {
@@ -946,7 +946,7 @@ public class AddProductActivity extends AppCompatActivity {
 
     public void btnAddClick(View view) {
         try {
-            //check for fileds emptiness
+            //check for fields emptiness
             if (authorizeCurrentProduct()) {
                 loadingDialog.startLoadingDialog();
                 if (loadEdit) {
@@ -1074,14 +1074,6 @@ public class AddProductActivity extends AppCompatActivity {
                 MainCategory + "." + SubCat1 + "." + SubCat2, true, false, null,
                 null, null, 0, false, false, false,
                 baseCodeClass.getUserID(), null, null, false, productPropertisClasses);
-        /*mainSendProductClass = new SendProduct(
-                baseCodeClass.getCompanyID(),baseCodeClass.getCompanyID(),productID,productName,description,standardCost,
-                Integer.parseInt(reOrder),10,UnitValue,"1",Count,1,MainCategory + "." + SubCat1 + "." + SubCat2,showToUser,
-                0,false,false,0,0,0,false,false,null,null,null,1,0,false,false,false,BaseCodeClass.userID,null,null,false,
-                productPropertisClasses
-        );*/
-
-
         return true;
     }
 

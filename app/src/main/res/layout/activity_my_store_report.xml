@@ -658,6 +658,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
             android:layout_margin="8dp"/>
         <TextView
             android:layout_width="wrap_content"
@@ -665,6 +666,7 @@
             app:layout_constraintTop_toTopOf="@id/sw_showReport"
             app:layout_constraintBottom_toBottomOf="@id/sw_showReport"
             app:layout_constraintEnd_toStartOf="@id/sw_showReport"
+            android:visibility="gone"
             android:text="نمایش خرید از همین فروشگاه"
             android:layout_marginEnd="10dp"/>
         <androidx.recyclerview.widget.RecyclerView

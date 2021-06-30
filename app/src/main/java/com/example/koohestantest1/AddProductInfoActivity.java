@@ -19,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -68,6 +69,7 @@ public class AddProductInfoActivity extends AppCompatActivity {
     private ArrayList<Uri> imageUriList;
     private ArrayList<String> productNames;
     private ImageButton imgbCancel,imgbDone,imgbAddProperty;
+    private ProgressBar pbLoading;
     private RecyclerView rvImages,rvProperties;
     private TextInputEditText edtProductName,edtPrice,edtOff;
     private Spinner spCat1,spMainCat,spCat2,spUnit;
@@ -114,6 +116,7 @@ public class AddProductInfoActivity extends AppCompatActivity {
         actxtPropertyValue = findViewById(R.id.edt_addProductInfoActivity_propertyValue);
         actxtPropertyName = findViewById(R.id.edt_addProductInfoActivity_property);
         btnAddProduct = findViewById(R.id.btn_addProductInfoActivity_addProduct);
+        pbLoading = findViewById(R.id.pb_addProductInfoActivity_loading);
         //*****************************************************************************************/
 
         //***************************************Get Data from other activity**********************/
@@ -257,6 +260,7 @@ public class AddProductInfoActivity extends AppCompatActivity {
         btnAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pbLoading.setVisibility(View.VISIBLE);
                 authorizeCurrentProduct();
                 sendProduct.setReorderLevel(Integer.parseInt(reOrder));
                 if(sendProduct.getSpare1() == null)
@@ -353,29 +357,39 @@ public class AddProductInfoActivity extends AppCompatActivity {
                         uploadImageCall.enqueue(new Callback<GetResualt>() {
                             @Override
                             public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
-                                if(response.body().getResualt().equals("100"))
+                                if(response.body().getResualt().equals("100")) {
                                     Toast.makeText(getApplicationContext(), "ذخیره با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
-                                else
+                                    pbLoading.setVisibility(View.GONE);
+                                    finish();
+                                }else {
                                     Toast.makeText(getApplicationContext(), "مشکل در ذخیره سازی", Toast.LENGTH_SHORT).show();
+                                    pbLoading.setVisibility(View.GONE);
+                                }
                             }
 
 
                             @Override
                             public void onFailure(Call<GetResualt> call, Throwable t) {
+                                pbLoading.setVisibility(View.GONE);
                                 Log.d("Error",t.getMessage());
                             }
                         });
-                        finish();
+
                     }
 
                     @Override
                     public void onFailure(Call<GetResualt> call, Throwable t) {
+                        if(pbLoading.getVisibility() == View.VISIBLE)
+                            pbLoading.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-            } else
+            } else {
                 Toast.makeText(this, "خطای مقدار دهی محصول", Toast.LENGTH_SHORT).show();
+                pbLoading.setVisibility(View.GONE);
+            }
         } catch (Exception e) {
+            pbLoading.setVisibility(View.GONE);
             Log.d("Catch add product >> ", e.getMessage());
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
