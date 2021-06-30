@@ -497,6 +497,9 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             holder.imgEdit.setOnClickListener(v -> {
                 showPopup(v, position);
             });
+            int finalPrice = showProductData.get(position).StandardCost;
+            holder.txtPrice.setText(StringUtils.getNumberWithoutDot(finalPrice));
+
 
             if (!showProductData.get(position).ShowoffPrice.equals("0")) {
 
@@ -508,12 +511,10 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     holder.txtPrice.setBackground(ContextCompat.getDrawable(context, R.drawable.red_line));
                 }
                 holder.imgDiscount.setVisibility(View.VISIBLE);
-                int finalPrice = showProductData.get(position).StandardCost;
 
+                ///// takhfif
                 holder.txtPrice2.setText(StringUtils.getNumberWithoutDot(showProductData.get(position).ShowPrice));
-
-
-                holder.txtPrice.setText(StringUtils.getNumberWithoutDot(finalPrice));
+                ////
 
 
                 holder.txtPrice2.setVisibility(View.VISIBLE);

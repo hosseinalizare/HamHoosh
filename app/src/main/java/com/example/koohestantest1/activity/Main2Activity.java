@@ -6,11 +6,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -47,6 +49,7 @@ import java.util.List;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.PageShow;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.badge;
+import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.myAppPage.ExitThread;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.myAppPage.Search;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.myAppPage.ShoppCenter;
@@ -469,7 +472,13 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     protected void onDestroy() {
         super.onDestroy();
         myServiceIntent = new Intent(this, AppService.class);
+
         startService(myServiceIntent);
-        Log.d(TAG, "onDestroy: ");
+
+
     }
+
+
+
+
 }
