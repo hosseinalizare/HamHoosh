@@ -562,8 +562,8 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                 }
             }
             filterId = "";
-            adapter.updateData(filterList);
-            //initOrderRecyclerView(filterList);
+
+            initOrderRecyclerView(filterList);
         } catch (Exception e) {
             logMessage("MyStoreReport 400 >> " + e.getMessage(), mContext);
         }
@@ -589,7 +589,8 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
 
             }
 
-            adapter.updateData(list);
+            //adapter.updateData(list);
+            initOrderRecyclerView(list);
         } catch (Exception e) {
             logMessage("MyStoreReport 400 >> " + e.getMessage(), mContext);
         }
@@ -620,7 +621,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                 }
             }
 
-            adapter.updateData(filterList);
+            initOrderRecyclerView(filterList);
         } catch (Exception e) {
             logMessage("MyStoreReport 500 >> " + e.getMessage(), mContext);
         }
