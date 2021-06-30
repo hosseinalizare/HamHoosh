@@ -640,7 +640,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         });
 
         ivCartIcon.setOnClickListener(v -> {
+
+
             cartTransitionInterface.onCartClickListener();
+
         });
         productList.add(null);
         initRecyclerView();

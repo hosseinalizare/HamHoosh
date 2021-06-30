@@ -980,6 +980,7 @@ public class AddProductActivity extends AppCompatActivity {
                 String msg = response.body().getMsg();
                 if (result.equals("100")) {
                     Toast.makeText(AddProductActivity.this, "محصول با موفقیت حذف شد", Toast.LENGTH_SHORT).show();
+                    dbViewModel.deleteProduct(productID);
                     finish();
                 } else {
                     Toast.makeText(AddProductActivity.this, msg, Toast.LENGTH_SHORT).show();

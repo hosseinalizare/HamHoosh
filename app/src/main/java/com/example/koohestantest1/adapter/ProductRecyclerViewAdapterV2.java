@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.example.koohestantest1.AddProductActivity;
 import com.example.koohestantest1.R;
 import com.example.koohestantest1.Utils.BadgeCounter;
+import com.example.koohestantest1.Utils.StringUtils;
 import com.example.koohestantest1.ViewProductActivity;
 
 import java.util.List;
@@ -134,10 +135,11 @@ public class ProductRecyclerViewAdapterV2 extends RecyclerView.Adapter<ProductRe
             String detail = showProductData.get(position).Description.replace("\n", " ");
             mholder.txtDetail.setText(detail);
             String dirtyPrice = showProductData.get(position).ShowStandardCost;
-            float floatPrice = Float.parseFloat(dirtyPrice);
-            int intPrice = (int) floatPrice;
-            Log.d(TAG, "loadProduct: " + intPrice);
-            mholder.txtPrice.setText(String.valueOf(intPrice));
+            /*float floatPrice = Float.parseFloat(dirtyPrice);
+            int intPrice = (int) floatPrice;*/
+
+            String a = showProductData.get(position).ShowStandardCost;
+            mholder.txtPrice.setText(showProductData.get(position).ShowStandardCost+"");
             /**
              *
              */

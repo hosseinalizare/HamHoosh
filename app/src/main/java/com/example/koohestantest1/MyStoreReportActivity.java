@@ -292,7 +292,6 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
         }
         adapter.updateData(sendOrderClass);
 
-
     }
 
     public void btnBakClick(View view) {
@@ -750,8 +749,6 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
                         if (start != null) {
                             filterByDateOrder(start, end);
                         }
-
-
                     }
 
                     @Override

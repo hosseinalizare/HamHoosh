@@ -3,6 +3,7 @@ package com.example.koohestantest1.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -292,7 +293,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
 
     private void showCartFragment() {
 
-        if (cartFragment == null) {
+       /* if (cartFragment == null) {
             cartFragment = new CartFragment();
             fm.beginTransaction().add(R.id.main2Container, cartFragment).commit();
         }
@@ -307,7 +308,10 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                 commit();
 
         selectedFragment = cartFragment;
-        PageShow = cartpage;
+        PageShow = cartpage;*/
+        Fragment fragment = new CartFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main2Container,fragment).commit();
 
     }
 
@@ -451,7 +455,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
 
     @Override
     public void onCartClickListener() {
-        hideCurrentFragment();
+        //hideCurrentFragment();
         showCartFragment();
         bottomNavigationView.setSelectedItemId(R.id.ic_cart);
     }
