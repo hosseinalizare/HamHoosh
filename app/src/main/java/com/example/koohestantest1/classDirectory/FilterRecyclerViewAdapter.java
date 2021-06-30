@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.koohestantest1.R;
 
 import java.util.ArrayList;
@@ -54,7 +55,16 @@ public class FilterRecyclerViewAdapter extends RecyclerView.Adapter<FilterRecycl
 
         try {
             holder.tvName.setText(mName.get(position));
-            holder.image.setImageResource(mImage.get(position));
+
+            if (mImage.get(position)==R.drawable.unknown){
+                String url = baseCodeClass.BASE_URL + "Products/DownloadCatIcon?cat=" + mName.get(position)+"&fileNumber=1";
+                Glide.with(mContext).load(url).into(holder.image);
+
+            }else {
+                holder.image.setImageResource(mImage.get(position));
+
+            }
+
 //            baseCodeClass.logMessage("binding", mContext);
             if (mName.get(position).equals("همه") || lastHolder == null) {
                 lastHolder = holder;

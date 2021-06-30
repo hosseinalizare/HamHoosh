@@ -898,43 +898,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 filterBrandImage.add(GetImag(product.Brand));
             }
 
-           /* List<String> category = new ArrayList<>();
-            String cat = product.Category;
-            if (cat != null && !cat.isEmpty()) {
-                String[] aCategory = cat.split("\\.");
-                for (String s : aCategory) {
-                    if (s != null && !s.isEmpty() && !s.equals("null")) {
-                        category.add(s);
-                    }
-                }
-            }*/
-           /* NumberFormat formatter = new DecimalFormat("#,###");
-            String nPrice = product.ShowStandardCost;
-            if (nPrice != null && !nPrice.isEmpty()) {
-                String[] aPrice = nPrice.split(",");
-                StringBuilder priceBuilder = new StringBuilder();
-                for (String s : aPrice) {
-                    priceBuilder.append(s);
-                }
-                nPrice = priceBuilder.toString();
-                nPrice = formatter.format(Integer.parseInt(nPrice));
-            }
-*/
-          /*  String LPrice = product.ShowoffPrice;
-            if (LPrice != null && !LPrice.isEmpty()) {
-                String[] aPrice = LPrice.split("\\.");
-                LPrice = (aPrice[0]);
-
-            }*/
-           /* AllProductData allProductData = new AllProductData(mContext, BaseCodeClass.getCompanyName(), false, product.Likeit,
-                    null, product.Saveit, *//*Integer.getInteger(product.LikeCount)*//*product.LikeCount, *//*Integer.getInteger(product.ViewedCount)*//*product.ViewedCount, category, spc);
-            if (ISParticular(String.valueOf(product.ReorderLevel))) {
-                particularProduct.add(allProductData);
-            }
-            if (ISBulletin(String.valueOf(product.ReorderLevel))) {
-                bulletinProduct.add((allProductData));
-            }
-            productDataList.add(allProductData);*/
             try {
                 Date temp = convertStrToDate(String.valueOf(product.UpdateDate));
                 if (temp != null) {
@@ -947,8 +910,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             } catch (Exception e) {
                 Log.d("Error", e.toString());
             }
-            //  String[] like = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare2)).split("&");
-            // String[] bookmark = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare3)).split("&");
+
 
         }
         recyclerViewCanUpdating(products);
@@ -1375,10 +1337,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         try {
             filterName.clear();
             filterImage.clear();
-            for (String item :
-                    mCategory) {
+            for (String item : mCategory) {
                 filterName.add(item);
-                /*filterImage.add(GetImag(item));*/
                 filterImage.add(IconUtils.GetImag(item));
             }
             filterName.add("همه");

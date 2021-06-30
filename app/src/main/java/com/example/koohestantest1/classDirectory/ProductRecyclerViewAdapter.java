@@ -508,11 +508,14 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     holder.txtPrice.setBackground(ContextCompat.getDrawable(context, R.drawable.red_line));
                 }
                 holder.imgDiscount.setVisibility(View.VISIBLE);
-                /*int firstPrice=showProductData.get(position).getProductClass().getStandardCost().getPrice();
-                int discountPrice=showProductData.get(position).getProductClass().getStandardCost().getOffPrice();*/
                 int finalPrice = showProductData.get(position).StandardCost;
 
-                holder.txtPrice2.setText(StringUtils.getNumberWithoutDot(finalPrice));
+                holder.txtPrice2.setText(StringUtils.getNumberWithoutDot(showProductData.get(position).ShowPrice));
+
+
+                holder.txtPrice.setText(StringUtils.getNumberWithoutDot(finalPrice));
+
+
                 holder.txtPrice2.setVisibility(View.VISIBLE);
                 BaseCodeClass.setMargins(holder.txtPrice, 8, 0, 0, 0);
                 holder.txtPrice.setPadding(0, 0, 0, 0);
@@ -540,7 +543,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             } else {
                 holder.txtDetail.setText(detail);
             }
-            holder.txtPrice.setText(StringUtils.getNumberWithoutDot(showProductData.get(position).ShowPrice));
+
 
             if (!baseCodeClass.getEmployeeID(baseCodeClass.getUserID()).equals("false")) {
                 boolean changePricePermission = baseCodeClass.getPermissions().get(BaseCodeClass.EmploeeAccessLevel.EditeProductPrice.getValue()).isState();

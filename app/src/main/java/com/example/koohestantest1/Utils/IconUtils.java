@@ -166,12 +166,6 @@ public class IconUtils {
             case "سازه":
                 return R.drawable.sazeh;
 
-
-
-
-
-
-
             default:
                 return R.drawable.unknown;
         }
