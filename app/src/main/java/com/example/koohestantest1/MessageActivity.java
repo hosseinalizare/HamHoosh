@@ -925,6 +925,19 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
 
             } else {
                 Toast.makeText(mContext, "خطای نا شناخته", Toast.LENGTH_SHORT).show();
+                if (type.equals("doc")) {
+                    adapter.messageViewModels.remove(adapter.docWaitPosition);
+                    adapter.notifyItemRemoved(adapter.docWaitPosition);
+                    adapter.notifyItemRangeChanged(adapter.docWaitPosition, adapter.messageViewModels.size());
+                } else if (type.equals("music")) {
+                    adapter.messageViewModels.remove(adapter.musicWaitPosition);
+                    adapter.notifyItemRemoved(adapter.musicWaitPosition);
+                    adapter.notifyItemRangeChanged(adapter.musicWaitPosition, adapter.messageViewModels.size());
+                } else if (type.equals("video")) {
+                    adapter.messageViewModels.remove(adapter.videoWaitPosition);
+                    adapter.notifyItemRemoved(adapter.videoWaitPosition);
+                    adapter.notifyItemRangeChanged(adapter.videoWaitPosition, adapter.messageViewModels.size());
+                }
             }
         });
     }
@@ -986,7 +999,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
     private void sendVideoMessage(String videoName, File file, Uri fileUri) {
         isLoading = false;
         ///// create video thumbnail
-        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(file.getAbsolutePath(), MediaStore.Images.Thumbnails.MINI_KIND);
+        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(file.getAbsolutePath(), MediaStore.Images.Thumbnails.MICRO_KIND);
 
         SendMessageViewModel sendMessageViewModel2 = new SendMessageViewModel(senderUser, 555);
         adapter.messageViewModels.add(sendMessageViewModel2);
