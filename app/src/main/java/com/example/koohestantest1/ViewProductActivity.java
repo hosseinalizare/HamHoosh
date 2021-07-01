@@ -98,7 +98,7 @@ public class ViewProductActivity extends AppCompatActivity {
     private String selectedPid;
     BaseCodeClass baseCodeClass;
     LoadProductApi loadProductApi;
-
+    private boolean isImageLoad = false;
     private String TAG = ViewProductActivity.class.getSimpleName() + "Debug";
     private CardView cardViewController;
     private TextView tvCounter, tvLikeCount, txtViewCount;
@@ -116,8 +116,10 @@ public class ViewProductActivity extends AppCompatActivity {
     private ExplorerFragment explorerFragment = null;
     private String pId;
     private DBViewModel dbViewModel;
+    private boolean isLike = false;
+    private boolean isBookmark = false;
 
-
+    private CardView cvBackground;
     private ManageOrderClass manageOrderClass;
 
     @Override
@@ -127,7 +129,9 @@ public class ViewProductActivity extends AppCompatActivity {
         dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         contentContiner = findViewById(R.id.activity_view_product_continer);
         manageOrderClass = new ManageOrderClass(this);
+        cvBackground = findViewById(R.id.cv_sliderBackground);
         Intent intent = getIntent();
+
         if (intent.hasExtra("PID")) {
             pId = intent.getStringExtra("PID");
             dbViewModel.getSpecificProduct(pId).observe(this, new Observer<Product>() {
@@ -154,20 +158,22 @@ public class ViewProductActivity extends AppCompatActivity {
                     loadingProduct();
                     loadProductProperties();
 
-                    //init like
-                    handleLikeView();
 
                     //init bookmark
+
                     initBookmarkView();
+
+
+                    handleLikeView();
+
 
                     Log.d(TAG, "onCreate: isliked " + selectedProduct.Likeit);
                     Log.d(TAG, "onCreate: " + selectedProduct.Likeit);
+                    showController(selectedProduct.AddToCard);
 
-                    if (selectedProduct.AddToCard) {
-                        showController();
-                    }
                 }
             });
+
         } else
             finish();
 
@@ -373,11 +379,13 @@ public class ViewProductActivity extends AppCompatActivity {
         } else {
             like.setImageResource(R.drawable.ic_like);
         }
-
-        YoYo.with(Techniques.Bounce)
-                .duration(500)
-                .repeat(0)
-                .playOn(like);
+        if (!isLike) {
+            YoYo.with(Techniques.Bounce)
+                    .duration(500)
+                    .repeat(0)
+                    .playOn(like);
+            isLike = true;
+        }
     }
 
     public void initBookmarkView() {
@@ -388,15 +396,18 @@ public class ViewProductActivity extends AppCompatActivity {
         } else {
             bookmark.setImageResource(R.drawable.ic_bookmark);
         }
-
-        YoYo.with(Techniques.Bounce)
-                .duration(500)
-                .repeat(0)
-                .playOn(like);
+        if (!isBookmark) {
+            YoYo.with(Techniques.Bounce)
+                    .duration(500)
+                    .repeat(0)
+                    .playOn(bookmark);
+            isBookmark = true;
+        }
     }
 
     private void initCategoryRecyclerView() {
         try {
+            mCategory.clear();
             mCategory.add("دسته بندی   >");
             LinearLayoutManager layoutManager = new LinearLayoutManager(ViewProductActivity.this, LinearLayoutManager.HORIZONTAL, false);
             layoutManager.setReverseLayout(true);
@@ -411,6 +422,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
     private void initPropertyRecyclerView() {
         try {
+
             LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             layoutManager.setReverseLayout(true);
             RecyclerView recyclerView = findViewById(R.id.RecycleProductProperties);
@@ -503,7 +515,11 @@ public class ViewProductActivity extends AppCompatActivity {
                 }
             }
             newDownloadImage(selectedPid, PImage);
-            PImage.setBackgroundColor(Color.parseColor(selectedProduct.Spare1));
+
+            if (selectedProduct.Spare1 != null) {
+                cvBackground.setCardBackgroundColor(Color.parseColor(selectedProduct.Spare1));
+                PImage.setDrawingCacheBackgroundColor(Color.parseColor(selectedProduct.Spare1));
+            }
         } catch (Exception e) {
             Log.d("Error", e.getMessage());
         }
@@ -515,26 +531,22 @@ public class ViewProductActivity extends AppCompatActivity {
 
             /*String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
             Glide.with(this).load(url).into(_imageView);*/
-        dbViewModel.getProductImages(pid).observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String imageUrls) {
-
-                JSONArray imageArray = null;
-                try {
-                    imageArray = new JSONArray(imageUrls);
-                    for (int i = 0; i < imageArray.length(); i++) {
-                        String imageUrl = null;
-                        imageUrl = imageArray.getString(i);
-                        DefaultSliderView textSliderView = new DefaultSliderView(getApplicationContext());
-                        textSliderView.image(imageUrl);
-                        PImage.addSlider(textSliderView);
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        if (!isImageLoad) {
+            JSONArray imageArray = null;
+            try {
+                imageArray = new JSONArray(selectedProduct.Imagesrc);
+                for (int i = 0; i < imageArray.length(); i++) {
+                    String imageUrl = null;
+                    imageUrl = imageArray.getString(i);
+                    DefaultSliderView textSliderView = new DefaultSliderView(getApplicationContext());
+                    textSliderView.image(imageUrl);
+                    PImage.addSlider(textSliderView);
                 }
+                isImageLoad = true;
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        });
+        }
 
     }
 
@@ -558,6 +570,8 @@ public class ViewProductActivity extends AppCompatActivity {
             dbViewModel.getSpecificProperties(selectedPid).observe(this, new Observer<List<Properties>>() {
                 @Override
                 public void onChanged(List<Properties> propertiesList) {
+                    mPropertyName.clear();
+                    mPropertyValue.clear();
                     for (Properties properties : propertiesList) {
                         mPropertyName.add(properties.PropertiesName);
                         mPropertyValue.add(properties.PropertiesValue);
@@ -585,46 +599,6 @@ public class ViewProductActivity extends AppCompatActivity {
         selectedProduct.CartItemCount = 1;
         selectedProduct.AddToCard = true;
         dbViewModel.updateProduct(selectedProduct);
-        dbViewModel.getSpecificProduct(selectedProduct.ProductID).observe(this, new Observer<Product>() {
-            @Override
-            public void onChanged(Product product) {
-                if (product != null) {
-                    Toast.makeText(getApplicationContext(), "محصول با موفقیت به سبد خرید اضافه شد", Toast.LENGTH_SHORT).show();
-                    btnAddToCart.setEnabled(false);
-                } else {
-                    Toast.makeText(getApplicationContext(), "لطفا دوباره تلاش کنید", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        /*try {
-
-
-
-            if (selectedProduct.AddToCard) {
-
-               // addItemInCart();
-            } else {
-                *//**
-         * Check the condition statement
-         *//*
-
-                if (manageOrderClass.addProductToCart(selectedProduct)) {
-
-                    showController();
-
-                    badgeSharedViewModel.setCount(BadgeCounter.getCount() + 1);
-
-                } else {
-                    toastMessage("", 404);
-                }
-
-                dbViewModel.updateProduct(selectedProduct);
-            }
-
-            //localCartViewModel.updateCartInfo(sendOrderClass);
-        } catch (Exception e) {
-            Log.d("Error", e.getMessage());
-        }*/
     }
 
     public void counterViewPost(String pid, String uid, String viewCount) {
@@ -719,55 +693,47 @@ public class ViewProductActivity extends AppCompatActivity {
 
     public void addItemInCart() {
 
-        manageOrderClass.setProductQTY(selectedProduct.ProductID,
-                manageOrderClass.getProductQTY(selectedProduct.ProductID) + 1);
-        int currentCount = manageOrderClass.getProductQTY(selectedProduct.ProductID);
-        tvCounter.setText(String.valueOf(currentCount));
+        selectedProduct.AddToCard = true;
+        if (selectedProduct.CartItemCount < selectedProduct.Discontinued) {
+            selectedProduct.CartItemCount++;
+        } else
+            Toast.makeText(getApplicationContext(), "بیش از موجودی", Toast.LENGTH_SHORT).show();
+
+        dbViewModel.updateProduct(selectedProduct);
+        //tvCounter.setText(String.valueOf(selectedProduct.CartItemCount));
 
     }
 
     public void removeItemFromCart() {
-        String productId = selectedProduct.ProductID;
-        int count = manageOrderClass.getProductQTY(selectedProduct.ProductID);
 
-        int currentCount = count - 1;
-        manageOrderClass.setProductQTY(productId, currentCount);
-
-        if (count - 1 > 0) {
-            tvCounter.setText(String.valueOf(currentCount));
+        if (selectedProduct.CartItemCount > 1) {
+            selectedProduct.CartItemCount--;
+            dbViewModel.updateProduct(selectedProduct);
         } else {
             badgeSharedViewModel.setCount(BadgeCounter.getCount() - 1);
-            deleteProductFromCart(productId);
-            cardViewController.setVisibility(View.GONE);
-            btnAddToCart.setVisibility(View.VISIBLE);
+            deleteProductFromCart(selectedProduct.ProductID);
         }
     }
 
     public void deleteProductFromCart(String pId) {
-        manageOrderClass.RemoveProductFromCart(pId);
-        /*for (Product allProductData : selectedProduct) {
-            if (allProductData.ProductID.equals(pId)) {
-                allProductData.AddToCard = false;
-            }
-        }*/
+        //  manageOrderClass.RemoveProductFromCart(pId);
+        selectedProduct.AddToCard = false;
+        selectedProduct.CartItemCount = 0;
+        dbViewModel.updateProduct(selectedProduct);
 
-        dbViewModel.getSpecificProduct(pId).observe(this, new Observer<Product>() {
-            @Override
-            public void onChanged(Product product) {
-                if (product != null) {
-                    product.AddToCard = false;
-                    dbViewModel.updateProduct(product);
-                }
-            }
-        });
-
-        Toast.makeText(this, "از سبد حذف شد", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, " از سبد حذف شد " + selectedProduct.ProductName, Toast.LENGTH_SHORT).show();
     }
 
-    public void showController() {
-        btnAddToCart.setVisibility(View.GONE);
-        cardViewController.setVisibility(View.VISIBLE);
-        int currentCount = manageOrderClass.getProductQTY(selectedProduct.ProductID);
-        tvCounter.setText(String.valueOf(currentCount));
+    public void showController(boolean isInCard) {
+        if (isInCard) {
+            btnAddToCart.setVisibility(View.GONE);
+            cardViewController.setVisibility(View.VISIBLE);
+
+
+        } else {
+            btnAddToCart.setVisibility(View.VISIBLE);
+            cardViewController.setVisibility(View.GONE);
+        }
+        tvCounter.setText(String.valueOf(selectedProduct.CartItemCount));
     }
 }

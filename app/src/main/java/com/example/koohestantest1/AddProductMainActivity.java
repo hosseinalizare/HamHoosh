@@ -23,6 +23,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -74,6 +75,7 @@ public class AddProductMainActivity extends AppCompatActivity {
     private AutoCompleteTextView actPropertyValue, actProperty;
     private ImageButton ibtnAddProperty;
     private ViewFlipper vf;
+    private ImageView imgClose;
 
     private boolean addToStory, addToBulletin, showToCustomer;
     private String[] unitList = {"کیلوگرم", "گرم", "متر", "لیتر", "بسته", "شانه", "دانه", "سایر"};
@@ -127,6 +129,7 @@ public class AddProductMainActivity extends AppCompatActivity {
         actProperty = findViewById(R.id.SecondAddProductEdProperty);
         actPropertyValue = findViewById(R.id.SecondAddProductEdPropertyValue);
         ibtnAddProperty = findViewById(R.id.SecondAddProductBtnAddProperty);
+        imgClose = findViewById(R.id.img_close);
         vf = findViewById(R.id.vfAddProduct);
         vf.setDisplayedChild(0);
         loadProductCategory();
@@ -152,6 +155,10 @@ public class AddProductMainActivity extends AppCompatActivity {
             }
         });
         //*****************************************************************************************/
+
+        imgClose.setOnClickListener(v ->{
+            finish();
+        });
 
         //************************************Category Switch CheckedChangeListener****************/
         swCat.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -384,8 +391,10 @@ public class AddProductMainActivity extends AppCompatActivity {
                     break;
                 }
             }
-            if (!hasBrand)
+            if (!hasBrand) {
                 Toast.makeText(this, "یک ویژگی با نام برند ثبت کنید", Toast.LENGTH_SHORT).show();
+                actProperty.setText("برند");
+            }
             else if (propertyValueList.size() != 0) {
                 if (!edtDescription.getText().toString().equals(""))
                     description = edtDescription.getText().toString();

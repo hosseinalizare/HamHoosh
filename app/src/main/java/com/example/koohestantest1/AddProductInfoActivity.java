@@ -361,6 +361,7 @@ public class AddProductInfoActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "ذخیره با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
                                     pbLoading.setVisibility(View.GONE);
                                     finish();
+
                                 }else {
                                     Toast.makeText(getApplicationContext(), "مشکل در ذخیره سازی", Toast.LENGTH_SHORT).show();
                                     pbLoading.setVisibility(View.GONE);

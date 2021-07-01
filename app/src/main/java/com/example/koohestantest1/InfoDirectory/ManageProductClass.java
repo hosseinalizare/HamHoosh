@@ -177,13 +177,13 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
     }
 
     Date lastUpdateTime = new Date();
-    String updateTime;
+    long updateTime;
     //DatabaseService db;
     DBViewModel dbViewModel;
     Date temp;
 
     private boolean loadProductFromRoomDB(String companyID) {
-        lastUpdateTime = convertStrToDate(updateTime);
+
         //db = new DatabaseService(mContext);
 
         dbViewModel = new ViewModelProvider((AppCompatActivity) mContext).get(DBViewModel.class);
@@ -249,7 +249,7 @@ public class ManageProductClass extends AsyncTask<String, Integer, String> {
                         temp = convertStrToDate(String.valueOf(product.UpdateDate));
                         if (temp.after(lastUpdateTime)) {
                             lastUpdateTime = temp;
-                            updateTime = String.valueOf(product.UpdateDate);
+
                         }
                         //  String[] like = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare2)).split("&");
                         // String[] bookmark = cursor.getString(cursor.getColumnIndex(MyDataBase.Spare3)).split("&");

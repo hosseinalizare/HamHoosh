@@ -43,5 +43,11 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="GlideSliderBackgroundStyle">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/glide_slider_indicator_color</item>
+    </style>
+
 
 </resources>

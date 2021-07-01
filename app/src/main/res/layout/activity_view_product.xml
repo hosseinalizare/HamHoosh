@@ -80,12 +80,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <com.glide.slider.library.SliderLayout
-                    android:id="@+id/productImage"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_sliderBackground"
                     android:layout_width="match_parent"
                     android:layout_height="400dp"
-                    app:auto_cycle="false"/>
+                    app:cardBackgroundColor="@color/blue500">
+                    <com.glide.slider.library.SliderLayout
+                        android:id="@+id/productImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:auto_cycle="false"/>
+                </androidx.cardview.widget.CardView>
+
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

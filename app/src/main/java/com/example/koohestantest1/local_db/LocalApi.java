@@ -75,6 +75,8 @@ public interface LocalApi {
     @Query("SELECT MAX(update_date) FROM news_letter")
     Flowable<String> getLastUpdate();
 
+
+
     @Query("SELECT src FROM news_letter_image WHERE news_id LIKE :newsId")
     Flowable<List<String>> getNewsImage(String newsId);
 

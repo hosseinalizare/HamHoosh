@@ -148,8 +148,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private DBViewModel dbViewModel;
     private RelativeLayout mainLayout;
     List<String> allProductsPId = new ArrayList<>();
-    Date lastUpdateTime = new Date();
-    String updateTime;
+
+    long updateTime;
     private FrameLayout frameLayout, frmNewsLetter;
     private ImageView ivCartIcon;
     private final String TAG = Main2Fragment.class.getSimpleName();
@@ -162,7 +162,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private ProductRecyclerViewAdapter productRecyclerViewAdapter;
     private BadgeDrawable badgeChatCount;
     private FilterRecyclerViewAdapter filterAdapter;
+    private long lastUpdate = 0;
 
+
+    private Observer<Long> updateObserve;
 
     enum viewMode {allProduct, bulletin}
 
@@ -533,9 +536,16 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
         badgeChatCount = BadgeDrawable.create(getContext());
 
+        Observer<Long> updateObserve;
 
-        updateTime = "2020-01-01T00:00:00.000";
-        lastUpdateTime = convertStrToDate(updateTime);
+        dbViewModel.getLastUpdate().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+
+            }
+        });
+        updateTime = 1593561540;
+
 
         //companyLogo.setImageResource(CompanyId.COMPANY_IMAGE);
         String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + baseCodeClass.getCompanyID() + "&ImageAddress=" + 1;
@@ -695,20 +705,31 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             productList = products;
             initRecyclerView();
         });*/
+        updateObserve = new Observer<Long>() {
+            @Override
+            public void onChanged(Long aLong) {
+                dbViewModel.getProductUpdateDate().removeObserver(updateObserve);
+                updateTime = aLong;
 
+                updateData(CompanyID);
+            }
+        };
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("baseInfo", Context.MODE_PRIVATE);
         boolean isFirstUse = sharedPreferences.getBoolean("isFirstUse", true);
         if (isFirstUse) {
             loadProductFromServer(CompanyID);
         } else {
-            dbViewModel.getProductUpdateDate().observe(getViewLifecycleOwner(), new Observer<Long>() {
+            dbViewModel.getProductUpdateDate().observe(getViewLifecycleOwner(),updateObserve);
+              /*      dbViewModel.getProductUpdateDate().observe(getViewLifecycleOwner(), new Observer<Long>() {
                 @Override
                 public void onChanged(Long aLong) {
+                    dbViewModel.getProductUpdateDate().removeObserver(this);
                     updateTime = TimeUtils.longToDateConvertor(aLong);
                     lastUpdateTime = convertStrToDate(updateTime);
                     updateData(CompanyID);
+
                 }
-            });
+            });*/
 
         }
 
@@ -901,18 +922,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 filterBrandImage.add(GetImag(product.Brand));
             }
 
-            try {
-                Date temp = convertStrToDate(String.valueOf(product.UpdateDate));
-                if (temp != null) {
-                    if (temp.after(lastUpdateTime)) {
-                        lastUpdateTime = temp;
-                        updateTime = String.valueOf(product.UpdateDate);
-                    }
-                }
 
-            } catch (Exception e) {
-                Log.d("Error", e.toString());
-            }
 
 
         }
@@ -1148,9 +1158,9 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
     private void updateData(String companyID) {
-        lastUpdateTime = convertStrToDate(updateTime);
+
         try {
-            UpdatedProductBody updatedProductBody = new UpdatedProductBody(companyID, baseCodeClass.getUserID(), updateTime);
+            UpdatedProductBody updatedProductBody = new UpdatedProductBody(companyID, baseCodeClass.getUserID(),updateTime );
             Call<List<ReceiveProductClass>> call = loadProductApi.getUpdatedData(updatedProductBody);
             call.enqueue(new Callback<List<ReceiveProductClass>>() {
                 @Override
