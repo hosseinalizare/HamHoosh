@@ -313,5 +313,12 @@ public class ActivityProfile extends AppCompatActivity implements EasyPermission
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String hashtagWord = BaseCodeClass.hashtagsValue;
+        if (hashtagWord != null) {
+            finish();
+        }
+    }
 }

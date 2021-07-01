@@ -35,8 +35,10 @@ public class BulletinRecyclerViewAdapter extends RecyclerView.Adapter<BulletinRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.txtName.setText(productData.get(position).ProductName);
-        holder.txtPrice.setText(productData.get(position).ShowoffPrice);
+        Product product = productData.get(position);
+        holder.txtName.setText(product.ProductName);
+        holder.txtPrice.setText(String.valueOf(product.ShowPrice));
+
     }
 
     @Override

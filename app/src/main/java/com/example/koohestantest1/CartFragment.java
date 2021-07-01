@@ -717,6 +717,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                     if (paymentType == 2) {
                         if (paygir.getText().length() == 0) {
                             toastMessage("لطفا کد پیگیری وجه واریزی را وارد کنید");
+                            btnAddCart.setEnabled(true);
                             return;
                         }
                         codePaygir = "کد پیگیری پرداخت آنلاین :" + paygir.getText().toString();
@@ -810,10 +811,10 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
                                 localCartViewModel.deleteAllData();
                             } else {
+                                btnAddCart.setEnabled(true);
                                 toastMessage(response.body().getMsg());
                                 Log.d(TAG, "onResponse: " + response.body().getMsg());
                             }
-                            //btnAddCart.setEnabled(true);
                         }
 
                         @Override

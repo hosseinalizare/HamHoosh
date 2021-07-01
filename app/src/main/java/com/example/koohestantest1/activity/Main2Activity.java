@@ -188,8 +188,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
             Fragment fragment = new Fragment();
             switch (item.getItemId()) {
                 case R.id.ic_shoppingCenter:
-                    fragment = new Main2Fragment();
-
+                    fragment = new Main2Fragment(this::onCartClickListener);
 
                     break;
                 case R.id.ic_search:
@@ -326,6 +325,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
         }
 
     }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -464,6 +464,8 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: ");
+        BaseCodeClass.hashtagsValue = null;
+
     }
 
     @Override
@@ -476,7 +478,6 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     protected void onDestroy() {
         super.onDestroy();
         myServiceIntent = new Intent(this, AppService.class);
-
         startService(myServiceIntent);
 
 

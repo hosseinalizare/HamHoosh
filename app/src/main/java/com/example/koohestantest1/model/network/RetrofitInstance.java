@@ -26,9 +26,9 @@ public class RetrofitInstance {
 
     public static Retrofit getRetrofit() {
         OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.connectTimeout(2,TimeUnit.MINUTES);
-        client.readTimeout(2,TimeUnit.MINUTES);
-        client.writeTimeout(2,TimeUnit.MINUTES);
+        client.connectTimeout(60,TimeUnit.SECONDS);
+        client.readTimeout(60,TimeUnit.SECONDS);
+        client.writeTimeout(60,TimeUnit.SECONDS);
         if (retrofit == null) {
             synchronized (RetrofitInstance.class) {
                 if (retrofit == null) {

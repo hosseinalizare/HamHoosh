@@ -505,6 +505,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             this.cartTransitionInterface = cartTransitionInterface;
     }
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -651,9 +652,9 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         });
 
         ivCartIcon.setOnClickListener(v -> {
-
-
-            cartTransitionInterface.onCartClickListener();
+            if (cartTransitionInterface !=null){
+                cartTransitionInterface.onCartClickListener();
+            }
 
         });
         productList.add(null);

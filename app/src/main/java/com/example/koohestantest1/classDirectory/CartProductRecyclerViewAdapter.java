@@ -32,6 +32,7 @@ import com.example.koohestantest1.ApiDirectory.AddressApi;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Handler;
 
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.selectedProduct;
@@ -163,6 +164,7 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
                     iCartEvents.onProductRemove();
                 });
                 holder.cartAdd.setOnClickListener(v -> {
+
 
                     SharedPreferences cardShared = mContext.getSharedPreferences("cardItem",Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = cardShared.edit();

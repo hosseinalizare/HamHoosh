@@ -211,10 +211,6 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
         ///// activity profile ...................
         setupViews(view);
 
-        /// check Read External storage
-        if (!EasyPermissions.hasPermissions(getContext(), permission,permission2)) {
-            EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
-        }
 
         try {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -366,6 +362,10 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
         if (baseCodeClass.getEmployeeID(/*baseCodeClass.getUserID()*/userId).equals("false")) {
             //regular user
             vf.setDisplayedChild(0);
+            /// check Read External storage
+            if (!EasyPermissions.hasPermissions(getContext(), permission,permission2)) {
+                EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
+            }
 
         } else {
             // employee

@@ -49,6 +49,7 @@ import retrofit2.Response;
 
 import com.example.koohestantest1.classDirectory.BaseCodeClass.AppEvent;
 
+import static android.app.Notification.DEFAULT_SOUND;
 import static android.app.Notification.DEFAULT_VIBRATE;
 import static com.example.koohestantest1.Utils.Cache.TAG;
 
@@ -112,13 +113,13 @@ public class AppService extends Service {
 
                                         switch (initEvent(updateModeModel.getEventId())) {
                                             case UserMSG:
-                                                showNotif(updateModeModel.getTitle(), updateModeModel.getMsge(), MessageActivity.class, notId);
+                                                showNotif(updateModeModel.getTitle(), updateModeModel.getMsge(), MessageActivity.class, notId,updateModeModel.getAction());
                                                 break;
                                             case CompanyMSG:
-                                                showNotif(updateModeModel.getTitle(), updateModeModel.getMsge(), ListMessageActivity.class, notId);
+                                                showNotif(updateModeModel.getTitle(), updateModeModel.getMsge(), ListMessageActivity.class, notId,updateModeModel.getAction());
                                                 break;
                                             case CompanyOrder:
-                                                showNotif(updateModeModel.getTitle(), updateModeModel.getMsge(), MyStoreOrderListActivity.class, notId);
+                                                showNotif(updateModeModel.getTitle(), updateModeModel.getMsge(), MyStoreOrderListActivity.class, notId,updateModeModel.getAction());
                                                 break;
                                             case UserOrder:
                                                 showNotifUserOrder(updateModeModel.getTitle(), updateModeModel.getMsge(), MyStoreReportActivity.class, notId, updateModeModel.getAction());
@@ -173,7 +174,7 @@ public class AppService extends Service {
     }
 
 
-    private void showNotif(String title, String description, Class targetActivity, String channelId) {
+    private void showNotifSabegh(String title, String description, Class targetActivity, String channelId) {
         try {
             Intent intent;
             if (applicationIsRun != null) {
@@ -185,7 +186,6 @@ public class AppService extends Service {
             //getter = company(others)
             intent.putExtra("getter", companyId);
             intent.putExtra("state_message_sender", 0);
-
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             NotificationManager notificationManager = (NotificationManager)
@@ -215,53 +215,81 @@ public class AppService extends Service {
         }
 
     }
+    private void showNotif(String title, String description, Class targetActivity, String channelId,String action) {
+        try {
+            Intent intent;
 
-    private void showNotifOnApi8Test(String title, String description, Class targetActivity, String channelId) {
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
 
-        Intent intent = new Intent(this, LoadingActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+            if (applicationIsRun != null) {
+                if (description.contains("سفارش جدید")){
+                    intent = new Intent(this, MyStoreOrderListActivity.class);
 
-        NotificationCompat.Builder notificationBuilder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationBuilder = new NotificationCompat.Builder(this, channelId);
-            NotificationChannel notificationChannel = new NotificationChannel(channelId, TAG, NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.enableVibration(true);
-            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(notificationChannel);
-        } else {
-            notificationBuilder = new NotificationCompat.Builder(this);
-        }
-        notificationBuilder
-                .setContentTitle(title)
-                .setContentText(description)
-                // .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
-                .setAutoCancel(true)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setContentIntent(pendingIntent)
-                .setLargeIcon(icon)
-                .setColor(Color.RED)
-                .setSmallIcon(R.mipmap.ic_launcher);
+                }else if (title.contains("لغو شده توسط فروشگاه")){
+                    intent = new Intent(this, MyStoreReportActivity.class);
+                }else {
+                    intent = new Intent(this, targetActivity);
 
-        notificationBuilder.setDefaults(DEFAULT_VIBRATE);
-        notificationBuilder.setLights(Color.YELLOW, 1000, 300);
+                }
+            } else {
+                intent = new Intent(this, LoadingActivity.class);
+            }
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0, notificationBuilder.build());
+            intent.putExtra("sender", userId);
+            //getter = company(others)
+            intent.putExtra("getter", companyId);
+            intent.putExtra("state_message_sender", 0);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId, TAG,
-                    NotificationManager.IMPORTANCE_HIGH);
-            notificationManager.createNotificationChannel(channel);
+            intent.putExtra("status", action);
+            intent.putExtra("mode", "user");
 
-            Notification notification = new Notification.Builder(getApplicationContext(), channelId).build();
-            startForeground(1, notification);
-        } else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-            // startForeground(1, notification);
+
+            NotificationCompat.Builder notificationBuilder;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                notificationBuilder = new NotificationCompat.Builder(this, channelId);
+                NotificationChannel notificationChannel = new NotificationChannel(channelId, TAG, NotificationManager.IMPORTANCE_DEFAULT);
+                notificationChannel.enableVibration(true);
+                ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(notificationChannel);
+            } else {
+                notificationBuilder = new NotificationCompat.Builder(this);
+            }
+            notificationBuilder
+                    .setContentTitle(title)
+                    .setContentText(description)
+                    .setSmallIcon(R.drawable.logo)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo))
+                     .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
+                    .setAutoCancel(true)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setContentIntent(pendingIntent)
+                    .setColor(Color.RED);
+
+            notificationBuilder.setDefaults(DEFAULT_VIBRATE);
+            notificationBuilder.setLights(Color.YELLOW, 1000, 300);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(0, notificationBuilder.build());
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(channelId, TAG,
+                        NotificationManager.IMPORTANCE_HIGH);
+                notificationManager.createNotificationChannel(channel);
+
+                Notification notification = new Notification.Builder(getApplicationContext(), channelId).build();
+                startForeground(Integer.parseInt(channelId), notification);
+            } else {
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
+                 startForeground(Integer.parseInt(channelId), builder.build());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
+
 
     private void showNotifUserOrder(String title, String description, Class targetActivity, String channelId, String action) {
         Intent intent;
