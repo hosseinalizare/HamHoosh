@@ -132,11 +132,13 @@ public class AddProductActivity extends AppCompatActivity {
 
     private DBViewModel dbViewModel;
 
+    private ProductPropertiesRecyclerViewAdapter adapter;
+
     List<String> mMainCat = new ArrayList<>();
     boolean loadEdit = false;
 
-    private ArrayList<String> mProperties = new ArrayList<>();
-    private ArrayList<String> mPropertyValues = new ArrayList<>();
+    /*private ArrayList<String> mProperties = new ArrayList<>();
+    private ArrayList<String> mPropertyValues = new ArrayList<>();*/
     private ArrayList<Bitmap> mAddImage = new ArrayList<>();
 
     private String[] mProperty;// = new String[3];
@@ -351,12 +353,12 @@ public class AddProductActivity extends AppCompatActivity {
                     dbViewModel.deletePropertiesOneProduct(pid);
 
 
-                    for (int i = 0; i < mProperties.size(); i++) {
+                    for (int i = 0; i < adapter.mName.size(); i++) {
                         Properties properties = new Properties();
                         properties.ProductID = pid;
                         properties.PropertiesGroup = "مشخصات اصلی";
-                        properties.PropertiesName = mProperties.get(i);
-                        properties.PropertiesValue = mPropertyValues.get(i);
+                        properties.PropertiesName = adapter.mName.get(i);
+                        properties.PropertiesValue = adapter.mValues.get(i);
                         properties.UpdateTime = getCurrentDate();
                         dbViewModel.insertProperties(properties);
                     }
@@ -1080,6 +1082,18 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void editProduct() {
         try {
+                productPropertisClasses.clear();
+                for(int i = 0;adapter.mName.size() > i;i++){
+                productPropertisClasses.add(new ProductPropertisClass(null, "مشخصات اصلی", adapter.mName.get(i), adapter.mValues.get(i), null));
+                }
+                mainSendProductClass.setProductPropertis(productPropertisClasses);
+            /*Prod
+            for(int i = 0;i < productPropertisClasses.size();i++){
+
+                productPropertisClasses.get(i)
+
+            }*/
+            //mainSendProductClass.setProductPropertis();
             String a = selectedProduct.Brand;
             if (mainSendProductClass != null) {
                 Call<GetResualt> call = loadProductApi.editProductDetail(mainSendProductClass);
@@ -1487,9 +1501,10 @@ public class AddProductActivity extends AppCompatActivity {
             dbViewModel.getSpecificProperties(selectedProduct.ProductID).observe(AddProductActivity.this, new Observer<List<Properties>>() {
                 @Override
                 public void onChanged(List<Properties> propertiesList) {
+                    adapter = new ProductPropertiesRecyclerViewAdapter(getApplicationContext(), null, null, 2);
                     for (Properties properties : propertiesList) {
-                        mProperties.add(properties.PropertiesName);
-                        mPropertyValues.add(properties.PropertiesValue);
+                        adapter.mName.add(properties.PropertiesName);
+                        adapter.mValues.add(properties.PropertiesValue);
                         ProductPropertisClass propertisClass = new ProductPropertisClass(selectedProduct.ProductID, properties.PropertiesGroup,
                                 properties.PropertiesName, properties.PropertiesValue, properties.UpdateTime);
                         productPropertisClasses.add(propertisClass);
@@ -1497,7 +1512,7 @@ public class AddProductActivity extends AppCompatActivity {
                         layoutManager.setReverseLayout(true);
                         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.RecycleProductProperties);
                         recyclerView.setLayoutManager(layoutManager);
-                        ProductPropertiesRecyclerViewAdapter adapter = new ProductPropertiesRecyclerViewAdapter(getApplicationContext(), mProperties, mPropertyValues, 2);
+
                         recyclerView.setAdapter(adapter);
                     }
                 }
@@ -1525,9 +1540,12 @@ public class AddProductActivity extends AppCompatActivity {
             if (EdProperty.getText().toString().equals("") || EdPropertyValue.getText().toString().equals(""))
                 Toast.makeText(getApplicationContext(), "لطفا ویژگی های محصول را وارد کنید", Toast.LENGTH_SHORT).show();
             else {
-                mProperties.add(EdProperty.getText().toString());
-                mPropertyValues.add(EdPropertyValue.getText().toString());
-                productPropertisClasses.add(new ProductPropertisClass(null, "مشخصات اصلی", EdProperty.getText().toString(), EdPropertyValue.getText().toString(), null));
+                adapter.mName.add(EdProperty.getText().toString());
+                adapter.mValues.add(EdPropertyValue.getText().toString());
+                productPropertisClasses.clear();
+                for(int i = 0;adapter.mName.size() > i;i++){
+                    productPropertisClasses.add(new ProductPropertisClass(null, "مشخصات اصلی", adapter.mName.get(i), adapter.mValues.get(i), null));
+                }
                 EdProperty.setText("");
                 EdPropertyValue.setText("");
             }
