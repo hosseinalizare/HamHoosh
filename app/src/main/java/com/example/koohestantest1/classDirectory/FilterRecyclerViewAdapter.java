@@ -51,6 +51,7 @@ public class FilterRecyclerViewAdapter extends RecyclerView.Adapter<FilterRecycl
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+
         defaultLayout = getRelativeLayout(mName,holder.layout);
 
         try {
@@ -66,18 +67,18 @@ public class FilterRecyclerViewAdapter extends RecyclerView.Adapter<FilterRecycl
             }
 
 //            baseCodeClass.logMessage("binding", mContext);
-            if (mName.get(position).equals("همه") || lastHolder == null) {
+            if (mName.get(position).equals("همه") && lastHolder == null) {
                 lastHolder = holder;
             }
             holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.backgroundGray));
             if (mName.get(position).equals(selectedFilter)) {
                 holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.LighterBlue));
-
+                lastHolder = holder;
             } else {
                 holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.backgroundGray));
-                if (lastHolder != null) {
+               /* if (lastHolder != null) {
                     lastHolder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.backgroundGray));
-                }
+                }*/
             }
 
             holder.cardView.setOnClickListener(v -> {
@@ -98,6 +99,13 @@ public class FilterRecyclerViewAdapter extends RecyclerView.Adapter<FilterRecycl
         } catch (Exception e) {
             baseCodeClass.logMessage("filterAdapter >> " + e.getMessage(), mContext);
         }
+    }
+
+    public void setData(List<String> mName,ArrayList<Integer> mImage,String filterValue){
+        this.mImage = mImage;
+        this.mName = mName;
+        this.selectedFilter = filterValue;
+        notifyDataSetChanged();
     }
 
     @Override

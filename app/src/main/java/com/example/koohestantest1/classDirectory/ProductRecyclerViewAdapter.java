@@ -183,6 +183,13 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    public void setData(List<Product> productData){
+        this.filteredProduct = productData;
+        this.productData = productData;
+        load10Data();
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public Call<GetResualt> sendProductDetail(SendProduct sendProductClass) {

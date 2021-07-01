@@ -197,7 +197,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private FrameLayout frameUserChat;
     private boolean isDataLoaded = false;
 
-    private String keyFilter = "همه";
+    private String keyFilter = null;
 
     private List<Product> productList;
 
@@ -353,17 +353,17 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
                     isLoad = true;
                     productList = products;
-                    initRecyclerView();
+                    productRecyclerViewAdapter.setData(productList);
                 });
             } else {
                 dbViewModel.getSubCat2Product(keyFilter).observe(getViewLifecycleOwner(), products -> {
                     productList = products;
-                    initRecyclerView();
+                    productRecyclerViewAdapter.setData(productList);
                 });
             }
             filterValue = value;
             if (notify) {
-                initFilterRecyclerView();
+                  initFilterRecyclerView();
             }
 
         } catch (Exception e) {
@@ -382,20 +382,20 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 public void onChanged(List<Product> products) {
                     isLoad = true;
                     productList = products;
-                    productRecyclerViewAdapter.notifyDataSetChanged();
+                    productRecyclerViewAdapter.setData(products);
 
                 }
             });
         } else {
             dbViewModel.getBrandProduct(keyFilter).observe(getViewLifecycleOwner(), products -> {
                 productList = products;
-                productRecyclerViewAdapter.notifyDataSetChanged();
+                productRecyclerViewAdapter.setData(productList);
 
             });
         }
         filterValue = value;
         if (notify) {
-            initFilterRecyclerView();
+             initFilterRecyclerView();
         }
     }
 
@@ -446,8 +446,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                         /*filterBrandImage.add(GetImag(brand));*/
         //filterBrandImage.add(IconUtils.GetImag(brand));
         productList = products;
-
-        initRecyclerView();
+        if (keyFilter != null) {
+            productRecyclerViewAdapter.notifyDataSetChanged();
+        } else
+            initRecyclerView();
 
         initBulletinRecyclerView();
 
@@ -455,8 +457,12 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         swipeRefreshLayout.setRefreshing(false);
 
         manageLists(showView);
+        findFilter();
+        if (keyFilter != null) {
 
-        initFilterRecyclerView();
+            filterAdapter.setData(filterName, filterImage, filterValue);
+        } else
+            initFilterRecyclerView();
         filterList.setVisibility(View.VISIBLE);
 
 
@@ -591,13 +597,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         productRecyclerView = view.findViewById(R.id.productRecyclerView);
         productRecyclerView.setNestedScrollingEnabled(false);
 
-        if (baseCodeClass.getCompanyID().equals("Chrbnihukva")) {
-            filterList.setVisibility(View.GONE);
-        } else {
-            filterList.setVisibility(View.VISIBLE);
-            initFilterRecyclerView();
-        }
 
+//        initFilterRecyclerView();
 //        data = dataBase.getAllData(dataBase.BASE_TABLE);
 //        data.moveToFirst();
 
@@ -671,7 +672,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             if (count == 0)
                 badgeDrawable.setVisible(false);
 
-            else{
+            else {
                 badgeDrawable.setVisible(true);
                 badgeDrawable.setNumber(count);
             }
@@ -719,7 +720,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         if (isFirstUse) {
             loadProductFromServer(CompanyID);
         } else {
-            dbViewModel.getProductUpdateDate().observe(getViewLifecycleOwner(),updateObserve);
+            dbViewModel.getProductUpdateDate().observe(getViewLifecycleOwner(), updateObserve);
               /*      dbViewModel.getProductUpdateDate().observe(getViewLifecycleOwner(), new Observer<Long>() {
                 @Override
                 public void onChanged(Long aLong) {
@@ -875,7 +876,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private void analyzeReceiveProduct(List<Product> products, List<Properties> propertiesList) {
 
 
-
         particularProduct.clear();
         bulletinProduct.clear();
         allProductsPId.clear();
@@ -921,8 +921,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 filterBrandName.add(product.Brand);
                 filterBrandImage.add(GetImag(product.Brand));
             }
-
-
 
 
         }
@@ -1160,7 +1158,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private void updateData(String companyID) {
 
         try {
-            UpdatedProductBody updatedProductBody = new UpdatedProductBody(companyID, baseCodeClass.getUserID(),updateTime );
+            UpdatedProductBody updatedProductBody = new UpdatedProductBody(companyID, baseCodeClass.getUserID(), updateTime);
             Call<List<ReceiveProductClass>> call = loadProductApi.getUpdatedData(updatedProductBody);
             call.enqueue(new Callback<List<ReceiveProductClass>>() {
                 @Override
@@ -1199,8 +1197,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     @Override
     public void onResume() {
         super.onResume();
-        filterValue = "همه";
-        filterAdapter.notifyDataSetChanged();
+       /* filterValue = "همه";
+        filterAdapter.notifyDataSetChanged();*/
        /*if (productRecyclerViewAdapter != null) {
             productRecyclerViewAdapter.notifyDataSetChanged();
             if (productRecyclerViewAdapter.getFilter() != null)
@@ -1345,17 +1343,21 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     }
 
 
+    private void findFilter() {
+        filterName.clear();
+        filterImage.clear();
+        for (String item : mCategory) {
+            filterName.add(item);
+            filterImage.add(IconUtils.GetImag(item));
+        }
+        filterName.add("همه");
+        filterImage.add(R.drawable.allfilter);
+    }
+
     //filter
     public void initFilterRecyclerView() {
         try {
-            filterName.clear();
-            filterImage.clear();
-            for (String item : mCategory) {
-                filterName.add(item);
-                filterImage.add(IconUtils.GetImag(item));
-            }
-            filterName.add("همه");
-            filterImage.add(R.drawable.allfilter);
+            findFilter();
 
             filterList.setLayoutManager(new GridLayoutManager(mContext, 4, GridLayoutManager.VERTICAL, false));
 
