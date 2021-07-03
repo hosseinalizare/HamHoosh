@@ -1,12 +1,15 @@
 package com.example.koohestantest1.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +51,7 @@ import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.koohestantest1.Utils.Cache.TAG;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.PageShow;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.badge;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
@@ -104,6 +108,8 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
         ///// start service ////
         myServiceIntent = new Intent(this, AppService.class);
         startService(myServiceIntent);
+
+
 
 //
         Log.d(TAG, "onCreate: ");
@@ -479,6 +485,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
         super.onDestroy();
         myServiceIntent = new Intent(this, AppService.class);
         startService(myServiceIntent);
+
 
 
     }

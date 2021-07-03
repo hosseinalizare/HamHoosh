@@ -86,7 +86,7 @@ public class AppService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         repeateJobe();
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     private boolean AnalizInt(BaseCodeClass.AppEvent AE, Integer valu) {
@@ -276,12 +276,14 @@ public class AppService extends Service {
                 NotificationChannel channel = new NotificationChannel(channelId, TAG,
                         NotificationManager.IMPORTANCE_HIGH);
                 notificationManager.createNotificationChannel(channel);
+                startService(intent);
 
-                Notification notification = new Notification.Builder(getApplicationContext(), channelId).build();
-                startForeground(Integer.parseInt(channelId), notification);
+               /* Notification notification = new Notification.Builder(getApplicationContext(), channelId).build();
+                startForeground(Integer.parseInt(channelId), notification);*/
             } else {
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
-                 startForeground(Integer.parseInt(channelId), builder.build());
+               /* NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
+                 startForeground(Integer.parseInt(channelId), builder.build());*/
+                 startService(intent);
             }
 
         } catch (Exception e) {
