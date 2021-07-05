@@ -545,12 +545,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
         Observer<Long> updateObserve;
 
-        dbViewModel.getLastUpdate().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
 
-            }
-        });
         updateTime = 1593561540;
 
 
@@ -909,7 +904,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
             if (properties.size() == 0)
                 continue;
-            product.propertiesList = properties;
+            product.properties = properties;
 //            ReceiveProductClass spc = new ReceiveProductClass(product, properties, standardPrice);
 
 
@@ -1085,22 +1080,35 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     product.Spare3 = NetProduct.getSpare3();
                 dbViewModel.insertProduct(product);
 
-                for (ProductPropertisClass productPropertis : NetProduct.getProductPropertis()) {
-                    Properties properties = new Properties();
-                    properties.ProductID = productPropertis.getProductID();
-                    properties.PropertiesGroup = productPropertis.getPropertisGroup();
-                    properties.PropertiesName = productPropertis.getPropertisName();
-                    properties.PropertiesValue = productPropertis.getPropertisValue();
-                    properties.UpdateTime = productPropertis.getUpdatTime();
-                    dbViewModel.insertProperties(properties);
-                }
+
 
             } catch (Exception e) {
                 Log.d("Error", e.getMessage());
+                return;
             }
 
         } catch (Exception e) {
             Log.d("Error", e.getMessage());
+            return;
+        }
+
+        insertProperties(NetProduct,dbViewModel);
+    }
+
+    private void insertProperties(ReceiveProductClass NetProduct, DBViewModel dbViewModel){
+        try {
+            Thread.sleep(10);
+            for (ProductPropertisClass productPropertis : NetProduct.getProductPropertis()) {
+                Properties properties = new Properties();
+                properties.ProductID = productPropertis.getProductID();
+                properties.PropertiesGroup = productPropertis.getPropertisGroup();
+                properties.PropertiesName = productPropertis.getPropertisName();
+                properties.PropertiesValue = productPropertis.getPropertisValue();
+                properties.UpdateTime = productPropertis.getUpdatTime();
+                dbViewModel.insertProperties(properties);
+            }
+        }catch (Exception e){
+            Log.d("Error",e.getMessage());
         }
     }
 

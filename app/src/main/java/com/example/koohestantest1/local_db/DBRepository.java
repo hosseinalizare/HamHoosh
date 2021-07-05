@@ -3,19 +3,14 @@ package com.example.koohestantest1.local_db;
 import android.app.Application;
 
 import com.example.koohestantest1.local_db.entity.NewsLetter;
-import com.example.koohestantest1.local_db.entity.NewsLetterImage;
 import com.example.koohestantest1.local_db.entity.Product;
+import com.example.koohestantest1.local_db.entity.ProductWithProperties;
 import com.example.koohestantest1.local_db.entity.Properties;
 
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class DBRepository {
@@ -91,7 +86,7 @@ public class DBRepository {
 
     public Flowable<Product> getSpecificProduct(String productId) {
         Flowable<Product> product = localApi.getSpecificProduct(productId);
-        product.blockingFirst().propertiesList = localApi.getPropertiesOfProduct(productId).blockingFirst();
+        product.blockingFirst().properties = localApi.getPropertiesOfProduct(productId).blockingFirst();
         return product;
     }
 
@@ -99,7 +94,7 @@ public class DBRepository {
         return localApi.getPropertiesOfProduct(productId);
     }
 
-    public Flowable<String> getLastUpdate() {
+    public Flowable<Long> getLastUpdate() {
         return localApi.getLastUpdate();
     }
 
@@ -298,5 +293,10 @@ public class DBRepository {
 
     public Flowable<String> getProductImages(String pid){
         return localApi.getProductImages(pid);
+    }
+
+    public Flowable<List<ProductWithProperties>> getAddToCardProductWithProperties(){
+
+        return localApi.getAddToCardProductWithProperties();
     }
 }

@@ -2,15 +2,20 @@ package com.example.koohestantest1.local_db.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "properties")
+@Entity(tableName = "properties",
+foreignKeys  ={@ForeignKey(entity = Product.class,
+        parentColumns = "product_id",childColumns = "p_id",
+        onUpdate = ForeignKey.CASCADE,
+        onDelete = ForeignKey.CASCADE)})
 public class Properties {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    @ColumnInfo(name = "product_id")
+    @ColumnInfo(name = "p_id")
     public String ProductID;
 
     @ColumnInfo(name = "properties_group")

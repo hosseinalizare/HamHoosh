@@ -38,6 +38,7 @@ import com.example.koohestantest1.adapter.recyclerinterface.ICartEvents;
 import com.example.koohestantest1.classDirectory.ProductPropertisClass;
 import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.local_db.entity.Product;
+import com.example.koohestantest1.local_db.entity.ProductWithProperties;
 import com.example.koohestantest1.local_db.entity.Properties;
 import com.example.koohestantest1.model.DiscountModel;
 import com.example.koohestantest1.model.network.RetrofitInstance;
@@ -54,7 +55,6 @@ import com.example.koohestantest1.ApiDirectory.JsonApi;
 
 import com.example.koohestantest1.InfoDirectory.MangeAddressClass;
 import com.example.koohestantest1.classDirectory.AddressViewModel;
-import com.example.koohestantest1.classDirectory.AllProductData;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.classDirectory.CartProductRecyclerViewAdapter;
 import com.example.koohestantest1.classDirectory.GetResualt;
@@ -101,7 +101,8 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
     CardView addressCard;
 
     TextView cartSumPrice, cartSumDiscount, cartSumP, deliveryPrice;
-    private SendOrderClass sendOrderClass = new SendOrderClass();
+    //private SendOrderClass sendOrderClass = new SendOrderClass();
+    private List<ProductWithProperties> productPropertiesList;
     Date currentTime;
 
     private ArrayList<String> mNames = new ArrayList<>();
@@ -117,6 +118,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
     private Retrofit retrofit;
     private JsonApi jsonApi;
+    private SendOrderClass sendOrderClass;
 
     public CartFragment() {
     }
@@ -128,6 +130,8 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         localCartViewModel = new ViewModelProvider(requireActivity()).get(LocalCartViewModel.class);
         sharedPreferenceUtils = new SharedPreferenceUtils(requireContext());
         dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
+        sendOrderClass = new SendOrderClass();
+
     }
 
     @Nullable
@@ -158,6 +162,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
 
         btnCopy = view.findViewById(R.id.btnCopy);
+
 
         btnCopy.setOnClickListener(v -> {
             try {
@@ -229,12 +234,12 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
     private void handleViewFlipper() {
         Log.d(TAG, "handleViewFlipper: ");
-        if (sendOrderClass.getOrder_Details() == null || sendOrderClass.getOrder_Details().size() == 0) {
+        if (productPropertiesList == null || productPropertiesList.size() == 0) {
             vf.setDisplayedChild(0);
         } else {
             vf.setDisplayedChild(1);
             initRecyclerView();
-            calcPrice();
+            //calcPrice();
             Log.d(TAG, "handleViewFlipper:2 ");
         }
     }
@@ -242,122 +247,78 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        dbViewModel.getAddedToCard().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+        dbViewModel.getAddToCardProductWithProperties().observe(getViewLifecycleOwner(), new Observer<List<ProductWithProperties>>() {
             @Override
-            public void onChanged(List<Product> products) {
-                int sumPrice = 0;
-                int sumOff = 0;
+            public void onChanged(List<ProductWithProperties> productWithProperties) {
+                productPropertiesList = productWithProperties;
+
                 sendOrderClass.getOrder_Details().clear();
-                for (Product product : products) {
-                    sumPrice = sumPrice + (product.Price * product.CartItemCount);
-                    sumOff = sumOff + product.offPrice;
+
+                for (ProductWithProperties pwp : productWithProperties) {
+
                     Order_DetailsViewModels order = new Order_DetailsViewModels();
-                    order.setProductID(product.ProductID);
-                    order.setProductName(product.ProductName);
-                    order.setQuantity(product.CartItemCount);
-                    order.setID(String.valueOf(product.id));
-                    order.setUnitPrice(product.Price + "");
-                    order.setSumPrice(sumPrice);
-
-
-//                    order.setCompanyID(product.CompanyID);
-//                    order.setCompanyName(product.CompanyName);
-//                    order.setSupplierID(product.SupplierID);
-//                    order.setShowStandardCost(product.ShowStandardCost);
-//                    order.setShowoffPrice(product.ShowoffPrice);
-//                    order.setShowPrice(product.ShowPrice);
-//                    order.setParticular(product.IsParticular);
-//                    order.setBulletin(product.IsBulletin);
-//                    order.setAddToCard(product.AddToCard);
-//                    order.setBrand(product.Brand);
-//                    order.setMainCategory(product.MainCategory);
-//                    order.setSubCat1(product.SubCat1);
-//                    order.setSubCat2(product.SubCat2);
-//                    order.setCartItemCount(product.CartItemCount);
-//                    order.setDescription(product.Description);
-//                    order.setStandardCost(product.StandardCost);
-//                    order.setReorderLevel(product.ReorderLevel);
-//                    order.setTargetLevel(product.TargetLevel);
-//                    order.setUnit(product.Unit);
-//                    order.setQuantityPerUnit(product.QuantityPerUnit);
-//                    order.setDiscontinued(product.Discontinued);
-//                    order.setMinimumReorderQuantity(product.MinimumReorderQuantity);
-//                    order.setCategory(product.Category);
-//                    order.setShow(product.Show);
-//                    order.setUpdateDate(product.UpdateDate);
-//                    order.setDeleted(product.Deleted);
-//                    order.setDeleted1(product.Deleted1);
-//                    order.setViewedCount(product.ViewedCount);
-//                    order.setLikeCount(product.LikeCount);
-//                    order.setSaveCount(product.SaveCount);
-//                    order.setLikeit(product.Likeit);
-//                    order.setSaveit(product.Saveit);
-//                    order.setSellCount(product.SellCount);
-//                    order.setSpare1(product.Spare1);
-//                    order.setSpare2(product.Spare2);
-//                    order.setSpare3(product.Spare3);
-//                    order.setProductType(product.ProductType);
-//                    order.setActiveLike(product.ActiveLike);
-//                    order.setActiveComment(product.ActiveComment);
-//                    order.setActiveSave(product.ActiveSave);
-//                    order.setCreatorUserID(product.CreatorUserID);
-//                    order.setLinkOut(product.LinkOut);
-//                    order.setLinkToInstagram(product.LinkToInstagram);
-//                    order.setChatWhitCreator(product.ChatWhitCreator);
-//                    order.setOffPrice(product.offPrice);
-//                    order.setPrice(product.Price);
-                    dbViewModel.getSpecificProperties(product.ProductID).observe(getViewLifecycleOwner(), new Observer<List<Properties>>() {
-                        @Override
-                        public void onChanged(List<Properties> propertiesList) {
-                            List<ProductPropertisClass> propertisClassList = new ArrayList<>();
-                            for(Properties properties:propertiesList){
-                                ProductPropertisClass propertisClass = new ProductPropertisClass(
-                                        properties.ProductID,
-                                        properties.PropertiesGroup,
-                                        properties.PropertiesName,
-                                        properties.PropertiesValue,
-                                        properties.UpdateTime
-                                );
-                                propertisClassList.add(propertisClass);
-                            }
-                            order.setPropertisViewModels(propertisClassList);
-
-                        }
-                    });
-
+                    order.setProductID(pwp.getProduct().ProductID);
+                    order.setProductName(pwp.getProduct().ProductName);
+                    order.setQuantity(pwp.getProduct().CartItemCount);
+                    order.setID(String.valueOf(pwp.getProduct().id));
+                    order.setUnitPrice(pwp.getProduct().StandardCost + "");
+                    order.setSumPrice(pwp.getProduct().StandardCost * pwp.getProduct().CartItemCount);
+                    order.setDiscount(String.valueOf(pwp.getProduct().offPrice));
+                    order.setSumOff(pwp.getProduct().offPrice * pwp.getProduct().CartItemCount);
+                    List<ProductPropertisClass> propertisClassList = new ArrayList<>();
+                    for (Properties properties : pwp.getPropertiesList()) {
+                        ProductPropertisClass propertisClass = new ProductPropertisClass(
+                                properties.ProductID,
+                                properties.PropertiesGroup,
+                                properties.PropertiesName,
+                                properties.PropertiesValue,
+                                properties.UpdateTime
+                        );
+                        propertisClassList.add(propertisClass);
+                    }
+                    order.setPropertisViewModels(propertisClassList);
                     sendOrderClass.getOrder_Details().add(order);
-                }
 
-                sendOrderClass.setSumPrice(String.valueOf(sumPrice));
-                sendOrderClass.setDiscountAmount(sumOff);
+                }
+                calcPrice();
+
                 sendOrderClass.setCompanyID(CompanyID);
                 sendOrderClass.setCustomerID(BaseCodeClass.userID);
+
                 //adapter.notifyDataSetChanged();
                 handleViewFlipper();
+
+
+
             }
+
         });
     }
 
     private void calcPrice() {
         try {
-            if (sendOrderClass.Order_Details != null && sendOrderClass.getSumPrice().equals("0")) {
-                int sumPrice = 0;
-                int sumOff = 0;
-                for (Order_DetailsViewModels order : sendOrderClass.Order_Details) {
-                    sumPrice = sumPrice + order.getSumPrice();
-                    sumOff = sumOff + order.getSumOff();
+            int sumPrice = 0;
+            int sumOff = 0;
+            int total = 0;
+            if (productPropertiesList != null) {
+
+                for (ProductWithProperties pwp : productPropertiesList) {
+                    sumPrice = sumPrice + (pwp.getProduct().StandardCost * pwp.getProduct().CartItemCount);
+                    sumOff = sumOff + (pwp.getProduct().offPrice * pwp.getProduct().CartItemCount);
                 }
-                sendOrderClass.setSumPrice(String.valueOf(sumPrice));
-                sendOrderClass.setDiscountAmount(sumOff);
-                int total = sumPrice - sumOff;
-                sendOrderClass.setSumTotal(String.valueOf(total));
+                /*sendOrderClass.setSumPrice(String.valueOf(sumPrice));
+                sendOrderClass.setDiscountAmount(sumOff);*/
+                 total = sumPrice - sumOff - sendOrderClass.getDiscountAmount();
+
+                sendOrderClass.setSumPrice(String.valueOf(total));
+
+                sendOrderClass.setSumTotal(String.valueOf(sumPrice));
+                sendOrderClass.setSumDiscount(String.valueOf(sumOff));
             }
-            testPrice = sendOrderClass.getSumPrice();
-            testOff = sendOrderClass.getSumDisCount();
-            testTotal = sendOrderClass.getSumTotal();
-            cartSumPrice.setText("قیمت کالاها : " + sendOrderClass.getSumPrice() + " تومان");
-            cartSumDiscount.setText("جمع تخفیف ها : " + sendOrderClass.getSumDisCount() + " تومان");
-            cartSumP.setText("مبلغ قابل پرداخت : " + sendOrderClass.getSumTotal() + " تومان");
+
+            cartSumPrice.setText("قیمت کالاها : " +  sumPrice+ " تومان");
+            cartSumDiscount.setText("جمع تخفیف ها : " +  sumOff + " تومان");
+            cartSumP.setText("مبلغ قابل پرداخت : " + total + " تومان");
 
 
         } catch (Exception e) {
@@ -370,9 +331,9 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         handler.postDelayed(() -> {
             try {
                 if (allAddress.size() > 0) {
-                    if (sendOrderClass.getSpare1() != null && !sendOrderClass.getSpare1().equals("")) {
-                        Log.d(TAG, "getLocationData: 1 " + sendOrderClass.getSpare1());
-                        addressInCart.setText(sendOrderClass.getSpare1());
+                    if (selectedAddress != null) {
+                        Log.d(TAG, "getLocationData: 1 " + productPropertiesList.get(0).getProduct().Spare1);
+                        addressInCart.setText(selectedAddress.getAddress1());
                     } else {
                         String s = allAddress.get(0).getAddress1();
                         addressInCart.setText(s);
@@ -380,12 +341,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                         Log.d(TAG, "getLocationData: 2 " + allAddress.get(0));
                     }
                 } else {
-                    if (sendOrderClass.getSpare1() != null) {
-                        addressInCart.setText(sendOrderClass.getSpare1());
-                        Log.d(TAG, "getLocationData: 3 " + sendOrderClass.getSpare1());
-                    } else {
-                        addressInCart.setText(R.string.adding_address_hint);
-                    }
+                    addressInCart.setText(R.string.adding_address_hint);
                 }
             } catch (Exception e) {
                 logMessage("CartFragment 200 >> " + e.getMessage(), mContext);
@@ -430,7 +386,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         try {
             LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
             cartListRecyclerView.setLayoutManager(layoutManager);
-            adapter = new CartProductRecyclerViewAdapter(mContext, sendOrderClass, this, false, badgeSharedViewModel, localCartViewModel, this::calcPrice, getViewLifecycleOwner(), dbViewModel, this);
+            adapter = new CartProductRecyclerViewAdapter(mContext, productPropertiesList, this, false, badgeSharedViewModel, localCartViewModel, this::calcPrice, getViewLifecycleOwner(), dbViewModel, this);
             cartListRecyclerView.setNestedScrollingEnabled(false);
             cartListRecyclerView.setAdapter(adapter);
             cartListRecyclerView.setVisibility(View.VISIBLE);
@@ -724,12 +680,12 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                     } else {
                         codePaygir = "";
                     }
-                    sendOrderClass.setToken(baseCodeClass.getToken());
+                    /*sendOrderClass.setToken(baseCodeClass.getToken());
                     sendOrderClass.setUserID(baseCodeClass.getUserID());
                     sendOrderClass.setCompanyID(baseCodeClass.getCompanyID());
-                    sendOrderClass.setEmployeeID(baseCodeClass.EmployeeID);
+                    sendOrderClass.setEmployeeID(baseCodeClass.EmployeeID);*/
                     String costumerID = baseCodeClass.getCompanyID();
-                    costumerID += sendOrderClass.getUserID();
+                    costumerID += baseCodeClass.getUserID();
                     sendOrderClass.setCustomerID(costumerID);
 
                     sendOrderClass.setShipAddress(selectedAddress.getId());
@@ -764,8 +720,8 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                     // if(ss[2]!=null) {
                     //   sendOrderClass.setSumPrice(ss[2]);
                     // }
-                    sendOrderClass.calculateSumPrice();
-                    sendOrderClass.setSumPrice(String.valueOf((int) StringUtils.getNumberFromStringV2(sendOrderClass.getSumTotal())));
+                    /*sendOrderClass.calculateSumPrice();
+                    sendOrderClass.setSumPrice(String.valueOf((int) StringUtils.getNumberFromStringV2(sendOrderClass.getSumTotal())));*/
 
 
                     Log.d(TAG, ">>>> " + sendOrderClass.toString());
@@ -795,7 +751,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                                     toastMessage("سفارش شما با موفقیت ثبت شد");
                                 }
 
-                                sendOrderClass = new SendOrderClass();
+                                //sendOrderClass = new SendOrderClass();
 
                                 vf.setDisplayedChild(0);
                                 dbViewModel.getAddedToCard().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {

@@ -25,6 +25,7 @@ import com.asura.library.views.PosterSlider;
 import com.example.koohestantest1.ApiDirectory.JsonApi;
 import com.example.koohestantest1.ApiDirectory.LoadProductApi;
 import com.example.koohestantest1.R;
+import com.example.koohestantest1.ViewModels.BookMarkViewModel;
 import com.example.koohestantest1.ViewModels.PostLikeViewModel;
 import com.example.koohestantest1.fragments.bottomsheet.CommentsBottomSheet;
 import com.example.koohestantest1.local_db.DBViewModel;
@@ -44,6 +45,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import static android.content.ContentValues.TAG;
+import static com.example.koohestantest1.fragments.NewsLetterFragment.isGet;
 
 public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.NewsLetterViewHolder> {
     List<NewsLetter> newsLetterList;
@@ -95,16 +97,17 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
 //            posterList.clear();
             posterList.clear();
             for (int i = 0; i < jsonArray.length(); i++) {
-                if (jsonArray.getString(i).contains(".jpg") || jsonArray.getString(i).contains(".jpeg") || jsonArray.getString(i).contains(".png")) {
-                    remoteImage = new RemoteImage(jsonArray.getString(i));
-                    remoteImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    posterList.add(remoteImage);
-                } else {
+
+                remoteImage = new RemoteImage(jsonArray.getString(i));
+                remoteImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                posterList.add(remoteImage);
+                /* else {
                     remoteVideo = new RemoteVideo(Uri.parse(jsonArray.getString(i)));
 
                     Log.d("Video", Uri.parse(jsonArray.getString(i)) + "");
                     posterList.add(remoteVideo);
-                }
+                }*/
                 Log.d("Video", Uri.parse(jsonArray.getString(i)) + "");
                 //posterList.add(jsonArray.getString(i));
 
@@ -122,8 +125,11 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
 
         holder.txtNewsTitle.setText(newsLetterList.get(position).Title);
         holder.txtNewsDesc.setText(newsLetterList.get(position).Description);
-        if (!newsLetterList.get(position).ActiveComment)
-            holder.imgLike.setEnabled(false);
+        if (!newsLetterList.get(position).ActiveLike) {
+            holder.imgLike.setVisibility(View.INVISIBLE);
+            holder.txtLikeCount.setVisibility(View.INVISIBLE);
+
+        }
 
         if (newsLetterList.get(position).Likeit)
             holder.imgLike.setImageResource(R.drawable.ic_liked);
@@ -131,10 +137,10 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
             holder.imgLike.setImageResource(R.drawable.ic_like);
 
         if (!newsLetterList.get(position).ActiveComment)
-            holder.imgComment.setEnabled(false);
+            holder.imgComment.setVisibility(View.INVISIBLE);
 
         if (!newsLetterList.get(position).ActiveSave)
-            holder.imgBookmark.setEnabled(false);
+            holder.imgBookmark.setVisibility(View.INVISIBLE);
 
         if (newsLetterList.get(position).Saveit)
             holder.imgBookmark.setImageResource(R.drawable.ic_bookmarked);
@@ -154,8 +160,8 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
                 newsLetter.Saveit = true;
                 holder.imgBookmark.setImageResource(R.drawable.ic_bookmarked);
             }
-
-            dbViewModel.updateNewsLetter(newsLetter);
+            isGet = false;
+            savePost(newsLetterList.get(position).NewsID,BaseCodeClass.userID,newsLetter.Saveit);
         });
 
         holder.imgDelete.setOnClickListener(v -> deleteNewsLetter(newsLetterList.get(position)));
@@ -174,18 +180,20 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
             if (bitmapImgLike.sameAs(bitmapLike)) {
                 holder.imgLike.setImageResource(R.drawable.ic_like);
                 likeIt = false;
-                if (newsLetter.LikeCount > 0)
+                if (newsLetter.LikeCount > 0) {
                     newsLetter.LikeCount--;
+                    holder.txtLikeCount.setText(newsLetter.LikeCount+"");
+                }
                 newsLetter.Likeit = likeIt;
-                likePost(newsLetterList.get(position).NewsID, BaseCodeClass.userID, false, newsLetter);
+
             } else {
                 holder.imgLike.setImageResource(R.drawable.ic_liked);
                 likeIt = true;
                 newsLetter.LikeCount++;
+                holder.txtLikeCount.setText(newsLetter.LikeCount+"");
                 newsLetter.Likeit = likeIt;
-                likePost(newsLetterList.get(position).NewsID, BaseCodeClass.userID, true, newsLetter);
-
             }
+            likePost(newsLetterList.get(position).NewsID, BaseCodeClass.userID, true, newsLetter);
         });
         /*if(newsLetterImageList.get(position).getNewsId().equals(newsLetterList.get(position).NewsID)
         && newsLetterImageList.get(position).getSrc() != null){
@@ -202,11 +210,16 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
         return newsLetterList.size();
     }
 
+    public void setData(List<NewsLetter> newsLetterList) {
+        this.newsLetterList = newsLetterList;
+        notifyDataSetChanged();
+    }
+
 
     class NewsLetterViewHolder extends RecyclerView.ViewHolder {
         ImageView imgBookmark, imgLike, imgComment, imgViewCount, imgDelete;
         PosterSlider slider;
-        TextView txtNewsTitle, txtNewsDesc, txtLikeCount,txtViewCount;
+        TextView txtNewsTitle, txtNewsDesc, txtLikeCount, txtViewCount;
 
         public NewsLetterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -223,15 +236,46 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
         }
     }
 
+    private void savePost(String pid, String uid, boolean saveIt){
+        LoadProductApi loadProductApi;
+        Retrofit retrofit = RetrofitInstance.getRetrofit();
+        loadProductApi = retrofit.create(LoadProductApi.class);
+        try {
+            Log.d(TAG, "likePost: " + saveIt);
+
+            BookMarkViewModel viewModel = new BookMarkViewModel(uid,pid,String.valueOf(saveIt));
+            Call<GetResualt> call = loadProductApi.saveProduct(viewModel);
+            call.enqueue(new Callback<GetResualt>() {
+                @Override
+                public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
+//                    toastMessage("like", 5);
+                    Log.d(TAG, "onResponse: " + response.body().toString());
+
+                    if (response.body().getResualt().equals("100")) {
+                        //isGet = false;
+                        //dbViewModel.updateNewsLetter(newsLetter);
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GetResualt> call, Throwable t) {
+
+                    Log.d(TAG, "onFailure: " + t.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            Log.d("Error", e.getMessage());
+        }
+    }
+
     private void likePost(String pid, String uid, boolean viewCount, NewsLetter newsLetter) {
         LoadProductApi loadProductApi;
         Retrofit retrofit = RetrofitInstance.getRetrofit();
         loadProductApi = retrofit.create(LoadProductApi.class);
         try {
             Log.d(TAG, "likePost: " + viewCount);
-            /**
-             * Ask question about like count in server site
-             */
+
             PostLikeViewModel viewModel = new PostLikeViewModel(uid, pid, String.valueOf(viewCount), newsLetter.LikeCount);
             Call<GetResualt> call = loadProductApi.likeProduct(viewModel);
             call.enqueue(new Callback<GetResualt>() {
@@ -241,7 +285,9 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
                     Log.d(TAG, "onResponse: " + response.body().toString());
 
                     if (response.body().getResualt().equals("100")) {
-                        dbViewModel.updateNewsLetter(newsLetter);
+                        //isGet = false;
+                        //dbViewModel.updateNewsLetter(newsLetter);
+
                     }
                 }
 
@@ -260,7 +306,7 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
         JsonApi jsonApi;
         Retrofit retrofit = RetrofitInstance.getRetrofit();
         jsonApi = retrofit.create(JsonApi.class);
-        dbViewModel.deleteOneNewsLetter(newsLetter);
+
         DeleteNewsLetter deleteNewsLetter = new DeleteNewsLetter();
         deleteNewsLetter.setCompanyId(newsLetter.SupplierID);
         deleteNewsLetter.setNewsId(newsLetter.NewsID);
@@ -272,6 +318,8 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
             public void onResponse(Call<GetResualt> call, Response<GetResualt> response) {
                 if (response.body().getResualt().equals("100")) {
                     Toast.makeText(context, "خبر با موفقیت حذف شد", Toast.LENGTH_SHORT).show();
+                    isGet = false;
+                    newsLetterList.remove(newsLetter);
                     notifyDataSetChanged();
                 }
             }

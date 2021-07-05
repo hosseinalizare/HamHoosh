@@ -36,6 +36,7 @@ public class SendOrderClass {
     private String TaxRate;
     private String TaxStatus;
     private String StatusID;
+    private String showOffPrice;
     private String UpdateDate ;
     private String  Deleted ;
     private String  Spare1 ;
@@ -121,6 +122,19 @@ public class SendOrderClass {
         Spare1="" ;
         Spare2="";
         Spare3="";
+    }
+
+
+    public String getShowOffPrice() {
+        return showOffPrice;
+    }
+
+    public void setShowOffPrice(String showOffPrice) {
+        this.showOffPrice = showOffPrice;
+    }
+
+    public void setSumDiscount(String sumDiscount) {
+        SumDiscount = sumDiscount;
     }
 
     public String getToken() {

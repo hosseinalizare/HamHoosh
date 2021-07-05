@@ -60,6 +60,12 @@ public interface JsonApi {
                                       @Query("Time") long time,
                                       @Query("UserID") String userId);
 
+    @POST("News/LoadNews")
+    Call<List<NewsLetter>> getFirstNews(@Query("CompanyId") String companyId,
+                                        @Query("page") int page,
+                                        @Query("len") int len,
+                                        @Query("UserID") String userId);
+
     @POST("News/SaveNews")
     Call<GetResualt> setNewsLetter(@Body NewsLetterModel newsLetter);
 

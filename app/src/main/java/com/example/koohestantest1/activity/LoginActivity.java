@@ -286,6 +286,11 @@ public class LoginActivity extends AppCompatActivity {
                 return null;
             }
 
+            @Override
+            public Call<List<NewsLetter>> getFirstNews(String companyId, int page, int len, String userId) {
+                return null;
+            }
+
 
             @Override
             public Call<GetResualt> setNewsLetter(NewsLetterModel newsLetter) {

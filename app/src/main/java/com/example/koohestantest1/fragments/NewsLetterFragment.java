@@ -55,7 +55,7 @@ public class NewsLetterFragment extends Fragment {
     private BaseCodeClass baseCodeClass;
     List<Uri> imageUriList;
     List<String> partNames;
-    boolean isGet = false;
+    public static boolean isGet = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -110,7 +110,7 @@ public class NewsLetterFragment extends Fragment {
                 result -> {
                     if (result) {
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("*/*");
+                        intent.setType("image/*");
                         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                         intent.addCategory(Intent.CATEGORY_OPENABLE);
                         Intent chooserIntent = Intent.createChooser(intent, "Open Gallery");
@@ -124,23 +124,7 @@ public class NewsLetterFragment extends Fragment {
         //****************************************************************************************/
 
         //********************************Get the last news letter from local DB******************/
-        dbViewModel.getLastUpdate().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-                try {
-                    if (s.equals("") || s == null) {
-                        timeStamp = 1345618537869L;
-                    } else {
-                        Date date = format.parse(s);
-                        timeStamp = date.getTime();
-                    }
-                    getAllNews(BaseCodeClass.CompanyID, timeStamp);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+
         //*****************************************************************************************/
 
         //****************************Get all news from Local DB***********************************/
@@ -149,14 +133,26 @@ public class NewsLetterFragment extends Fragment {
             public void onChanged(List<NewsLetter> newsLetters) {
                 if (!isGet) {
                     if (newsLetters.isEmpty() || newsLetters.size() == 0)
-                        getAllNews(BaseCodeClass.CompanyID, 1345618537869L);
+                        getFirstNews(BaseCodeClass.CompanyID);
                     else {
+                        if(adapter != null){
+                               adapter.setData(newsLetters);
+                        }else {
+                            adapter = new NewsLetterAdapter(newsLetters, getContext(), getActivity().getSupportFragmentManager(), dbViewModel);
+                            // adapter.notifyDataSetChanged();
+                            rvNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                            rvNews.setAdapter(adapter);
+                            isGet = true;
+                        }
 
-                        adapter = new NewsLetterAdapter(newsLetters, getContext(), getActivity().getSupportFragmentManager(), dbViewModel);
-                        // adapter.notifyDataSetChanged();
-                        rvNews.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-                        rvNews.setAdapter(adapter);
-                        isGet = true;
+                        dbViewModel.getLastUpdate().observe(getViewLifecycleOwner(), new Observer<Long>() {
+                            @Override
+                            public void onChanged(Long s) {
+
+                                getAllNews(BaseCodeClass.CompanyID,s);
+                            }
+                        });
+
                     }
                 }
             }
@@ -177,6 +173,30 @@ public class NewsLetterFragment extends Fragment {
         Retrofit retrofit = RetrofitInstance.getRetrofit();
         JsonApi jsonApi = retrofit.create(JsonApi.class);
         Call<List<NewsLetter>> call = jsonApi.getAllNews(companyId, time,BaseCodeClass.userID);
+        call.enqueue(new Callback<List<NewsLetter>>() {
+            @Override
+            public void onResponse(Call<List<NewsLetter>> call, Response<List<NewsLetter>> response) {
+                if (response.body() == null || response.body().size() == 0) {
+                    Log.d("Error","Success");
+                } else {
+                    isGet = false;
+                    insertNewsLetterIntoLocalDB(response.body());
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<NewsLetter>> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
+    }
+
+    private void getFirstNews(String companyId){
+        Retrofit retrofit = RetrofitInstance.getRetrofit();
+        JsonApi jsonApi = retrofit.create(JsonApi.class);
+        Call<List<NewsLetter>> call = jsonApi.getFirstNews(companyId, 1,50,BaseCodeClass.userID);
         call.enqueue(new Callback<List<NewsLetter>>() {
             @Override
             public void onResponse(Call<List<NewsLetter>> call, Response<List<NewsLetter>> response) {

@@ -96,7 +96,7 @@ public class CompanyOrderRecyclerViewAdapter extends RecyclerView.Adapter<Compan
         holder.orderID.setText(sendOrderClasses.get(position).getId());
         holder.customerName.setText(sendOrderClasses.get(position).getSpare2());
         holder.costumerAddress.setText(sendOrderClasses.get(position).getSpare1());
-        String price = sendOrderClasses.get(position).getSumPrice();
+        String price = sendOrderClasses.get(position).getSumTotal();
 
         holder.sumPrice.setText(price);
         if (sendOrderClasses.get(position).getOrder_Details() != null && sendOrderClasses.get(position).getOrder_Details().size() > 0)
@@ -109,7 +109,7 @@ public class CompanyOrderRecyclerViewAdapter extends RecyclerView.Adapter<Compan
 
         String urlProductImage = null;
         if (sendOrderClasses.get(position).Order_Details.size() > 0) {
-            urlProductImage = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + sendOrderClasses.get(position).Order_Details.get(0).getProductID() + "&fileNumber=1";
+            urlProductImage = baseCodeClass.BASE_URL + "Order/DownloadImage?OrderId=" + sendOrderClasses.get(position).Order_Details.get(0).getOrderID();
         }
         String urlCustomerImage = baseCodeClass.BASE_URL + "User/DownloadCustomerFile?CustomerID=" + sendOrderClasses.get(position).getCustomerID() + "&fileNumber=" + 1;
 

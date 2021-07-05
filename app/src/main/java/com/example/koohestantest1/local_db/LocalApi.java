@@ -3,12 +3,15 @@ package com.example.koohestantest1.local_db;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.local_db.entity.NewsLetterImage;
 import com.example.koohestantest1.local_db.entity.Product;
+import com.example.koohestantest1.local_db.entity.ProductWithProperties;
 import com.example.koohestantest1.local_db.entity.Properties;
 
 import java.sql.Date;
@@ -26,7 +29,7 @@ public interface LocalApi {
     @Query("SELECT * FROM products WHERE product_id=:product_id")
     Flowable<Product> getSpecificProduct(String product_id);
 
-    @Query("SELECT * FROM properties WHERE product_id=:product_id")
+    @Query("SELECT * FROM properties WHERE p_id=:product_id")
     Flowable<List<Properties>> getPropertiesOfProduct(String product_id);
 
     @Query("SELECT * FROM properties")
@@ -36,10 +39,10 @@ public interface LocalApi {
     Flowable<Integer> getProduct(String product_id);
 
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     Single<Long> insertProduct(Product product);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     Single<Long> insertProperties(Properties properties);
 
     @Update
@@ -60,10 +63,10 @@ public interface LocalApi {
     @Query("DELETE FROM properties")
     Completable deleteAllProperties();
 
-    @Query("SELECT * FROM news_letter")
+    @Query("SELECT * FROM news_letter WHERE deleted1 <> 1 AND deleted <> 1 ORDER BY update_date DESC")
     Flowable<List<NewsLetter>> getAllNews();
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     Single<Long> insertNewsLetter(NewsLetter newsLetter);
 
     /*@Insert
@@ -73,7 +76,7 @@ public interface LocalApi {
     Completable deleteAllNewsLetter();
 
     @Query("SELECT MAX(update_date) FROM news_letter")
-    Flowable<String> getLastUpdate();
+    Flowable<Long> getLastUpdate();
 
 
 
@@ -192,7 +195,7 @@ public interface LocalApi {
     @Query("SELECT * FROM products WHERE reorder_level=200")
     Flowable<List<Product>> getBulletinProduct();
 
-    @Query("DELETE FROM properties WHERE product_id=:pid")
+    @Query("DELETE FROM properties WHERE p_id=:pid")
     Completable deletePropertiesOneProduct(String pid);
 
     @Query("UPDATE products SET product_name=:productName,description=:description,standard_cost=:standardCost," +
@@ -211,4 +214,9 @@ public interface LocalApi {
 
     @Query("SELECT image_src FROM products WHERE product_id=:pid")
     Flowable<String> getProductImages(String pid);
+
+    @Transaction
+    @Query("SELECT * FROM products " +
+            "WHERE card_item_count > 0 AND deleted <> 1 AND deleted1 <> 1 AND show <> 0")
+    Flowable<List<ProductWithProperties>> getAddToCardProductWithProperties();
 }

@@ -25,12 +25,14 @@ import com.example.koohestantest1.ViewProductActivity;
 import com.example.koohestantest1.adapter.recyclerinterface.ICartEvents;
 import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.local_db.entity.Product;
+import com.example.koohestantest1.local_db.entity.ProductWithProperties;
 import com.example.koohestantest1.viewModel.BadgeSharedViewModel;
 import com.example.koohestantest1.viewModel.LocalCartViewModel;
 
 import com.example.koohestantest1.ApiDirectory.AddressApi;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Handler;
 
@@ -41,7 +43,8 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
 
     private ICartEvents iCartEvents;
     private Context mContext;
-    private SendOrderClass mSendOrderClasses;
+    //private SendOrderClass mSendOrderClasses;
+    private List<ProductWithProperties> productWithProperties;
     private static AddressApi cartRecyclerViewClickListener;
     private boolean storeOrder;
     private final String TAG = CartProductRecyclerViewAdapter.class.getSimpleName() + "Debug";
@@ -49,15 +52,16 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
     private LocalCartViewModel localCartViewModel;
     private DBViewModel dbViewModel;
     private LifecycleOwner lifecycleOwner;
+    private String url;
     BaseCodeClass baseCodeClass = new BaseCodeClass();
+    private Product prod;
+    //private ManageOrderClass manageOrderClass;
 
-    private ManageOrderClass manageOrderClass;
 
-
-    public CartProductRecyclerViewAdapter(Context mContext, SendOrderClass mSendOrderClasses, AddressApi clickListener, boolean storeOrder, BadgeSharedViewModel badgeSharedViewModel, LocalCartViewModel localCartViewModel, ICartEvents iCartEvents, LifecycleOwner lifecycleOwner, DBViewModel dbViewModel,Fragment fragment) {
+    public CartProductRecyclerViewAdapter(Context mContext, List<ProductWithProperties> productWithProperties, AddressApi clickListener, boolean storeOrder, BadgeSharedViewModel badgeSharedViewModel, LocalCartViewModel localCartViewModel, ICartEvents iCartEvents, LifecycleOwner lifecycleOwner, DBViewModel dbViewModel,Fragment fragment) {
         this.mContext = mContext;
         this.badgeSharedViewModel = badgeSharedViewModel;
-        this.mSendOrderClasses = mSendOrderClasses;
+        this.productWithProperties = productWithProperties;
         this.cartRecyclerViewClickListener = clickListener;
         this.storeOrder = storeOrder;
         this.localCartViewModel = localCartViewModel;
@@ -65,16 +69,20 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
         this.lifecycleOwner = lifecycleOwner;
         this.dbViewModel = dbViewModel;
 
-        manageOrderClass = new ManageOrderClass(fragment);
+        //manageOrderClass = new ManageOrderClass(fragment);
     }
 
-    public CartProductRecyclerViewAdapter(Context mContext, SendOrderClass mSendOrderClasses, AddressApi clickListener, boolean storeOrder, DBViewModel dbViewModel) {
+    public CartProductRecyclerViewAdapter(Context mContext, List<ProductWithProperties> productWithProperties, AddressApi clickListener, boolean storeOrder, DBViewModel dbViewModel) {
         this.mContext = mContext;
-        this.mSendOrderClasses = mSendOrderClasses;
+        this.productWithProperties = productWithProperties;
         this.cartRecyclerViewClickListener = clickListener;
         this.storeOrder = storeOrder;
         this.dbViewModel = dbViewModel;
     }
+
+
+
+
 
     @NonNull
     @Override
@@ -85,7 +93,14 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
 
     public void newDownloadImage(String pid, ImageView _imageView) {
         try {
-            String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+            url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+            dbViewModel.getProductImages(pid).observe(lifecycleOwner, new Observer<String>() {
+                @Override
+                public void onChanged(String s) {
+                    url = s;
+                }
+            });
+
             Glide.with(mContext).load(url).into(_imageView);
         } catch (Exception e) {
             baseCodeClass.logMessage("ViewProduct glide :" + e.getMessage(), mContext);
@@ -94,28 +109,29 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-
-        int a = mSendOrderClasses.Order_Details.size();
+        prod = new Product();
+        int a = productWithProperties.size();
         int b = 0;
         try {
 
-            newDownloadImage(mSendOrderClasses.Order_Details.get(position).getProductID(), holder.imageProduct);
-            holder.productName.setText(mSendOrderClasses.getOrder_Details().get(position).getProductName());
-            String companyId = mSendOrderClasses.getCompanyID();
+            newDownloadImage(productWithProperties.get(position).getProduct().ProductID, holder.imageProduct);
+            holder.productName.setText(productWithProperties.get(position).getProduct().ProductName);
+            String companyId = productWithProperties.get(position).getProduct().CompanyID;
             if (companyId != null) {
                 if (companyId.equals(BaseCodeClass.CompanyID))
                     holder.companyName.setText(BaseCodeClass.CompanyName);
                 else holder.companyName.setText(companyId);
             }
+            int quantity = productWithProperties.get(position).getProduct().CartItemCount;
             holder.warranty.setText("تضمین کیفیت محصول");
-            holder.shipperName.setText(mSendOrderClasses.getShipperID());
-            holder.discount.setText(mSendOrderClasses.getOrder_Details().get(position).getDiscount());
+            holder.shipperName.setText(""+productWithProperties.get(position).getProduct().CompanyName);
+            holder.discount.setText("" + (productWithProperties.get(position).getProduct().offPrice * quantity));
 
-            String price = mSendOrderClasses.getOrder_Details().get(position).getUnitPrice();
-            int decimalPrice = price.indexOf(".");
-            holder.price.setText(decimalPrice == -1 ? price : price.substring(0, decimalPrice));
+            /*String price = mSendOrderClasses.getOrder_Details().get(position).getSumPrice()+"";
+            int decimalPrice = price.indexOf(".");*/
+            holder.price.setText("" + (productWithProperties.get(position).getProduct().Price * quantity));
 
-            int quantity = mSendOrderClasses.getOrder_Details().get(position).getQuantity();
+
 
 
             // int decimalQuantity = quantity.indexOf(".");
@@ -131,7 +147,7 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
 
 
                     Intent intent = new Intent(mContext, ViewProductActivity.class);
-                    intent.putExtra("PID", mSendOrderClasses.Order_Details.get(position).getProductID());
+                    intent.putExtra("PID", productWithProperties.get(position).getProduct().ProductID);
                     mContext.startActivity(intent);
 
                 });
@@ -141,27 +157,35 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
              */
                 holder.trash.setOnClickListener(v -> {
 //                int itemCount = mSendOrderClasses.Order_Details.get(position).getQuantity();
-                    String currentProductId = mSendOrderClasses.Order_Details.get(position).getProductID();
-                    manageOrderClass.RemoveProductFromCart(currentProductId);
-                    notifyDataSetChanged();
+                    String currentProductId = productWithProperties.get(position).getProduct().ProductID;
+//                    manageOrderClass.RemoveProductFromCart(currentProductId);
+                    /*notifyDataSetChanged();*/
+                    productWithProperties.get(position).getProduct().AddToCard = false;
+                    productWithProperties.get(position).getProduct().CartItemCount = 0;
 
-                    dbViewModel.getSpecificProduct(currentProductId).observe(lifecycleOwner, new Observer<Product>() {
+                    dbViewModel.updateProduct(productWithProperties.get(position).getProduct());
+
+                    Toast.makeText(mContext, "حذف شد", Toast.LENGTH_SHORT).show();
+                    /*dbViewModel.getSpecificProduct(currentProductId).observe(lifecycleOwner, new Observer<Product>() {
                         @Override
                         public void onChanged(Product product) {
-                            product.AddToCard = false;
-                            dbViewModel.updateProduct(product);
+                            prod = product;
+                            if(prod != null) {
+
+                            }
                         }
-                    });
+                    });*/
+
 
                  //   localCartViewModel.updateCartInfo(mSendOrderClasses);
 
-                    Toast.makeText(mContext, "حذف شد", Toast.LENGTH_SHORT).show();
+
 
 //                    if (sendOrderClass.Order_Details.size() == 0) {
 //                        sendOrderClass = new SendOrderClass();
 //                    }
 
-                    iCartEvents.onProductRemove();
+                   // iCartEvents.onProductRemove();
                 });
                 holder.cartAdd.setOnClickListener(v -> {
 
@@ -170,82 +194,27 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
                     SharedPreferences.Editor editor = cardShared.edit();
                     Set<String> itemId = new HashSet<>();
 
-                    itemId.add(mSendOrderClasses.Order_Details.get(position).getProductID());
-                    String pid = mSendOrderClasses.Order_Details.get(position).getProductID();
+                    itemId.add(productWithProperties.get(position).getProduct().ProductID);
+                    String pid = productWithProperties.get(position).getProduct().ProductID;
                     //int count = manageOrderClass.getProductQTY(pid);
-                    int count = mSendOrderClasses.Order_Details.get(position).getQuantity();
+                    int count = productWithProperties.get(position).getProduct().CartItemCount;
                     //manageOrderClass.setProductQTY(pid, manageOrderClass.getProductQTY(pid) + 1);
                     count++;
+                    productWithProperties.get(position).getProduct().CartItemCount = count;
                     dbViewModel.updateCardItemCount(count,pid);
                     holder.quantity.setText(String.valueOf(count));
-                    /*Product product = new Product();
-                    //product = addedProducts.get(position);
-                    product.CartItemCount = count;
-                    product.ProductName = mSendOrderClasses.Order_Details.get(position).getProductName();
-                    product.UpdateDate = mSendOrderClasses.Order_Details.get(position).getUpdateDate();
-                    product.ViewedCount = mSendOrderClasses.Order_Details.get(position).getViewedCount();
-                    product.CompanyID = mSendOrderClasses.Order_Details.get(position).getCompanyID();
-                    product.offPrice = mSendOrderClasses.Order_Details.get(position).getOffPrice();
-                    product.Price = mSendOrderClasses.Order_Details.get(position).getPrice();
-                    product.ShowStandardCost = mSendOrderClasses.Order_Details.get(position).getShowStandardCost();
-                    product.ShowoffPrice = mSendOrderClasses.Order_Details.get(position).getShowoffPrice();
-                    product.ShowPrice = mSendOrderClasses.Order_Details.get(position).getShowPrice();
-                    product.Spare1 = mSendOrderClasses.Order_Details.get(position).getSpare1();
-                    product.Spare2 = mSendOrderClasses.Order_Details.get(position).getSpare2();
-                    product.Spare3 = mSendOrderClasses.Order_Details.get(position).getSpare3();
-                    product.SubCat1 = mSendOrderClasses.Order_Details.get(position).getSubCat1();
-                    product.SubCat2 = mSendOrderClasses.Order_Details.get(position).getSubCat2();
-                    product.IsBulletin = mSendOrderClasses.Order_Details.get(position).isBulletin();
-                    product.IsParticular = mSendOrderClasses.Order_Details.get(position).isParticular();
-                    product.MainCategory = mSendOrderClasses.Order_Details.get(position).getMainCategory();
-                    product.Brand = mSendOrderClasses.Order_Details.get(position).getBrand();
-                    product.ProductID = mSendOrderClasses.Order_Details.get(position).getProductID();
-                    product.CompanyName = mSendOrderClasses.Order_Details.get(position).getCompanyName();
-                    product.StandardCost = mSendOrderClasses.Order_Details.get(position).getStandardCost();
-                    product.LikeCount = mSendOrderClasses.Order_Details.get(position).getLikeCount();
-                    product.Likeit = mSendOrderClasses.Order_Details.get(position).isLikeit();
-                    product.Saveit = mSendOrderClasses.Order_Details.get(position).isSaveit();
-                    product.AddToCard = mSendOrderClasses.Order_Details.get(position).isAddToCard();
-                    product.Unit = mSendOrderClasses.Order_Details.get(position).getUnit();
-                    product.TargetLevel = mSendOrderClasses.Order_Details.get(position).getTargetLevel();
-                    product.SupplierID = mSendOrderClasses.Order_Details.get(position).getSupplierID();
-                    product.SellCount = mSendOrderClasses.Order_Details.get(position).getSellCount();
-                    product.SaveCount = mSendOrderClasses.Order_Details.get(position).getSaveCount();
-                    product.ReorderLevel = mSendOrderClasses.Order_Details.get(position).getReorderLevel();
-                    product.QuantityPerUnit = mSendOrderClasses.Order_Details.get(position).getQuantityPerUnit();
-                    product.MinimumReorderQuantity = mSendOrderClasses.Order_Details.get(position).getMinimumReorderQuantity();
-                    product.Discontinued = mSendOrderClasses.Order_Details.get(position).getDiscontinued();
-                    product.Description = mSendOrderClasses.Order_Details.get(position).getDescription();
-                    product.Category = mSendOrderClasses.Order_Details.get(position).getCategory();
-                    product.Deleted = mSendOrderClasses.Order_Details.get(position).isDeleted();
-                    product.ActiveComment = mSendOrderClasses.Order_Details.get(position).isActiveComment();
-                    product.ActiveLike = mSendOrderClasses.Order_Details.get(position).isActiveLike();
-                    product.ActiveSave = mSendOrderClasses.Order_Details.get(position).isActiveSave();
-                    product.ChatWhitCreator = mSendOrderClasses.Order_Details.get(position).isChatWhitCreator();
-                    product.CreatorUserID = mSendOrderClasses.Order_Details.get(position).getCreatorUserID();
-                    product.Deleted1 = mSendOrderClasses.Order_Details.get(position).isDeleted1();
-                    if (mSendOrderClasses.Order_Details.get(position).getID() != null)
-                        product.id = Integer.parseInt(mSendOrderClasses.Order_Details.get(position).getID());
-                    product.LinkOut = mSendOrderClasses.Order_Details.get(position).getLinkOut();
-                    product.LinkToInstagram = mSendOrderClasses.Order_Details.get(position).getLinkToInstagram();
-                    product.ProductType = mSendOrderClasses.Order_Details.get(position).getProductType();*/
 
+                    //mSendOrderClasses.Order_Details.get(position).setQuantity(count);
 
-                    //holder.quantity.setText(product.CartItemCount + "");
-                    mSendOrderClasses.Order_Details.get(position).setQuantity(count);
-
-                    //dbViewModel.updateProduct(product);
-
-                    //notifyDataSetChanged();
                     cartRecyclerViewClickListener.CartRecyclerViewClickListener(v, false);
 
                 });
                 holder.cartRemove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String pid = mSendOrderClasses.Order_Details.get(position).getProductID();
-                        int qty = mSendOrderClasses.Order_Details.get(position).getQuantity() > 1 ? mSendOrderClasses.Order_Details.get(position).getQuantity() - 1 : 1;
-                        mSendOrderClasses.Order_Details.get(position).setQuantity(qty);
+                        String pid = productWithProperties.get(position).getProduct().ProductID;
+                        int qty = productWithProperties.get(position).getProduct().CartItemCount > 1 ? productWithProperties.get(position).getProduct().CartItemCount - 1 : 1;
+                        productWithProperties.get(position).getProduct().CartItemCount = qty;
                         dbViewModel.updateCardItemCount(qty,pid);
                         holder.quantity.setText(qty + "");
                         //notifyDataSetChanged();
@@ -263,14 +232,14 @@ public class CartProductRecyclerViewAdapter extends RecyclerView.Adapter<CartPro
     @Override
     public int getItemCount() {
 
-        if (mSendOrderClasses != null) {
+        /*if (mSendOrderClasses != null) {
             Log.d(TAG, "getItemCount: ");
             if (mSendOrderClasses.getOrder_Details() != null) {
                 Log.d(TAG, "getItemCount: details " + mSendOrderClasses.getOrder_Details().size());
                 return mSendOrderClasses.getOrder_Details().size();
             }
-        }
-        return 0;
+        }*/
+        return productWithProperties.size();
     }
 
     @Override

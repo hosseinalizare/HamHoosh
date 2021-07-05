@@ -164,6 +164,6 @@ public class Product {
     public int CartItemCount;
 
     @Ignore
-    public List<Properties> propertiesList;
+    public List<Properties> properties;
 
 }

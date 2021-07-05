@@ -40,7 +40,7 @@ public class NewsLetter {
     public boolean Deleted1;
 
     @ColumnInfo(name = "update_date")
-    public String UpdateDate;
+    public long UpdateDate;
 
     @ColumnInfo(name = "spare1")
     public String Spare1;

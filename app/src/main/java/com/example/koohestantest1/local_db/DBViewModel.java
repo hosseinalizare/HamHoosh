@@ -12,19 +12,16 @@ import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.koohestantest1.local_db.entity.NewsLetter;
-import com.example.koohestantest1.local_db.entity.NewsLetterImage;
 import com.example.koohestantest1.local_db.entity.Product;
+import com.example.koohestantest1.local_db.entity.ProductWithProperties;
 import com.example.koohestantest1.local_db.entity.Properties;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class DBViewModel extends AndroidViewModel {
     private final String TAG = DBViewModel.class.getSimpleName();
@@ -39,6 +36,7 @@ public class DBViewModel extends AndroidViewModel {
 
     public void insertProduct(Product product) {
         repository.insertProduct(product).subscribe();
+
     }
 
     public void insertProperties(Properties properties) {
@@ -66,7 +64,7 @@ public class DBViewModel extends AndroidViewModel {
         return LiveDataReactiveStreams.fromPublisher(repository.getAllProducts());
     }
 
-    public LiveData<String> getLastUpdate() {
+    public LiveData<Long> getLastUpdate() {
         return LiveDataReactiveStreams.fromPublisher(repository.getLastUpdate());
     }
 
@@ -333,5 +331,9 @@ public class DBViewModel extends AndroidViewModel {
 
     public LiveData<String> getProductImages(String pid){
         return LiveDataReactiveStreams.fromPublisher(repository.getProductImages(pid));
+    }
+
+    public LiveData<List<ProductWithProperties>> getAddToCardProductWithProperties(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getAddToCardProductWithProperties());
     }
 }
