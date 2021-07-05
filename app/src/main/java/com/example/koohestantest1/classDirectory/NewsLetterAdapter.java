@@ -98,7 +98,7 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
         try {
             JSONArray jsonArray = new JSONArray(newsLetterList.get(position).Jsonsrc);
 //            posterList.clear();
-            posterList.clear();
+            holder.slider.removeAllSliders();
             for (int i = 0; i < jsonArray.length(); i++) {
                 DefaultSliderView textSliderView = new DefaultSliderView(context);
                 textSliderView.image(jsonArray.getString(i));

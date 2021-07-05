@@ -33,6 +33,9 @@ import com.example.koohestantest1.local_db.entity.NewsLetterImage;
 import com.example.koohestantest1.model.FilledNewsImage;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jaiselrahman.filepicker.activity.FilePickerActivity;
+import com.jaiselrahman.filepicker.config.Configurations;
+import com.jaiselrahman.filepicker.model.MediaFile;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,18 +81,15 @@ public class NewsLetterFragment extends Fragment {
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
                         if (result.getData() != null) {
-                            if (result.getData().getClipData() != null) {
-                                int count = result.getData().getClipData().getItemCount();
-                                int currentItem = 0;
-                                while (currentItem < count) {
-                                    Uri imageUri = result.getData().getClipData().getItemAt(currentItem).getUri();
-                                    imageUriList.add(imageUri);
-                                    partNames.add(currentItem + "");
-                                    currentItem++;
+
+                                ArrayList<MediaFile> files = result.getData().getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
+                                for (MediaFile mediaFile : files) {
+                                    String name = mediaFile.getName();
+                                    Uri uri1 = mediaFile.getUri();
+                                    imageUriList.add(uri1);
+                                    partNames.add(name);
                                 }
-                            } else if (result.getData().getData() != null) {
-                                imageUriList.add(result.getData().getData());
-                            }
+
                         }
 
                         Bundle bundle = new Bundle();
@@ -109,13 +109,19 @@ public class NewsLetterFragment extends Fragment {
                 new ActivityResultContracts.RequestPermission(),
                 result -> {
                     if (result) {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("image/*");
-                        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        Intent chooserIntent = Intent.createChooser(intent, "Open Gallery");
+                        Intent intent = new Intent(getContext(), FilePickerActivity.class);
+                        intent.putExtra(FilePickerActivity.CONFIGS, new Configurations.Builder()
+                                .setCheckPermission(true)
+                                .setSkipZeroSizeFiles(true)
+                                .setShowImages(true)
+                                .setSingleChoiceMode(false)
+                                .setMaxSelection(5)
+                                .setShowAudios(false)
+                                .setShowVideos(false)
+                                .setShowFiles(false)
+                                .build());
 
-                        mLauncher.launch(chooserIntent);
+                        mLauncher.launch(intent);
                     } else {
                         Toast.makeText(getContext(), "FAIL", Toast.LENGTH_SHORT).show();
                     }

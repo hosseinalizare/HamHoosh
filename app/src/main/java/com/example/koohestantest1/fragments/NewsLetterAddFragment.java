@@ -52,6 +52,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.example.koohestantest1.fragments.NewsLetterFragment.isGet;
+
 public class NewsLetterAddFragment extends Fragment {
 
     private EditText edtTitle, edtDesc, edtCat;
@@ -69,10 +71,10 @@ public class NewsLetterAddFragment extends Fragment {
     private TextView txtSetting;
     private CheckBox chkPublish, chkComment, chkLike, chkSave;
     private ProgressBar pbLoading;
-    private boolean isPublish = false,
-            isComment = false,
-            isLike = false,
-            isSave = false;
+    private boolean isPublish = true,
+            isComment = true,
+            isLike = true,
+            isSave = true;
 
     private LinearLayout linSetting;
 
@@ -364,6 +366,7 @@ public class NewsLetterAddFragment extends Fragment {
                 if (response.body().getResualt().equals("100")) {
                     pbLoading.setVisibility(View.GONE);
                     Toast.makeText(getContext(), "خبر با موفقیت ثبت شد", Toast.LENGTH_SHORT).show();
+                    isGet = false;
                     Fragment newsFragment = new NewsLetterFragment();
                     FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.frm_newsLetterActivity_layout, newsFragment);

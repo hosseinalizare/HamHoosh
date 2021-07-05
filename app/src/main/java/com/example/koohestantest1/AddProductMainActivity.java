@@ -367,7 +367,6 @@ public class AddProductMainActivity extends AppCompatActivity {
                         Intent intent = new Intent(this, FilePickerActivity.class);
                         intent.putExtra(FilePickerActivity.CONFIGS, new Configurations.Builder()
                                 .setCheckPermission(true)
-                                .setMaxSelection(1)
                                 .setSkipZeroSizeFiles(true)
                                 .setShowImages(true)
                                 .setSingleChoiceMode(false)
