@@ -32,6 +32,9 @@ import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.local_db.entity.NewsLetter;
 import com.example.koohestantest1.model.DeleteNewsLetter;
 import com.example.koohestantest1.model.network.RetrofitInstance;
+import com.glide.slider.library.SliderLayout;
+import com.glide.slider.library.slidertypes.DefaultSliderView;
+import com.glide.slider.library.slidertypes.TextSliderView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,11 +100,13 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
 //            posterList.clear();
             posterList.clear();
             for (int i = 0; i < jsonArray.length(); i++) {
-
-                remoteImage = new RemoteImage(jsonArray.getString(i));
+                DefaultSliderView textSliderView = new DefaultSliderView(context);
+                textSliderView.image(jsonArray.getString(i));
+                holder.slider.addSlider(textSliderView);
+                /*remoteImage = new RemoteImage(jsonArray.getString(i));
                 remoteImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-                posterList.add(remoteImage);
+                posterList.add(remoteImage);*/
                 /* else {
                     remoteVideo = new RemoteVideo(Uri.parse(jsonArray.getString(i)));
 
@@ -113,7 +118,7 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
 
             }
 
-            holder.slider.setPosters(posterList);
+//            holder.slider.setPosters(posterList);
             //NewsLetterViewPagerAdapter adapter = new NewsLetterViewPagerAdapter(context, posterList);
             //adapter.notifyDataSetChanged();
             //holder.slider.setAdapter(adapter);
@@ -218,7 +223,7 @@ public class NewsLetterAdapter extends RecyclerView.Adapter<NewsLetterAdapter.Ne
 
     class NewsLetterViewHolder extends RecyclerView.ViewHolder {
         ImageView imgBookmark, imgLike, imgComment, imgViewCount, imgDelete;
-        PosterSlider slider;
+        SliderLayout slider;
         TextView txtNewsTitle, txtNewsDesc, txtLikeCount, txtViewCount;
 
         public NewsLetterViewHolder(@NonNull View itemView) {

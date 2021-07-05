@@ -11,13 +11,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.asura.library.views.PosterSlider
+        <com.glide.slider.library.SliderLayout
             android:id="@+id/ps_newsItem"
             android:layout_width="match_parent"
             android:layout_height="360dp"
-            app:hideIndicators="false"
-            app:loopSlides="false"
-            app:defaultIndicator="circle"/>
+            app:indicator_visibility="visible"
+            app:auto_cycle="false"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
