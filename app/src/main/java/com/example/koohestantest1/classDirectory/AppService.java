@@ -234,12 +234,27 @@ public class AppService extends Service {
                 intent = new Intent(this, LoadingActivity.class);
             }
 
+            if (title.contains("لغو شده توسط فروشگاه")){
+                intent.putExtra("status", String.valueOf(6));
+
+            }else if (title.contains("در حال آماده")){
+                intent.putExtra("status", String.valueOf(2));
+
+            }else if (title.contains("در حال ارسال")){
+                intent.putExtra("status", String.valueOf(4));
+
+            }else if (title.contains("آماده تحویل")){
+                intent.putExtra("status", String.valueOf(3));
+
+            }else if (title.contains("تحویل شده")){
+                intent.putExtra("status", String.valueOf(5));
+
+            }
+
             intent.putExtra("sender", userId);
             //getter = company(others)
             intent.putExtra("getter", companyId);
             intent.putExtra("state_message_sender", 0);
-            intent.putExtra("status", action);
-
             intent.putExtra("mode", "user");
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

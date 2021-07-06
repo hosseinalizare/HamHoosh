@@ -3126,8 +3126,9 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         orderGetterViewHolder.txtCustomerName.setText(sendOrderClasses.getSpare2());
         orderGetterViewHolder.txtOrderAddress.setText(sendOrderClasses.getSpare1());
         orderGetterViewHolder.txtSumPrice.setText(sendOrderClasses.getSumPrice());
-        int quantity = sendOrderClasses.getOrder_Details().get(0).getQuantity();
-        String orderCount = "اقلام: " + quantity;
+
+        String orderCount = "اقلام: "+ sendOrderClasses.Order_Details.size();
+
 
 
         orderGetterViewHolder.txtProductCount.setText(orderCount);
