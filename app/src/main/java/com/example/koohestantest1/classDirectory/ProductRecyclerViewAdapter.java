@@ -183,10 +183,12 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    public void setData(List<Product> productData){
-        this.filteredProduct = productData;
+    public void setData(List<Product> productData) {
+        this.filteredProduct.clear();
+        this.filteredProduct.addAll(productData);
         this.productData = productData;
         load10Data();
+        setLoaded();
         notifyDataSetChanged();
     }
 
@@ -598,6 +600,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     Intent intent = new Intent(mContext, ViewProductActivity.class);
                     intent.putExtra("PID", showProductData.get(position).ProductID);
                     mContext.startActivity(intent);
+                    notifyItemChanged(position);
 //                selectedPID = PID.get(position);
 
 
@@ -630,31 +633,26 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     if (showProductData.get(position).AddToCard) {
                         //addedProducts.remove(position);
                         //removes Item in carts
-                        manageOrderClass.RemoveProductFromCart(showProductData.get(position).ProductID);
+                      //  manageOrderClass.RemoveProductFromCart(showProductData.get(position).ProductID);
                         //productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(false);
                         showProductData.get(position).AddToCard = false;
                         showProductData.get(position).CartItemCount = 0;
 
                         //handle view:
-                        holder.btnAddToCart.setImageResource(R.drawable.ic_add_cart);
-                        holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.purple1));
-                        notifyItemChanged(position);
+                       // holder.btnAddToCart.setImageResource(R.drawable.ic_add_cart);
+                       // holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.purple1));
+                        //notifyItemChanged(position);
                         badgeSharedViewModel.setCount(BadgeCounter.getCount() - 1);
 
                     } else {
-                        holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.green900));
+                      //  holder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.green900));
                         /*if (manageOrderClass.addProductToCart(selectedProduct.getProductClass()))*/
 
                         //productDataList.get(productDataList.indexOf(selectedProduct)).setSelectedToCart(true);
                         showProductData.get(position).AddToCard = true;
                         showProductData.get(position).CartItemCount = 1;
                         //addedProducts.add(showProductData.get(position));
-                        dbViewModel.getCardItemCount().observe(lifecycleOwner, new Observer<Integer>() {
-                            @Override
-                            public void onChanged(Integer integer) {
-                                badgeSharedViewModel.setCount(integer);
-                            }
-                        });
+
 
                     }
                     //localCartViewModel.updateCartInfo(sendOrderClass);

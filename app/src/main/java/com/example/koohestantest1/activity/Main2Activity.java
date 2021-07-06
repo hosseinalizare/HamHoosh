@@ -154,6 +154,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                 else {
                     badge.setVisible(true);
                     badge.setNumber(count);
+                    badgeSharedViewModel.setCount(count);
                 }
             }
         });

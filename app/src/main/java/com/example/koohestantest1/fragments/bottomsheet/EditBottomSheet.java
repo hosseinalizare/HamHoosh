@@ -443,7 +443,9 @@ public class EditBottomSheet extends BottomSheetDialogFragment {
                 String result = response.body().getResualt();
                 String msg = response.body().getMsg();
                 if (result.equals("100")) {
-                    dbViewModel.deleteProduct(pid);
+                    productData.Deleted = true;
+                    productData.Deleted1 = true;
+                    dbViewModel.updateProduct(productData);
                     Toast.makeText(getContext(), "محصول با موفقیت حذف شد", Toast.LENGTH_SHORT).show();
                     dismiss();
 

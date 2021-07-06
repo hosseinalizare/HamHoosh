@@ -73,7 +73,7 @@ public class DBRepository {
     }
 
     public Flowable<List<Product>> getAllProducts() {
-        return products;
+        return localApi.getProducts();
     }
 
     public Flowable<List<Properties>> getAllProperties() {
@@ -162,11 +162,17 @@ public class DBRepository {
     }
 
     public Flowable<List<Product>> getSubCat2Product(String cat2) {
-        return localApi.getSubCat2Product(cat2);
+        if (cat2.equals("همه"))
+            return localApi.getProducts();
+        else
+            return localApi.getSubCat2Product(cat2);
     }
 
     public Flowable<List<Product>> getBrandProduct(String brand) {
-        return localApi.getBrandProduct(brand);
+        if (brand.equals("همه"))
+            return localApi.getProducts();
+        else
+            return localApi.getBrandProduct(brand);
     }
 
     public Flowable<List<Product>> getProductOrderBySell(String value) {
@@ -235,54 +241,54 @@ public class DBRepository {
         return localApi.getSpecificCardItemCount(pid);
     }
 
-    public void updateProductDiscontinued(int qy,String pid){
+    public void updateProductDiscontinued(int qy, String pid) {
         localApi.updateProductDiscontinued(qy, pid)
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateProductName(String pname,String pid){
+    public void updateProductName(String pname, String pid) {
         localApi.updateProductName(pname, pid)
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateProductPrice(int standardCost,String showStandardCost,String pid){
-        localApi.updateProductPrice(standardCost,showStandardCost,pid)
+    public void updateProductPrice(int standardCost, String showStandardCost, String pid) {
+        localApi.updateProductPrice(standardCost, showStandardCost, pid)
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void deleteProduct(String pid){
+    public void deleteProduct(String pid) {
         localApi.deleteProduct(pid)
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public Flowable<List<Product>> getDiscontinuedProduct(){
+    public Flowable<List<Product>> getDiscontinuedProduct() {
         return localApi.getDiscontinuedProduct();
     }
 
-    public Flowable<List<Product>> getBulletinProduct(){
+    public Flowable<List<Product>> getBulletinProduct() {
         return localApi.getBulletinProduct();
     }
 
-    public Flowable<List<Product>> getLikeProduct(){
+    public Flowable<List<Product>> getLikeProduct() {
         return localApi.getLikeProduct();
     }
 
-    public void deletePropertiesOneProduct(String pid){
+    public void deletePropertiesOneProduct(String pid) {
         localApi.deletePropertiesOneProduct(pid)
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateLocalProduct(String productName,String description,int standardCost,int orderLevel,
-                                   int targetLevel,String unit,String quantityPerUnit,int discontinued,
-                                   int mrq,String category,boolean show,long updateDate,String spare1,
-                                   String spare2,String spare3,int offPrice,int price,String ssc,
-                                   String sop,String sp,boolean ip,boolean ib,boolean atc,String brand,
-                                   String mainCat,String subCat1,String subCat2,String pid){
+    public void updateLocalProduct(String productName, String description, int standardCost, int orderLevel,
+                                   int targetLevel, String unit, String quantityPerUnit, int discontinued,
+                                   int mrq, String category, boolean show, long updateDate, String spare1,
+                                   String spare2, String spare3, int offPrice, int price, String ssc,
+                                   String sop, String sp, boolean ip, boolean ib, boolean atc, String brand,
+                                   String mainCat, String subCat1, String subCat2, String pid) {
         localApi.updateLocalProduct(productName, description, standardCost, orderLevel, targetLevel,
                 unit, quantityPerUnit, discontinued, mrq, category, show, updateDate, spare1, spare2,
                 spare3, offPrice, price, ssc, sop, sp, ip, ib, atc, brand, mainCat, subCat1, subCat2,
@@ -291,12 +297,16 @@ public class DBRepository {
                 .subscribe();
     }
 
-    public Flowable<String> getProductImages(String pid){
+    public Flowable<String> getProductImages(String pid) {
         return localApi.getProductImages(pid);
     }
 
-    public Flowable<List<ProductWithProperties>> getAddToCardProductWithProperties(){
+    public Flowable<List<ProductWithProperties>> getAddToCardProductWithProperties() {
 
         return localApi.getAddToCardProductWithProperties();
+    }
+
+    public Flowable<List<ProductWithProperties>> getAllProductAndProperties() {
+        return localApi.getAllProductAndProperties();
     }
 }

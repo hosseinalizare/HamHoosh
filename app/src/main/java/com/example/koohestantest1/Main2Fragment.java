@@ -46,6 +46,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -69,6 +70,7 @@ import com.example.koohestantest1.constants.FilterOption;
 import com.example.koohestantest1.fragments.transinterface.CartTransitionInterface;
 import com.example.koohestantest1.local_db.DBViewModel;
 import com.example.koohestantest1.local_db.entity.Product;
+import com.example.koohestantest1.local_db.entity.ProductWithProperties;
 import com.example.koohestantest1.local_db.entity.Properties;
 import com.example.koohestantest1.model.DeleteProduct;
 import com.example.koohestantest1.model.UpdatedProductBody;
@@ -348,22 +350,20 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         isLoad = false;
         try {
             keyFilter = value;
-            //productRecyclerViewAdapter.getFilter().filter("F" + value);
-            if (keyFilter.equals("همه")) {
-                dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
-                    isLoad = true;
+
+            LiveData<List<Product>> getSubCat2ProductLiveData = dbViewModel.getSubCat2Product(keyFilter);
+            getSubCat2ProductLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                @Override
+                public void onChanged(List<Product> products) {
                     productList = products;
+                    getSubCat2ProductLiveData.removeObserver(this);
                     productRecyclerViewAdapter.setData(productList);
-                });
-            } else {
-                dbViewModel.getSubCat2Product(keyFilter).observe(getViewLifecycleOwner(), products -> {
-                    productList = products;
-                    productRecyclerViewAdapter.setData(productList);
-                });
-            }
+                }
+            });
+
             filterValue = value;
             if (notify) {
-                  initFilterRecyclerView();
+                initFilterRecyclerView();
             }
 
         } catch (Exception e) {
@@ -373,78 +373,28 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
     @Override
     public void brandRecyclerViewListClicked(View v, String value, boolean notify) {
-        isLoad = false;
+
         keyFilter = value;
-        // productRecyclerViewAdapter.getFilter().filter("B" + value);
-        if (keyFilter.equals("همه")) {
-            dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
-                @Override
-                public void onChanged(List<Product> products) {
-                    isLoad = true;
-                    productList = products;
-                    productRecyclerViewAdapter.setData(products);
-
-                }
-            });
-        } else {
-            dbViewModel.getBrandProduct(keyFilter).observe(getViewLifecycleOwner(), products -> {
+        LiveData<List<Product>> getBrandProductLiveData = dbViewModel.getBrandProduct(keyFilter);
+        getBrandProductLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            @Override
+            public void onChanged(List<Product> products) {
                 productList = products;
+                getBrandProductLiveData.removeObserver(this);
                 productRecyclerViewAdapter.setData(productList);
+            }
+        });
 
-            });
-        }
         filterValue = value;
         if (notify) {
-             initFilterRecyclerView();
+            initFilterRecyclerView();
         }
     }
 
     @Override
     public void recyclerViewCanUpdating(List<Product> products) {
         Log.d(TAG, "recyclerViewCanUpdating: ");
-        //   mCategory.clear();
-        // filterBrandName.clear();
-        // filterBrandName.add("همه");
 
-
-   /*     for (Product allProductData :
-                productDataList) {
-            *//*if (isProductAdded(allProductData.getProductClass().getProductID())) {
-                allProductData.setSelectedToCart(true);
-            }*//*
-         *//* try {
-                String category = allProductData.getProductClass().getCategory();
-                if (category != null && !category.isEmpty()) {
-                    String[] aCategory = category.split("\\.");
-                    for (int j = 0; j < aCategory.length; j++) {
-                        if (aCategory[j] != null && !aCategory[j].isEmpty() && !aCategory[j].equals("null")) {
-                            if (j == 1) {
-                                if (!mCategory.contains(aCategory[j])) {
-                                    mCategory.add(aCategory[j]);
-                                    Log.d(TAG, aCategory[j] + "\n");
-                                }
-                            }
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                Log.d("Error", ex.toString());
-            }*//*
-         *//*  try {
-                String brand = null;
-                for (ProductPropertisClass productPropertisClass : allProductData.getProductClass().getProductPropertis()) {
-                    if (productPropertisClass.getPropertisName().equals("برند")) {
-                        brand = productPropertisClass.getPropertisValue();
-                        break;
-                    }
-                }catch(Exception e){
-
-                    }
-                if (brand != null) {
-                    if (!filterBrandName.contains(brand)) {
-                        filterBrandName.add(brand);
-                        /*filterBrandImage.add(GetImag(brand));*/
-        //filterBrandImage.add(IconUtils.GetImag(brand));
         productList = products;
         if (keyFilter != null) {
             productRecyclerViewAdapter.notifyDataSetChanged();
@@ -610,10 +560,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         scrollView.getViewTreeObserver().addOnScrollChangedListener(this);
 
         //TODO(1): make some decision about swipe:
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            //new ManageProductClass(mContext, main2Fragment, baseCodeClass.getCompanyID()).execute(baseCodeClass.getCompanyID(), BaseCodeClass.DownloadParam);
-            updateData(CompanyID);
-        });
+        //new ManageProductClass(mContext, main2Fragment, baseCodeClass.getCompanyID()).execute(baseCodeClass.getCompanyID(), BaseCodeClass.DownloadParam);
+        swipeRefreshLayout.setOnRefreshListener(this::getLastUpdateDate);
 
         try {
             bottomNavigationViewEx = view.findViewById(R.id.productNavigationViewBar);
@@ -647,7 +595,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         });
 
         ivCartIcon.setOnClickListener(v -> {
-            if (cartTransitionInterface !=null){
+            if (cartTransitionInterface != null) {
                 cartTransitionInterface.onCartClickListener();
             }
 
@@ -702,7 +650,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             productList = products;
             initRecyclerView();
         });*/
-        updateObserve = new Observer<Long>() {
+
+        /*updateObserve = new Observer<Long>() {
             @Override
             public void onChanged(Long aLong) {
                 dbViewModel.getProductUpdateDate().removeObserver(updateObserve);
@@ -710,27 +659,18 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
                 updateData(CompanyID);
             }
-        };
+        };*/
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("baseInfo", Context.MODE_PRIVATE);
         boolean isFirstUse = sharedPreferences.getBoolean("isFirstUse", true);
-        if (isFirstUse) {
+        if (isFirstUse)
             loadProductFromServer(CompanyID);
-        } else {
-            dbViewModel.getProductUpdateDate().observe(getViewLifecycleOwner(), updateObserve);
-              /*      dbViewModel.getProductUpdateDate().observe(getViewLifecycleOwner(), new Observer<Long>() {
-                @Override
-                public void onChanged(Long aLong) {
-                    dbViewModel.getProductUpdateDate().removeObserver(this);
-                    updateTime = TimeUtils.longToDateConvertor(aLong);
-                    lastUpdateTime = convertStrToDate(updateTime);
-                    updateData(CompanyID);
+        else
+            getLastUpdateDate();
 
-                }
-            });*/
 
-        }
+        getAllProductFromDB("همه", FilterOption.NON);
 
-        dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+        /*dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
             public void onChanged(List<Product> products) {
                 dbViewModel.getAllProperties().observe(getViewLifecycleOwner(), new Observer<List<Properties>>() {
@@ -740,7 +680,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     }
                 });
             }
-        });
+        });*/
+
 
         dbViewModel.getCardItemCount().observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
@@ -770,6 +711,136 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         //update Rv item price if changed
         productViewModel.getLiveEditedValue().observe(getViewLifecycleOwner(), s -> productRecyclerViewAdapter.notifyDataSetChanged());
 
+    }
+
+    private void getAllProductFromDB(String filter, FilterOption filterOption) {
+        switch (filterOption) {
+
+            case VIEW:
+                LiveData<List<Product>> getViewProductLiveData = dbViewModel.getProductOrderByViewCount(filter);
+                getViewProductLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(List<Product> products) {
+                        productList.clear();
+                        productList = products;
+                        getViewProductLiveData.removeObserver(this);
+                        productRecyclerViewAdapter.setData(products);
+                    }
+                });
+                break;
+            case EXPENSIVE:
+                LiveData<List<Product>> getExpensiveProductLiveData = dbViewModel.getProductOrderByPriceDESC(filter);
+                getExpensiveProductLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(List<Product> products) {
+                        productList.clear();
+                        productList = products;
+                        getExpensiveProductLiveData.removeObserver(this);
+                        productRecyclerViewAdapter.setData(products);
+                    }
+                });
+
+                break;
+            case CHEAP:
+                LiveData<List<Product>> getCheapProductsLiveData = dbViewModel.getProductOrderByPriceASC(filter);
+                getCheapProductsLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(List<Product> products) {
+                        productList.clear();
+                        productList = products;
+                        getCheapProductsLiveData.removeObserver(this);
+                        productRecyclerViewAdapter.setData(products);
+                    }
+                });
+                break;
+            case SELL:
+                LiveData<List<Product>> getSellProductLiveData = dbViewModel.getProductOrderBySell(filter);
+                getSellProductLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(List<Product> products) {
+                        productList.clear();
+                        productList = products;
+                        getSellProductLiveData.removeObserver(this);
+                        productRecyclerViewAdapter.setData(products);
+                    }
+                });
+                break;
+            case RELATED:
+                LiveData<List<Product>> getFilteredProductLiveData = dbViewModel.getSubCat2Product(filter);
+                getFilteredProductLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(List<Product> products) {
+                        productList = products;
+                        getFilteredProductLiveData.removeObserver(this);
+                        productRecyclerViewAdapter.setData(products);
+
+                    }
+                });
+                break;
+            case NON:
+                LiveData<List<ProductWithProperties>> allProductsLiveData = dbViewModel.getAllProductAndProperties();
+                allProductsLiveData.observe(getViewLifecycleOwner(), new Observer<List<ProductWithProperties>>() {
+                    @Override
+                    public void onChanged(List<ProductWithProperties> productWithProperties) {
+                        productList.clear();
+                        for (ProductWithProperties pwp : productWithProperties) {
+                            productList.add(convertPwpToProduct(pwp));
+
+                        }
+                        if (productWithProperties.size() != 0)
+                            allProductsLiveData.removeObserver(this);
+                        analyzeReceiveProduct(productList);
+
+                    }
+                });
+                break;
+            case New:
+                LiveData<List<Product>> getNewProductLiveData = dbViewModel.getProductOrderByNewest(filter);
+                getNewProductLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(List<Product> products) {
+                        productList.clear();
+                        productList = products;
+                        getNewProductLiveData.removeObserver(this);
+                        productRecyclerViewAdapter.setData(products);
+                    }
+                });
+                break;
+            case OFF:
+                LiveData<List<Product>> getOffProductsLiveData = dbViewModel.getOffProduct(filter);
+                getOffProductsLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                    @Override
+                    public void onChanged(List<Product> products) {
+                        productList.clear();
+                        productList = products;
+                        getOffProductsLiveData.removeObserver(this);
+                        productRecyclerViewAdapter.setData(products);
+                    }
+                });
+                break;
+        }
+
+
+    }
+
+    private Product convertPwpToProduct(ProductWithProperties pwp) {
+        Product product = pwp.getProduct();
+        product.properties = pwp.getPropertiesList();
+        return product;
+
+    }
+
+    private void getLastUpdateDate() {
+        LiveData<Long> updateLiveData = dbViewModel.getProductUpdateDate();
+        updateLiveData.observe(getViewLifecycleOwner(), new Observer<Long>() {
+            @Override
+            public void onChanged(Long aLong) {
+                updateTime = aLong;
+                updateLiveData.removeObserver(this);
+                updateData(CompanyID);
+
+            }
+        });
     }
 
     public void appHelp() {
@@ -869,7 +940,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         }
     }
 
-    private void analyzeReceiveProduct(List<Product> products, List<Properties> propertiesList) {
+    private void analyzeReceiveProduct(List<Product> products) {
 
 
         particularProduct.clear();
@@ -878,36 +949,14 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         mCategory.clear();
         filterBrandName.clear();
         filterBrandName.add("همه");
-        List<Properties> properties = new ArrayList<>();
+
+
         for (Product product : products) {
-           /* StandardPrice standardPrice = new StandardPrice();
-            standardPrice.setOffPrice(product.offPrice);
-            standardPrice.setPrice(product.Price);
-            standardPrice.setShowoffPrice(product.ShowoffPrice);
-            standardPrice.setShowPrice(product.ShowPrice);
-            standardPrice.setShowStandardCost(product.ShowStandardCost);
-            standardPrice.setStandardCost(product.StandardCost);*/
-            allProductsPId.add(product.ProductID);
-
-           /* if (product.Deleted ||
-                    (!product.Show) ||
-                    (!product.CompanyID.equals(CompanyID))
-            ) {
-                continue;
+         /*   if(product.SubCat2.equals(keyFilter)){
+               productList.add(product);
             }*/
-            properties.clear();
-            for (Properties proper : propertiesList) {
-                if (proper.ProductID.equals(product.ProductID)) {
-                    properties.add(proper);
-                }
-            }
 
-            if (properties.size() == 0)
-                continue;
-            product.properties = properties;
-//            ReceiveProductClass spc = new ReceiveProductClass(product, properties, standardPrice);
-
-
+            allProductsPId.add(product.ProductID);
             if (!mCategory.contains(product.SubCat2)) {
                 mCategory.add(product.SubCat2);
             }
@@ -970,7 +1019,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 editor.apply();
             }
             for (i = 0; i < NetProduct.size(); i++) {
-                if (updateMode) {
+                /*if (updateMode) {
 
                     inQueueProduct = NetProduct.get(i);
                     if (ProductExistinLocal(inQueueProduct.getProductID())) {
@@ -979,8 +1028,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
                         insertIntoDB(inQueueProduct, dbViewModel);
                     }
-                } else
-                    insertIntoDB(NetProduct.get(i), dbViewModel);
+                } else*/
+                insertIntoDB(NetProduct.get(i), dbViewModel);
             }
 
 //            if (NetProduct.size() > 0/*mustUpdate[0]*/) {
@@ -1081,7 +1130,6 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 dbViewModel.insertProduct(product);
 
 
-
             } catch (Exception e) {
                 Log.d("Error", e.getMessage());
                 return;
@@ -1092,10 +1140,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             return;
         }
 
-        insertProperties(NetProduct,dbViewModel);
+        insertProperties(NetProduct, dbViewModel);
     }
 
-    private void insertProperties(ReceiveProductClass NetProduct, DBViewModel dbViewModel){
+    private void insertProperties(ReceiveProductClass NetProduct, DBViewModel dbViewModel) {
         try {
             Thread.sleep(10);
             for (ProductPropertisClass productPropertis : NetProduct.getProductPropertis()) {
@@ -1107,8 +1155,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 properties.UpdateTime = productPropertis.getUpdatTime();
                 dbViewModel.insertProperties(properties);
             }
-        }catch (Exception e){
-            Log.d("Error",e.getMessage());
+        } catch (Exception e) {
+            Log.d("Error", e.getMessage());
         }
     }
 
@@ -1206,6 +1254,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     @Override
     public void onResume() {
         super.onResume();
+        getAllProductFromDB(filterValue,filterOption);
        /* filterValue = "همه";
         filterAdapter.notifyDataSetChanged();*/
        /*if (productRecyclerViewAdapter != null) {
@@ -1516,14 +1565,15 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
         builder.setView(view);
         builder.setNeutralButton("لغو", (dialog, which) -> {
-            if (filterValue.equals("همه")) {
+            filterOption = FilterOption.RELATED;
+            getAllProductFromDB(filterValue, FilterOption.RELATED);
+       /*     if (filterValue.equals("همه")) {
+
                 dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                     @Override
                     public void onChanged(List<Product> products) {
                         productList = products;
-                        productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
-                        //productRecyclerViewAdapter.notifyDataSetChanged();
-                        initRecyclerView();
+                        productRecyclerViewAdapter.setData(products);
                     }
                 });
             } else {
@@ -1536,8 +1586,8 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                         initRecyclerView();
                     }
                 });
-            }
-            filterOption = FilterOption.RELATED;
+            }*/
+
             // btnRelated.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_tik, 0, 0, 0);
             dialog.dismiss();
         });
@@ -1574,14 +1624,16 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         //related
         btnRelated.setOnClickListener(v -> {
             filterOption = FilterOption.RELATED;
+            getAllProductFromDB(filterValue, filterOption);
             alertDialog.dismiss();
         });
 
         //cheapest price
         btnCheap.setOnClickListener(v -> {
             filterOption = FilterOption.CHEAP;
+            getAllProductFromDB(filterValue, FilterOption.CHEAP);
             alertDialog.dismiss();
-            dbViewModel.getProductOrderByPriceASC(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            /*dbViewModel.getProductOrderByPriceASC(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                 @Override
                 public void onChanged(List<Product> products) {
                     productList.clear();
@@ -1590,7 +1642,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
-            });
+            });*/
             //productRecyclerViewAdapter.sortCheapData();
 
         });
@@ -1598,8 +1650,9 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         //most expensive
         btnExpensive.setOnClickListener(v -> {
             filterOption = FilterOption.EXPENSIVE;
+            getAllProductFromDB(filterValue, filterOption);
             alertDialog.dismiss();
-            dbViewModel.getProductOrderByPriceDESC(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            /*dbViewModel.getProductOrderByPriceDESC(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                 @Override
                 public void onChanged(List<Product> products) {
                     productList.clear();
@@ -1608,15 +1661,16 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
-            });
+            });*/
             //productRecyclerViewAdapter.sortExpensiveData();
         });
 
         //most sell
         btnSell.setOnClickListener(v -> {
             filterOption = FilterOption.SELL;
+            getAllProductFromDB(filterValue, filterOption);
             alertDialog.dismiss();
-            dbViewModel.getProductOrderBySell(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            /*dbViewModel.getProductOrderBySell(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                 @Override
                 public void onChanged(List<Product> products) {
                     productList.clear();
@@ -1625,15 +1679,16 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
-            });
+            });*/
             //productRecyclerViewAdapter.sortMostSell();
         });
 
         //most view
         btnView.setOnClickListener(v -> {
             filterOption = FilterOption.VIEW;
+            getAllProductFromDB(filterValue, filterOption);
             alertDialog.dismiss();
-            dbViewModel.getProductOrderByViewCount(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            /*dbViewModel.getProductOrderByViewCount(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                 @Override
                 public void onChanged(List<Product> products) {
                     productList.clear();
@@ -1642,32 +1697,24 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
-            });
+            });*/
             //productRecyclerViewAdapter.sortMostView();
         });
 
         // new
         btnNew.setOnClickListener(v -> {
             filterOption = FilterOption.New;
+            getAllProductFromDB(filterValue, filterOption);
             alertDialog.dismiss();
-            dbViewModel.getProductOrderByNewest(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
-                @Override
-                public void onChanged(List<Product> products) {
-                    productList.clear();
-                    productList = products;
-                    productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
-                    //productRecyclerViewAdapter.notifyDataSetChanged();
-                    initRecyclerView();
-                }
-            });
-            //productRecyclerViewAdapter.sortByNewProduct();
+
 
         });
 
         btnOff.setOnClickListener(v -> {
             filterOption = FilterOption.OFF;
+            getAllProductFromDB(filterValue, filterOption);
             alertDialog.dismiss();
-            dbViewModel.getOffProduct(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+            /*dbViewModel.getOffProduct(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                 @Override
                 public void onChanged(List<Product> products) {
                     productList.clear();
@@ -1676,7 +1723,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     //productRecyclerViewAdapter.notifyDataSetChanged();
                     initRecyclerView();
                 }
-            });
+            });*/
         });
     }
 
