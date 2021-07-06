@@ -108,6 +108,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
 
         checker = getIntent().hasExtra("mode");
 
+
         if (getIntent().hasExtra("status")) {
             statusID = getIntent().getStringExtra("status");
         }
@@ -610,7 +611,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
 
             filterList.clear();
             for (SendOrderClass soc : orderList) {
-                if(soc.getCompanyID().equals(BaseCodeClass.CompanyID)) {
+                if (soc.getCompanyID().equals(BaseCodeClass.CompanyID)) {
 
                     if ((soc.getStatusID().equals("5") || soc.getStatusID().equals("6") || soc.getStatusID().equals("7")
                             || soc.getStatusID().equals("8") || soc.getStatusID().equals("9")) &&
@@ -629,7 +630,7 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     public void getReportsFromServer(boolean userMode) {
         try {
             getOnlineInformationClass = new GetOnlineInformationClass(MyStoreReportActivity.this, this);
-
+            String ssid = statusID;
 
             setDefaultColor(selectedLayout(statusID));
 

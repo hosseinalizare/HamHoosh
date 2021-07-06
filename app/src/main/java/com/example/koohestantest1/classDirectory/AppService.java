@@ -122,7 +122,7 @@ public class AppService extends Service {
                                                 showNotif(updateModeModel.getTitle(), updateModeModel.getMsge(), MyStoreOrderListActivity.class, notId,updateModeModel.getAction());
                                                 break;
                                             case UserOrder:
-                                                showNotifUserOrder(updateModeModel.getTitle(), updateModeModel.getMsge(), MyStoreReportActivity.class, notId, updateModeModel.getAction());
+                                                showNotif(updateModeModel.getTitle(), updateModeModel.getMsge(), MyStoreReportActivity.class, notId,updateModeModel.getAction());
                                                 break;
                                             case Notify:
                                                 break;
@@ -224,7 +224,7 @@ public class AppService extends Service {
                 if (description.contains("سفارش جدید")){
                     intent = new Intent(this, MyStoreOrderListActivity.class);
 
-                }else if (title.contains("لغو شده توسط فروشگاه")){
+                }else if (title.contains("لغو شده توسط فروشگاه") || title.contains("در حال آماده") || title.contains("در حال ارسال") || title.contains("آماده تحویل") || title.contains("تحویل شده")){
                     intent = new Intent(this, MyStoreReportActivity.class);
                 }else {
                     intent = new Intent(this, targetActivity);
@@ -238,8 +238,8 @@ public class AppService extends Service {
             //getter = company(others)
             intent.putExtra("getter", companyId);
             intent.putExtra("state_message_sender", 0);
-
             intent.putExtra("status", action);
+
             intent.putExtra("mode", "user");
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
