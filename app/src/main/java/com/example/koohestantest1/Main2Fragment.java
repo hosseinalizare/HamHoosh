@@ -131,7 +131,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
     private static final int ACTIVITY_NU = 0;
     private final int recyclerSize = 20;
     int i = 0;
-    private FilterOption filterOption = FilterOption.RELATED;
+    private FilterOption filterOption = FilterOption.NON;
     private View view;
     private SwipeRefreshLayout swipeRefreshLayout;
     private boolean checkUpdateProduct = false;
@@ -600,8 +600,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
             }
 
         });
-        productList.add(null);
-        initRecyclerView();
+
         countsViewModel.getCount().observe(getViewLifecycleOwner(), count -> {
             if (count.getUserDetails().getNewMsg() == 0)
                 badgeChatCount.setVisible(false);
@@ -660,15 +659,17 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 updateData(CompanyID);
             }
         };*/
+        getAllProductFromDB("همه", FilterOption.NON);
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("baseInfo", Context.MODE_PRIVATE);
         boolean isFirstUse = sharedPreferences.getBoolean("isFirstUse", true);
         if (isFirstUse)
             loadProductFromServer(CompanyID);
-        else
+        else {
             getLastUpdateDate();
+        }
 
 
-        getAllProductFromDB("همه", FilterOption.NON);
+
 
         /*dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
             @Override
@@ -721,6 +722,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 getViewProductLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                     @Override
                     public void onChanged(List<Product> products) {
+
                         productList.clear();
                         productList = products;
                         getViewProductLiveData.removeObserver(this);
@@ -770,6 +772,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 getFilteredProductLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                     @Override
                     public void onChanged(List<Product> products) {
+                        productList.clear();
                         productList = products;
                         getFilteredProductLiveData.removeObserver(this);
                         productRecyclerViewAdapter.setData(products);
@@ -787,9 +790,15 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                             productList.add(convertPwpToProduct(pwp));
 
                         }
-                        if (productWithProperties.size() != 0)
-                            allProductsLiveData.removeObserver(this);
-                        analyzeReceiveProduct(productList);
+                        if (productWithProperties != null && productWithProperties.size() != 0) {
+
+                            analyzeReceiveProduct(productList);
+                        }else{
+                            productList.clear();
+                            productList.add(null);
+                            initRecyclerView();
+                        }
+                        allProductsLiveData.removeObserver(this);
 
                     }
                 });
@@ -898,6 +907,40 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
+            TapTarget btnCRMMessage = TapTarget.forView(view.findViewById(R.id.chatList), "لیست پیام ها", "به پیام هاتون از اینجا دسترسی داشته باشین")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+
+            TapTarget btnNewsLetter = TapTarget.forView(view.findViewById(R.id.newsLetter), "خبرنامه", "خبرهای جدید مربوط به فروشگاه رو از اینجا بخون")
+                    .cancelable(false)
+                    .drawShadow(true)
+                    .dimColor(android.R.color.tab_indicator_text)
+                    .outerCircleColor(android.R.color.holo_blue_dark)
+                    .targetCircleColor(android.R.color.holo_green_dark)
+                    .transparentTarget(true)
+                    .targetRadius(32)
+                    .outerCircleAlpha(0.96f)
+                    .titleTextSize(15)
+                    .descriptionTextSize(12)
+                    .descriptionTextColor(android.R.color.white)
+                    .textColor(android.R.color.holo_blue_bright)
+                    .titleTextColor(android.R.color.white)
+                    .tintTarget(false);
+
+
+
             TapTarget btnGoBasket = TapTarget.forView(view.findViewById(R.id.iv_cart), "سبد خرید", "هروقت محصولت رو به سبد خرید اضافه کردی، از اینجا می تونی سبدت رو ویرایش کنی")
                     .cancelable(false)
                     .drawShadow(true)
@@ -914,7 +957,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
-            sequence.targets(btnFilterTarget, btnSortTarget, btnGoProfileTarget, btnGoBasket);
+            sequence.targets(btnFilterTarget, btnSortTarget, btnGoProfileTarget,btnCRMMessage,btnNewsLetter, btnGoBasket);
             try {
                 sequence.listener(new TapTargetSequence.Listener() {
                     @Override
@@ -1047,7 +1090,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 //                });
 //
             //   }
-
+            getAllProductFromDB("همه", FilterOption.NON);
             swipeRefreshLayout.setRefreshing(false);
         } catch (Exception e) {
             Log.d("Error", e.getMessage());
@@ -1339,13 +1382,14 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 
     private void initRecyclerView() {
         try {
+
             if (productList != null && productList.size() > 0) {
 
                 final LinearLayoutManager layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
                 layoutManagerProduct = layoutManager;
                 //layoutManager.setReverseLayout(true);
                 productRecyclerView.setLayoutManager(layoutManager);
-                if ((productRecyclerViewAdapter == null || productList.size() > 1) ||
+                if ((productRecyclerViewAdapter == null || productList.size() > 0) ||
                         (productRecyclerViewAdapter != null && productList.size() > 0))
                     productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
                 productRecyclerView.setAdapter(productRecyclerViewAdapter);
