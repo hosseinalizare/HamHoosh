@@ -219,4 +219,9 @@ public interface LocalApi {
     @Query("SELECT * FROM products " +
             "WHERE card_item_count > 0 AND deleted <> 1 AND deleted1 <> 1 AND show <> 0")
     Flowable<List<ProductWithProperties>> getAddToCardProductWithProperties();
+
+    @Transaction
+    @Query("SELECT * FROM products " +
+            "WHERE deleted <> 1 AND deleted1 <> 1 AND show <> 0")
+    Flowable<List<ProductWithProperties>> getAllProductAndProperties();
 }

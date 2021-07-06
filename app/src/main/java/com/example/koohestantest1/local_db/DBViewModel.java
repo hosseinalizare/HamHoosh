@@ -336,4 +336,8 @@ public class DBViewModel extends AndroidViewModel {
     public LiveData<List<ProductWithProperties>> getAddToCardProductWithProperties(){
         return LiveDataReactiveStreams.fromPublisher(repository.getAddToCardProductWithProperties());
     }
+
+    public LiveData<List<ProductWithProperties>> getAllProductAndProperties(){
+        return LiveDataReactiveStreams.fromPublisher(repository.getAllProductAndProperties());
+    }
 }
