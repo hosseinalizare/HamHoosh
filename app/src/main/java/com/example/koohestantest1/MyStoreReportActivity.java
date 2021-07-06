@@ -630,7 +630,6 @@ public class MyStoreReportActivity extends AppCompatActivity implements CartApi,
     public void getReportsFromServer(boolean userMode) {
         try {
             getOnlineInformationClass = new GetOnlineInformationClass(MyStoreReportActivity.this, this);
-            String ssid = statusID;
 
             setDefaultColor(selectedLayout(statusID));
 
