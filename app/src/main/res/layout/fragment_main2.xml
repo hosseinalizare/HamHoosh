@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
 
     <!-- top toolbar -->
@@ -67,31 +67,33 @@
                         android:scaleType="fitCenter" />
 
                 </FrameLayout>
+
                 <ImageView
-                    app:layout_constraintStart_toEndOf="@id/frame_user_chat"
-                    app:layout_constraintEnd_toStartOf="@id/newsLetter"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:id="@+id/chatList"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_baseline_chat_24"/>
+                    android:src="@drawable/ic_baseline_chat_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/newsLetter"
+                    app:layout_constraintStart_toEndOf="@id/frame_user_chat"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <FrameLayout
                     android:id="@+id/newsLetter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/chatList"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/frame_cart_icon"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintStart_toEndOf="@id/chatList"
+                    app:layout_constraintTop_toTopOf="parent">
+
                     <ImageView
 
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_auto_stories"/>
+                        android:src="@drawable/ic_auto_stories" />
                 </FrameLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
