@@ -143,6 +143,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
         /*Log.d(TAG, "onCreate: " + selectedPid);
         Log.d(TAG, "onCreate: " + selectedProduct.ProductName);*/
+                    showController(selectedProduct.AddToCard);
                     int stock = selectedProduct.Discontinued;
                     if (stock == 0) {
                         btnAddToCart.setVisibility(View.GONE);
@@ -169,7 +170,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
                     Log.d(TAG, "onCreate: isliked " + selectedProduct.Likeit);
                     Log.d(TAG, "onCreate: " + selectedProduct.Likeit);
-                    showController(selectedProduct.AddToCard);
+
 
                 }
             });

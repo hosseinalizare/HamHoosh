@@ -268,7 +268,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
                             final ProgressButton progressButton = new ProgressButton(mContext, view_);
                             progressButton.buttonActivated("در حال ایجاد حساب کاربری");
 
-                            //TODO Save token,Username and Password into DB or SP
+
                             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("baseInfo",MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("token",token);
@@ -292,6 +292,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
                             }, 3000);
                         } else {
                             toastMessage(getSignUp.getMsg());
+                            view.findViewById(R.id.btnSignUp).setEnabled(true);
                         }
                     }
 
