@@ -741,8 +741,15 @@ public class AddProductActivity extends AppCompatActivity {
     }//end OnCreate
 
     public void newDownloadImage(String pid, ImageView _imageView) {
-        String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
-        Glide.with(mContext).load(url).into(_imageView);
+
+        if (mainBitmap !=null){
+            Glide.with(mContext).load(mainBitmap).into(_imageView);
+
+        }else {
+            String url = baseCodeClass.BASE_URL + "Products/DownloadFile?ProductID=" + pid + "&fileNumber=1";
+            Glide.with(mContext).load(url).into(_imageView);
+        }
+
     }
 
     private boolean ISParticular(String reOrder) {
@@ -775,6 +782,8 @@ public class AddProductActivity extends AppCompatActivity {
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setMultiTouchEnabled(true)
                     .start(this);
+
+
         } catch (Exception e) {
             logMessage("AddProduct 399 >> " + e.getMessage(), this);
         }
@@ -806,43 +815,6 @@ public class AddProductActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-/*
-        manageChooseImageInOnResult1(requestCode,resultCode,data);
-*/
-
-
-//        if (requestCode == PICK_IMAGE /*&& requestCode == RESULT_OK && data != null*/) {
-////            Uri imageData = data.getData();
-////            //imageProduct.setImageURI(imageData);
-////            imagePath = getPathFromURI(mContext, imageData);
-////            try {
-//////                imageList.add(new SlideModel(String.valueOf(imageData), ScaleTypes.CENTER_INSIDE));
-//////                imageList.add(new SlideModel(R.drawable.ic_add_photo, ScaleTypes.CENTER_INSIDE));
-//////                imageSlider.setImageList(imageList, ScaleTypes.FIT);
-//////                imageSlider.stopSliding();
-//////                imageSlider.setItemClickListener(new ItemClickListener() {
-//////                    @Override
-//////                    public void onItemSelected(int i) {
-//////                        try {
-//////                            if (i+1 == imageList.size()) {
-//////                                Intent intent = new Intent("com.android.camera.action.CROP");
-//////                                intent.setType("image/*");
-//////                                imageList.remove(i);
-////////            intent.putExtra("crop", "true");
-//////                                intent.setAction(Intent.ACTION_GET_CONTENT);
-//////                                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-//////                            }
-//////                        }catch (Exception e){
-//////                            Toast.makeText(AddProductActivity.this,e.getMessage().toString(), Toast.LENGTH_SHORT).show();
-//////                        }
-//////                        toastMessage("" + i);
-////                    }
-////                });
-////            }catch (Exception e){
-////                toastMessage(e.getMessage());
-////            }
-////            Toast.makeText(MyStroreFragment.this,imagePath, Toast.LENGTH_SHORT).show();
-//        }
         try {
             if (requestCode == CAMERA_REQUEST_CODE) {
                 Bitmap image = (Bitmap) data.getExtras().get("data");
@@ -856,35 +828,16 @@ public class AddProductActivity extends AppCompatActivity {
         } catch (Exception e) {
             logMessage("AddProduct 603 >> " + e.getMessage(), this);
         }
-//
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            if (resultCode == RESULT_OK) {
-//                try {
-//                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
-//                    mAddImage.add(bitmap);
-//                    imagePath = getPathFromURI(mContext, result.getUri());
-//                    imageView.setImageBitmap(bitmap);
-//
-//
-//                    initImageProductRecyclerView();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(mContext, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK ) {
+
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result.getUri());
-                    Glide.with(this).load(bitmap)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(imageView);
                     mainBitmap = bitmap;
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -1082,11 +1035,11 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void editProduct() {
         try {
-                productPropertisClasses.clear();
-                for(int i = 0;adapter.mName.size() > i;i++){
+            productPropertisClasses.clear();
+            for (int i = 0; adapter.mName.size() > i; i++) {
                 productPropertisClasses.add(new ProductPropertisClass(null, "مشخصات اصلی", adapter.mName.get(i), adapter.mValues.get(i), null));
-                }
-                mainSendProductClass.setProductPropertis(productPropertisClasses);
+            }
+            mainSendProductClass.setProductPropertis(productPropertisClasses);
             /*Prod
             for(int i = 0;i < productPropertisClasses.size();i++){
 
@@ -1543,7 +1496,7 @@ public class AddProductActivity extends AppCompatActivity {
                 adapter.mName.add(EdProperty.getText().toString());
                 adapter.mValues.add(EdPropertyValue.getText().toString());
                 productPropertisClasses.clear();
-                for(int i = 0;adapter.mName.size() > i;i++){
+                for (int i = 0; adapter.mName.size() > i; i++) {
                     productPropertisClasses.add(new ProductPropertisClass(null, "مشخصات اصلی", adapter.mName.get(i), adapter.mValues.get(i), null));
                 }
                 EdProperty.setText("");
