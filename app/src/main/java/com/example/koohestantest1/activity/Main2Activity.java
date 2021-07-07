@@ -98,17 +98,16 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         ////// save userId into sharedPrefrence
-      String uId =  SharedPreferenceUtils.getUserId(this);
-      if (uId ==null){
-          SharedPreferenceUtils.saveUserId(this,BaseCodeClass.userID);
+        String uId = SharedPreferenceUtils.getUserId(this);
+        if (uId == null) {
+            SharedPreferenceUtils.saveUserId(this, BaseCodeClass.userID);
 
-      }
+        }
 
         dbViewModel = new ViewModelProvider(this).get(DBViewModel.class);
         ///// start service ////
         myServiceIntent = new Intent(this, AppService.class);
         startService(myServiceIntent);
-
 
 
 //
@@ -166,7 +165,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
 
 
         //get cart count in local db
-        localCartViewModel.getCartCount().observe(this, integer -> {
+        /*localCartViewModel.getCartCount().observe(this, integer -> {
 
             //there is no cart, crate one
             if (integer == 0) {
@@ -176,10 +175,10 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
 
                 localCartViewModel.insertCart(cartInformation);
             }
-        });
+        });*/
 
         //listen for new cart id
-        localCartViewModel.getInsertedCartId().observe(this, CurrentCartId::setId);
+        //localCartViewModel.getInsertedCartId().observe(this, CurrentCartId::setId);
         appHelp();
     }
 
@@ -267,6 +266,8 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
             hideCurrentFragment();
             switch (item.getItemId()) {
                 case R.id.ic_shoppingCenter:
+                    if (selectedFragment != main2Fragment)
+                        main2Fragment.refresh();
                     fm.beginTransaction().show(main2Fragment).commit();
                     selectedFragment = main2Fragment;
                     PageShow = ShoppCenter;
@@ -352,7 +353,8 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
             cartFragment = new CartFragment();
             fm.beginTransaction().add(R.id.main2Container, cartFragment).commit();
         }
-        fm.beginTransaction().
+//        cartFragment = new CartFragment();
+        /*fm.beginTransaction().
 
                 show(cartFragment).
 
@@ -360,7 +362,8 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
 
                 attach(cartFragment).
 
-                commit();
+                commit();*/
+        fm.beginTransaction().show(cartFragment).commit();
 
         selectedFragment = cartFragment;
         PageShow = cartpage;
@@ -380,7 +383,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
 
     }
 
-
+/*
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -392,7 +395,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                 bottomNavigationView.setSelectedItemId(R.id.ic_cart);
             }
         }
-    }
+    }*/
 
     private void appHelp() {
 
@@ -535,10 +538,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
         startService(myServiceIntent);
 
 
-
     }
-
-
 
 
 }

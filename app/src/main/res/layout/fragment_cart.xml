@@ -11,8 +11,10 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_below="@id/productNavigationViewBar">
+            <include android:id="@+id/loadLayout" layout="@layout/load_basket"/>
             <include android:id="@+id/singUpLayout" layout="@layout/layout_empty_cart" />
             <include android:id="@+id/profileLayout" layout="@layout/layout_exist_cart" />
+
         </ViewFlipper>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>

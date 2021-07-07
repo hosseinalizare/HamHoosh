@@ -1295,32 +1295,14 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         }
     }
 
+    public void refresh(){
+        getAllProductFromDB(filterValue,filterOption);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        getAllProductFromDB(filterValue,filterOption);
-       /* filterValue = "همه";
-        filterAdapter.notifyDataSetChanged();*/
-       /*if (productRecyclerViewAdapter != null) {
-            productRecyclerViewAdapter.notifyDataSetChanged();
-            if (productRecyclerViewAdapter.getFilter() != null)
-                productRecyclerViewAdapter.getFilter().filter(filterValue);
 
-        }*/
-        //TODO
-
-        /* dbViewModel.getSubCat2Product(filterValue).observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
-            @Override
-            public void onChanged(List<Product> products) {
-                productList = products;
-                if (productList == null || productList.size() == 0)
-                    return;
-                productRecyclerViewAdapter = new ProductRecyclerViewAdapter(mContext, productList, badgeSharedViewModel, localCartViewModel, getChildFragmentManager(), dbViewModel, getViewLifecycleOwner(), Main2Fragment.this);
-                //productRecyclerViewAdapter.notifyDataSetChanged();
-                initRecyclerView();
-            }
-        });
-        countsViewModel.callForCounts(baseCodeClass.getUserID(), baseCodeClass.getToken(), baseCodeClass.getCompanyID());*/
     }
 
     @Override

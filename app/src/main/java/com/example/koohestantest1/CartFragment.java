@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -216,8 +217,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
         cartApi = retrofit.create(CartApi.class);
 
 
-        //handle viewflipper for showing views
-        handleViewFlipper();
+
 
 
         btnAddCart.setOnClickListener(v -> {
@@ -235,9 +235,9 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
     private void handleViewFlipper() {
         Log.d(TAG, "handleViewFlipper: ");
         if (productPropertiesList == null || productPropertiesList.size() == 0) {
-            vf.setDisplayedChild(0);
-        } else {
             vf.setDisplayedChild(1);
+        } else {
+            vf.setDisplayedChild(2);
             initRecyclerView();
             //calcPrice();
             Log.d(TAG, "handleViewFlipper:2 ");
@@ -332,7 +332,7 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
             try {
                 if (allAddress.size() > 0) {
                     if (selectedAddress != null) {
-                        Log.d(TAG, "getLocationData: 1 " + productPropertiesList.get(0).getProduct().Spare1);
+                        //Log.d(TAG, "getLocationData: 1 " + productPropertiesList.get(0).getProduct().Spare1);
                         addressInCart.setText(selectedAddress.getAddress1());
                     } else {
                         String s = allAddress.get(0).getAddress1();
@@ -749,12 +749,14 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
                                 } else {
                                     toastMessage("سفارش شما با موفقیت ثبت شد");
+                                    btnAddCart.setEnabled(true);
                                 }
 
                                 //sendOrderClass = new SendOrderClass();
 
                                 vf.setDisplayedChild(0);
-                                dbViewModel.getAddedToCard().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
+                                LiveData<List<Product>> updateBasketLiveData = dbViewModel.getAddedToCard();
+                                updateBasketLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                                     @Override
                                     public void onChanged(List<Product> products) {
                                         for (Product a : products) {
@@ -762,6 +764,8 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                                             a.CartItemCount = 0;
                                             dbViewModel.updateProduct(a);
                                         }
+
+                                        updateBasketLiveData.removeObserver(this);
                                     }
                                 });
 
@@ -776,11 +780,12 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                         @Override
                         public void onFailure(Call<GetResualt> call, Throwable t) {
                             Log.d("Error", t.getMessage());
-                            //btnAddCart.setEnabled(true);
+                            btnAddCart.setEnabled(true);
                         }
                     });
                 } else {
                     toastMessage("لطفا یکی از روش های پرداخت را انتخاب نمایید.");
+                    btnAddCart.setEnabled(true);
                 }
             } else {
                 showDialogChooseAddress();
