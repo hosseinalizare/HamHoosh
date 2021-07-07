@@ -18,6 +18,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,6 +100,9 @@ public class ActivityProfile extends AppCompatActivity {
             actionBar.setSubtitle("on");*/
 
         }
+
+
+
 
 
         fbMessage.setOnClickListener(v -> {
@@ -164,6 +169,7 @@ public class ActivityProfile extends AppCompatActivity {
                 txtNuOfProduct.setText(profileModel.getProductCount());
                 actionBar.setTitle(profileModel.getCompanyName());
                 actionBar.setSubtitle(profileModel.getOnlineTime());
+
 
                 Glide.with(ActivityProfile.this).load(generateUrlCompanyPicture(profileModel.getCompanyId())).placeholder(R.drawable.image_placeholder).into(imgProfile);
 

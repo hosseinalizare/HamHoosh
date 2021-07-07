@@ -24,15 +24,17 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.SubtitleCollapsingToolbarLayout
+
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="350dp"
             android:fitsSystemWindows="true"
             app:collapsedTitleGravity="left"
             app:contentScrim="@color/colorPrimary"
-            app:expandedTitleGravity="left"
+            app:expandedTitleGravity="left|bottom"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="64dp"
+            app:toolbarId="@+id/activityProfile_toolbar"
             app:expandedTitleTextAppearance="@color/transparent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <ImageView
@@ -46,14 +48,14 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="88dp"
+                android:layout_height="50dp"
                 android:background="@drawable/scrim_top"
                 app:layout_collapseMode="pin"/>
 
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="65dp"
                 android:layout_alignBottom="@+id/img_activityProfile_imgProfile"
                 android:layout_gravity="bottom"
                 android:background="@drawable/scrim_bottom" />
@@ -65,7 +67,7 @@
                 android:background="@color/colorPrimary"
                 app:titleTextAppearance="@style/Theme.ToolBar.App.Title"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
         </com.google.android.material.appbar.SubtitleCollapsingToolbarLayout>
 
 
