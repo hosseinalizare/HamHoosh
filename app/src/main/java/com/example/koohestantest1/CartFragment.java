@@ -762,13 +762,12 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
                                 updateBasketLiveData.observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
                                     @Override
                                     public void onChanged(List<Product> products) {
+                                        updateBasketLiveData.removeObserver(this);
                                         for (Product a : products) {
                                             a.AddToCard = false;
                                             a.CartItemCount = 0;
                                             dbViewModel.updateProduct(a);
                                         }
-
-                                        updateBasketLiveData.removeObserver(this);
                                     }
                                 });
 
