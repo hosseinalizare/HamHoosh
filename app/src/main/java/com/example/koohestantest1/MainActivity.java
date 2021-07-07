@@ -198,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 EdPhoneNo.setBackgroundResource(R.drawable.edittextrongnmobile);
                 TextView tvMessage = (TextView)findViewById(R.id.tvMsg);
                 tvMessage.setText("لطفا شماره تلفن همراه خود را به درستی وارد کنید");
+                findViewById(R.id.btnGetCode).setEnabled(true);
                 return;
             }
 

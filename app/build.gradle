@@ -107,6 +107,12 @@ android {
             applicationIdSuffix '.demo'
             versionNameSuffix '-demo'
         }
+
+        app_yazdi{
+            dimension "version"
+            applicationIdSuffix '.yazdi'
+            versionNameSuffix '-yazdi'
+        }
     }
 }
 

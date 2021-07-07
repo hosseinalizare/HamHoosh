@@ -660,7 +660,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 updateData(CompanyID);
             }
         };*/
-        getAllProductFromDB("همه", FilterOption.NON);
+        getAllProductFromDB("همه", filterOption);
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("baseInfo", Context.MODE_PRIVATE);
         boolean isFirstUse = sharedPreferences.getBoolean("isFirstUse", true);
         if (isFirstUse)
@@ -1075,6 +1075,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 } else*/
                 insertIntoDB(NetProduct.get(i), dbViewModel);
             }
+            getAllProductFromDB(filterValue,filterOption);
 
 //            if (NetProduct.size() > 0/*mustUpdate[0]*/) {
 //                dbViewModel.getAllProducts().observe(getViewLifecycleOwner(), new Observer<List<Product>>() {
@@ -1091,7 +1092,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
 //                });
 //
             //   }
-            getAllProductFromDB("همه", FilterOption.NON);
+            //getAllProductFromDB("همه", FilterOption.NON);
             swipeRefreshLayout.setRefreshing(false);
         } catch (Exception e) {
             Log.d("Error", e.getMessage());
@@ -1113,8 +1114,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
         /*if(ProductExistinLocal(NetProduct.getProductID())) {
             return;
         }*/
-        if (allProductsPId.contains(NetProduct.getProductID()))
-            return;
+        if (allProductsPId.contains(NetProduct.getProductID())){
+            //return;
+        }
+
         else {
             allProductsPId.add(NetProduct.getProductID());
         }
