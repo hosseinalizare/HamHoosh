@@ -599,6 +599,7 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                 cartTransitionInterface.onCartClickListener();
             }
 
+
         });
 
         countsViewModel.getCount().observe(getViewLifecycleOwner(), count -> {
@@ -868,10 +869,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
@@ -884,10 +885,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
@@ -900,10 +901,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
@@ -916,10 +917,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
@@ -932,10 +933,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
@@ -950,10 +951,10 @@ public class Main2Fragment extends Fragment implements LoadProductApi, ViewTreeO
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 

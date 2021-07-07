@@ -190,7 +190,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
     }*/
 
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
+   /* private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
         try {
             Fragment fragment = new Fragment();
             switch (item.getItemId()) {
@@ -211,10 +211,10 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     fragment = new ProfileFragment();
                     break;
             }
-            
+
             fm.beginTransaction().replace(R.id.main2Container, fragment).commit();
             //hideCurrentFragment();
-            /*switch (item.getItemId()) {
+            *//*switch (item.getItemId()) {
                 case R.id.ic_shoppingCenter:
                     fm.beginTransaction().show(main2Fragment).commit();
                     selectedFragment = main2Fragment;
@@ -254,7 +254,56 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     selectedFragment = profileFragment;
                     PageShow = myProfile;
                     break;
-            }*/
+            }*//*
+            return true;
+        } catch (Exception e) {
+            toastMessage("onNavigationItemSelected :" + e.getMessage());
+            return false;
+        }
+    };*/
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = item -> {
+        try {
+            hideCurrentFragment();
+            switch (item.getItemId()) {
+                case R.id.ic_shoppingCenter:
+                    fm.beginTransaction().show(main2Fragment).commit();
+                    selectedFragment = main2Fragment;
+                    PageShow = ShoppCenter;
+                    break;
+                case R.id.ic_search:
+                    if (explorerFragment == null) {
+                        explorerFragment = new ExplorerFragment();
+                        fm.beginTransaction().add(R.id.main2Container, explorerFragment).commit();
+                    }
+                    fm.beginTransaction().show(explorerFragment).commit();
+                    selectedFragment = explorerFragment;
+                    PageShow = Search;
+                    break;
+                case R.id.ic_myStore:
+                    PageShow = myStor;
+                    if (myStoreFragment == null) {
+                        myStoreFragment = new MyStoreFragment();
+                        fm.beginTransaction().add(R.id.main2Container, myStoreFragment).commit();
+                    }
+                    fm.beginTransaction().show(myStoreFragment).commit();
+                    selectedFragment = myStoreFragment;
+//                    bottomNavClick = R.id.ic_myStore;
+                    //         PageShow = myStor;
+                    break;
+                case R.id.ic_cart:
+                    showCartFragment();
+                    break;
+                case R.id.ic_profile:
+                    if (profileFragment == null) {
+                        profileFragment = new ProfileFragment();
+                        fm.beginTransaction().add(R.id.main2Container, profileFragment).commit();
+                    }
+                    fm.beginTransaction().show(profileFragment).commit();
+                    selectedFragment = profileFragment;
+                    PageShow = myProfile;
+                    break;
+            }
             return true;
         } catch (Exception e) {
             toastMessage("onNavigationItemSelected :" + e.getMessage());
@@ -299,7 +348,7 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
 
     private void showCartFragment() {
 
-       /* if (cartFragment == null) {
+        if (cartFragment == null) {
             cartFragment = new CartFragment();
             fm.beginTransaction().add(R.id.main2Container, cartFragment).commit();
         }
@@ -314,10 +363,8 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                 commit();
 
         selectedFragment = cartFragment;
-        PageShow = cartpage;*/
-        Fragment fragment = new CartFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main2Container,fragment).commit();
+        PageShow = cartpage;
+
 
     }
 
@@ -365,10 +412,10 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
             TapTarget searchTarget = TapTarget.forView(bottomNavigationView.findViewById(R.id.ic_search), "جستجو", "از طریق این صفحه می تونی محصول موردنظر خودت رو جستجو کنی")
@@ -380,10 +427,10 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
@@ -396,10 +443,10 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
@@ -412,10 +459,10 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
@@ -428,10 +475,10 @@ public class Main2Activity extends AppCompatActivity implements CartTransitionIn
                     .transparentTarget(true)
                     .targetRadius(32)
                     .outerCircleAlpha(0.96f)
-                    .titleTextSize(15)
-                    .descriptionTextSize(12)
+                    .titleTextSize(18)
+                    .descriptionTextSize(15)
                     .descriptionTextColor(android.R.color.white)
-                    .textColor(android.R.color.holo_blue_bright)
+                    .textColor(android.R.color.white)
                     .titleTextColor(android.R.color.white)
                     .tintTarget(false);
 
