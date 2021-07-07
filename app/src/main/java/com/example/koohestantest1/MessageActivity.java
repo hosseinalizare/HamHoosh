@@ -266,7 +266,7 @@ public class MessageActivity extends AppCompatActivity implements MessageApi, Se
                     showBottomSheetFilePicker();
                 } else {
 
-                    EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
+                    EasyPermissions.requestPermissions(this, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد!", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
 
                 }
 

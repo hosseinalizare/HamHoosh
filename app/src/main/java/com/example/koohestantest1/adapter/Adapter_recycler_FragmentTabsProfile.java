@@ -1,5 +1,6 @@
 package com.example.koohestantest1.adapter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
@@ -52,6 +53,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -60,12 +63,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements EasyPermissions.PermissionCallbacks {
     private final int PICTURE = 0;
     private final int VIDEO = 1;
     private final int FILE = 2;
@@ -89,6 +93,11 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
     private boolean play2 = false;
     private boolean myStore = false;
     private String childDirectory;
+
+    private String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+    private String permission2 = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    public static final int READ_STORAGE_PERMISSION_REQUEST = 1307;
+
 
 
     public Adapter_recycler_FragmentTabsProfile(Context context, List<FieldList> fieldLists) {
@@ -207,6 +216,25 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         return fieldLists.size();
     }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull @NotNull List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull @NotNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied((Activity) context, perms)) {
+            new AppSettingsDialog.Builder((Activity) context).build().show();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+
+    }
+
     public class TabViewHolder extends RecyclerView.ViewHolder {
         TextView txtValue, txtTitle, txtExplain, txtValueType, txtClickActionType, txtFieldDate, txtExtraData, txtId;
 
@@ -282,15 +310,21 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
             imgPlay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (imgPlay.getContentDescription().equals("not_downloaded")) {
-                        downloadVideo(progressBar, imgPlay, txtPersent, fieldList.getValue(),generateUrl(Integer.parseInt(fieldList.getId())));
+                    if (!EasyPermissions.hasPermissions(context, permission,permission2)) {
+                        EasyPermissions.requestPermissions((Activity) context, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد! ", READ_STORAGE_PERMISSION_REQUEST, permission);
+                    }else {
+                        if (imgPlay.getContentDescription().equals("not_downloaded")) {
+                            downloadVideo(progressBar, imgPlay, txtPersent, fieldList.getValue(),generateUrl(Integer.parseInt(fieldList.getId())));
 
-                    } else {
-                        playVideo(file.getAbsolutePath());
+                        } else {
+                            playVideo(file.getAbsolutePath());
                       /*  Intent intent = new Intent(context, ActivityVideoPlay.class);
                         intent.putExtra("videoName",fieldList.getValue());
                         context.startActivity(intent);*/
+                        }
                     }
+
+
 
                 }
             });
@@ -331,10 +365,14 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
 
 
             imageView.setOnClickListener(v -> {
-                if (imageView.getContentDescription().equals("not_downloaded")) {
-                    downloadFile(prg, imageView, txtPersent, fieldList.getValue(), generateUrl(Integer.parseInt(fieldList.getId())));
-                } else {
-                    openFile(context, file);
+                if (!EasyPermissions.hasPermissions(context, permission,permission2)) {
+                    EasyPermissions.requestPermissions((Activity) context, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد! ", READ_STORAGE_PERMISSION_REQUEST, permission);
+                }else {
+                    if (imageView.getContentDescription().equals("not_downloaded")) {
+                        downloadFile(prg, imageView, txtPersent, fieldList.getValue(), generateUrl(Integer.parseInt(fieldList.getId())));
+                    } else {
+                        openFile(context, file);
+                    }
                 }
 
             });
@@ -377,23 +415,29 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
 
 
             imageView.setOnClickListener(v -> {
-                if (imageView.getContentDescription().equals("not_downloaded")) {
-                    downloadFile(prg, imageView, txtPersent, fieldList.getValue(), fieldList.getEXtraData());
-                } else {
-                    if (play) {
-                        initPlayedMusic();
-                        imageView.setImageResource(R.drawable.ic_play_music_blue);
-                        yoYoString.stop(true);
-                        stop(mediaPlayer);
-                        playPosition = -1;
-                        play = false;
-
-
+                if (!EasyPermissions.hasPermissions(context, permission,permission2)) {
+                    EasyPermissions.requestPermissions((Activity) context, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد! ", READ_STORAGE_PERMISSION_REQUEST, permission);
+                }else {
+                    if (imageView.getContentDescription().equals("not_downloaded")) {
+                        downloadFile(prg, imageView, txtPersent, fieldList.getValue(), fieldList.getEXtraData());
                     } else {
-                        playMusic(file.getAbsolutePath(), imageView);
-                        playPosition = position;
+                        if (play) {
+                            initPlayedMusic();
+                            imageView.setImageResource(R.drawable.ic_play_music_blue);
+                            yoYoString.stop(true);
+                            stop(mediaPlayer);
+                            playPosition = -1;
+                            play = false;
+
+
+                        } else {
+                            playMusic(file.getAbsolutePath(), imageView);
+                            playPosition = position;
+                        }
                     }
                 }
+
+
 
             });
 
@@ -643,54 +687,57 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
     }
 
     private void downloadFile(ProgressBar progressBar, CircularImageView imageView, TextView txtPersent, String fileName, String link) {
-        progressBar.setVisibility(View.VISIBLE);
-        txtPersent.setVisibility(View.VISIBLE);
-        Uri uri = Uri.parse(link);
-        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setTitle("در حال دانلود");
-        request.setDescription("لطفا منتظر بمانید...");
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/"+childDirectory+"/" + fileName);
+
+            progressBar.setVisibility(View.VISIBLE);
+            txtPersent.setVisibility(View.VISIBLE);
+            Uri uri = Uri.parse(link);
+            DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            DownloadManager.Request request = new DownloadManager.Request(uri);
+            request.setTitle("در حال دانلود");
+            request.setDescription("لطفا منتظر بمانید...");
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "/"+childDirectory+"/" + fileName);
 
 
-        final long id = downloadManager.enqueue(request);
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                DownloadManager.Query query = new DownloadManager.Query();
-                query.setFilterById(id);
-                Cursor cursor = downloadManager.query(query);
-                if (cursor.moveToFirst()) {
-                    long downloadedBytes = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+            final long id = downloadManager.enqueue(request);
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    DownloadManager.Query query = new DownloadManager.Query();
+                    query.setFilterById(id);
+                    Cursor cursor = downloadManager.query(query);
+                    if (cursor.moveToFirst()) {
+                        long downloadedBytes = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
 
-                    long totalBytes = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-                    final int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                    final int percent = (int) ((downloadedBytes * 100) / totalBytes);
-                    ((Activity) context).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressBar.setProgress(percent);
-                            txtPersent.setText(" % " + percent);
-                            if (percent == 100) {
-                                Toast.makeText(context, "دانلود با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
-                                timer.purge();
-                                timer.cancel();
-                                imageView.setImageResource(R.drawable.ic_file_blue);
-                                imageView.setContentDescription("downloaded");
-                                progressBar.setVisibility(View.GONE);
-                                txtPersent.setVisibility(View.GONE);
+                        long totalBytes = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                        final int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                        final int percent = (int) ((downloadedBytes * 100) / totalBytes);
+                        ((Activity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setProgress(percent);
+                                txtPersent.setText(" % " + percent);
+                                if (percent == 100) {
+                                    Toast.makeText(context, "دانلود با موفقیت انجام شد", Toast.LENGTH_SHORT).show();
+                                    timer.purge();
+                                    timer.cancel();
+                                    imageView.setImageResource(R.drawable.ic_file_blue);
+                                    imageView.setContentDescription("downloaded");
+                                    progressBar.setVisibility(View.GONE);
+                                    txtPersent.setVisibility(View.GONE);
 
 
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+
+
                 }
+            }, 0, 100);
 
 
-            }
-        }, 0, 100);
     }
 
     private String generateUrl(int fileId) {

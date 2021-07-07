@@ -2711,16 +2711,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private void downloadFile(ProgressBar progressBar, CircularImageView imageView, TextView txtPersent, String name, String link, String type) {
-        if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
-
             download(progressBar, imageView, txtPersent, name, link, type);
-
-
-        } else {
-            EasyPermissions.requestPermissions((Activity) mContext, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
-
-        }
-
     }
 
     private void download(ProgressBar progressBar, CircularImageView imageView, TextView txtPersent, String name, String link, String type) {
@@ -2792,15 +2783,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     private void downloadVideo(CircularProgressBar progressBar, ImageView imageView, TextView txtPersent, String name, String link) {
-        if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
-
             download2(progressBar, imageView, txtPersent, name, link);
 
-
-        } else {
-            EasyPermissions.requestPermissions((Activity) mContext, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
-
-        }
 
     }
 
@@ -3284,14 +3268,24 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         .placeholder(R.drawable.ic_profile).into(imgForwarderImage);
 
                 img.setOnClickListener(v -> {
-                    if (img.getContentDescription().equals("downloaded")) {
-                        openFile(mContext, file);
 
+                    if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
+
+                        if (img.getContentDescription().equals("downloaded")) {
+                            openFile(mContext, file);
+
+
+                        } else {
+                            downloadList.add(Integer.parseInt(msgId));
+                            downloadFile(prg, img, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), type);
+                        }
 
                     } else {
-                        downloadList.add(Integer.parseInt(msgId));
-                        downloadFile(prg, img, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), type);
+                        EasyPermissions.requestPermissions((Activity) mContext, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد!", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
+
                     }
+
+
 
                 });
 
@@ -3304,13 +3298,22 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         } else {
             relForwardInfo.setVisibility(View.GONE);
             img.setOnClickListener(v -> {
-                if (img.getContentDescription().equals("downloaded")) {
-                    openFile(mContext, file);
+
+                if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
+
+                    if (img.getContentDescription().equals("downloaded")) {
+                        openFile(mContext, file);
+
+                    } else {
+                        downloadList.add(Integer.parseInt(msgId));
+                        downloadFile(prg, img, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), type);
+                    }
 
                 } else {
-                    downloadList.add(Integer.parseInt(msgId));
-                    downloadFile(prg, img, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), type);
+                    EasyPermissions.requestPermissions((Activity) mContext, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد!", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
+
                 }
+
 
             });
 
@@ -3337,6 +3340,60 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         .placeholder(R.drawable.ic_profile).into(imgForwarderImage);
 
                 imageView.setOnClickListener(v -> {
+
+                    if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
+
+                        if (imageView.getContentDescription().equals("downloaded")) {
+                            if (!playSender) {
+                                if (playGeter) {
+                                    stop(mediaPlayer, type2);
+                                    initPlayedGetMusic();
+                                    playPosition = position;
+                                    yoYoString.stop(true);
+                                    playedList.add(Integer.parseInt(msgId));
+                                    playMusic(file.getAbsolutePath(), imageView, typ1);
+                                } else {
+                                    playedList.add(Integer.parseInt(msgId));
+                                    playPosition = position;
+                                    playMusic(file.getAbsolutePath(), imageView, typ1);
+                                }
+                            } else {
+                                initPlayedSendMusic();
+                                imageView.setImageResource(R.drawable.ic_play_music_green);
+                                yoYoString.stop(true);
+                                stop(mediaPlayer, typ1);
+                                playedList.remove(new Integer(Integer.parseInt(msgId)));
+                                playPosition = -1;
+                            }
+
+                        } else {
+                            downloadList.add(Integer.parseInt(msgId));
+                            downloadFile(prg, imageView, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), typ1);
+
+                        }
+
+
+
+                    } else {
+                        EasyPermissions.requestPermissions((Activity) mContext, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد!", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
+
+                    }
+
+                });
+
+
+            } catch (Exception e) {
+                Toast.makeText(mContext, "MessageRecyclerAdapter>> Forwarded>>>  " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+
+        } else {
+            relForwardInfo.setVisibility(View.GONE);
+            imageView.setOnClickListener(v -> {
+
+                if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
+
+
                     if (imageView.getContentDescription().equals("downloaded")) {
                         if (!playSender) {
                             if (playGeter) {
@@ -3363,47 +3420,14 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                     } else {
                         downloadList.add(Integer.parseInt(msgId));
                         downloadFile(prg, imageView, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), typ1);
-
                     }
 
-                });
-
-
-            } catch (Exception e) {
-                Toast.makeText(mContext, "MessageRecyclerAdapter>> Forwarded>>>  " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
-
-        } else {
-            relForwardInfo.setVisibility(View.GONE);
-            imageView.setOnClickListener(v -> {
-                if (imageView.getContentDescription().equals("downloaded")) {
-                    if (!playSender) {
-                        if (playGeter) {
-                            stop(mediaPlayer, type2);
-                            initPlayedGetMusic();
-                            playPosition = position;
-                            yoYoString.stop(true);
-                            playedList.add(Integer.parseInt(msgId));
-                            playMusic(file.getAbsolutePath(), imageView, typ1);
-                        } else {
-                            playedList.add(Integer.parseInt(msgId));
-                            playPosition = position;
-                            playMusic(file.getAbsolutePath(), imageView, typ1);
-                        }
-                    } else {
-                        initPlayedSendMusic();
-                        imageView.setImageResource(R.drawable.ic_play_music_green);
-                        yoYoString.stop(true);
-                        stop(mediaPlayer, typ1);
-                        playedList.remove(new Integer(Integer.parseInt(msgId)));
-                        playPosition = -1;
-                    }
 
                 } else {
-                    downloadList.add(Integer.parseInt(msgId));
-                    downloadFile(prg, imageView, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), typ1);
+                    EasyPermissions.requestPermissions((Activity) mContext, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد!", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
+
                 }
+
 
             });
 
@@ -3430,6 +3454,57 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         .placeholder(R.drawable.ic_profile).into(imgForwarderImage);
 
                 imageView.setOnClickListener(v -> {
+
+                    if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
+
+                        if (imageView.getContentDescription().equals("downloaded")) {
+                            if (!playGeter) {
+                                if (playSender) {
+                                    stop(mediaPlayer, "music_sender");
+                                    initPlayedSendMusic();
+                                    playPosition = position;
+                                    yoYoString.stop(true);
+                                    playedList.add(Integer.parseInt(msgId));
+                                    playMusic(file.getAbsolutePath(), imageView, "music_geter");
+                                } else {
+                                    playMusic(file.getAbsolutePath(), imageView, "music_geter");
+                                    playedList.add(Integer.parseInt(msgId));
+                                    playPosition = position;
+                                }
+                            } else {
+                                initPlayedGetMusic();
+                                imageView.setImageResource(R.drawable.ic_music_play);
+                                yoYoString.stop(true);
+                                stop(mediaPlayer, "music_geter");
+                                playedList.remove(new Integer(Integer.parseInt(msgId)));
+                                playPosition = -1;
+                            }
+                        } else {
+                            downloadList.add(Integer.parseInt(msgId));
+                            downloadFile(prg, imageView, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), "music_geter");
+                        }
+
+
+                    } else {
+                        EasyPermissions.requestPermissions((Activity) mContext, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد!", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
+
+                    }
+
+                });
+
+
+            } catch (Exception e) {
+                Toast.makeText(mContext, "MessageRecyclerAdapter>> Forwarded>>>  " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+
+        } else {
+            relForwardInfo.setVisibility(View.GONE);
+
+            imageView.setOnClickListener(v -> {
+
+                if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
+
                     if (imageView.getContentDescription().equals("downloaded")) {
                         if (!playGeter) {
                             if (playSender) {
@@ -3456,44 +3531,14 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         downloadList.add(Integer.parseInt(msgId));
                         downloadFile(prg, imageView, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), "music_geter");
                     }
-                });
 
 
-            } catch (Exception e) {
-                Toast.makeText(mContext, "MessageRecyclerAdapter>> Forwarded>>>  " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
-
-        } else {
-            relForwardInfo.setVisibility(View.GONE);
-
-            imageView.setOnClickListener(v -> {
-                if (imageView.getContentDescription().equals("downloaded")) {
-                    if (!playGeter) {
-                        if (playSender) {
-                            stop(mediaPlayer, "music_sender");
-                            initPlayedSendMusic();
-                            playPosition = position;
-                            yoYoString.stop(true);
-                            playedList.add(Integer.parseInt(msgId));
-                            playMusic(file.getAbsolutePath(), imageView, "music_geter");
-                        } else {
-                            playMusic(file.getAbsolutePath(), imageView, "music_geter");
-                            playedList.add(Integer.parseInt(msgId));
-                            playPosition = position;
-                        }
-                    } else {
-                        initPlayedGetMusic();
-                        imageView.setImageResource(R.drawable.ic_music_play);
-                        yoYoString.stop(true);
-                        stop(mediaPlayer, "music_geter");
-                        playedList.remove(new Integer(Integer.parseInt(msgId)));
-                        playPosition = -1;
-                    }
                 } else {
-                    downloadList.add(Integer.parseInt(msgId));
-                    downloadFile(prg, imageView, txtPersent, fName, generateUrl(Integer.parseInt(msgId)), "music_geter");
+                    EasyPermissions.requestPermissions((Activity) mContext, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد!", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
+
                 }
+
+
             });
 
         }
@@ -3518,16 +3563,27 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                         .placeholder(R.drawable.ic_profile).into(imgForwarderImage);
 
                 imgPlay.setOnClickListener(v -> {
-                    if (imgPlay.getContentDescription().equals("not_downloaded")) {
-                        downloadList.add(Integer.parseInt(msgId));
-                        downloadVideo(circularProgressBar, imgPlay, txtPersent, fName, generateUrl(Integer.parseInt(msgId)));
 
-                    } else {
-                        playVideo(file.getAbsolutePath());
+                    if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
+
+                        if (imgPlay.getContentDescription().equals("not_downloaded")) {
+                            downloadList.add(Integer.parseInt(msgId));
+                            downloadVideo(circularProgressBar, imgPlay, txtPersent, fName, generateUrl(Integer.parseInt(msgId)));
+
+                        } else {
+                            playVideo(file.getAbsolutePath());
                     /*Intent intent = new Intent(mContext, ActivityVideoPlay.class);
                     intent.putExtra("videoName",messageData.getMessage1());
                     mContext.startActivity(intent);*/
+                        }
+
+
+                    } else {
+                        EasyPermissions.requestPermissions((Activity) mContext, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد!", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
+
                     }
+
+
 
                 });
 
@@ -3540,15 +3596,23 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         } else {
             relForwardInfo.setVisibility(View.GONE);
             imgPlay.setOnClickListener(v -> {
-                if (imgPlay.getContentDescription().equals("not_downloaded")) {
-                    downloadList.add(Integer.parseInt(msgId));
-                    downloadVideo(circularProgressBar, imgPlay, txtPersent, fName, generateUrl(Integer.parseInt(msgId)));
 
-                } else {
-                    playVideo(file.getAbsolutePath());
+                if (EasyPermissions.hasPermissions(mContext, permission, permission2)) {
+
+                    if (imgPlay.getContentDescription().equals("not_downloaded")) {
+                        downloadList.add(Integer.parseInt(msgId));
+                        downloadVideo(circularProgressBar, imgPlay, txtPersent, fName, generateUrl(Integer.parseInt(msgId)));
+
+                    } else {
+                        playVideo(file.getAbsolutePath());
                     /*Intent intent = new Intent(mContext, ActivityVideoPlay.class);
                     intent.putExtra("videoName",messageData.getMessage1());
                     mContext.startActivity(intent);*/
+                    }
+
+                } else {
+                    EasyPermissions.requestPermissions((Activity) mContext, "برنامه نیاز به اجازه دسترسی به کارت حافظه دارد!", READ_STORAGE_PERMISSION_REQUEST, permission, permission2);
+
                 }
 
             });

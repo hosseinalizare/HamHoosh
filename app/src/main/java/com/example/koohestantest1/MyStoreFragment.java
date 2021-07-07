@@ -103,7 +103,7 @@ import static com.example.koohestantest1.classDirectory.BaseCodeClass.companyPro
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.logMessage;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.productDataList;
 
-public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObserver.OnScrollChangedListener, EasyPermissions.PermissionCallbacks {
+public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObserver.OnScrollChangedListener {
 
     private Context mContext;
 
@@ -160,9 +160,6 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
     private ConstraintLayout cl_customer, cl_sellProduct, cl_product;
     public final static String STATE_MESSAGE_SENDER = "state_message_sender";
     public final static int REGULAR_USER = 0;
-    private String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-    private String permission2 = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    public static final int READ_STORAGE_PERMISSION_REQUEST = 1307;
     private ActionBar actionBar;
     private String title,subTitle;
 
@@ -362,10 +359,7 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
         if (baseCodeClass.getEmployeeID(/*baseCodeClass.getUserID()*/userId).equals("false")) {
             //regular user
             vf.setDisplayedChild(0);
-            /// check Read External storage
-            if (!EasyPermissions.hasPermissions(getContext(), permission,permission2)) {
-                EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission);
-            }
+
 
         } else {
             // employee
@@ -917,18 +911,6 @@ public class MyStoreFragment extends Fragment implements MessageApi, ViewTreeObs
                 .playOn(view);
     }
 
-
-    @Override
-    public void onPermissionsGranted(int requestCode, @NonNull @NotNull List<String> perms) {
-
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, @NonNull @NotNull List<String> perms) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this).build().show();
-        }
-    }
 
 
 }

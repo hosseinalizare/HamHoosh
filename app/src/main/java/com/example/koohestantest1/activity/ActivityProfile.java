@@ -55,7 +55,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.companyProfile;
 import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
 
-public class ActivityProfile extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+public class ActivityProfile extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
@@ -71,9 +71,7 @@ public class ActivityProfile extends AppCompatActivity implements EasyPermission
    private ConstraintLayout cl_customer,cl_sellProduct,cl_product;
     public final static String STATE_MESSAGE_SENDER = "state_message_sender";
     public final static int REGULAR_USER = 0;
-   private String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-   private String permission2 = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-    public static final int READ_STORAGE_PERMISSION_REQUEST = 1307;
+
 
 
 
@@ -101,10 +99,6 @@ public class ActivityProfile extends AppCompatActivity implements EasyPermission
 
         }
 
-        /// check Read External storage
-        if (!EasyPermissions.hasPermissions(this, permission,permission2)) {
-            EasyPermissions.requestPermissions(this, "Our App Requires a permission to access your storage", READ_STORAGE_PERMISSION_REQUEST, permission,permission2);
-        }
 
         fbMessage.setOnClickListener(v -> {
             try {
@@ -294,24 +288,6 @@ public class ActivityProfile extends AppCompatActivity implements EasyPermission
                 .playOn(view);
     }
 
-    @Override
-    public void onPermissionsGranted(int requestCode, @NonNull @NotNull List<String> perms) {
-
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, @NonNull @NotNull List<String> perms) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this).build().show();
-        }
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
 
     @Override
     protected void onResume() {
