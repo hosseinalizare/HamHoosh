@@ -659,6 +659,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:visibility="gone"
+            android:checked="true"
             android:layout_margin="8dp"/>
         <TextView
             android:layout_width="wrap_content"
