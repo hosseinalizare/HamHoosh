@@ -662,8 +662,6 @@ public class CartFragment extends Fragment implements AddressApi, ICartEvents {
 
     private void generatePaymentButtonSabegh() {
 
-
-
         String codePaygir = "";
         try {
             if (allAddress.size() != 0 || selectedAddress != null) {

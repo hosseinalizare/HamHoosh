@@ -85,7 +85,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
     TextView tvRules;
     TextView tvUserFullName;
     TextView tvPhoneNumber, tvUsername;
-
+    TermsDialog termsDialog;
 
     Typeface wYekan;
     Typeface wYekanBold;
@@ -117,6 +117,7 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         logOutVewModel = new ViewModelProvider(this).get(LogOutVewModel.class);
+        termsDialog = new TermsDialog(getActivity());
     }
 
     @Nullable
@@ -237,6 +238,10 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
                 requireActivity().finish();
             } else
                 Toast.makeText(requireContext(), s, Toast.LENGTH_SHORT).show();
+        });
+
+        tvRules.setOnClickListener(v -> {
+            termsDialog.startTermsDialog();
         });
     }
 
