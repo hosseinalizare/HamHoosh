@@ -536,6 +536,18 @@ public class Adapter_recycler_FragmentTabsProfile extends RecyclerView.Adapter<R
         void holder(FieldList fieldList) {
             try {
 
+
+           /*     imgOrder.setOnLongClickListener(v -> {
+                    String orderId = fieldList.getId();
+
+
+                   String urlReceipt = baseCodeClass.BASE_URL + "Order/DownloadFile?OrderId=" + orderId + "&fileNumber=1";
+                    String name = "dehkade_receipt";
+
+                    return false;
+
+                });*/
+
                 txtOrderId.setText(fieldList.getId() + "");
                 txtOrderName.setText(fieldList.getExplain());
                 txtOrderSumPrice.setText(" جمع فاکتور =" + fieldList.getEXtraData() + " تومان ");

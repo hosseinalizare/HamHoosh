@@ -29,10 +29,10 @@
             android:layout_width="match_parent"
             android:layout_height="350dp"
             android:fitsSystemWindows="true"
-            app:collapsedTitleGravity="start
+            app:collapsedTitleGravity="left
 "
             app:contentScrim="@color/colorPrimary"
-            app:expandedTitleGravity="start|bottom"
+            app:expandedTitleGravity="left|bottom"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="64dp"
             app:toolbarId="@+id/activityProfile_toolbar"
@@ -56,7 +56,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="65dp"
+                android:layout_height="80dp"
                 android:layout_alignBottom="@+id/img_activityProfile_imgProfile"
                 android:layout_gravity="bottom"
                 android:background="@drawable/scrim_bottom" />

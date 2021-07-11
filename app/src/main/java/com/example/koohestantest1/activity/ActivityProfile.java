@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
@@ -18,14 +17,13 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
@@ -33,7 +31,6 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.example.koohestantest1.MessageActivity;
 import com.example.koohestantest1.MyStoreOrderListActivity;
 import com.example.koohestantest1.R;
-import com.example.koohestantest1.ShowStoreActivity;
 import com.example.koohestantest1.adapter.ProfileViewPagerAdapter;
 import com.example.koohestantest1.classDirectory.BaseCodeClass;
 import com.example.koohestantest1.fragments.FragmentTabsProfile;
@@ -45,36 +42,28 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import pub.devrel.easypermissions.AppSettingsDialog;
-import pub.devrel.easypermissions.EasyPermissions;
-
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.companyProfile;
-import static com.example.koohestantest1.classDirectory.BaseCodeClass.context;
 
 public class ActivityProfile extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private ImageView imgProfile;
-    private FloatingActionButton fbCall,fbMessage;
-    private TextView txtBio,txtAddress,txtNuOfCustomer,txtNuOfSell,txtNuOfProduct;
+    private FloatingActionButton fbCall, fbMessage;
+    private TextView txtBio, txtAddress, txtNuOfCustomer, txtNuOfSell, txtNuOfProduct;
     private ProgressBar prg;
     private UserProfileViewModel userProfileViewModel;
     private ProfileVM profileVM;
     private BaseCodeClass baseCodeClass;
-   private List<String> titles ;
-   private ProfileViewPagerAdapter pagerAdapter ;
-   private ConstraintLayout cl_customer,cl_sellProduct,cl_product;
+    private List<String> titles;
+    private ProfileViewPagerAdapter pagerAdapter;
+    private ConstraintLayout cl_customer, cl_sellProduct, cl_product;
     public final static String STATE_MESSAGE_SENDER = "state_message_sender";
     public final static int REGULAR_USER = 0;
-
-
+    private String cName = null;
+    private ActionBar actionBar;
+    private Handler handler;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -82,9 +71,32 @@ public class ActivityProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        profileVM = new ViewModelProvider(this).get(ProfileVM.class);
+        profileVM.getProfileData(BaseCodeClass.CompanyID, BaseCodeClass.userID).observe(this, new Observer<ProfileModel>() {
+
+            @Override
+            public void onChanged(ProfileModel profileModel) {
+                initViews();
+                setData(profileModel);
+
+
+            }
+        });
+
+
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void initViews(){
         setupViews();
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
+        actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+
+
+        }
        /* toolbar.setLogo(R.drawable.ic_call_fb);
         View logoView = getToolbarLogoIcon(toolbar);
         logoView.setOnClickListener(new View.OnClickListener() {
@@ -94,20 +106,11 @@ public class ActivityProfile extends AppCompatActivity {
             }
         });
 */
-        if (actionBar!= null) {
-           actionBar.setDisplayHomeAsUpEnabled(true);
-            /*actionBar.setTitle("Abolfazl");
-            actionBar.setSubtitle("on");*/
-
-        }
-
-
-
 
 
         fbMessage.setOnClickListener(v -> {
             try {
-                setAnimation(Techniques.Tada,100L,fbMessage);
+                setAnimation(Techniques.Tada, 100L, fbMessage);
                 Intent intent = new Intent(ActivityProfile.this, MessageActivity.class);
                 //sender = ourselfes
                 intent.putExtra("sender", baseCodeClass.getUserID());
@@ -125,12 +128,12 @@ public class ActivityProfile extends AppCompatActivity {
             try {
 
                 if (baseCodeClass.getPermissions().get(10).isState()) {
-                    setAnimation(Techniques.Tada,100L,cl_customer);
+                    setAnimation(Techniques.Tada, 100L, cl_customer);
                     Intent intent = new Intent(this, CostumersListActivity.class);
                     startActivity(intent);
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -140,12 +143,12 @@ public class ActivityProfile extends AppCompatActivity {
             try {
 
                 if (baseCodeClass.getPermissions().get(10).isState()) {
-                    setAnimation(Techniques.Tada,100L,cl_sellProduct);
+                    setAnimation(Techniques.Tada, 100L, cl_sellProduct);
                     Intent intent = new Intent(this, MyStoreOrderListActivity.class);
                     startActivity(intent);
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -156,64 +159,73 @@ public class ActivityProfile extends AppCompatActivity {
         tabLayout.setSelectedTabIndicatorColor(getColor(R.color.DarkYellow));
 
         tabLayout.setTabTextColors(Color.parseColor("#ffffff"), getColor(R.color.DarkYellow));
-        profileVM = new ViewModelProvider(this).get(ProfileVM.class);
-        profileVM.getProfileData(BaseCodeClass.CompanyID,BaseCodeClass.userID).observe(this, new Observer<ProfileModel>() {
-
-            @Override
-            public void onChanged(ProfileModel profileModel) {
-                prg.setVisibility(View.GONE);
-                txtBio.setText(profileModel.getBio());
-                txtAddress.setText(profileModel.getAddres());
-                txtNuOfCustomer.setText(profileModel.getFollowingCount());
-                txtNuOfSell.setText(profileModel.getSaleCount());
-                txtNuOfProduct.setText(profileModel.getProductCount());
-                actionBar.setTitle(profileModel.getCompanyName());
-                actionBar.setSubtitle(profileModel.getOnlineTime());
-
-
-                Glide.with(ActivityProfile.this).load(generateUrlCompanyPicture(profileModel.getCompanyId())).placeholder(R.drawable.image_placeholder).into(imgProfile);
-
-                for (Item item:profileModel.getItem()){
-                    titles.add(item.getName());
-                    pagerAdapter.addTab(new FragmentTabsProfile(item));
-                }
-                viewPager.setAdapter(pagerAdapter);
-                viewPager.setCurrentItem(titles.size()-1);
-                cl_product.setOnClickListener(v -> {
-                        int position =viewPager.getCurrentItem();
-                        int index =0;
-                        for (Item item:profileModel.getItem()){
-                          if (item.getGroupType() ==1){
-                              position = index;
-                              break;
-                          }
-                          index++;
-                        }
-                        setAnimation(Techniques.Tada,100L,cl_product);
-                        viewPager.setCurrentItem(position);
-
-                });
-                fbCall.setOnClickListener(v -> {
-                    setAnimation(Techniques.Tada,100L,fbCall);
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:" + profileModel.getBusnisePhone()));
-                    startActivity(intent);
-
-                });
-
-                new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
-                    @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                        tab.setText(titles.get(position));
-                    }
-                }).attach();
-
-            }
-        });
         changeTabsFont(tabLayout);
+        actionBar.setTitle("فروشسگاه");
+        actionBar.setSubtitle("on");
+
     }
 
-    private void setupViews(){
+    private void setData(ProfileModel profileModel) {
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+
+        prg.setVisibility(View.GONE);
+        txtBio.setText(profileModel.getBio());
+        txtAddress.setText(profileModel.getAddres());
+        txtNuOfCustomer.setText(profileModel.getFollowingCount());
+        txtNuOfSell.setText(profileModel.getSaleCount());
+        txtNuOfProduct.setText(profileModel.getProductCount());
+        cName = profileModel.getCompanyName();
+
+
+        actionBar.setTitle(profileModel.getCompanyName());
+        actionBar.setSubtitle(profileModel.getOnlineTime());
+
+
+        Glide.with(ActivityProfile.this).load(generateUrlCompanyPicture(profileModel.getCompanyId())).placeholder(R.drawable.image_placeholder).into(imgProfile);
+
+        for (Item item : profileModel.getItem()) {
+            titles.add(item.getName());
+            pagerAdapter.addTab(new FragmentTabsProfile(item));
+
+        }
+
+
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setCurrentItem(titles.size() - 1);
+        cl_product.setOnClickListener(v -> {
+            int position = viewPager.getCurrentItem();
+            int index = 0;
+            for (Item item : profileModel.getItem()) {
+                if (item.getGroupType() == 1) {
+                    position = index;
+                    break;
+                }
+                index++;
+            }
+            setAnimation(Techniques.Tada, 100L, cl_product);
+            viewPager.setCurrentItem(position);
+
+        });
+        fbCall.setOnClickListener(v -> {
+            setAnimation(Techniques.Tada, 100L, fbCall);
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + profileModel.getBusnisePhone()));
+            startActivity(intent);
+
+        });
+
+        new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                tab.setText(titles.get(position));
+            }
+        }).attach();
+
+    }
+
+
+    private void setupViews() {
         toolbar = findViewById(R.id.activityProfile_toolbar);
         tabLayout = findViewById(R.id.activityProfile_tabLayout);
         viewPager = findViewById(R.id.activityProfile_viewpager);
@@ -227,11 +239,12 @@ public class ActivityProfile extends AppCompatActivity {
         txtNuOfProduct = findViewById(R.id.NoOfProduct);
         prg = findViewById(R.id.prg_activityProfile);
         cl_customer = findViewById(R.id.cl_customers);
-        cl_sellProduct =findViewById(R.id.root_noOfSell);
-        cl_product=findViewById(R.id.cl_product);
-        titles =new ArrayList<>();
-        pagerAdapter =  new ProfileViewPagerAdapter(this);
+        cl_sellProduct = findViewById(R.id.root_noOfSell);
+        cl_product = findViewById(R.id.cl_product);
+        titles = new ArrayList<>();
+        pagerAdapter = new ProfileViewPagerAdapter(this);
         baseCodeClass = new BaseCodeClass();
+        handler = new Handler();
     }
 
     @Override
@@ -246,25 +259,24 @@ public class ActivityProfile extends AppCompatActivity {
         }
     }
 
-    public static View getToolbarLogoIcon(Toolbar toolbar){
+    public static View getToolbarLogoIcon(Toolbar toolbar) {
         //check if contentDescription previously was set
         boolean hadContentDescription = android.text.TextUtils.isEmpty(toolbar.getLogoDescription());
         String contentDescription = String.valueOf(!hadContentDescription ? toolbar.getLogoDescription() : "logoContentDescription");
         toolbar.setLogoDescription(contentDescription);
         ArrayList<View> potentialViews = new ArrayList<View>();
         //find the view based on it's content description, set programatically or with android:contentDescription
-        toolbar.findViewsWithText(potentialViews,contentDescription, View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
+        toolbar.findViewsWithText(potentialViews, contentDescription, View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
         //Nav icon is always instantiated at this point because calling setLogoDescription ensures its existence
         View logoIcon = null;
-        if(potentialViews.size() > 0){
+        if (potentialViews.size() > 0) {
             logoIcon = potentialViews.get(0);
         }
         //Clear content description if not previously present
-        if(hadContentDescription)
+        if (hadContentDescription)
             toolbar.setLogoDescription(null);
         return logoIcon;
     }
-
 
 
     private void changeTabsFont(TabLayout tabLayout) {
@@ -285,9 +297,10 @@ public class ActivityProfile extends AppCompatActivity {
     }
 
     private String generateUrlCompanyPicture(String id) {
-        String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" +id+ "&ImageAddress=" + 1;
+        String url = baseCodeClass.BASE_URL + "Company/DownloadFile?CompanyID=" + id + "&ImageAddress=" + 1;
         return url;
     }
+
     private void setAnimation(Techniques animation, Long duration, View view) {
         YoYo.with(animation)
                 .duration(duration)
@@ -302,5 +315,7 @@ public class ActivityProfile extends AppCompatActivity {
         if (hashtagWord != null) {
             finish();
         }
+
+
     }
 }
