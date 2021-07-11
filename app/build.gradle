@@ -113,6 +113,18 @@ android {
             applicationIdSuffix '.yazdi'
             versionNameSuffix '-yazdi'
         }
+
+        app_monji{
+            dimension "version"
+            applicationIdSuffix '.monji'
+            versionNameSuffix '-monji'
+        }
+
+        app_kavosh{
+            dimension "version"
+            applicationIdSuffix '.kavosh'
+            versionNameSuffix '-kavosh'
+        }
     }
 }
 
