@@ -125,6 +125,12 @@ android {
             applicationIdSuffix '.kavosh'
             versionNameSuffix '-kavosh'
         }
+
+        app_hamyar{
+            dimension "version"
+            applicationIdSuffix '.hamyar'
+            versionNameSuffix '-hamyar'
+        }
     }
 }
 

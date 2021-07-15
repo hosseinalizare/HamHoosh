@@ -29,6 +29,12 @@ import retrofit2.http.Query;
 
 public interface LoadProductApi {
 
+    /**
+     * For the methods like this one that return Result we can return a message as the message
+     * that we wanna show it to user
+     * @param sendProductClass
+     * @return Result
+     */
     @POST("Products/product")
     Call<GetResualt> sendProductDetail(@Body SendProduct sendProductClass);
     void onResponseSendProduct(GetResualt getResualt);
@@ -52,6 +58,12 @@ public interface LoadProductApi {
     @POST("Products/LoadProduct")
     Call<List<ReceiveProductClass>> loadProduct(@Query("CompanyID")String companyId, @Query("UserID") String userID);
 
+    /**
+     * For these methods that they delete a record we can send just an Id
+     * then delete the record base on its Id
+     * @param sendDeleteProduct
+     * @return Result
+     */
     @POST("Products/Deletproduct")
     Call<GetResualt> deleteProduct(@Body SendDeleteProduct sendDeleteProduct);
     void onResponseDeleteProduct(GetResualt getResualt);

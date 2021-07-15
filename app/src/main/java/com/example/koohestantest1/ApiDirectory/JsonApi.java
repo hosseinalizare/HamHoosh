@@ -26,6 +26,7 @@ import retrofit2.http.Query;
 
 public interface JsonApi {
 
+
     //  public String BASE_URL = "https://dehkade.nokhbgan.ir/api/";
 
     @POST("SmssVerification/Verify")
@@ -41,6 +42,14 @@ public interface JsonApi {
 
     void onResponseLogin(GetLoginDetail getLoginDetail);
 
+    /**
+     * For the methods like this one that return Result we can return a message as the message
+     * that we wanna show it to user
+     * @param company
+     * @param user
+     * @param custumerID
+     * @return Result
+     */
     @POST("Programer/Customer")
     Call<GetResualt> setCostumerID(@Query("company") String company, @Query("User") String user, @Query("customerID") String custumerID);
 
@@ -77,6 +86,13 @@ public interface JsonApi {
                                            @Query("Token") String token,
                                            @Part List<MultipartBody.Part> files);
 
+
+    /**
+     * For these methods that they delete a record we can send just an Id
+     * then delete the record base on its Id
+     * @param deleteNewsLetter
+     * @return
+     */
     @POST("News/DeleteNews")
     Call<GetResualt> deleteOneNewsLetter(@Body DeleteNewsLetter deleteNewsLetter);
 }

@@ -43,7 +43,7 @@ public interface MessageApi {
     @POST("User/thumbnail")
     Single<GetResualt> sendThumbnail(@Query("MsgId") int MsgId, @Part MultipartBody.Part file);
 
-        @POST("User/Deletemessage")
+    @POST("User/Deletemessage")
     Single<GetResualt> deleteMessage(@Body DeleteMessageM deleteMessageM);
 
 
