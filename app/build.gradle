@@ -131,6 +131,12 @@ android {
             applicationIdSuffix '.hamyar'
             versionNameSuffix '-hamyar'
         }
+
+        app_kala_khab_khandan{
+            dimension "version"
+            applicationIdSuffix '.khandan'
+            versionNameSuffix '-khandan'
+        }
     }
 }
 
