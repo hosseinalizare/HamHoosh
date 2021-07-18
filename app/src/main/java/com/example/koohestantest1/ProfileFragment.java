@@ -41,6 +41,7 @@ import com.example.koohestantest1.Utils.StringUtils;
 import com.example.koohestantest1.ViewModels.CompanyProfileFieldViewModel;
 import com.example.koohestantest1.activity.EventActivity;
 import com.example.koohestantest1.activity.LoadingActivity;
+import com.example.koohestantest1.activity.LoginActivity;
 import com.example.koohestantest1.classDirectory.GetResualt;
 import com.example.koohestantest1.model.network.RetrofitInstance;
 import com.example.koohestantest1.viewModel.LogOutVewModel;
@@ -537,6 +538,10 @@ public class ProfileFragment extends Fragment implements ProfileRecyclerViewAdap
 
     private void logout() {
         logOutVewModel.clearDatabase();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("baseInfo",MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+
+
     }
 
     private void showLogoutDialog() {
